@@ -7,7 +7,7 @@ using static DesignManager;
 
 public class RoomLabel : MonoBehaviour, IHoverable, IMoveable, ISelectable
 {
-	[SerializeField] private TextMeshPro roomLabel;
+	[SerializeField] private ExpandingLabel roomLabel;
 	[SerializeField] private Room room;
 
 	private DesignObject _designObject;

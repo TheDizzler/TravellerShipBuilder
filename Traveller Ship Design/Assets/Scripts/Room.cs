@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using static DesignManager;
 
 public class Room : MonoBehaviour, IMoveable
@@ -104,6 +106,8 @@ public class Room : MonoBehaviour, IMoveable
 		var actionDict = new Dictionary<string, DesignAction>();
 
 		var renameAction = new DesignAction(EditMode.None);
+		renameAction += ShowRenameDialog;
+		actionDict.Add("Rename Room", renameAction);
 
 		var saveRoomAction = new DesignAction(EditMode.None);
 
@@ -118,6 +122,31 @@ public class Room : MonoBehaviour, IMoveable
 		actionDict.Add("Dismantle Room", dismantleAction);
 		return actionDict;
 	}
+
+	private TMP_InputField inputField;
+
+	public void ShowRenameDialog()
+	{
+		var panelRect = Instantiate(DesignManager.GetPrefab(UIPrefabType.DynamicPanel));
+		var panel = panelRect.GetComponent<DynamicPanel>();
+		panel.SetTitle("Enter room name", DynamicPanel.TitleLabelType.Bladed);
+		panel.SetButtons(BottomPanel.DialogButton.OKCancel);
+		panel.OnClose += RenameDialogClosed;
+		inputField = panel.AddInputField("Enter new room name", roomLabel.text);
+		DesignManager.ShowDialog(panelRect);
+	}
+
+	private void RenameDialogClosed(DynamicPanel panel)
+	{
+		if (panel.result == BottomPanel.DialogResult.OK)
+		{
+			roomLabel.text = inputField.text;
+		}
+
+		inputField = null;
+		DesignManager.CloseDialog(panel.GetComponent<RectTransform>());
+	}
+
 
 	public void Dismantle()
 	{

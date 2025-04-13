@@ -30,6 +30,11 @@ public class DesignManager : MonoBehaviour
 		return instance.prefabs[prefabType];
 	}
 
+	public static RectTransform GetPrefab(UIPrefabType prefabType)
+	{
+		return instance.uiPrefabs[prefabType];
+	}
+
 	public enum PrefabType
 	{
 		WallSegmentPrefab,
@@ -39,8 +44,15 @@ public class DesignManager : MonoBehaviour
 		RoomPrefab,
 	}
 
+	public enum UIPrefabType
+	{
+		DynamicPanel,
+	}
+
 	[UDictionary.Split(50, 50)]
 	[SerializeField] private UDictionary<PrefabType, DesignObject> prefabs;
+	[UDictionary.Split(50, 50)]
+	[SerializeField] private UDictionary<UIPrefabType, RectTransform> uiPrefabs;
 
 	public ToolTip toolTip;
 	[SerializeField] private Canvas uiCanvas;
@@ -93,6 +105,10 @@ public class DesignManager : MonoBehaviour
 	private Camera mainCamera;
 	private LayerMask uiLayerIndex;
 	private bool isUIUpdate = false;
+	/// <summary>
+	/// A UI element has focus and must be dealt with before anything else can happen.
+	/// </summary>
+	private bool isBlockingUI = false;
 
 	/// <summary>
 	/// serialized for debugging
@@ -172,13 +188,17 @@ public class DesignManager : MonoBehaviour
 
 	void UIUpdate()
 	{
+		if (isBlockingUI)
+		{   // must wait for blocking dialog (or whatever) to close before anything else can happen
+			return;
+		}
+
 		if (!IsPointerOverUIElement(GetEventSystemRaycastResults(Input.mousePosition)))
 		{
 			ToggleUIMode(false);
 			return;
 		}
 
-		Vector3 worldPos = GetMouseWorldPos();
 		// more ui stuff?
 
 	}
@@ -187,9 +207,14 @@ public class DesignManager : MonoBehaviour
 	{
 		isUIUpdate = enableUIMode;
 		if (enableUIMode)
+		{
 			CustomCursor.SetCursor(CursorSpriteMode.UI, enableUIMode);
+		}
 		else
+		{
 			CustomCursor.SetCursor(CursorSpriteMode.Default);
+			isBlockingUI = false;
+		}
 	}
 
 	void GridUpdate()
@@ -548,6 +573,7 @@ public class DesignManager : MonoBehaviour
 	/// <param name="layerMask"></param>
 	/// <param name="hitObject"></param>
 	/// <returns></returns>
+	[Obsolete("Use <c>private bool CheckForObject(Vector2 worldPos, out DesignObject hitObject)</c> instead")]
 	private bool CheckForObject(Vector2 worldPos, int layerMask, out GameObject hitObject)
 	{
 		RaycastHit2D[] hits = Physics2D.RaycastAll(worldPos, Vector2.zero, 10.0f, layerMask);
@@ -595,5 +621,28 @@ public class DesignManager : MonoBehaviour
 		List<RaycastResult> raysastResults = new List<RaycastResult>();
 		EventSystem.current.RaycastAll(eventData, raysastResults);
 		return raysastResults;
+	}
+
+	public static void ShowDialog(RectTransform dialogRect)
+	{
+		instance._ShowDialog(dialogRect);
+	}
+
+	private void _ShowDialog(RectTransform dialogRect)
+	{
+		dialogRect.SetParent(uiCanvas.transform, false);
+		ToggleUIMode(true);
+		isBlockingUI = true;
+	}
+
+	public static void CloseDialog(RectTransform dialogRect)
+	{
+		instance._CloseDialog(dialogRect);
+	}
+
+	private void _CloseDialog(RectTransform dialogRect)
+	{
+		Destroy(dialogRect.gameObject);
+		ToggleUIMode(false);
 	}
 }

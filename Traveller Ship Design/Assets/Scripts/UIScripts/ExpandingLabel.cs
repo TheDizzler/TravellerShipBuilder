@@ -11,7 +11,7 @@ public class ExpandingLabel : MonoBehaviour
 
 	[SerializeField] private string _titleText;
 
-	public string titleText
+	public string text
 	{
 		get { return textLabel.text; }
 		set
@@ -23,6 +23,14 @@ public class ExpandingLabel : MonoBehaviour
 		}
 	}
 
+	public Color color
+	{
+		get { return textLabel.color; }
+		set
+		{
+			textLabel.color = value;
+		}
+	}
 
 	private void UpdateLabel()
 	{
@@ -37,7 +45,7 @@ public class ExpandingLabel : MonoBehaviour
 
 	public void UpdateText()
 	{
-		titleText = _titleText;
+		text = _titleText;
 		UpdateLabel();
 	}
 }

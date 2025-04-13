@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2102658237165753314}
   - component: {fileID: 2134122288608941873}
   - component: {fileID: 8908554762070395022}
+  - component: {fileID: 4925306219849806398}
   m_Layer: 10
   m_Name: RoomLabel
   m_TagString: Untagged
@@ -50,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba13187a8ef947c44bf9517b772c25fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomLabel: {fileID: 6471324756043584275}
+  roomLabel: {fileID: 4573271997075306009}
   room: {fileID: 7946871146005094415}
 --- !u!114 &4573271997075306009
 MonoBehaviour:
@@ -67,7 +68,7 @@ MonoBehaviour:
   minLabelWidth: 1
   textLabel: {fileID: 6471324756043584275}
   spriteLabel: {fileID: 8908554762070395022}
-  _titleText: Room label
+  _titleText: Room name #01
 --- !u!114 &3348987081276975916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,7 +132,7 @@ BoxCollider2D:
     border: {x: 0.16, y: 0.16, z: 0.16, w: 0.16}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 3.84, y: 1.28}
-    newSize: {x: 1.9200001, y: 0.51}
+    newSize: {x: 2.77, y: 0.51}
     adaptiveTilingThreshold: 0.5
     drawMode: 1
     adaptiveTiling: 0
@@ -213,12 +214,13 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 1.9200001, y: 0.51}
+  m_Size: {x: 2.77, y: 0.51}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4925306219849806398
 --- !u!1 &3415532403523763265
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,7 +327,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1.82, y: 0.5}
+  m_SizeDelta: {x: 2.67, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6471324756043584275
 MonoBehaviour:
@@ -347,7 +349,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Room label
+  m_text: Room name #01
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_sharedMaterial: {fileID: -5212590573181050906, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
@@ -390,7 +392,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 3
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -412,7 +414,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0.05, y: 0.05, z: 0.05, w: 0.05}
+  m_margin: {x: 0.1, y: 0.05, z: 0.1, w: 0.05}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
