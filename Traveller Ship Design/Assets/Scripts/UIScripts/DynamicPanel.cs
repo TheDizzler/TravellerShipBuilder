@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static DynamicPanel;
-using static TabbedPanel;
 using UnityEngine.UI;
 using TMPro;
+using static BottomPanel;
+using UnityEngine.Events;
 
 public class DynamicPanel : MonoBehaviour
 {
-	public enum TitleType
+	public enum TitleLabelType
 	{
 		SquareTab,
 		BladedTab,
@@ -18,41 +18,42 @@ public class DynamicPanel : MonoBehaviour
 	/// <summary>
 	/// Tab width, height, bottom panel y offset, bottom panel min height
 	/// </summary>
-	private readonly Dictionary<TitleType, Vector4> minTabSize = new()
+	private readonly Dictionary<TitleLabelType, Vector4> minTabSize = new()
 	{
-		[TitleType.SquareTab] = new Vector4(64, 76, 64, 64),
-		[TitleType.BladedTab] = new Vector4(97, 76, 64, 64),
-		[TitleType.Bladed] = new Vector4(80, 68, 0, 128),
+		[TitleLabelType.SquareTab] = new Vector4(64, 76, 64, 64),
+		[TitleLabelType.BladedTab] = new Vector4(97, 76, 64, 64),
+		[TitleLabelType.Bladed] = new Vector4(80, 68, 0, 128),
 	};
 
-	private readonly Dictionary<TitleType, Vector4> titleTextMarginSize = new()
+	private readonly Dictionary<TitleLabelType, Vector4> titleTextMarginSize = new()
 	{
-		[TitleType.SquareTab] = new Vector4(12, 8, 12, 12),
-		[TitleType.BladedTab] = new Vector4(12, 8, 46, 12),
-		[TitleType.Bladed] = new Vector4(12, 8, 48, 4),
+		[TitleLabelType.SquareTab] = new Vector4(12, 8, 12, 12),
+		[TitleLabelType.BladedTab] = new Vector4(12, 8, 46, 12),
+		[TitleLabelType.Bladed] = new Vector4(12, 8, 48, 4),
 	};
 
-	public readonly Dictionary<TitleType, Vector4> bottomPanelPadding = new()
+	public readonly Dictionary<TitleLabelType, Vector4> bottomPanelPadding = new()
 	{
-		[TitleType.SquareTab] = new Vector4(30, 30, 14, 24),
-		[TitleType.BladedTab] = new Vector4(30, 30, 14, 24),
-		[TitleType.Bladed] = new Vector4(30, 30, 72, 24),
+		[TitleLabelType.SquareTab] = new Vector4(30, 30, 14, 24),
+		[TitleLabelType.BladedTab] = new Vector4(30, 30, 14, 24),
+		[TitleLabelType.Bladed] = new Vector4(30, 30, 72, 24),
 	};
 
-	//public readonly Dictionary<TitleType, float> heightDiff = new()
-	//{
-	//	[TitleType.SquareTab] = 0,
-	//	[TitleType.BladedTab] = 0,
-	//	[TitleType.Bladed] = 0,
-	//};
 
 	/// <summary>
 	/// Minimum dimensions for the entire panel, top and bottom.
 	/// </summary>
-	private readonly Vector2 minDimensions = new Vector2(128, 128);
+	private readonly Dictionary<TitleLabelType, Vector2> minDimensions = new()
+	{
+		[TitleLabelType.SquareTab] = new Vector2(128, 64),
+		[TitleLabelType.BladedTab] = new Vector2(128, 64),
+		[TitleLabelType.Bladed] = new Vector2(128, 128),
+	};
 
-	public TitleType titleType = TitleType.Bladed;
-	public bool isDialog = false;
+	public TitleLabelType titleType = TitleLabelType.Bladed;
+	public DialogButton buttons;
+	public DialogResult result;
+	public UnityAction<DynamicPanel> OnClose;
 
 	[SerializeField] private string _titleText;
 
@@ -79,6 +80,19 @@ public class DynamicPanel : MonoBehaviour
 		}
 	}
 
+	public void SetTitle(string newTitleText, TitleLabelType titleLabelType)
+	{
+		UpdatePanel(titleLabelType);
+		titleText = newTitleText;
+	}
+
+	public TMP_InputField AddInputField(string placeholderText, string defaultText = null)
+	{
+		var inputField = bottomPanel.GetComponent<BottomPanel>().AddInputField(placeholderText, defaultText);
+		RecalculateDimensions();
+		return inputField;
+	}
+
 	public void RecalculateDimensions()
 	{
 		var rect = GetComponent<RectTransform>();
@@ -86,13 +100,14 @@ public class DynamicPanel : MonoBehaviour
 		var dialog = bottomPanel.GetComponent<BottomPanel>();
 		var minDim = dialog.GetMinDimensions();
 		var titleWidth = CalculateAndSetTitleWidth();
-		var minWidthWithTitle = titleWidth + (minDimensions.x - minTabSize[titleType].x);
+		var minBottomDimensions = minDimensions[titleType];
+		var minWidthWithTitle = titleWidth + (minBottomDimensions.x - minTabSize[titleType].x);
 		if (minDim.x < minWidthWithTitle)
 			minDim.x = minWidthWithTitle;
-		if (minDim.x < minDimensions.x)
-			minDim.x = minDimensions.x;
-		if (minDim.y < minDimensions.y)
-			minDim.y = minDimensions.y;
+		if (minDim.x < minBottomDimensions.x)
+			minDim.x = minBottomDimensions.x;
+		if (minDim.y < minBottomDimensions.y)
+			minDim.y = minBottomDimensions.y;
 		var size = rect.sizeDelta;
 		size.y = minDim.y;
 
@@ -101,7 +116,7 @@ public class DynamicPanel : MonoBehaviour
 
 		rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
 		// the bottom height can be adjusted through the bottom panel's layout.bottom
-		bottomPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y); 
+		bottomPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
 	}
 
 	private float CalculateAndSetTitleWidth()
@@ -121,25 +136,25 @@ public class DynamicPanel : MonoBehaviour
 		titleText = _titleText;
 	}
 
-	public void UpdatePanel(TitleType newTitleType)
+	public void UpdatePanel(TitleLabelType newTitleType)
 	{
 		titleType = newTitleType;
 
 		switch (titleType)
 		{
-			case TitleType.SquareTab:
+			case TitleLabelType.SquareTab:
 			{
 				titleImage.sprite = squareTabSprite;
 			}
 			break;
 
-			case TitleType.BladedTab:
+			case TitleLabelType.BladedTab:
 			{
 				titleImage.sprite = bladeTabSprite;
 			}
 			break;
 
-			case TitleType.Bladed:
+			case TitleLabelType.Bladed:
 			{
 				titleImage.sprite = bladeSprite;
 			}
@@ -159,5 +174,45 @@ public class DynamicPanel : MonoBehaviour
 
 		bottomPanel.GetComponent<VerticalLayoutGroup>().padding.top = (int)bottomPanelPadding[titleType].z;
 		RecalculateDimensions();
+	}
+
+
+	public void SetButtons(DialogButton buttons)
+	{
+		bottomPanel.GetComponent<BottomPanel>().SetButtons(buttons);
+		RecalculateDimensions();
+	}
+
+
+	public void SetDialogResultOK()
+	{
+		this.result = DialogResult.OK;
+		Close();
+	}
+
+	public void SetDialogResultCancel()
+	{
+		this.result = DialogResult.Cancel;
+		Close();
+	}
+
+	public void SetDialogResultYes()
+	{
+		this.result = DialogResult.Yes;
+		Close();
+	}
+
+	public void SetDialogResultNo()
+	{
+		this.result = DialogResult.No;
+		Close();
+	}
+
+
+	public void Close()
+	{
+		if (OnClose != null)
+			OnClose(this);
+		gameObject.SetActive(false);
 	}
 }

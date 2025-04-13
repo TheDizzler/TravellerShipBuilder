@@ -10,7 +10,7 @@ using static DesignManager;
 
 public class UIPanel : MonoBehaviour
 {
-	[SerializeField] private Button itemPrefab;
+	[SerializeField] private Button buttonPrefab;
 	[SerializeField] private GameObject dividerPrefab;
 	[SerializeField] private int panelMinHeight = 58;
 
@@ -139,7 +139,7 @@ public class UIPanel : MonoBehaviour
 	private void AddMenuItem(DesignAction clickAction, string buttonText)
 	{
 		clickAction += ClosePanel;
-		var menuItem = Instantiate(itemPrefab, transform);
+		var menuItem = Instantiate(buttonPrefab, transform);
 		menuItem.onClick.AddListener(clickAction.action);
 		menuItem.GetComponentInChildren<TextMeshProUGUI>().text = buttonText;
 

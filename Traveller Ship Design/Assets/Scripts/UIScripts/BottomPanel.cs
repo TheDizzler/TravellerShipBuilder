@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -24,15 +25,29 @@ public class BottomPanel : MonoBehaviour
 		No,
 	}
 
+	public enum PanelObjectType
+	{
+		Button,
+		Text,
+		InputField,
+		Image,
+	}
+
+	public class PanelObject
+	{
+		public PanelObjectType type;
+	}
+
+
 	public List<RectTransform> items;
-	public bool isDialog;
 
 	/// <summary>
 	/// These are min widths when font size is 24.
 	/// TODO(Tristan): dynamic widths on font change!
 	/// TODO(Tristan): show dictionary in editor.
 	/// </summary>
-	[SerializeField] private Dictionary<DialogButton, float> minButtonWidth = new()
+	[SerializeField]
+	private Dictionary<DialogButton, float> minButtonWidth = new()
 	{
 		[DialogButton.None] = 0,
 		[DialogButton.OK] = 150,
@@ -49,10 +64,10 @@ public class BottomPanel : MonoBehaviour
 	[SerializeField] private GameObject noButton;
 	[SerializeField] private GameObject cancelButton;
 
+	[SerializeField] private TextMeshProUGUI tmpPrefab;
+	[SerializeField] private TMP_InputField inputFieldPrefab;
 
-
-	public DialogButton buttons;
-	public DialogResult result;
+	private DialogButton buttons;
 
 
 	public Vector2 GetMinDimensions()
@@ -165,27 +180,33 @@ public class BottomPanel : MonoBehaviour
 			break;
 		}
 
-		parentPanel.RecalculateDimensions();
 	}
 
-
-	public void SetDialogResultOK()
+	public void AddText(string text)
 	{
-		this.result = DialogResult.OK;
+		var tmp = Instantiate(tmpPrefab, transform);
+		var tmpRect = tmp.GetComponent<RectTransform>();
+		tmpRect.SetSiblingIndex(items.Count - 1);
+		tmp.text = text;
+		items.Add(tmpRect);
 	}
 
-	public void SetDialogResultCancel()
+	public TMP_InputField AddInputField(string placeholderText, string defaultText = null)
 	{
-		this.result = DialogResult.Cancel;
+		var input = Instantiate(inputFieldPrefab, transform);
+		var inputRect = input.GetComponent<RectTransform>();
+		inputRect.SetSiblingIndex(items.Count - 1);
+		items.Add(inputRect);
+		input.placeholder.GetComponent<TextMeshProUGUI>().text = placeholderText;
+		if (!string.IsNullOrEmpty(defaultText))
+			input.text = defaultText;
+		input.onSubmit.AddListener(SubmitText);
+		return input;
 	}
 
-	public void SetDialogResultYes()
+	private void SubmitText(string currentText)
 	{
-		this.result = DialogResult.Yes;
+		parentPanel.SetDialogResultOK();
 	}
 
-	public void SetDialogResultNo()
-	{
-		this.result = DialogResult.No;
-	}
 }

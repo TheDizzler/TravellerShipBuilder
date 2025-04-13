@@ -1,25 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.TerrainTools;
 using UnityEngine;
-using static DynamicPanel;
 
-[CustomEditor(typeof(TabbedPanel))]
-public class PanelEditor : Editor
-{
-	public override void OnInspectorGUI()
-	{
-		EditorGUI.BeginChangeCheck();
-		base.OnInspectorGUI();
-
-		if (EditorGUI.EndChangeCheck())
-		{
-			TabbedPanel panel = (TabbedPanel)target;
-			panel.UpdatePanel();
-		}
-	}
-}
 
 [CustomEditor(typeof(DynamicPanel))]
 public class DynamicPanelEditor : Editor
@@ -35,6 +18,7 @@ public class DynamicPanelEditor : Editor
 			DynamicPanel panel = (DynamicPanel)target;
 			panel.UpdateTitle();
 			panel.UpdatePanel(panel.titleType);
+			panel.SetButtons(panel.buttons);
 		}
 	}
 }
@@ -58,54 +42,34 @@ public class BottomPanelEditor : Editor
 
 		if (EditorGUI.EndChangeCheck())
 		{
-			BottomPanel panel = (BottomPanel)target;
-			panel.SetButtons(panel.buttons);
+			//BottomPanel panel = (BottomPanel)target;
+			//panel.SetButtons(panel.buttons);
 			//panel.SetText(panel.text);
 		}
 	}
 }
 
 
-[CustomEditor(typeof(BladedPanel))]
-public class BladededPanelEditor : Editor
-{
-	private Vector2 lastSizeDelta = new Vector2(float.MinValue, float.MinValue);
-
-	public void OnSceneGUI()
-	{
-		BladedPanel panel = (BladedPanel)target;
-		var rect = panel.GetComponent<RectTransform>();
-		if (rect.sizeDelta != lastSizeDelta)
-		{
-			panel.RecalculateDimensions();
-			lastSizeDelta = rect.sizeDelta;
-		}
-	}
-
-	public override void OnInspectorGUI()
-	{
-		EditorGUI.BeginChangeCheck();
-		base.OnInspectorGUI();
-
-		if (EditorGUI.EndChangeCheck())
-		{
-			BladedPanel panel = (BladedPanel)target;
-			panel.UpdateTitle();
-		}
-	}
-}
-
 [CustomEditor(typeof(ExpandingLabel))]
 public class LabelEditor : Editor
 {
+	private string lastText;
+	ExpandingLabel panel;
+
 	public override void OnInspectorGUI()
 	{
 		EditorGUI.BeginChangeCheck();
 		base.OnInspectorGUI();
-
+		if (panel == null)
+			panel = (ExpandingLabel)target;
 		if (EditorGUI.EndChangeCheck())
 		{
-			ExpandingLabel panel = (ExpandingLabel)target;
+			panel.UpdateText();
+			lastText = panel.text;
+		}
+		else if (panel.text.Length <= 1)
+		{ // textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's "empty"
+		  //Debug.Log("text empty");
 			panel.UpdateText();
 		}
 	}
