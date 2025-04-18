@@ -30,6 +30,7 @@ public class ExpandingLabel : MonoBehaviour
 		set { textLabel.color = value; }
 	}
 
+
 	private void UpdateLabel()
 	{
 		var prefTextSize = textLabel.GetPreferredValues(_titleText);
@@ -39,23 +40,30 @@ public class ExpandingLabel : MonoBehaviour
 		var textHeight = prefTextSize.y; // this should be the preferred height of a single line, right?
 
 		float vertPadding = 0;
-		
+
 
 		if (textWidth < minLabelDimensions.x)
 			textWidth = minLabelDimensions.x;
 		if (textHeight < minLabelDimensions.y)
 			textHeight = minLabelDimensions.y;
 
+		var rect = textLabel.rectTransform;
 		var labelSize = new Vector2(textWidth + horzPadding, textHeight + vertPadding);
 		if (textWidth > maxLabelDimensions.x)
 		{
 			textWidth = maxLabelDimensions.x;
 			textHeight = rendTextSize.y;
-			labelSize.x = rendTextSize.x + horzPadding;
-			labelSize.y = textHeight + textLabel.margin.y + textLabel.margin.w;
+			labelSize.x = textWidth;
+			
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textWidth);
+			textLabel.ForceMeshUpdate();
+			rendTextSize = textLabel.GetRenderedValues();
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rendTextSize.y);
+
+			labelSize.y = rendTextSize.y + textLabel.margin.y + textLabel.margin.w;
 		}
 
-		var rect = textLabel.rectTransform;
+
 		rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textWidth);
 		rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, textHeight);
 		spriteLabel.size = labelSize;
