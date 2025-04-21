@@ -660,7 +660,7 @@ MonoBehaviour:
     - {fileID: 1447067920059341392, guid: 82cea74277a150d49bb74ce7f56f3220, type: 3}
     - {fileID: -5409111006160253343, guid: 2a94cff136caee34685ee9194362bdcd, type: 3}
     - {fileID: 2543343209546206062, guid: 94d90449295ddbd4a92b8145940dc7ff, type: 3}
-    - {fileID: 8305479230968235784, guid: 8d0458933433ae94f93618162440de65, type: 3}
+    - {fileID: 8863955156445476660, guid: 88c11eb1b83b02b47b03279083eeba1c, type: 3}
   uiPrefabs:
     keys: 00000000
     values:
@@ -668,6 +668,7 @@ MonoBehaviour:
   toolTip: {fileID: 1814655480}
   uiCanvas: {fileID: 1090387392}
   contextMenu: {fileID: 1127783705}
+  objectPicker: {fileID: 1089032393}
   cursor: {fileID: 1312120957}
   linePointIndicator: {fileID: 588363695}
   designObjectLayerMask:
@@ -681,6 +682,11 @@ MonoBehaviour:
     m_Bits: 256
   minZoom: -2
   maxZoom: -30
+  scrollMultiplier: 1.1
+  noContextTips:
+  - Use the scroll wheel to zoom in & out
+  - Hold left ctrl with the scroll wheel to scroll the map up and down
+  - Hold left shift with the scroll wheel to scroll the map left and right
   editMode: 0
   hoverObject: {fileID: 0}
   selectedObject: {fileID: 0}
@@ -1437,6 +1443,10 @@ PrefabInstance:
     - target: {fileID: 2265638388633788637, guid: 8ec8aaabf7b67844db4e934f69833c8a, type: 3}
       propertyPath: m_fontSizeMin
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873279162062993997, guid: 8ec8aaabf7b67844db4e934f69833c8a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5122389267145380789, guid: 8ec8aaabf7b67844db4e934f69833c8a, type: 3}
       propertyPath: m_Name

@@ -312,6 +312,7 @@ public class DesignObject : MonoBehaviour
 			}
 		}
 
+		DesignManager.instance.toolTip.SetToolTip(null);
 		selectable.Deselect();
 	}
 

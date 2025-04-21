@@ -107,19 +107,6 @@ public class BottomPanel : MonoBehaviour
 						minDim.x = parentWidth + diff + 1;
 				}
 
-				//if (newSize.y > maxTextBlockSize.y)
-				//{   // set to paging? scrolling? toggle?
-				//	newSize.y = maxTextBlockSize.y;
-				//	tmp.overflowMode = TextOverflowModes.Ellipsis;
-				//	Debug.LogWarning("We need to do something about terribly long text?");
-				//}
-				//else
-				//{
-				//	tmp.overflowMode = TextOverflowModes.Overflow;
-				//}
-
-				//if (newSize.y < singleLineSize.y)
-				//	newSize.y = singleLineSize.y;
 				tmpRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newSize.y);
 				Debug.Log($"prefSize: {preferredSize}\trenderedSize: {renderedSize}\t newSIze: {newSize}"/*\t lines: " + lineCount*/);
 				minDim.y += newSize.y;
@@ -208,5 +195,19 @@ public class BottomPanel : MonoBehaviour
 	{
 		parentPanel.SetDialogResultOK();
 	}
+
+
+	/// <summary>
+	/// Editor script to keep anyone from tampering with the size!
+	/// </summary>
+	public void SetToParentsSize()
+	{
+		parentPanel.UpdatePanel(parentPanel.titleType);
+		var parentRect = parentPanel.GetComponent<RectTransform>();
+
+		var rect = GetComponent<RectTransform>();
+		rect.sizeDelta = new Vector2(0, rect.sizeDelta.y);
+	}
+
 
 }

@@ -14,6 +14,13 @@ public class ToolTip : MonoBehaviour
 
 	public void SetToolTip(List<string> toolTips)
 	{
+		if (toolTips == null || toolTips.Count == 0)
+		{
+			gameObject.SetActive(false);
+			return;
+		}
+
+		gameObject.SetActive(true);
 		var text = "";
 		foreach (var tip in toolTips)
 		{

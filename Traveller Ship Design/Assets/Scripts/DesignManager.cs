@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static CustomCursor;
@@ -57,6 +58,7 @@ public class DesignManager : MonoBehaviour
 	public ToolTip toolTip;
 	[SerializeField] private Canvas uiCanvas;
 	[SerializeField] private UIPanel contextMenu;
+	[SerializeField] private GameObject objectPicker;
 	[SerializeField] private CustomCursor cursor;
 	[SerializeField] private GameObject linePointIndicator;
 
@@ -66,6 +68,15 @@ public class DesignManager : MonoBehaviour
 
 	[SerializeField] private int minZoom = -2;
 	[SerializeField] private int maxZoom = -30;
+	/// <summary>
+	///  scrolling feels weird when the grid doesn't look like it's moving
+	/// </summary>
+	[Tooltip("Scrolling feels weird when the grid doesn't look like it's moving, so don't use a value of 1.")]
+	[Range(0.2f, 3.0f)]
+	[SerializeField] private float scrollMultiplier = 1.1f;
+
+	[SerializeField] List<string> noContextTips;
+	private int nextTip = -1;
 
 	public enum EditMode
 	{
@@ -166,7 +177,8 @@ public class DesignManager : MonoBehaviour
 
 	private void ToggleUI(bool enableUI)
 	{
-		uiCanvas.enabled = enableUI;
+		//uiCanvas.enabled = enableUI;
+		objectPicker.SetActive(enableUI);
 	}
 
 
@@ -199,6 +211,7 @@ public class DesignManager : MonoBehaviour
 			return;
 		}
 
+		//Vector3 worldPos = GetMouseWorldPos();
 		// more ui stuff?
 
 	}
@@ -232,13 +245,13 @@ public class DesignManager : MonoBehaviour
 		{
 			if (Input.GetKey(KeyCode.LeftControl))
 			{
-				var newY = mainCamera.transform.position.y + Input.mouseScrollDelta.y;
+				var newY = mainCamera.transform.position.y + Input.mouseScrollDelta.y * scrollMultiplier; 
 				mainCamera.transform.position = new Vector3(
 					mainCamera.transform.position.x, newY, mainCamera.transform.position.z);
 			}
 			else if (Input.GetKey(KeyCode.LeftShift))
 			{
-				var newX = mainCamera.transform.position.x + Input.mouseScrollDelta.y;
+				var newX = mainCamera.transform.position.x + Input.mouseScrollDelta.y * scrollMultiplier;
 				mainCamera.transform.position = new Vector3(
 					newX, mainCamera.transform.position.y, mainCamera.transform.position.z);
 			}
@@ -416,7 +429,7 @@ public class DesignManager : MonoBehaviour
 						selectedObject.ResetToLastPosition();
 					}
 
-					selectedObject = null;
+					DeselectObject();
 					SetEditMode(EditMode.None);
 				}
 				else
@@ -437,6 +450,15 @@ public class DesignManager : MonoBehaviour
 		if (selectedObject != null)
 			selectedObject.Deselect();
 		selectedObject = null;
+		toolTip.SetToolTip(NextTip());
+	}
+
+
+	private List<string> NextTip()
+	{
+		if (++nextTip >= noContextTips.Count)
+			nextTip = 0;
+		return new List<string> { noContextTips[nextTip] };
 	}
 
 	public enum KeyInput

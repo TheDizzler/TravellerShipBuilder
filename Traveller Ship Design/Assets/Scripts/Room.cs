@@ -129,8 +129,9 @@ public class Room : MonoBehaviour, IMoveable
 	{
 		var panelRect = Instantiate(DesignManager.GetPrefab(UIPrefabType.DynamicPanel));
 		var panel = panelRect.GetComponent<DynamicPanel>();
-		panel.SetTitle("Enter room name", DynamicPanel.TitleLabelType.Bladed);
-		panel.SetButtons(BottomPanel.DialogButton.OKCancel);
+		panel.SetButtons(BottomPanel.DialogButton.OKCancel, false);
+		panel.SetTitle("Enter room name", DynamicPanel.TitleLabelType.BladedBar);
+
 		panel.OnClose += RenameDialogClosed;
 		inputField = panel.AddInputField("Enter new room name", roomLabel.text);
 		DesignManager.ShowDialog(panelRect);

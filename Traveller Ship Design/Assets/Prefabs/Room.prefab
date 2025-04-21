@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1.45, y: 0.48}
+  m_SizeDelta: {x: 2.13, y: 0.48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5362023951835493366
 MonoBehaviour:
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Room #01
+  m_text: New Room #00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_sharedMaterial: {fileID: -5212590573181050906, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
@@ -314,7 +314,7 @@ MonoBehaviour:
   maxLabelDimensions: {x: 3, y: 2.5}
   textLabel: {fileID: 5362023951835493366}
   spriteLabel: {fileID: 7953526653060015414}
-  _titleText: Room #01
+  _titleText: New Room #00
 --- !u!114 &8026879478172826883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,7 +387,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 1.61, y: 0.48}
+  m_Size: {x: 2.2900002, y: 0.48}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -432,7 +432,7 @@ BoxCollider2D:
     border: {x: 0.16, y: 0.16, z: 0.16, w: 0.16}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 3.84, y: 1.28}
-    newSize: {x: 1.61, y: 0.48}
+    newSize: {x: 2.2900002, y: 0.48}
     adaptiveTilingThreshold: 0.5
     drawMode: 2
     adaptiveTiling: 0

@@ -12,6 +12,10 @@ public class ExpandingLabel : MonoBehaviour
 
 	[SerializeField] private string _titleText;
 
+	/// <summary>
+	///  NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's "empty", 
+	///  so the length will NEVER equal zero!
+	/// </summary>
 	public string text
 	{
 		get { return textLabel.text; }
@@ -69,6 +73,10 @@ public class ExpandingLabel : MonoBehaviour
 		spriteLabel.size = labelSize;
 	}
 
+	/// <summary>
+	///  NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's "empty", 
+	///  so the length will NEVER equal zero!
+	/// </summary>
 	public void UpdateText()
 	{
 		text = _titleText;

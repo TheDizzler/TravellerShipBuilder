@@ -12,7 +12,8 @@ public class DynamicPanel : MonoBehaviour
 	{
 		SquareTab,
 		BladedTab,
-		Bladed,
+		BladedBar,
+		Bar,
 	}
 
 	/// <summary>
@@ -22,21 +23,24 @@ public class DynamicPanel : MonoBehaviour
 	{
 		[TitleLabelType.SquareTab] = new Vector4(64, 76, 64, 64),
 		[TitleLabelType.BladedTab] = new Vector4(97, 76, 64, 64),
-		[TitleLabelType.Bladed] = new Vector4(80, 68, 0, 128),
+		[TitleLabelType.BladedBar] = new Vector4(80, 68, 0, 128),
+		[TitleLabelType.Bar] = new Vector4(80, 68, 0, 128),
 	};
 
 	private readonly Dictionary<TitleLabelType, Vector4> titleTextMarginSize = new()
 	{
 		[TitleLabelType.SquareTab] = new Vector4(12, 8, 12, 12),
 		[TitleLabelType.BladedTab] = new Vector4(12, 8, 46, 12),
-		[TitleLabelType.Bladed] = new Vector4(12, 8, 48, 4),
+		[TitleLabelType.BladedBar] = new Vector4(12, 8, 48, 4),
+		[TitleLabelType.Bar] = new Vector4(12, 8, 12, 4),
 	};
 
 	public readonly Dictionary<TitleLabelType, Vector4> bottomPanelPadding = new()
 	{
 		[TitleLabelType.SquareTab] = new Vector4(30, 30, 14, 24),
 		[TitleLabelType.BladedTab] = new Vector4(30, 30, 14, 24),
-		[TitleLabelType.Bladed] = new Vector4(30, 30, 72, 24),
+		[TitleLabelType.BladedBar] = new Vector4(30, 30, 72, 24),
+		[TitleLabelType.Bar] = new Vector4(30, 30, 72, 24),
 	};
 
 
@@ -47,10 +51,11 @@ public class DynamicPanel : MonoBehaviour
 	{
 		[TitleLabelType.SquareTab] = new Vector2(128, 64),
 		[TitleLabelType.BladedTab] = new Vector2(128, 64),
-		[TitleLabelType.Bladed] = new Vector2(128, 128),
+		[TitleLabelType.BladedBar] = new Vector2(128, 128),
+		[TitleLabelType.Bar] = new Vector2(128, 128),
 	};
 
-	public TitleLabelType titleType = TitleLabelType.Bladed;
+	public TitleLabelType titleType = TitleLabelType.BladedBar;
 	public DialogButton buttons;
 	public DialogResult result;
 	public UnityAction<DynamicPanel> OnClose;
@@ -64,8 +69,9 @@ public class DynamicPanel : MonoBehaviour
 	[SerializeField] private Image titleImage;
 	[SerializeField] private Image panelImage;
 	[SerializeField] private Sprite squareTabSprite;
-	[SerializeField] private Sprite bladeTabSprite;
-	[SerializeField] private Sprite bladeSprite;
+	[SerializeField] private Sprite bladedTabSprite;
+	[SerializeField] private Sprite bladedBarSprite;
+	[SerializeField] private Sprite barSprite;
 
 
 	public string titleText
@@ -93,43 +99,61 @@ public class DynamicPanel : MonoBehaviour
 		return inputField;
 	}
 
+	/// <summary>
+	/// TODO(Tristan): Enable designer toggle to auto-shrink width of panel to min size.
+	/// </summary>
 	public void RecalculateDimensions()
 	{
 		var rect = GetComponent<RectTransform>();
 		// calculate child panel perfered sizes
 		var dialog = bottomPanel.GetComponent<BottomPanel>();
 		var minDim = dialog.GetMinDimensions();
-		var titleWidth = CalculateAndSetTitleWidth();
-		var minBottomDimensions = minDimensions[titleType];
-		var minWidthWithTitle = titleWidth + (minBottomDimensions.x - minTabSize[titleType].x);
-		if (minDim.x < minWidthWithTitle)
-			minDim.x = minWidthWithTitle;
-		if (minDim.x < minBottomDimensions.x)
-			minDim.x = minBottomDimensions.x;
-		if (minDim.y < minBottomDimensions.y)
-			minDim.y = minBottomDimensions.y;
-		var size = rect.sizeDelta;
-		size.y = minDim.y;
+		float titleWidth = titleTMP.GetPreferredValues(titleText).x;
+		Vector2 size = rect.sizeDelta;
+		if (titleType == TitleLabelType.Bar)
+		{
+			if (titleWidth < minDim.x)
+				titleWidth = minDim.x;
+			if (titleWidth < minTabSize[titleType].x)
+				titleWidth = minTabSize[titleType].x;
 
-		if (size.x < minDim.x)
-			size.x = minDim.x;
+			size.x = titleWidth;
 
+			var minBottomDimensions = minDimensions[titleType];
+
+			if (minDim.y < minBottomDimensions.y)
+				minDim.y = minBottomDimensions.y;
+			size.y = minDim.y;
+		}
+		else
+		{
+
+			if (titleWidth < minTabSize[titleType].x)
+				titleWidth = minTabSize[titleType].x;
+
+			var minBottomDimensions = minDimensions[titleType];
+			var minWidthWithTitle = titleWidth + (minBottomDimensions.x - minTabSize[titleType].x);
+			if (minDim.x < minWidthWithTitle)
+				minDim.x = minWidthWithTitle;
+			if (minDim.x < minBottomDimensions.x)
+				minDim.x = minBottomDimensions.x;
+			if (minDim.y < minBottomDimensions.y)
+				minDim.y = minBottomDimensions.y;
+
+			size.y = minDim.y;
+
+			if (size.x < minDim.x)
+				size.x = minDim.x;
+		}
+
+		//Debug.Log("Min dim: " + minDim);
+		topPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, titleWidth);
+		titleTMP.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, titleWidth);
 		rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
 		// the bottom height can be adjusted through the bottom panel's layout.bottom
 		bottomPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
 	}
 
-	private float CalculateAndSetTitleWidth()
-	{
-		var textWidth = titleTMP.GetPreferredValues(titleText).x;
-		if (textWidth < minTabSize[titleType].x)
-			textWidth = minTabSize[titleType].x;
-
-		topPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textWidth);
-		titleTMP.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textWidth);
-
-		return textWidth;
-	}
 
 	public void UpdateTitle()
 	{
@@ -138,6 +162,7 @@ public class DynamicPanel : MonoBehaviour
 
 	public void UpdatePanel(TitleLabelType newTitleType)
 	{
+		SetButtons(buttons, false);
 		titleType = newTitleType;
 
 		switch (titleType)
@@ -150,13 +175,19 @@ public class DynamicPanel : MonoBehaviour
 
 			case TitleLabelType.BladedTab:
 			{
-				titleImage.sprite = bladeTabSprite;
+				titleImage.sprite = bladedTabSprite;
 			}
 			break;
 
-			case TitleLabelType.Bladed:
+			case TitleLabelType.BladedBar:
 			{
-				titleImage.sprite = bladeSprite;
+				titleImage.sprite = bladedBarSprite;
+			}
+			break;
+
+			case TitleLabelType.Bar:
+			{
+				titleImage.sprite = barSprite;
 			}
 			break;
 		}
@@ -173,14 +204,16 @@ public class DynamicPanel : MonoBehaviour
 		//bottomPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tabSize.z);
 
 		bottomPanel.GetComponent<VerticalLayoutGroup>().padding.top = (int)bottomPanelPadding[titleType].z;
-		RecalculateDimensions();
+
+		UpdateTitle();
 	}
 
 
-	public void SetButtons(DialogButton buttons)
+	public void SetButtons(DialogButton buttons, bool recalculateDimensions)
 	{
 		bottomPanel.GetComponent<BottomPanel>().SetButtons(buttons);
-		RecalculateDimensions();
+		if (recalculateDimensions)
+			RecalculateDimensions();
 	}
 
 
