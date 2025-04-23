@@ -108,8 +108,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5ac2d81a4147ab3488a58cabc4d75e39, type: 3}
-  m_Type: 2
+  m_Sprite: {fileID: 21300000, guid: 1032f322c761dcb4ba3f9a728db6a540, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -277,7 +277,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1926224731262590107
 RectTransform:
   m_ObjectHideFlags: 0
@@ -293,9 +293,9 @@ RectTransform:
   - {fileID: 2944824287466257535}
   m_Father: {fileID: 4863003434892055543}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 225, y: -15}
   m_SizeDelta: {x: 125, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3872536227788470435
@@ -410,7 +410,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3024676919120185891
 RectTransform:
   m_ObjectHideFlags: 0
@@ -426,9 +426,9 @@ RectTransform:
   - {fileID: 2537356990621076523}
   m_Father: {fileID: 4863003434892055543}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 71, y: -15}
   m_SizeDelta: {x: 125, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6183880116317747301
@@ -698,7 +698,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 510, y: 68}
+  m_SizeDelta: {x: 259.78, y: 68}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4424288148532533865
 MonoBehaviour:
@@ -720,7 +720,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 51af5537bc2208544aa205467cd9f58f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2b099bf690b015d4cacb0ab82301b56b, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -874,7 +874,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5993055112963436789}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -1059,7 +1059,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &783536865570625219
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1075,9 +1075,9 @@ RectTransform:
   - {fileID: 8135163778590228668}
   m_Father: {fileID: 4863003434892055543}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 81.89, y: -15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 125, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1379457080762964290
@@ -1212,7 +1212,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 510, y: 128}
+  m_SizeDelta: {x: 360, y: 66.1684}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4861774239738029996
 MonoBehaviour:
@@ -1226,8 +1226,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb5af0c75eff38b49a337df0887e7df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  titleType: 3
-  buttons: 3
+  titleSprites:
+    keys: 0000000001000000020000000300000004000000
+    values:
+    - {fileID: 21300000, guid: 6894292793525a24fa59fd8deb1d217d, type: 3}
+    - {fileID: 21300000, guid: c4a42705b25ff254c94ec28ac9d51f9d, type: 3}
+    - {fileID: 21300000, guid: 2b099bf690b015d4cacb0ab82301b56b, type: 3}
+    - {fileID: 21300000, guid: 51af5537bc2208544aa205467cd9f58f, type: 3}
+    - {fileID: 0}
+  panelSprites:
+    keys: 00000000020000000100000003000000040000000500000006000000
+    values:
+    - {fileID: 21300000, guid: 5ac2d81a4147ab3488a58cabc4d75e39, type: 3}
+    - {fileID: 21300000, guid: 64f90caa074d7784681470dff05a78fd, type: 3}
+    - {fileID: 21300000, guid: 8d2a9c7a5c887bf45b947d6445d62561, type: 3}
+    - {fileID: 21300000, guid: 874647bf55c41114b86afa32925f0a46, type: 3}
+    - {fileID: 21300000, guid: 1032f322c761dcb4ba3f9a728db6a540, type: 3}
+    - {fileID: 21300000, guid: e62e5ed1b68a78749b14202b82b2522e, type: 3}
+    - {fileID: 21300000, guid: e6e949acc92e32044ba1efbc86825b9e, type: 3}
+  titleType: 2
+  panelType: 4
+  buttons: 2
   result: 0
   _titleText: Traveller!
   titleTMP: {fileID: 6903943988042537401}
@@ -1235,10 +1254,6 @@ MonoBehaviour:
   bottomPanel: {fileID: 536658069957609326}
   titleImage: {fileID: 4424288148532533865}
   panelImage: {fileID: 6852324341159985271}
-  squareTabSprite: {fileID: 21300000, guid: 6894292793525a24fa59fd8deb1d217d, type: 3}
-  bladedTabSprite: {fileID: 21300000, guid: c4a42705b25ff254c94ec28ac9d51f9d, type: 3}
-  bladedBarSprite: {fileID: 21300000, guid: 2b099bf690b015d4cacb0ab82301b56b, type: 3}
-  barSprite: {fileID: 21300000, guid: 51af5537bc2208544aa205467cd9f58f, type: 3}
 --- !u!114 &1898654287109470755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1251,7 +1266,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rect: {fileID: 7465219498174066458}
   isModal: 1
   isMoveable: 1
   isSelectable: 1
@@ -1303,7 +1317,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 510, y: 68}
+  m_SizeDelta: {x: 259.78, y: 68}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6903943988042537401
 MonoBehaviour:
@@ -1390,7 +1404,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 12, y: 8, z: 12, w: 4}
+  m_margin: {x: 12, y: 8, z: 48, w: 4}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

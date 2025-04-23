@@ -14,7 +14,24 @@ public class DynamicPanel : MonoBehaviour
 		BladedTab,
 		BladedBar,
 		Bar,
+		None,
 	}
+
+	public enum BottomPanelType
+	{
+		Bolted,
+		Square,
+		RedSquare,
+		Notched_BottomRight,
+		Notched_BottomLeft,
+		Notched_TopLeft,
+		Notched_TopRight,
+	}
+
+	[UDictionary.Split(50, 50)]
+	[SerializeField] private UDictionary<TitleLabelType, Sprite> titleSprites;
+	[UDictionary.Split(50, 50)]
+	[SerializeField] private UDictionary<BottomPanelType, Sprite> panelSprites;
 
 	/// <summary>
 	/// Tab width, height, bottom panel y offset, bottom panel min height
@@ -25,6 +42,7 @@ public class DynamicPanel : MonoBehaviour
 		[TitleLabelType.BladedTab] = new Vector4(97, 76, 64, 64),
 		[TitleLabelType.BladedBar] = new Vector4(80, 68, 0, 128),
 		[TitleLabelType.Bar] = new Vector4(80, 68, 0, 128),
+		[TitleLabelType.None] = new Vector4(0, 0, 0, 128),
 	};
 
 	private readonly Dictionary<TitleLabelType, Vector4> titleTextMarginSize = new()
@@ -33,6 +51,7 @@ public class DynamicPanel : MonoBehaviour
 		[TitleLabelType.BladedTab] = new Vector4(12, 8, 46, 12),
 		[TitleLabelType.BladedBar] = new Vector4(12, 8, 48, 4),
 		[TitleLabelType.Bar] = new Vector4(12, 8, 12, 4),
+		[TitleLabelType.None] = Vector4.zero,
 	};
 
 	public readonly Dictionary<TitleLabelType, Vector4> bottomPanelPadding = new()
@@ -41,6 +60,7 @@ public class DynamicPanel : MonoBehaviour
 		[TitleLabelType.BladedTab] = new Vector4(30, 30, 14, 24),
 		[TitleLabelType.BladedBar] = new Vector4(30, 30, 72, 24),
 		[TitleLabelType.Bar] = new Vector4(30, 30, 72, 24),
+		[TitleLabelType.None] = new Vector4(30, 30, 17, 24),
 	};
 
 
@@ -53,9 +73,12 @@ public class DynamicPanel : MonoBehaviour
 		[TitleLabelType.BladedTab] = new Vector2(128, 64),
 		[TitleLabelType.BladedBar] = new Vector2(128, 128),
 		[TitleLabelType.Bar] = new Vector2(128, 128),
+		[TitleLabelType.None] = new Vector2(64, 64),
 	};
 
 	public TitleLabelType titleType = TitleLabelType.BladedBar;
+	public BottomPanelType panelType = BottomPanelType.Bolted;
+
 	public DialogButton buttons;
 	public DialogResult result;
 	public UnityAction<DynamicPanel> OnClose;
@@ -68,10 +91,6 @@ public class DynamicPanel : MonoBehaviour
 
 	[SerializeField] private Image titleImage;
 	[SerializeField] private Image panelImage;
-	[SerializeField] private Sprite squareTabSprite;
-	[SerializeField] private Sprite bladedTabSprite;
-	[SerializeField] private Sprite bladedBarSprite;
-	[SerializeField] private Sprite barSprite;
 
 
 	public string titleText
@@ -110,7 +129,8 @@ public class DynamicPanel : MonoBehaviour
 		var minDim = dialog.GetMinDimensions();
 		float titleWidth = titleTMP.GetPreferredValues(titleText).x;
 		Vector2 size = rect.sizeDelta;
-		if (titleType == TitleLabelType.Bar)
+		if (titleType == TitleLabelType.Bar
+			|| titleType == TitleLabelType.None)
 		{
 			if (titleWidth < minDim.x)
 				titleWidth = minDim.x;
@@ -127,7 +147,6 @@ public class DynamicPanel : MonoBehaviour
 		}
 		else
 		{
-
 			if (titleWidth < minTabSize[titleType].x)
 				titleWidth = minTabSize[titleType].x;
 
@@ -165,32 +184,20 @@ public class DynamicPanel : MonoBehaviour
 		SetButtons(buttons, false);
 		titleType = newTitleType;
 
-		switch (titleType)
+		Sprite tabSprite = titleSprites[titleType];
+		Sprite panelSprite = panelSprites[panelType];
+
+		if (tabSprite == null)
 		{
-			case TitleLabelType.SquareTab:
-			{
-				titleImage.sprite = squareTabSprite;
-			}
-			break;
-
-			case TitleLabelType.BladedTab:
-			{
-				titleImage.sprite = bladedTabSprite;
-			}
-			break;
-
-			case TitleLabelType.BladedBar:
-			{
-				titleImage.sprite = bladedBarSprite;
-			}
-			break;
-
-			case TitleLabelType.Bar:
-			{
-				titleImage.sprite = barSprite;
-			}
-			break;
+			titleImage.gameObject.SetActive(false);
 		}
+		else
+		{
+			titleImage.gameObject.SetActive(true);
+			titleImage.sprite = tabSprite;
+		}
+
+		panelImage.sprite = panelSprite;
 
 		var tabSize = minTabSize[titleType];
 		topPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, tabSize.x);
@@ -200,9 +207,6 @@ public class DynamicPanel : MonoBehaviour
 		titleTMP.margin = titleTextMarginSize[titleType];
 
 		bottomPanel.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, tabSize.z, tabSize.w);
-		//bottomPanel.SetInsetAndSizeFromParentEdge(
-		//bottomPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tabSize.z);
-
 		bottomPanel.GetComponent<VerticalLayoutGroup>().padding.top = (int)bottomPanelPadding[titleType].z;
 
 		UpdateTitle();

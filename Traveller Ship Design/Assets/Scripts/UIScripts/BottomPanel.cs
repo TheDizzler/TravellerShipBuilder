@@ -31,6 +31,9 @@ public class BottomPanel : MonoBehaviour
 		Text,
 		InputField,
 		Image,
+		// toggle,
+		// slidder,
+		// dropdown
 	}
 
 	public class PanelObject
@@ -115,10 +118,11 @@ public class BottomPanel : MonoBehaviour
 
 		minDim.y += layout.spacing * (activeChildren - 1);
 		minDim.x += layout.padding.left + layout.padding.right;
-		Debug.Log(minDim);
+		//Debug.Log(minDim);
 		return minDim;
 	}
 
+	//public void AddImage()
 
 	public void SetButtons(DialogButton buttons)
 	{
@@ -167,6 +171,7 @@ public class BottomPanel : MonoBehaviour
 			break;
 		}
 
+		//parentPanel.RecalculateDimensions();
 	}
 
 	public void AddText(string text)

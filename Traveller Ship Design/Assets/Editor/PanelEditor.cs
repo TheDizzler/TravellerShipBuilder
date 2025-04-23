@@ -38,22 +38,36 @@ public class BottomPanelEditor : Editor
 [CustomEditor(typeof(ExpandingLabel))]
 public class LabelEditor : Editor
 {
-	private string lastText;
-	ExpandingLabel panel;
-
 	public override void OnInspectorGUI()
 	{
 		EditorGUI.BeginChangeCheck();
 		base.OnInspectorGUI();
-		if (panel == null)
-			panel = (ExpandingLabel)target;
+
 		if (EditorGUI.EndChangeCheck())
 		{
+			var panel = (ExpandingLabel)target;
 			panel.UpdateText();
-			lastText = panel.text;
 		}
 	}
 }
+
+
+[CustomEditor(typeof(UIExpandingLabel))]
+public class UILabelEditor : Editor
+{
+	public override void OnInspectorGUI()
+	{
+		EditorGUI.BeginChangeCheck();
+		base.OnInspectorGUI();
+
+		if (EditorGUI.EndChangeCheck())
+		{
+			var panel = (UIExpandingLabel)target;
+			panel.UpdateText();
+		}
+	}
+}
+
 
 
 [CustomEditor(typeof(DialogPanel))]

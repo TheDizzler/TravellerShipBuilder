@@ -6,7 +6,17 @@ using UnityEngine.UI;
 
 public class UIDesignObject : MonoBehaviour
 {
-	public RectTransform rect;
+
+	private RectTransform _rect;
+	public RectTransform rect
+	{
+		get
+		{
+			if (_rect == null)
+				_rect = GetComponent<RectTransform>();
+			return _rect;
+		}
+	}
 
 	//public bool isHoverable = false;
 	public bool isModal = false;

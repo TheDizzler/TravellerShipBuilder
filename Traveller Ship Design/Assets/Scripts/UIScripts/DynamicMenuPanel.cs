@@ -8,13 +8,13 @@ using UnityEngine.UI;
 using static DesignManager;
 
 
-public class UIPanel : MonoBehaviour
+public class UIPanel : MonoBehaviour, IUIBehavior
 {
-	[SerializeField] private Button buttonPrefab;
-	[SerializeField] private GameObject dividerPrefab;
+	//[SerializeField] private Button buttonPrefab;
+	//[SerializeField] private GameObject dividerPrefab;
 	[SerializeField] private int panelMinHeight = 58;
 
-	[SerializeField] private List<GameObject> items;
+	[SerializeField] private List<UIDesignObject> items;
 
 	private RectTransform _transRect;
 	private RectTransform transRect
@@ -38,6 +38,7 @@ public class UIPanel : MonoBehaviour
 		}
 	}
 
+	public UIDesignObject designObject { get; }
 
 	void Start()
 	{
@@ -129,7 +130,7 @@ public class UIPanel : MonoBehaviour
 			Debug.LogError("A divider may not be the first item in a context menu");
 		}
 
-		var divider = Instantiate(dividerPrefab, transform);
+		var divider = Instantiate(DesignManager.GetPrefab(UIPrefabType.MenuDivider), transform);
 
 		items.Add(divider);
 		var dividerRect = divider.GetComponent<RectTransform>();
@@ -139,11 +140,12 @@ public class UIPanel : MonoBehaviour
 	private void AddMenuItem(DesignAction clickAction, string buttonText)
 	{
 		clickAction += ClosePanel;
-		var menuItem = Instantiate(buttonPrefab, transform);
-		menuItem.onClick.AddListener(clickAction.action);
+		var menuItem = Instantiate(DesignManager.GetPrefab(UIPrefabType.MenuItemButton), transform);
+
+		menuItem.GetComponent<Button>().onClick.AddListener(clickAction.action);
 		menuItem.GetComponentInChildren<TextMeshProUGUI>().text = buttonText;
 
-		items.Add(menuItem.gameObject);
+		items.Add(menuItem);
 
 		var itemRect = menuItem.GetComponent<RectTransform>();
 		float growBy = itemRect.sizeDelta.y;
@@ -152,5 +154,40 @@ public class UIPanel : MonoBehaviour
 		else
 			growBy += layout.spacing;
 		transRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, transRect.sizeDelta.y + growBy);
+	}
+
+	public void MouseDrag(Vector2 screenPosition)
+	{
+		throw new NotImplementedException();
+	}
+
+	public bool IsDragging()
+	{
+		throw new NotImplementedException();
+	}
+
+	public void EndDrag(Vector2 pos)
+	{
+		throw new NotImplementedException();
+	}
+
+	public void ResetToLastPosition()
+	{
+		throw new NotImplementedException();
+	}
+
+	public DesignObject Select()
+	{
+		throw new NotImplementedException();
+	}
+
+	public void Deselect()
+	{
+		throw new NotImplementedException();
+	}
+
+	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+	{
+		throw new NotImplementedException();
 	}
 }
