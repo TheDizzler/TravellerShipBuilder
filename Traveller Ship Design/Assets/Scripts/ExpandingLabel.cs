@@ -38,7 +38,6 @@ public class ExpandingLabel : MonoBehaviour
 	private void UpdateLabel()
 	{
 		var prefTextSize = textLabel.GetPreferredValues(_titleText);
-		var rendTextSize = textLabel.GetRenderedValues();
 		var horzPadding = textLabel.margin.x + textLabel.margin.z;
 		var textWidth = prefTextSize.x;
 		var textHeight = prefTextSize.y; // this should be the preferred height of a single line, right?
@@ -55,10 +54,11 @@ public class ExpandingLabel : MonoBehaviour
 		var labelSize = new Vector2(textWidth + horzPadding, textHeight + vertPadding);
 		if (textWidth > maxLabelDimensions.x)
 		{
+			var rendTextSize = textLabel.GetRenderedValues();
 			textWidth = maxLabelDimensions.x;
 			textHeight = rendTextSize.y;
 			labelSize.x = textWidth;
-			
+
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textWidth);
 			textLabel.ForceMeshUpdate();
 			rendTextSize = textLabel.GetRenderedValues();

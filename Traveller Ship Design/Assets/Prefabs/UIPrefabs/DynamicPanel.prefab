@@ -672,6 +672,7 @@ GameObject:
   - component: {fileID: 2568309614081001759}
   - component: {fileID: 4424288148532533865}
   - component: {fileID: 6150541236856810287}
+  - component: {fileID: 547066619828829163}
   m_Layer: 5
   m_Name: TopPanel
   m_TagString: Untagged
@@ -737,6 +738,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5413126226455986573}
   m_CullTransparentMesh: 1
+--- !u!114 &547066619828829163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5413126226455986573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 13
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4861774239738029996}
+          m_TargetAssemblyTypeName: DynamicPanel, Assembly-CSharp
+          m_MethodName: BeginDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4861774239738029996}
+          m_TargetAssemblyTypeName: DynamicPanel, Assembly-CSharp
+          m_MethodName: EndDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 5
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4861774239738029996}
+          m_TargetAssemblyTypeName: DynamicPanel, Assembly-CSharp
+          m_MethodName: Drag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &5993055112963436789
 GameObject:
   m_ObjectHideFlags: 0
@@ -1122,6 +1184,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7465219498174066458}
   - component: {fileID: 4861774239738029996}
+  - component: {fileID: 1898654287109470755}
+  - component: {fileID: 7028179022843950894}
   m_Layer: 5
   m_Name: DynamicPanel
   m_TagString: Untagged
@@ -1175,6 +1239,35 @@ MonoBehaviour:
   bladedTabSprite: {fileID: 21300000, guid: c4a42705b25ff254c94ec28ac9d51f9d, type: 3}
   bladedBarSprite: {fileID: 21300000, guid: 2b099bf690b015d4cacb0ab82301b56b, type: 3}
   barSprite: {fileID: 21300000, guid: 51af5537bc2208544aa205467cd9f58f, type: 3}
+--- !u!114 &1898654287109470755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8223278145283361312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rect: {fileID: 7465219498174066458}
+  isModal: 1
+  isMoveable: 1
+  isSelectable: 1
+  tooltip: []
+--- !u!114 &7028179022843950894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8223278145283361312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe9b77780cd6634091d0e8fe0464eec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8323344097758685840
 GameObject:
   m_ObjectHideFlags: 0
