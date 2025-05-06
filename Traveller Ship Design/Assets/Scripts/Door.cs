@@ -216,7 +216,6 @@ public class Door : MonoBehaviour, IMoveable, IHoverable, ICreateable, IInteract
 	/// <param name="worldPos"></param>
 	private void LockDoorToWallSegment(GameObject doorCursor, WallSegmentCollider wallCollider, Vector2 worldPos)
 	{
-		//Debug.Log("Locking");
 		var wallRot = wallCollider.transform.rotation;
 		var selectedWall = wallCollider.GetComponentInParent<Wall>();
 

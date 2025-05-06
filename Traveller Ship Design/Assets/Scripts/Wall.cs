@@ -264,7 +264,11 @@ public class Wall : MonoBehaviour, /*IHoverable,*/ /*ISelectable,*/ IMoveable
 		if (cntrlPntIndex < colliders.Count)
 		{
 			var wallSegCollider = colliders[cntrlPntIndex];
-			var stationaryPoint = controlPoints[cntrlPntIndex + 1].transform.position;
+			Vector3 stationaryPoint;
+			if (cntrlPntIndex >= controlPoints.Count - 1)
+				stationaryPoint = controlPoints[0].transform.position;
+			else
+				stationaryPoint = controlPoints[cntrlPntIndex + 1].transform.position;
 
 			wallSegCollider.UpdatePosition(stationaryPoint, movingPointPos);
 		}
@@ -379,6 +383,26 @@ public class Wall : MonoBehaviour, /*IHoverable,*/ /*ISelectable,*/ IMoveable
 		door.UnbindWall();
 	}
 
+	public bool IsLooped()
+	{
+		return lineRenderer.loop;
+	}
+
+	public void ConnectEndPoints()
+	{
+		lineRenderer.loop = true;
+		CreateCollider(lineRenderer.GetPosition(0), lineRenderer.GetPosition(lineRenderer.positionCount - 1), lineRenderer.positionCount - 1);
+	}
+
+	public void DisconnectEndPoints()
+	{
+		var doorsCopy = new List<Door>(doors);
+		foreach (var door in doorsCopy)
+			if (door.WallSegmentIndex == lineRenderer.positionCount - 1)
+				UnbindDoor(door);
+		RemoveCollider(lineRenderer.positionCount - 1);
+		lineRenderer.loop = false;
+	}
 
 	public void ConvertToRoom()
 	{
@@ -639,6 +663,27 @@ public class Wall : MonoBehaviour, /*IHoverable,*/ /*ISelectable,*/ IMoveable
 		VerifyIndexOrder(colliders);
 	}
 
+	private void RemoveCollider(int colliderIndex)
+	{
+		var oldCollider = colliders[colliderIndex].gameObject;
+		if (colliders[colliderIndex].index != colliderIndex)
+			throw new Exception("Index mismatch!");
+		if (oldCollider.transform.childCount > 0)
+			throw new Exception("Remove all doors attached to a collider before destroying it!");
+		Destroy(oldCollider);
+		colliders.RemoveAt(colliderIndex);
+		--colliders.Capacity;
+
+		for (int i = colliderIndex; i < colliders.Count; ++i)
+		{
+			--colliders[i].index;
+			if (colliders[i].index != i)
+				throw new Exception("Index mismatch!");
+		}
+
+		VerifyIndexOrder(colliders);
+	}
+
 	private static void VerifyIndexOrder(List<WallControlPoint> controlPoints)
 	{
 		for (int i = 0; i < controlPoints.Count; ++i)
@@ -669,8 +714,18 @@ public class Wall : MonoBehaviour, /*IHoverable,*/ /*ISelectable,*/ IMoveable
 	{
 		var points = new Vector3[lineRenderer.positionCount];
 		lineRenderer.GetPositions(points);
-		lineStart = points[segmentIndex];
-		lineEnd = points[segmentIndex + 1];
+		if (segmentIndex >= lineRenderer.positionCount - 1)
+		{
+			if (!IsLooped())
+				Debug.LogException(new Exception($"Invalid wall segment index of {segmentIndex}"));
+			lineStart = points[segmentIndex];
+			lineEnd = points[0];
+		}
+		else
+		{
+			lineStart = points[segmentIndex];
+			lineEnd = points[segmentIndex + 1];
+		}
 
 		var line = lineEnd - lineStart;
 		var length = line.magnitude;
@@ -690,14 +745,8 @@ public class Wall : MonoBehaviour, /*IHoverable,*/ /*ISelectable,*/ IMoveable
 
 		for (int i = 0; i < lineRendererPoints.Length - 1; ++i)
 		{
-			var origin = lineRendererPoints[i];
-			var line = lineRendererPoints[i + 1] - origin;
-			var length = line.magnitude;
-			var dir = line.normalized;
-			var lhs = mousePos - origin;
-			float dotP = Vector2.Dot(lhs, dir);
-			var nearest = origin + dir * dotP;
-			var t = dotP / length;
+			GetDistanceToNearestPointOnLine(lineRendererPoints[i], lineRendererPoints[i + 1],
+				mousePos, out float t, out Vector3 nearest);
 			if (t < 0 || t > 1)
 				continue;
 			var dist = Vector2.Distance(nearest, mousePos);
@@ -709,28 +758,35 @@ public class Wall : MonoBehaviour, /*IHoverable,*/ /*ISelectable,*/ IMoveable
 			}
 		}
 
+		if (IsLooped())
+		{
+			GetDistanceToNearestPointOnLine(lineRendererPoints[lineRendererPoints.Length - 1],
+				lineRendererPoints[0], mousePos, out float t, out Vector3 nearest);
+			if (t > 0 && t < 1)
+			{
+				var dist = Vector2.Distance(nearest, mousePos);
+				if (dist < shortestDistance)
+				{
+					shortestDistance = dist;
+					nearestLineIndex = lineRendererPoints.Length;
+					nearestPoint = nearest;
+				}
+			}
+		}
+
 		return nearestLineIndex != -1;
 	}
 
-	private void RemoveCollider(int colliderIndex)
+	private void GetDistanceToNearestPointOnLine(Vector3 lineStart, Vector3 lineEnd, Vector3 pointOfInterest, out float t, out Vector3 nearestPointOnLine)
 	{
-		var oldCollider = colliders[colliderIndex].gameObject;
-		if (colliders[colliderIndex].index != colliderIndex)
-			throw new Exception("Index mismatch!");
-		if (oldCollider.transform.childCount > 0)
-			throw new Exception("Remove all doors attached to a collider before destroying it!");
-		Destroy(oldCollider);
-		colliders.RemoveAt(colliderIndex);
-		--colliders.Capacity;
-
-		for (int i = colliderIndex; i < colliders.Count; ++i)
-		{
-			--colliders[i].index;
-			if (colliders[i].index != i)
-				throw new Exception("Index mismatch!");
-		}
-
-		VerifyIndexOrder(colliders);
+		var origin = lineStart;
+		var line = lineEnd - origin;
+		var length = line.magnitude;
+		var dir = line.normalized;
+		var lhs = pointOfInterest - origin;
+		float dotP = Vector2.Dot(lhs, dir);
+		nearestPointOnLine = origin + dir * dotP;
+		t = dotP / length;
 	}
 
 	private float[] GetSegmentLengths(Vector3[] points)

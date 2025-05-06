@@ -173,7 +173,7 @@ public class WallControlPoint : MonoBehaviour, IMoveable, IHoverable, ICreateabl
 
 		if ((keyInput & KeyInput.Ctrl) == KeyInput.Ctrl && wall.IsEndControlPoint(this))
 		{
-			var newCtrlPnt = wall.AddControlPointToEnd(worldPos, 
+			var newCtrlPnt = wall.AddControlPointToEnd(worldPos,
 				index, ref currentlySelectedObject, ref editMode);
 			newCtrlPnt.StartDrag();
 		}
@@ -194,6 +194,18 @@ public class WallControlPoint : MonoBehaviour, IMoveable, IHoverable, ICreateabl
 		actionDict.Add("Create Room", createRoomAction);
 
 		actionDict.Add("divider", null);
+
+		DesignAction loopAction = new DesignAction(EditMode.None);
+		if (!wall.IsLooped())
+		{
+			loopAction += wall.ConnectEndPoints;
+			actionDict.Add("Connect End Points", loopAction);
+		}
+		else
+		{
+			loopAction += wall.DisconnectEndPoints;
+			actionDict.Add("Disconnect End Points", loopAction);
+		}
 
 		DesignAction deleteAction = new DesignAction(EditMode.None);
 		deleteAction += Delete;
