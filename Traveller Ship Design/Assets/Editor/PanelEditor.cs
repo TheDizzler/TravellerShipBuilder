@@ -16,7 +16,7 @@ public class DynamicPanelEditor : Editor
 		if (EditorGUI.EndChangeCheck())
 		{
 			DynamicPanel panel = (DynamicPanel)target;
-			panel.UpdatePanel(panel.titleType);
+			panel.Refresh();
 		}
 	}
 }

@@ -18,14 +18,11 @@ public class UIDesignObject : MonoBehaviour
 		}
 	}
 
-	//public bool isHoverable = false;
 	public bool isModal = false;
 	public bool isMoveable = false;
 	public bool isSelectable = false;
+	public bool hasCustomDimensions = false;
 	private IUIBehavior uiBehavior;
-
-	//public bool isCreateable = false;
-	//public bool isInteractable = false;
 
 
 	public List<string> tooltip;
@@ -35,25 +32,18 @@ public class UIDesignObject : MonoBehaviour
 		SearchForDesignObjects();
 	}
 
-	public void MouseDrag(Vector2 pos)
+	public Vector2 GetMinDimensions()
 	{
-		if (isMoveable)
+		if (hasCustomDimensions)
 		{
 			if (uiBehavior == null)
 				SearchForDesignObjects();
-			uiBehavior.MouseDrag(pos);
+			return uiBehavior.GetMinDimensions();
 		}
+
+		return GetComponent<RectTransform>().sizeDelta;
 	}
 
-	public void EndDrag(Vector2 pos)
-	{
-		if (isMoveable)
-		{
-			if (uiBehavior == null)
-				SearchForDesignObjects();
-			uiBehavior.EndDrag(pos);
-		}
-	}
 
 	public void ResetToLastPosition()
 	{
@@ -65,7 +55,7 @@ public class UIDesignObject : MonoBehaviour
 		}
 	}
 
-	public DesignObject Select()
+	public UIDesignObject Select()
 	{
 		if (isSelectable)
 		{

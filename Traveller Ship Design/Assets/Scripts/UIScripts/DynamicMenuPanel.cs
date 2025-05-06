@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using static DesignManager;
 
-
+[Obsolete("Delete this")]
 public class UIPanel : MonoBehaviour, IUIBehavior
 {
 	//[SerializeField] private Button buttonPrefab;
@@ -76,7 +76,7 @@ public class UIPanel : MonoBehaviour, IUIBehavior
 
 		++num;
 
-		SetContextMenu(dict);
+		SetContextMenuActions(dict);
 	}
 
 	/// <summary>
@@ -89,7 +89,7 @@ public class UIPanel : MonoBehaviour, IUIBehavior
 	/// action += delegate {// some code here};</c>
 	/// </summary>
 	/// <param name="clickActions"></param>
-	public void SetContextMenu(Dictionary<string, DesignAction> clickActions)
+	public void SetContextMenuActions(Dictionary<string, DesignAction> clickActions)
 	{
 		foreach (var action in clickActions)
 		{
@@ -156,27 +156,13 @@ public class UIPanel : MonoBehaviour, IUIBehavior
 		transRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, transRect.sizeDelta.y + growBy);
 	}
 
-	public void MouseDrag(Vector2 screenPosition)
-	{
-		throw new NotImplementedException();
-	}
-
-	public bool IsDragging()
-	{
-		throw new NotImplementedException();
-	}
-
-	public void EndDrag(Vector2 pos)
-	{
-		throw new NotImplementedException();
-	}
 
 	public void ResetToLastPosition()
 	{
 		throw new NotImplementedException();
 	}
 
-	public DesignObject Select()
+	public UIDesignObject Select()
 	{
 		throw new NotImplementedException();
 	}
@@ -187,6 +173,11 @@ public class UIPanel : MonoBehaviour, IUIBehavior
 	}
 
 	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Vector2 GetMinDimensions()
 	{
 		throw new NotImplementedException();
 	}

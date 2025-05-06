@@ -5,10 +5,12 @@ using UnityEngine.UI;
 using TMPro;
 using static BottomPanel;
 using UnityEngine.Events;
+using System;
+using static ButtonPanel;
 
-public class DynamicPanel : MonoBehaviour
+public class DynamicPanel : MonoBehaviour, IUIBehavior
 {
-	public enum TitleLabelType
+	public enum TitleLabelStyle
 	{
 		SquareTab,
 		BladedTab,
@@ -17,7 +19,7 @@ public class DynamicPanel : MonoBehaviour
 		None,
 	}
 
-	public enum BottomPanelType
+	public enum BottomPanelStyle
 	{
 		Bolted,
 		Square,
@@ -28,58 +30,59 @@ public class DynamicPanel : MonoBehaviour
 		Notched_TopRight,
 	}
 
+
 	[UDictionary.Split(50, 50)]
-	[SerializeField] private UDictionary<TitleLabelType, Sprite> titleSprites;
+	[SerializeField] private UDictionary<TitleLabelStyle, Sprite> titleSprites;
 	[UDictionary.Split(50, 50)]
-	[SerializeField] private UDictionary<BottomPanelType, Sprite> panelSprites;
+	[SerializeField] private UDictionary<BottomPanelStyle, Sprite> panelSprites;
 
 	/// <summary>
 	/// Tab width, height, bottom panel y offset, bottom panel min height
 	/// </summary>
-	private readonly Dictionary<TitleLabelType, Vector4> minTabSize = new()
+	private readonly Dictionary<TitleLabelStyle, Vector4> minTabSize = new()
 	{
-		[TitleLabelType.SquareTab] = new Vector4(64, 76, 64, 64),
-		[TitleLabelType.BladedTab] = new Vector4(97, 76, 64, 64),
-		[TitleLabelType.BladedBar] = new Vector4(80, 68, 0, 128),
-		[TitleLabelType.Bar] = new Vector4(80, 68, 0, 128),
-		[TitleLabelType.None] = new Vector4(0, 0, 0, 128),
+		[TitleLabelStyle.SquareTab] = new Vector4(64, 76, 64, 64),
+		[TitleLabelStyle.BladedTab] = new Vector4(97, 76, 64, 64),
+		[TitleLabelStyle.BladedBar] = new Vector4(80, 68, 0, 128),
+		[TitleLabelStyle.Bar] = new Vector4(80, 68, 0, 128),
+		[TitleLabelStyle.None] = new Vector4(0, 0, 0, 128),
 	};
 
-	private readonly Dictionary<TitleLabelType, Vector4> titleTextMarginSize = new()
+	private readonly Dictionary<TitleLabelStyle, Vector4> titleTextMarginSize = new()
 	{
-		[TitleLabelType.SquareTab] = new Vector4(12, 8, 12, 12),
-		[TitleLabelType.BladedTab] = new Vector4(12, 8, 46, 12),
-		[TitleLabelType.BladedBar] = new Vector4(12, 8, 48, 4),
-		[TitleLabelType.Bar] = new Vector4(12, 8, 12, 4),
-		[TitleLabelType.None] = Vector4.zero,
+		[TitleLabelStyle.SquareTab] = new Vector4(12, 8, 12, 12),
+		[TitleLabelStyle.BladedTab] = new Vector4(12, 8, 46, 12),
+		[TitleLabelStyle.BladedBar] = new Vector4(12, 8, 48, 4),
+		[TitleLabelStyle.Bar] = new Vector4(12, 8, 12, 4),
+		[TitleLabelStyle.None] = Vector4.zero,
 	};
 
-	public readonly Dictionary<TitleLabelType, Vector4> bottomPanelPadding = new()
+	public readonly Dictionary<TitleLabelStyle, Vector4> bottomPanelPadding = new()
 	{
-		[TitleLabelType.SquareTab] = new Vector4(30, 30, 14, 24),
-		[TitleLabelType.BladedTab] = new Vector4(30, 30, 14, 24),
-		[TitleLabelType.BladedBar] = new Vector4(30, 30, 72, 24),
-		[TitleLabelType.Bar] = new Vector4(30, 30, 72, 24),
-		[TitleLabelType.None] = new Vector4(30, 30, 17, 24),
+		[TitleLabelStyle.SquareTab] = new Vector4(30, 30, 14, 24),
+		[TitleLabelStyle.BladedTab] = new Vector4(30, 30, 14, 24),
+		[TitleLabelStyle.BladedBar] = new Vector4(30, 30, 72, 24),
+		[TitleLabelStyle.Bar] = new Vector4(30, 30, 72, 24),
+		[TitleLabelStyle.None] = new Vector4(30, 30, 17, 24),
 	};
 
 
 	/// <summary>
 	/// Minimum dimensions for the entire panel, top and bottom.
 	/// </summary>
-	private readonly Dictionary<TitleLabelType, Vector2> minDimensions = new()
+	private readonly Dictionary<TitleLabelStyle, Vector2> minDimensions = new()
 	{
-		[TitleLabelType.SquareTab] = new Vector2(128, 64),
-		[TitleLabelType.BladedTab] = new Vector2(128, 64),
-		[TitleLabelType.BladedBar] = new Vector2(128, 128),
-		[TitleLabelType.Bar] = new Vector2(128, 128),
-		[TitleLabelType.None] = new Vector2(64, 64),
+		[TitleLabelStyle.SquareTab] = new Vector2(128, 64),
+		[TitleLabelStyle.BladedTab] = new Vector2(128, 64),
+		[TitleLabelStyle.BladedBar] = new Vector2(128, 128),
+		[TitleLabelStyle.Bar] = new Vector2(128, 128),
+		[TitleLabelStyle.None] = new Vector2(64, 64),
 	};
 
-	public TitleLabelType titleType = TitleLabelType.BladedBar;
-	public BottomPanelType panelType = BottomPanelType.Bolted;
+	public TitleLabelStyle titleType = TitleLabelStyle.BladedBar;
+	public BottomPanelStyle panelType = BottomPanelStyle.Bolted;
 
-	public DialogButton buttons;
+
 	public DialogResult result;
 	public UnityAction<DynamicPanel> OnClose;
 
@@ -105,7 +108,9 @@ public class DynamicPanel : MonoBehaviour
 		}
 	}
 
-	public void SetTitle(string newTitleText, TitleLabelType titleLabelType)
+	public UIDesignObject designObject { get; }
+
+	public void SetTitle(string newTitleText, TitleLabelStyle titleLabelType)
 	{
 		UpdatePanel(titleLabelType);
 		titleText = newTitleText;
@@ -129,8 +134,8 @@ public class DynamicPanel : MonoBehaviour
 		var minDim = dialog.GetMinDimensions();
 		float titleWidth = titleTMP.GetPreferredValues(titleText).x;
 		Vector2 size = rect.sizeDelta;
-		if (titleType == TitleLabelType.Bar
-			|| titleType == TitleLabelType.None)
+		if (titleType == TitleLabelStyle.Bar
+			|| titleType == TitleLabelStyle.None)
 		{
 			if (titleWidth < minDim.x)
 				titleWidth = minDim.x;
@@ -179,11 +184,17 @@ public class DynamicPanel : MonoBehaviour
 		titleText = _titleText;
 	}
 
-	public void UpdatePanel(TitleLabelType newTitleType)
+	public void UpdatePanel(TitleLabelStyle newTitleType)
 	{
-		SetButtons(buttons, false);
 		titleType = newTitleType;
+		Refresh();
+	}
 
+	/// <summary>
+	/// A total recalculation of all dimensions.
+	/// </summary>
+	public void Refresh()
+	{
 		Sprite tabSprite = titleSprites[titleType];
 		Sprite panelSprite = panelSprites[panelType];
 
@@ -213,9 +224,9 @@ public class DynamicPanel : MonoBehaviour
 	}
 
 
-	public void SetButtons(DialogButton buttons, bool recalculateDimensions)
+	public void AddButtons(DialogButton buttons, bool recalculateDimensions)
 	{
-		bottomPanel.GetComponent<BottomPanel>().SetButtons(buttons);
+		bottomPanel.GetComponent<BottomPanel>().AddButtons(buttons);
 		if (recalculateDimensions)
 			RecalculateDimensions();
 	}
@@ -245,11 +256,69 @@ public class DynamicPanel : MonoBehaviour
 		Close();
 	}
 
+	public void Show(Vector2 position)
+	{
+		transform.position = position;
+		gameObject.SetActive(true);
+	}
 
 	public void Close()
 	{
 		if (OnClose != null)
 			OnClose(this);
-		gameObject.SetActive(false);
+		Destroy(gameObject);
+	}
+
+
+	/// <summary>
+	/// Each UnityAction becomes one context menu item and the string becomes the text for the button.<br/>
+	/// Can add multiple methods to a single UnityAction as below:<br/>
+	/// <c>
+	/// UnityAction action = null;<br/>
+	/// action += () => FunctionWithParam("name");<br/>
+	/// action += () => FunctionNoParam();<br/>
+	/// action += delegate {// some code here};</c>
+	/// </summary>
+	/// <param name="clickActions"></param>
+	public void SetContextMenuActions(Dictionary<string, DesignAction> clickActions)
+	{
+		bottomPanel.GetComponent<BottomPanel>().SetContextMenuActions(clickActions);
+		RecalculateDimensions();
+
+	}
+
+	public void ClearItems()
+	{
+		bottomPanel.GetComponent<BottomPanel>().ClearItems();
+	}
+
+
+	public void ResetToLastPosition()
+	{
+		throw new NotImplementedException();
+	}
+
+	public UIDesignObject Select()
+	{
+		return designObject;
+	}
+
+	/// <summary>
+	/// By definition (?), all DynamicPanels are modal, so Deselecting it show mean that needs to close.
+	/// </summary>
+	/// <exception cref="NotImplementedException"></exception>
+	public void Deselect()
+	{
+		Close();
+	}
+
+	public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Vector2 GetMinDimensions()
+	{
+		throw new NotImplementedException();
 	}
 }

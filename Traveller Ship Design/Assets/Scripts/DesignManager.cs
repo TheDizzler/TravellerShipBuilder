@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static CustomCursor;
@@ -30,11 +29,17 @@ public class DesignManager : MonoBehaviour
 	{
 		return instance.prefabs[prefabType];
 	}
-
-	public static RectTransform GetPrefab(UIPrefabType prefabType)
+	public static UIDesignObject GetPrefab(UIPrefabType prefabType)
 	{
 		return instance.uiPrefabs[prefabType];
 	}
+
+	public static UIDesignObject GetUIPrefab(UIPrefabType prefabType)
+	{
+		return instance.uiPrefabs[prefabType];
+	}
+
+
 
 	public enum PrefabType
 	{
@@ -48,16 +53,22 @@ public class DesignManager : MonoBehaviour
 	public enum UIPrefabType
 	{
 		DynamicPanel,
+		BoltedButton,
+		MenuItemButton,
+		MenuDivider,
+		TextBlock,
+		TextInputField,
+		ButtonPanel,
 	}
 
 	[UDictionary.Split(50, 50)]
 	[SerializeField] private UDictionary<PrefabType, DesignObject> prefabs;
 	[UDictionary.Split(50, 50)]
-	[SerializeField] private UDictionary<UIPrefabType, RectTransform> uiPrefabs;
+	[SerializeField] private UDictionary<UIPrefabType, UIDesignObject> uiPrefabs;
 
 	public ToolTip toolTip;
 	[SerializeField] private Canvas uiCanvas;
-	[SerializeField] private UIPanel contextMenu;
+	//[SerializeField] private UIPanel contextMenu;
 	[SerializeField] private GameObject objectPicker;
 	[SerializeField] private CustomCursor cursor;
 	[SerializeField] private GameObject linePointIndicator;
@@ -93,10 +104,6 @@ public class DesignManager : MonoBehaviour
 		/// Creating an object. Probably initiated from pushing a button.
 		/// </summary>
 		CreateObject,
-		/// <summary>
-		/// The context menu is open.
-		/// </summary>
-		ContextMenu,
 	}
 
 
@@ -114,12 +121,9 @@ public class DesignManager : MonoBehaviour
 
 	public static string wallSegmentColliderTag = "WallSegmentCollider";
 	private Camera mainCamera;
+	[SerializeField] private Camera uiCamera;
 	private LayerMask uiLayerIndex;
 	private bool isUIUpdate = false;
-	/// <summary>
-	/// A UI element has focus and must be dealt with before anything else can happen.
-	/// </summary>
-	private bool isBlockingUI = false;
 
 	/// <summary>
 	/// serialized for debugging
@@ -131,6 +135,16 @@ public class DesignManager : MonoBehaviour
 	/// </summary>
 	[SerializeField]
 	private DesignObject selectedObject;
+	/// <summary>
+	/// serialized for debugging
+	/// </summary>
+	[SerializeField]
+	private UIDesignObject uiHoverObject;
+	/// <summary>
+	/// serialized for debugging
+	/// </summary>
+	[SerializeField]
+	private UIDesignObject selectedUIObject;
 
 
 	void Start()
@@ -159,6 +173,8 @@ public class DesignManager : MonoBehaviour
 
 	public void StartCreateWallSegmentMode()
 	{
+		if (selectedUIObject != null)
+			return; // I don't like doing this. Would prefer to lock all UI from being usable except for the currently selected object.
 		var mouseWorldPos = GetMouseWorldPos();
 		var newCntrlPnt = Instantiate(prefabs[PrefabType.WallControlPointPrefab], mouseWorldPos, Quaternion.identity);
 		var designObject = newCntrlPnt.GetComponent<DesignObject>();
@@ -168,6 +184,8 @@ public class DesignManager : MonoBehaviour
 
 	public void StartCreateDoor()
 	{
+		if (selectedUIObject != null)
+			return; // I don't like doing this. Would prefer to lock all UI from being usable except for the currently selected object.
 		var mouseWorldPos = GetMouseWorldPos();
 		var door = Instantiate(prefabs[PrefabType.DoorPrefab], mouseWorldPos, Quaternion.identity);
 		var designObject = door.GetComponent<DesignObject>();
@@ -181,6 +199,21 @@ public class DesignManager : MonoBehaviour
 		objectPicker.SetActive(enableUI);
 	}
 
+
+	private void ToggleUIMode(bool enableUIMode)
+	{
+		isUIUpdate = enableUIMode;
+		if (enableUIMode)
+		{
+			CustomCursor.SetCursor(CursorSpriteMode.UI, enableUIMode);
+		}
+		else
+		{
+			CustomCursor.SetCursor(CursorSpriteMode.Default);
+			if (selectedUIObject != null)
+				throw new Exception("Let's make sure to clean up selected UI objects before leaving UI mode");
+		}
+	}
 
 	void Update()
 	{
@@ -200,12 +233,23 @@ public class DesignManager : MonoBehaviour
 
 	void UIUpdate()
 	{
-		if (isBlockingUI)
+		if (selectedUIObject != null)
 		{   // must wait for blocking dialog (or whatever) to close before anything else can happen
+			var keyInput = GetKeyInput();
+			if ((keyInput & KeyInput.Esc) == KeyInput.Esc || Input.GetMouseButtonDown(1))
+			{
+				DeselectUIObject();
+				ToggleUIMode(false);
+			}
+
 			return;
 		}
 
-		if (!IsPointerOverUIElement(GetEventSystemRaycastResults(Input.mousePosition)))
+		if (IsPointerOverUIElement(GetEventSystemRaycastResults(Input.mousePosition),
+			out UIDesignObject mouseOverUIObject))
+		{
+		}
+		else
 		{
 			ToggleUIMode(false);
 			return;
@@ -216,40 +260,30 @@ public class DesignManager : MonoBehaviour
 
 	}
 
-	private void ToggleUIMode(bool enableUIMode)
-	{
-		isUIUpdate = enableUIMode;
-		if (enableUIMode)
-		{
-			CustomCursor.SetCursor(CursorSpriteMode.UI, enableUIMode);
-		}
-		else
-		{
-			CustomCursor.SetCursor(CursorSpriteMode.Default);
-			isBlockingUI = false;
-		}
-	}
 
 	void GridUpdate()
 	{
 		var uiHits = GetEventSystemRaycastResults(Input.mousePosition);
-		if (IsPointerOverUIElement(uiHits))
+		if (IsPointerOverUIElement(uiHits, out UIDesignObject mouserOverUIObject))
 		{
+			uiHoverObject = mouserOverUIObject;
 			ToggleUIMode(true);
+			UIUpdate();
 			return;
 		}
 
 		Vector3 mouseWorldPos = GetMouseWorldPos();
+		KeyInput keyInput = GetKeyInput();
 
 		if (Input.mouseScrollDelta != Vector2.zero)
 		{
-			if (Input.GetKey(KeyCode.LeftControl))
+			if ((keyInput & KeyInput.Ctrl) == KeyInput.Ctrl)
 			{
-				var newY = mainCamera.transform.position.y + Input.mouseScrollDelta.y * scrollMultiplier; 
+				var newY = mainCamera.transform.position.y + Input.mouseScrollDelta.y * scrollMultiplier;
 				mainCamera.transform.position = new Vector3(
 					mainCamera.transform.position.x, newY, mainCamera.transform.position.z);
 			}
-			else if (Input.GetKey(KeyCode.LeftShift))
+			else if ((keyInput & KeyInput.Ctrl) == KeyInput.Shift)
 			{
 				var newX = mainCamera.transform.position.x + Input.mouseScrollDelta.y * scrollMultiplier;
 				mainCamera.transform.position = new Vector3(
@@ -306,8 +340,7 @@ public class DesignManager : MonoBehaviour
 			}
 		}
 
-		var keyInput = GetKeyInput();
-
+		var nonSnappedPos = mouseWorldPos;
 		if (selectedObject != null && selectedObject.IsDragging())
 		{
 			if (snapToGrid)
@@ -346,30 +379,29 @@ public class DesignManager : MonoBehaviour
 				{
 					if (hoverObject != null)
 					{
-						hoverObject.SetContextMenu(contextMenu, mouseWorldPos); // non-snapped pos is better
-						editMode = EditMode.ContextMenu;
+						var contextMenu = hoverObject.GetContextMenu(GetUICoordinatesFromMousePos());
+						if (contextMenu != null)
+						{
+							if (selectedUIObject != null)
+								Debug.LogError("This shouldn't happen, right?");
+							AddToCanvas(contextMenu.transform);
+							selectedUIObject = contextMenu;
+							ToggleUIMode(true);
+						}
+						// else DeselectObject()?
 					}
 					else
 					{
 						DeselectObject();
 					}
 				}
-				else if (Input.GetKeyDown(KeyCode.Escape))
+				else if (keyInput == KeyInput.Esc)
 				{
 					DeselectObject();
 				}
 			}
 			break;
 
-			case EditMode.ContextMenu:
-			{
-				if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-				{
-					contextMenu.ClosePanel();
-					editMode = EditMode.None;
-				}
-			}
-			break;
 
 			case EditMode.Scrolling:
 			{
@@ -418,7 +450,7 @@ public class DesignManager : MonoBehaviour
 						SetEditMode(newEditMode);
 					}
 				}
-				else if (Input.GetMouseButtonDown(1))
+				else if (Input.GetMouseButtonDown(1) || keyInput == KeyInput.Esc)
 				{
 					if (editMode == EditMode.CreateObject)
 					{
@@ -445,6 +477,34 @@ public class DesignManager : MonoBehaviour
 		}
 	}
 
+	public static Vector2 GetUICoordinatesFromMousePos()
+	{
+		return instance._GetUICoordinatesFromMousePos();
+	}
+
+	private Vector2 _GetUICoordinatesFromMousePos()
+	{
+		Vector2 mousePos = Input.mousePosition;
+		RectTransformUtility.ScreenPointToLocalPointInRectangle(
+			uiCanvas.GetComponent<RectTransform>(), mousePos, uiCamera, out Vector2 uiPos);
+		return uiPos;
+	}
+
+	private void DeselectUIObject()
+	{
+		if (selectedUIObject != null)
+		{
+			selectedUIObject.Deselect();
+			Destroy(selectedUIObject.gameObject);
+		}
+
+		selectedUIObject = null;
+		if (selectedObject != null)
+			toolTip.SetToolTip(selectedObject.tooltip);
+		else
+			toolTip.SetToolTip(NextTip());
+	}
+
 	private void DeselectObject()
 	{
 		if (selectedObject != null)
@@ -466,15 +526,22 @@ public class DesignManager : MonoBehaviour
 		None = 0x0,
 		Ctrl = 0x1,
 		Alt = 0x2,
+		Esc = 0x4,
+		Shift = 0x8,
 	}
+
 	private KeyInput GetKeyInput()
 	{
 		KeyInput input = KeyInput.None;
 
+		if (Input.GetKey(KeyCode.Escape))
+			return KeyInput.Esc;
 		if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
 			input |= KeyInput.Ctrl;
 		if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
 			input |= KeyInput.Alt;
+		if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+			input |= KeyInput.Shift;
 		return input;
 	}
 
@@ -587,52 +654,21 @@ public class DesignManager : MonoBehaviour
 		return false;
 	}
 
-	/// <summary>
-	/// Ignores the currently manipulating object.
-	/// Not reccommended: there are priority issues.
-	/// </summary>
-	/// <param name="worldPos"></param>
-	/// <param name="layerMask"></param>
-	/// <param name="hitObject"></param>
-	/// <returns></returns>
-	[Obsolete("Use <c>private bool CheckForObject(Vector2 worldPos, out DesignObject hitObject)</c> instead")]
-	private bool CheckForObject(Vector2 worldPos, int layerMask, out GameObject hitObject)
-	{
-		RaycastHit2D[] hits = Physics2D.RaycastAll(worldPos, Vector2.zero, 10.0f, layerMask);
 
-		if (hits.Length > 0)
-		{
-			hitObject = null;
-			foreach (var hit in hits)
-			{
-				var hitGO = hit.transform.gameObject;
-				if (selectedObject != null && hitGO == selectedObject.transform)
-				{
-					continue;
-				}
-
-				hitObject = hitGO;
-				//return true;
-			}
-
-			if (hitObject != null)
-				return true;
-		}
-
-		hitObject = null;
-		return false;
-	}
-
-
-	private bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaycastResults)
+	private bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaycastResults,
+		out UIDesignObject mouserOverUIObject)
 	{
 		for (int index = 0; index < eventSystemRaycastResults.Count; index++)
 		{
 			RaycastResult curRaysastResult = eventSystemRaycastResults[index];
 			if (curRaysastResult.gameObject.layer == uiLayerIndex)
+			{
+				mouserOverUIObject = curRaysastResult.gameObject.GetComponent<UIDesignObject>();
 				return true;
+			}
 		}
 
+		mouserOverUIObject = null;
 		return false;
 	}
 
@@ -645,16 +681,22 @@ public class DesignManager : MonoBehaviour
 		return raysastResults;
 	}
 
-	public static void ShowDialog(RectTransform dialogRect)
+	public static void ShowDialog(UIDesignObject dialog)
 	{
-		instance._ShowDialog(dialogRect);
+		instance._ShowDialog(dialog);
 	}
 
-	private void _ShowDialog(RectTransform dialogRect)
+	private void _ShowDialog(UIDesignObject dialog)
 	{
-		dialogRect.SetParent(uiCanvas.transform, false);
+		AddToCanvas(dialog.transform);
+
+		selectedUIObject = dialog;
 		ToggleUIMode(true);
-		isBlockingUI = true;
+	}
+
+	private void AddToCanvas(Transform transform)
+	{
+		transform.SetParent(uiCanvas.transform, false);
 	}
 
 	public static void CloseDialog(RectTransform dialogRect)
@@ -664,6 +706,7 @@ public class DesignManager : MonoBehaviour
 
 	private void _CloseDialog(RectTransform dialogRect)
 	{
+		selectedUIObject = null;
 		Destroy(dialogRect.gameObject);
 		ToggleUIMode(false);
 	}

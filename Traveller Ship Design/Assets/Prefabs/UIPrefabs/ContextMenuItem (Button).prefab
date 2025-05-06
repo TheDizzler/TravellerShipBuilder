@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 30}
+  m_SizeDelta: {x: 250.46, y: 28.28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9139544722843291066
 CanvasRenderer:
@@ -92,10 +92,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -145,9 +145,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 414486777796183355}
+  - component: {fileID: 7123490620038347527}
+  - component: {fileID: 5761179207979531042}
   - component: {fileID: 3171321435051314732}
   - component: {fileID: 7490356970785544225}
-  - component: {fileID: 5761179207979531042}
   m_Layer: 5
   m_Name: ContextMenuItem (Button)
   m_TagString: Untagged
@@ -175,6 +176,40 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7123490620038347527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347121808040595726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minLabelDimensions: {x: 8, y: 8}
+  maxLabelDimensions: {x: 1025, y: 0}
+  textLabel: {fileID: 2099621496068818944}
+  image: {fileID: 0}
+  _titleText: Context Menu Item #1
+--- !u!114 &5761179207979531042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347121808040595726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isModal: 0
+  isMoveable: 0
+  isSelectable: 0
+  hasCustomDimensions: 1
+  tooltip: []
 --- !u!114 &3171321435051314732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,19 +262,3 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4347121808040595726}
   m_CullTransparentMesh: 1
---- !u!114 &5761179207979531042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4347121808040595726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isModal: 0
-  isMoveable: 0
-  isSelectable: 0
-  tooltip: []

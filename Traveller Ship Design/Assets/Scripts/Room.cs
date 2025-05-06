@@ -34,7 +34,6 @@ public class Room : MonoBehaviour, IMoveable
 
 	public DesignObject Select()
 	{
-
 		return designObject;
 	}
 
@@ -43,7 +42,8 @@ public class Room : MonoBehaviour, IMoveable
 
 	}
 
-	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
+	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput,
+		ref DesignObject currentlySelectedObject, ref EditMode editMode)
 	{
 		if (currentlySelectedObject != null)
 		{
@@ -73,12 +73,14 @@ public class Room : MonoBehaviour, IMoveable
 	public void EndDrag(Vector2 pos)
 	{
 		wall.EndDrag(pos);
+		roomLabel.transform.position = wall.GetCenter();
 	}
 
 
 	public void ResetToLastPosition()
 	{
 		wall.ResetToLastPosition();
+		roomLabel.transform.position = wall.GetCenter();
 	}
 
 
@@ -127,14 +129,16 @@ public class Room : MonoBehaviour, IMoveable
 
 	public void ShowRenameDialog()
 	{
-		var panelRect = Instantiate(DesignManager.GetPrefab(UIPrefabType.DynamicPanel));
-		var panel = panelRect.GetComponent<DynamicPanel>();
-		panel.SetButtons(BottomPanel.DialogButton.OKCancel, false);
-		panel.SetTitle("Enter room name", DynamicPanel.TitleLabelType.BladedBar);
+		var panelUIObject = Instantiate(DesignManager.GetPrefab(UIPrefabType.DynamicPanel));
+		var panel = panelUIObject.GetComponent<DynamicPanel>();
+
+		inputField = panel.AddInputField("Enter new room name", roomLabel.text);
+		panel.AddButtons(ButtonPanel.DialogButton.OKCancel, false);
+		panel.SetTitle("Enter room name", DynamicPanel.TitleLabelStyle.BladedBar);
 
 		panel.OnClose += RenameDialogClosed;
-		inputField = panel.AddInputField("Enter new room name", roomLabel.text);
-		DesignManager.ShowDialog(panelRect);
+		
+		DesignManager.ShowDialog(panelUIObject);
 	}
 
 	private void RenameDialogClosed(DynamicPanel panel)

@@ -4,10 +4,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIExpandingLabel : MonoBehaviour
+public class UIExpandingLabel : MonoBehaviour, IUIBehavior
 {
-	[SerializeField] private Vector2 minLabelDimensions = new Vector2(1, .5f);
-	[SerializeField] private Vector2 maxLabelDimensions = new Vector2(5, 2.5f);
+	[SerializeField] private Vector2 minLabelDimensions = new Vector2(64, 72);
+	[SerializeField] private Vector2 maxLabelDimensions = new Vector2(1025, 0);
 	[SerializeField] private TextMeshProUGUI textLabel;
 	[SerializeField] private Image image;
 
@@ -35,6 +35,7 @@ public class UIExpandingLabel : MonoBehaviour
 		set { textLabel.color = value; }
 	}
 
+	public UIDesignObject designObject { get; }
 
 	private void UpdateLabel()
 	{
@@ -71,8 +72,11 @@ public class UIExpandingLabel : MonoBehaviour
 
 		tmpRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textWidth);
 		tmpRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, textHeight);
-		image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, labelSize.x);
-		image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, labelSize.y);
+		if (image != null)
+		{
+			image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, labelSize.x);
+			image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, labelSize.y);
+		}
 	}
 
 	/// <summary>
@@ -82,5 +86,33 @@ public class UIExpandingLabel : MonoBehaviour
 	public void UpdateText()
 	{
 		text = _titleText;
+	}
+
+	public void ResetToLastPosition()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public UIDesignObject Select()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void Deselect()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public Vector2 GetMinDimensions()
+	{
+		var size = textLabel.rectTransform.sizeDelta;
+		size.x += textLabel.margin.x + textLabel.margin.z;
+		size.y += textLabel.margin.y + textLabel.margin.w;
+		return size;
 	}
 }

@@ -58,8 +58,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f2e3bcde95dc5441b761ef647b6d708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonPrefab: {fileID: 3171321435051314732, guid: 53db565345bf96f45b685e5078f6c6b5, type: 3}
-  dividerPrefab: {fileID: 0}
   panelMinHeight: 58
   items: []
 --- !u!114 &7651717632944022297

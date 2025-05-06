@@ -6,16 +6,14 @@ using static DesignManager;
 public interface IUIBehavior 
 {
 	public UIDesignObject designObject { get; }
-	public void MouseDrag(Vector2 screenPosition);
-	public bool IsDragging();
-	public void EndDrag(Vector2 pos);
 	public void ResetToLastPosition();
 	/// <summary>
 	/// Actions (usually UI feedback?) to take when an object is selected.
 	/// If this object is not itself selectable, returns a parent or a related object that is part of this "group".
 	/// </summary>
 	/// <returns></returns>
-	public DesignObject Select();
+	public UIDesignObject Select();
+	
 	public void Deselect();
 	/// <summary>
 	/// Actions to take when the user left clicks on the object.
@@ -23,4 +21,5 @@ public interface IUIBehavior
 	/// <param name="mouseWorldPos">This <i><b>should</b></i> be on or at least within the vicinity of this object.</param>
 	/// <param name="keyInput"></param>
 	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, ref UIDesignObject currentlySelectedObject);
+	public Vector2 GetMinDimensions();
 }

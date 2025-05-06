@@ -39,7 +39,8 @@ public class RoomLabel : MonoBehaviour, IHoverable, IMoveable, ISelectable
 		room.Deselect();
 	}
 
-	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
+	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, 
+		ref DesignObject currentlySelectedObject, ref EditMode editMode)
 	{
 		room.Clicked(mouseWorldPos, keyInput, ref currentlySelectedObject, ref editMode);
 	}

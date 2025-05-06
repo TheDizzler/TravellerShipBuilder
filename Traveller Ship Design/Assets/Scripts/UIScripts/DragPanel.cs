@@ -5,7 +5,8 @@ using static DesignManager;
 
 public class DragPanel : MonoBehaviour, IUIBehavior
 {
-	Vector2 startDragPos;
+	[SerializeField] private RectTransform parentRect;
+	private Vector2 startDragPos;
 	private bool isDragging = false;
 	private UIDesignObject _designObject;
 	public UIDesignObject designObject
@@ -19,7 +20,7 @@ public class DragPanel : MonoBehaviour, IUIBehavior
 	}
 
 
-	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, 
+	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput,
 		ref UIDesignObject currentlySelectedObject)
 	{
 		if (currentlySelectedObject != null)
@@ -30,36 +31,35 @@ public class DragPanel : MonoBehaviour, IUIBehavior
 		currentlySelectedObject = designObject;
 		currentlySelectedObject.Select();
 	}
-	
+
 	public void BeginDrag()
 	{
-		startDragPos = Input.mousePosition;
-	}
-	public bool IsDragging()
-	{
-		return isDragging;
+		startDragPos = GetUICoordinatesFromMousePos();
 	}
 
-	public void MouseDrag(Vector2 screenPosition)
+	public void MouseDrag()
 	{
-		Vector3 diff = screenPosition - startDragPos;
-		GetComponent<RectTransform>().position += diff;
+		var screenPosition = GetUICoordinatesFromMousePos();
+		Vector2 diff = screenPosition - startDragPos;
+		parentRect.anchoredPosition += diff;
 		startDragPos = screenPosition;
 	}
 
-	public void EndDrag(Vector2 pos)
+	public void EndDrag()
 	{
-		throw new System.NotImplementedException();
+		var screenPosition = GetUICoordinatesFromMousePos();
+		Vector2 diff = screenPosition - startDragPos;
+		parentRect.anchoredPosition += diff;
 	}
 
-	
+
 
 	public void ResetToLastPosition()
 	{
 		throw new System.NotImplementedException();
 	}
 
-	public DesignObject Select()
+	public UIDesignObject Select()
 	{
 		throw new System.NotImplementedException();
 	}
@@ -69,4 +69,8 @@ public class DragPanel : MonoBehaviour, IUIBehavior
 		throw new System.NotImplementedException();
 	}
 
+	public Vector2 GetMinDimensions()
+	{
+		throw new System.NotImplementedException();
+	}
 }

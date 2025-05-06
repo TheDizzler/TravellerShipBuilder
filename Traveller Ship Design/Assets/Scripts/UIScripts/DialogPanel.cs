@@ -4,16 +4,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static ButtonPanel;
 
+[Obsolete("Delete this")]
 public class DialogPanel : MonoBehaviour
 {
-	public enum DialogButton
-	{
-		OK = 0x0,
-		OKCancel = 0x1,
-		YesNoCancel = 0x2,
-		YesNo = 0x3,
-	}
+
 
 	public enum DialogResult
 	{
@@ -24,7 +20,6 @@ public class DialogPanel : MonoBehaviour
 		No,
 	}
 
-	//[SerializeField] private RectTransform parentRect;
 	[SerializeField] private BladedPanel parentPanel;
 	/// <summary>
 	/// When font size is 24

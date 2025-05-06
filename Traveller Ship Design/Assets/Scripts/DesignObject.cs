@@ -127,22 +127,30 @@ public class DesignObject : MonoBehaviour
 	}
 
 
-	public void SetContextMenu(UIPanel contextMenu, Vector2 openContextPosition)
+	public UIDesignObject GetContextMenu(Vector2 openContextPosition)
 	{
 		if (hoverable == null)
 		{
 			if (isHoverable)
 				SearchForDesignObjects();
 			else
-				return;
+				return null;
 		}
 
 		var actions = hoverable.GetContextMenuItems();
 		if (actions != null)
 		{
-			contextMenu.SetContextMenu(actions);
-			contextMenu.ShowContextMenu(openContextPosition);
+			var contextMenu = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.DynamicPanel));
+			var panel = contextMenu.GetComponent<DynamicPanel>();
+			panel.SetTitle("", DynamicPanel.TitleLabelStyle.None);
+			panel.AddButtons(ButtonPanel.DialogButton.None, false);
+
+			panel.SetContextMenuActions(actions);
+			panel.Show(openContextPosition);
+			return contextMenu;
 		}
+
+		return null;
 	}
 
 	public Vector3 SnapToGrid(Vector3 pos)
@@ -321,7 +329,8 @@ public class DesignObject : MonoBehaviour
 	/// </summary>
 	/// <param name="mouseWorldPos"></param>
 	/// <param name="keyInput"></param>
-	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
+	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, 
+		ref DesignObject currentlySelectedObject, ref EditMode editMode)
 	{
 		if (selectable == null)
 		{

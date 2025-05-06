@@ -4,18 +4,11 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static DesignManager;
+using static ButtonPanel;
 
 public class BottomPanel : MonoBehaviour
 {
-	public enum DialogButton
-	{
-		None = 0x0,
-		OK = 0x1,
-		OKCancel = 0x2,
-		YesNoCancel = 0x3,
-		YesNo = 0x4,
-	}
-
 	public enum DialogResult
 	{
 		None,
@@ -25,59 +18,26 @@ public class BottomPanel : MonoBehaviour
 		No,
 	}
 
-	public enum PanelObjectType
-	{
-		Button,
-		Text,
-		InputField,
-		Image,
-		// toggle,
-		// slidder,
-		// dropdown
-	}
-
-	public class PanelObject
-	{
-		public PanelObjectType type;
-	}
-
-
-	public List<RectTransform> items;
-
-	/// <summary>
-	/// These are min widths when font size is 24.
-	/// TODO(Tristan): dynamic widths on font change!
-	/// TODO(Tristan): show dictionary in editor.
-	/// </summary>
-	[SerializeField]
-	private Dictionary<DialogButton, float> minButtonWidth = new()
-	{
-		[DialogButton.None] = 0,
-		[DialogButton.OK] = 150,
-		[DialogButton.OKCancel] = 300,
-		[DialogButton.YesNoCancel] = 450,
-		[DialogButton.YesNo] = 300,
-	};
 
 	[SerializeField] private DynamicPanel parentPanel;
 
-	[SerializeField] private RectTransform buttonPanel;
-	[SerializeField] private GameObject okButton;
-	[SerializeField] private GameObject yesButton;
-	[SerializeField] private GameObject noButton;
-	[SerializeField] private GameObject cancelButton;
+	/// <summary>
+	/// This is Serialized for debugging
+	/// </summary>
+	[Tooltip("This is Serialized for debugging")]
+	[SerializeField] private List<UIDesignObject> items;
 
-	[SerializeField] private TextMeshProUGUI tmpPrefab;
-	[SerializeField] private TMP_InputField inputFieldPrefab;
 
-	private DialogButton buttons;
-
+	void Awake()
+	{
+		ClearItems();
+	}
 
 	public Vector2 GetMinDimensions()
 	{
 		var minDim = Vector2.zero;
 		var layout = GetComponent<VerticalLayoutGroup>();
-		minDim.x = minButtonWidth[buttons];
+		minDim.x = 0;
 		minDim.y = layout.padding.top + layout.padding.bottom;
 		var activeChildren = 0;
 		foreach (var child in items)
@@ -86,34 +46,11 @@ public class BottomPanel : MonoBehaviour
 				continue;
 
 			++activeChildren;
-			// what is probably easiest here is to have a bespoke monobehavior for each
-			// widget (if it requires special calculations) that implements GetMinDimensions().
-			var tmp = child.GetComponent<TextMeshProUGUI>();
-			if (tmp == null)
-			{
-				minDim.y += child.sizeDelta.y;
-			}
-			else
-			{
-				var tmpRect = child;
-				var tmpWidth = tmpRect.sizeDelta.x;
-				var preferredSize = tmp.GetPreferredValues();
-				var renderedSize = tmp.GetRenderedValues();
-				var newSize = preferredSize;
-				if (newSize.x >= tmpWidth)
-				{
-					//if (newSize.x > maxTextBlockSize.x)
-					//	newSize.x = maxTextBlockSize.x;
-					var diff = newSize.x - tmpWidth;
-					var parentWidth = parentPanel.GetComponent<RectTransform>().sizeDelta.x;
-					if (minDim.x > parentWidth + diff + 1)
-						minDim.x = parentWidth + diff + 1;
-				}
+			var childMinDim = child.GetMinDimensions();
+			minDim.y += childMinDim.y;
+			if (minDim.x < childMinDim.x)
+				minDim.x = childMinDim.x; // this might require a recalculation of any text children
 
-				tmpRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newSize.y);
-				Debug.Log($"prefSize: {preferredSize}\trenderedSize: {renderedSize}\t newSIze: {newSize}"/*\t lines: " + lineCount*/);
-				minDim.y += newSize.y;
-			}
 		}
 
 		minDim.y += layout.spacing * (activeChildren - 1);
@@ -124,76 +61,50 @@ public class BottomPanel : MonoBehaviour
 
 	//public void AddImage()
 
-	public void SetButtons(DialogButton buttons)
+	public void AddButtons(DialogButton buttons)
 	{
-		this.buttons = buttons;
-
-		okButton.SetActive(false);
-		yesButton.SetActive(false);
-		noButton.SetActive(false);
-		cancelButton.SetActive(false);
-		buttonPanel.gameObject.SetActive(true);
-
-		switch (buttons)
+		ButtonPanel buttonPanel = GetComponentInChildren<ButtonPanel>();
+		if (buttonPanel == null)
 		{
-			case DialogButton.OK:
-			{
-				okButton.SetActive(true);
-			}
-			break;
-
-			case DialogButton.OKCancel:
-			{
-				okButton.SetActive(true);
-				cancelButton.SetActive(true);
-			}
-			break;
-
-			case DialogButton.YesNoCancel:
-			{
-				yesButton.SetActive(true);
-				noButton.SetActive(true);
-				cancelButton.SetActive(true);
-			}
-			break;
-
-			case DialogButton.YesNo:
-			{
-				yesButton.SetActive(true);
-				noButton.SetActive(true);
-			}
-			break;
-
-			case DialogButton.None:
-			{
-				buttonPanel.gameObject.SetActive(false);
-			}
-			break;
+			if (buttons == DialogButton.None)
+				return;
+			var buttonPanelDO = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.ButtonPanel), transform);
+			buttonPanel = buttonPanelDO.GetComponent<ButtonPanel>();
+			items.Add(buttonPanelDO);
+		}
+		else if (buttons == DialogButton.None)
+		{
+			items.Remove(buttonPanel.GetComponent<UIDesignObject>());
+			Destroy(buttonPanel.gameObject);
+			return;
 		}
 
-		//parentPanel.RecalculateDimensions();
+		buttonPanel.SetButtons(buttons, parentPanel);
 	}
 
 	public void AddText(string text)
 	{
-		var tmp = Instantiate(tmpPrefab, transform);
-		var tmpRect = tmp.GetComponent<RectTransform>();
+		var textBlock = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.TextBlock), transform);
+		var tmpRect = textBlock.GetComponent<RectTransform>();
 		tmpRect.SetSiblingIndex(items.Count - 1);
+		var tmp = textBlock.GetComponent<TextMeshProUGUI>();
 		tmp.text = text;
-		items.Add(tmpRect);
+		items.Add(textBlock);
 	}
 
 	public TMP_InputField AddInputField(string placeholderText, string defaultText = null)
 	{
-		var input = Instantiate(inputFieldPrefab, transform);
+		var input = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.TextInputField), transform);
 		var inputRect = input.GetComponent<RectTransform>();
 		inputRect.SetSiblingIndex(items.Count - 1);
-		items.Add(inputRect);
-		input.placeholder.GetComponent<TextMeshProUGUI>().text = placeholderText;
+		var inputTMP = input.GetComponent<TMP_InputField>();
+
+		items.Add(input);
+		inputTMP.placeholder.GetComponent<TextMeshProUGUI>().text = placeholderText;
 		if (!string.IsNullOrEmpty(defaultText))
-			input.text = defaultText;
-		input.onSubmit.AddListener(SubmitText);
-		return input;
+			inputTMP.text = defaultText;
+		inputTMP.onSubmit.AddListener(SubmitText);
+		return inputTMP;
 	}
 
 	private void SubmitText(string currentText)
@@ -207,7 +118,7 @@ public class BottomPanel : MonoBehaviour
 	/// </summary>
 	public void SetToParentsSize()
 	{
-		parentPanel.UpdatePanel(parentPanel.titleType);
+		parentPanel.Refresh();
 		var parentRect = parentPanel.GetComponent<RectTransform>();
 
 		var rect = GetComponent<RectTransform>();
@@ -215,4 +126,58 @@ public class BottomPanel : MonoBehaviour
 	}
 
 
+	/// <summary>
+	/// Each UnityAction becomes one context menu item and the string becomes the text for the button.<br/>
+	/// Can add multiple methods to a single UnityAction as below:<br/>
+	/// <c>
+	/// UnityAction action = null;<br/>
+	/// action += () => FunctionWithParam("name");<br/>
+	/// action += () => FunctionNoParam();<br/>
+	/// action += delegate {// some code here};</c>
+	/// </summary>
+	/// <param name="clickActions"></param>
+	public void SetContextMenuActions(Dictionary<string, DesignAction> clickActions)
+	{
+		ClearItems();
+		foreach (var action in clickActions)
+		{
+			if (action.Value == null)
+				AddDivider();
+			else
+				AddMenuItem(action.Value, action.Key);
+		}
+	}
+
+	public void ClearItems()
+	{
+		foreach (var item in items)
+			Destroy(item);
+		items.Clear();
+
+		parentPanel.RecalculateDimensions();
+	}
+
+	private void AddDivider()
+	{
+		if (items.Count == 0)
+		{
+			Debug.LogError("A divider may not be the first item in a context menu");
+			return;
+		}
+
+		var divider = Instantiate(DesignManager.GetPrefab(UIPrefabType.MenuDivider), transform);
+
+		items.Add(divider);
+	}
+
+	private void AddMenuItem(DesignAction clickAction, string buttonText)
+	{
+		clickAction += parentPanel.Close;
+		var menuItem = Instantiate(DesignManager.GetPrefab(UIPrefabType.MenuItemButton), transform);
+
+		menuItem.GetComponent<Button>().onClick.AddListener(clickAction.action);
+		menuItem.GetComponentInChildren<TextMeshProUGUI>().text = buttonText;
+
+		items.Add(menuItem);
+	}
 }

@@ -564,7 +564,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34.95
+  m_fontSize: 39.55
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -662,12 +662,17 @@ MonoBehaviour:
     - {fileID: 2543343209546206062, guid: 94d90449295ddbd4a92b8145940dc7ff, type: 3}
     - {fileID: 8863955156445476660, guid: 88c11eb1b83b02b47b03279083eeba1c, type: 3}
   uiPrefabs:
-    keys: 00000000
+    keys: 00000000010000000200000003000000040000000500000006000000
     values:
-    - {fileID: 7465219498174066458, guid: db7a3e538c671f84ab26976daede96e1, type: 3}
+    - {fileID: 1898654287109470755, guid: db7a3e538c671f84ab26976daede96e1, type: 3}
+    - {fileID: 6311154708473013455, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+    - {fileID: 5761179207979531042, guid: 53db565345bf96f45b685e5078f6c6b5, type: 3}
+    - {fileID: 5773319279418712064, guid: cc31ca90912907a4092621913b28ee88, type: 3}
+    - {fileID: 6170590193817473966, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+    - {fileID: 1539801037540959411, guid: af17185d5eed67240bdf46ec9a3a9140, type: 3}
+    - {fileID: -7266102065753428195, guid: 30e4041be43a7cd41ab5c5333fd8325e, type: 3}
   toolTip: {fileID: 1814655480}
   uiCanvas: {fileID: 1090387392}
-  contextMenu: {fileID: 1127783705}
   objectPicker: {fileID: 1089032393}
   cursor: {fileID: 1312120957}
   linePointIndicator: {fileID: 588363695}
@@ -688,8 +693,11 @@ MonoBehaviour:
   - Hold left ctrl with the scroll wheel to scroll the map up and down
   - Hold left shift with the scroll wheel to scroll the map left and right
   editMode: 0
+  uiCamera: {fileID: 1639144241}
   hoverObject: {fileID: 0}
   selectedObject: {fileID: 0}
+  uiHoverObject: {fileID: 0}
+  selectedUIObject: {fileID: 0}
 --- !u!1001 &754638019
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -698,6 +706,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1089032394}
     m_Modifications:
+    - target: {fileID: 2652043488210015540, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 186.45
+      objectReference: {fileID: 0}
     - target: {fileID: 2671208435322713224, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_text
       value: 'Create Door
@@ -707,6 +719,10 @@ PrefabInstance:
     - target: {fileID: 5027443682642349068, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_Name
       value: CreateDoorButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 6327939893309506531, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: _titleText
+      value: Create Door
       objectReference: {fileID: 0}
     - target: {fileID: 6902153215532748074, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -762,7 +778,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 186.45
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.y
@@ -1009,8 +1025,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 142.04999, y: -44}
-  m_SizeDelta: {x: 258.1, y: 287.2}
+  m_AnchoredPosition: {x: 157.83997, y: -44}
+  m_SizeDelta: {x: 289.71, y: 287.2}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1089032395
 MonoBehaviour:
@@ -1071,7 +1087,7 @@ MonoBehaviour:
   m_Spacing: 10
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 1
+  m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
@@ -1186,17 +1202,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1391398029405454819, guid: 513084e78f70c4d49891b596b8b6ccde, type: 3}
   m_PrefabInstance: {fileID: 1317950689935371757}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1127783705 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3704421696682121141, guid: 513084e78f70c4d49891b596b8b6ccde, type: 3}
-  m_PrefabInstance: {fileID: 1317950689935371757}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f2e3bcde95dc5441b761ef647b6d708, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1194944860 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8140023667225863777, guid: 513084e78f70c4d49891b596b8b6ccde, type: 3}
@@ -1922,10 +1927,6 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 25.45
       objectReference: {fileID: 0}
-    - target: {fileID: 7588875240816602808, guid: 513084e78f70c4d49891b596b8b6ccde, type: 3}
-      propertyPath: m_fontSize
-      value: 25.45
-      objectReference: {fileID: 0}
     - target: {fileID: 8192838227912483715, guid: 513084e78f70c4d49891b596b8b6ccde, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2103,9 +2104,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1089032394}
     m_Modifications:
+    - target: {fileID: 2652043488210015540, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 180.45
+      objectReference: {fileID: 0}
     - target: {fileID: 5027443682642349068, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_Name
       value: CreateWallButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 6327939893309506531, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: _titleText
+      value: Create Wall
       objectReference: {fileID: 0}
     - target: {fileID: 6902153215532748074, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -2161,7 +2170,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 180.45
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.y
@@ -2315,7 +2324,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3849094672880733284, guid: caa289a349874634fa001d0715dbcb64, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 241.70999
       objectReference: {fileID: 0}
     - target: {fileID: 3849094672880733284, guid: caa289a349874634fa001d0715dbcb64, type: 3}
       propertyPath: m_SizeDelta.y
