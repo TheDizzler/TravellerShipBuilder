@@ -133,12 +133,7 @@ public class UIExpandingInputFieldEditor : Editor
 [CustomEditor(typeof(UIExpandingLabel))]
 public class UILabelEditor : Editor
 {
-	public string labelText = "Label Text";
 	private SerializedProperty labelEx;
-	private SerializedProperty minDims;
-	private SerializedProperty maxDims;
-	private SerializedProperty fontSize;
-	private SerializedProperty fontColor;
 	private SerializedProperty textLabel;
 	private SerializedProperty image;
 	private TextMeshProUGUI tmp = null;
@@ -146,56 +141,36 @@ public class UILabelEditor : Editor
 
 	void OnEnable()
 	{
-		labelEx = serializedObject.FindProperty("label");
-		minDims = serializedObject.FindProperty("minLabelDimensions");
-		maxDims = serializedObject.FindProperty("maxLabelDimensions");
-		fontSize = serializedObject.FindProperty("fontSize");
-		fontColor = serializedObject.FindProperty("fontColor");
+		labelEx = serializedObject.FindProperty("labelEx");
+
 
 		textLabel = serializedObject.FindProperty("textLabel");
 		image = serializedObject.FindProperty("image");
 
-		var tmpSP = serializedObject.FindProperty("textLabel");
-		var targetObjectClassType = EditorHelper.GetTargetObjectOfProperty(tmpSP);
-		if (targetObjectClassType != null)
-		{
-			tmp = (TextMeshProUGUI)targetObjectClassType;
-			labelText = tmp.text;
-		}
+		/// Keeping this here for future reference!
+		//var tmpSP = serializedObject.FindProperty("textLabel");
+		//var targetObjectClassType = EditorHelper.GetTargetObjectOfProperty(tmpSP);
+		//if (targetObjectClassType != null)
+		//{
+		//	tmp = (TextMeshProUGUI)targetObjectClassType;
+		//}
 	}
 
 	public override void OnInspectorGUI()
 	{
 		var panel = (UIExpandingLabel)target;
 
-		EditorGUILayout.BeginVertical();
-		{
-			var newLabelText = EditorGUILayout.TextField("Label Text", labelText);
-			EditorGUILayout.PropertyField(labelEx);
-			EditorGUILayout.PropertyField(fontSize);
-			EditorGUILayout.PropertyField(fontColor);
-			EditorGUILayout.PropertyField(minDims);
-			EditorGUILayout.PropertyField(maxDims);
-			if (serializedObject.ApplyModifiedProperties() || newLabelText != labelText)
-			{
-				labelText = newLabelText;
-				panel.text = labelText;
-			}
-		}
-		EditorGUILayout.EndVertical();
-
-		if (tmp != null)
-		{
-			if (tmp.text != labelText)
-			{
-				tmp.text = labelText;
-			}
-		}
+		EditorGUILayout.PropertyField(labelEx);
 
 		GUILayout.Space(10);
 		{
 			EditorGUILayout.PropertyField(textLabel);
 			EditorGUILayout.PropertyField(image);
+		}
+
+		if (serializedObject.ApplyModifiedProperties())
+		{
+			panel.UpdateLabel();
 		}
 	}
 }

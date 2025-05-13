@@ -92,17 +92,6 @@ public class InputFieldExDrawer : PropertyDrawer
 {
 	public static float inputFieldDrawerHeight;
 
-
-	//public Vector2 minLabelDimensions = new Vector2(64, 1);
-	//[Tooltip("Max height is not used")]
-	//public Vector2 maxLabelDimensions = new Vector2(1025, 0);
-	//public float fontSize = 18;
-	////public Color placeHolderFontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 128.0f / 256);
-	//public Color fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
-	//[Tooltip("TODO(Tristan): implement this! First, find out how to set the default font in here.\nTODO(Tristan): different fonts for placeholder and default?")]
-	//public TMP_FontAsset fontAsset;
-
-
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
 		EditorGUI.BeginProperty(position, label, property);

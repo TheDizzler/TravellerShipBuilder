@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 126.98, y: 72}
+  m_SizeDelta: {x: 245.46, y: 66.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2671208435322713224
 MonoBehaviour:
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Button Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_sharedMaterial: {fileID: -5212590573181050906, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
@@ -66,8 +66,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -84,8 +84,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -175,7 +175,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 126.98, y: 72}
+  m_SizeDelta: {x: 245.46, y: 66.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6327939893309506531
 MonoBehaviour:
@@ -189,11 +189,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minLabelDimensions: {x: 64, y: 72}
-  maxLabelDimensions: {x: 1024, y: 0}
+  labelEx:
+    text: Button Text
+    minLabelDimensions: {x: 64, y: 1}
+    maxLabelDimensions: {x: 1025, y: 0}
+    fontSize: 36
+    fontColor: {r: 0, g: 0, b: 0, a: 1}
+    fontAsset: {fileID: 0}
   textLabel: {fileID: 2671208435322713224}
   image: {fileID: 4770955567978397481}
-  _titleText: Button
+  _designObject: {fileID: 0}
 --- !u!114 &6311154708473013455
 MonoBehaviour:
   m_ObjectHideFlags: 0
