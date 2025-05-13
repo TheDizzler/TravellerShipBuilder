@@ -50,7 +50,6 @@ public class BottomPanel : MonoBehaviour
 			minDim.y += childMinDim.y;
 			if (minDim.x < childMinDim.x)
 				minDim.x = childMinDim.x; // this might require a recalculation of any text children
-
 		}
 
 		minDim.y += layout.spacing * (activeChildren - 1);
@@ -59,7 +58,6 @@ public class BottomPanel : MonoBehaviour
 		return minDim;
 	}
 
-	//public void AddImage()
 
 	public void AddButtons(DialogButton buttons)
 	{
@@ -75,37 +73,59 @@ public class BottomPanel : MonoBehaviour
 		else if (buttons == DialogButton.None)
 		{
 			items.Remove(buttonPanel.GetComponent<UIDesignObject>());
+#if UNITY_EDITOR
+			DestroyImmediate(buttonPanel.gameObject);
+#else
 			Destroy(buttonPanel.gameObject);
+#endif
 			return;
 		}
 
 		buttonPanel.SetButtons(buttons, parentPanel);
 	}
 
-	public void AddText(string text)
+	public void AddText(LabelEx labelEx)
 	{
+		if (string.IsNullOrEmpty(labelEx.text))
+		{
+			Debug.LogWarning("Text may not be empty");
+			return;
+		}
+
 		var textBlock = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.TextBlock), transform);
-		var tmpRect = textBlock.GetComponent<RectTransform>();
-		tmpRect.SetSiblingIndex(items.Count - 1);
-		var tmp = textBlock.GetComponent<TextMeshProUGUI>();
-		tmp.text = text;
+		var label = textBlock.GetComponent<UIExpandingLabel>();
+		label.UpdateLabel(labelEx);
 		items.Add(textBlock);
 	}
 
-	public TMP_InputField AddInputField(string placeholderText, string defaultText = null)
+
+
+	/// <summary>
+	/// TODO(Tristan): Now that using LabelEx use of this property should be strongly discouraged.
+	/// </summary>
+	/// <param name="text"></param>
+	[Obsolete("Use AddText(LabelEx labelEx) instead.")]
+	public void AddText(string text)
+	{
+		var textBlock = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.TextBlock), transform);
+		var label = textBlock.GetComponent<UIExpandingLabel>();
+		label.text = text;
+		items.Add(textBlock);
+	}
+
+	public TMP_InputField AddInputField(InputFieldEx inputFieldEx)
 	{
 		var input = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.TextInputField), transform);
 		var inputRect = input.GetComponent<RectTransform>();
-		inputRect.SetSiblingIndex(items.Count - 1);
+		var inputField = input.GetComponent<UIExpandingInputField>();
+		inputField.UpdateInputField(inputFieldEx);
 		var inputTMP = input.GetComponent<TMP_InputField>();
-
-		items.Add(input);
-		inputTMP.placeholder.GetComponent<TextMeshProUGUI>().text = placeholderText;
-		if (!string.IsNullOrEmpty(defaultText))
-			inputTMP.text = defaultText;
 		inputTMP.onSubmit.AddListener(SubmitText);
+		items.Add(input);
 		return inputTMP;
 	}
+
+
 
 	private void SubmitText(string currentText)
 	{
@@ -151,11 +171,27 @@ public class BottomPanel : MonoBehaviour
 	public void ClearItems()
 	{
 		foreach (var item in items)
-			Destroy(item);
+			Destroy(item.gameObject);
 		items.Clear();
 
 		parentPanel.RecalculateDimensions();
 	}
+
+#if UNITY_EDITOR
+	public void ClearItemsEditor()
+	{
+		foreach (var item in items)
+			DestroyImmediate(item.gameObject);
+
+		if (transform.childCount > 0)
+		{
+			foreach (var childDO in transform.GetComponentsInChildren<UIDesignObject>())
+				DestroyImmediate(childDO.gameObject);
+		}
+
+		items.Clear();
+	}
+#endif
 
 	private void AddDivider()
 	{

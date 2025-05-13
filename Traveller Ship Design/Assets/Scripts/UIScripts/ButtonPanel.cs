@@ -46,8 +46,9 @@ public class ButtonPanel : MonoBehaviour, IUIBehavior
 	[SerializeField] private GameObject noButton;
 	[SerializeField] private GameObject cancelButton;
 
-	public void SetButtons(DialogButton buttons, DynamicPanel parent)
+	public void SetButtons(DialogButton newButtons, DynamicPanel parent)
 	{
+		buttons = newButtons;
 		okButton.SetActive(false);
 		yesButton.SetActive(false);
 		noButton.SetActive(false);
@@ -133,6 +134,16 @@ public class ButtonPanel : MonoBehaviour, IUIBehavior
 	}
 
 	public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void SetHover(bool isHover)
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void UpdateHover(Vector3 posOfHover)
 	{
 		throw new System.NotImplementedException();
 	}

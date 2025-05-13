@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using static BottomPanel;
 using UnityEngine.Events;
 using System;
 using static ButtonPanel;
+using static BottomPanel;
+
 
 public class DynamicPanel : MonoBehaviour, IUIBehavior
 {
@@ -79,6 +80,11 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		[TitleLabelStyle.None] = new Vector2(64, 64),
 	};
 
+	[SerializeField] public Vector2 minSize = new Vector2(128, 64);
+	[Tooltip("Max height is not used.")]
+	[SerializeField] public Vector2 maxSize = new Vector2(256, 0);
+	[SerializeField] public bool alwaysShrinkToMinSize;
+
 	public TitleLabelStyle titleType = TitleLabelStyle.BladedBar;
 	public BottomPanelStyle panelType = BottomPanelStyle.Bolted;
 
@@ -116,15 +122,25 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		titleText = newTitleText;
 	}
 
-	public TMP_InputField AddInputField(string placeholderText, string defaultText = null)
+	public void SetTitleStyle(TitleLabelStyle titleLabelType)
 	{
-		var inputField = bottomPanel.GetComponent<BottomPanel>().AddInputField(placeholderText, defaultText);
-		RecalculateDimensions();
-		return inputField;
+		UpdatePanel(titleLabelType);
 	}
 
+	public void SetTitleText(string newTitleText)
+	{
+		titleText = newTitleText;
+	}
+
+	public void SetPanelStyle(BottomPanelStyle panelStyle)
+	{
+		panelType = panelStyle;
+		Refresh();
+	}
+
+
 	/// <summary>
-	/// TODO(Tristan): Enable designer toggle to auto-shrink width of panel to min size.
+	/// TODO(Tristan): Allow tall title bars?
 	/// </summary>
 	public void RecalculateDimensions()
 	{
@@ -132,8 +148,19 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		// calculate child panel perfered sizes
 		var dialog = bottomPanel.GetComponent<BottomPanel>();
 		var minDim = dialog.GetMinDimensions();
+		if (minDim.x < minSize.x)
+			minDim.x = minSize.x;
+		if (minDim.y < minSize.y)
+			minDim.y = minSize.y;
+
 		float titleWidth = titleTMP.GetPreferredValues(titleText).x;
-		Vector2 size = rect.sizeDelta;
+		Vector2 size;
+		if (alwaysShrinkToMinSize)
+			size = minSize;
+		else
+			size = rect.sizeDelta;
+
+
 		if (titleType == TitleLabelStyle.Bar
 			|| titleType == TitleLabelStyle.None)
 		{
@@ -141,6 +168,8 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 				titleWidth = minDim.x;
 			if (titleWidth < minTabSize[titleType].x)
 				titleWidth = minTabSize[titleType].x;
+			if (titleWidth > maxSize.x)
+				titleWidth = maxSize.x;
 
 			size.x = titleWidth;
 
@@ -156,7 +185,12 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 				titleWidth = minTabSize[titleType].x;
 
 			var minBottomDimensions = minDimensions[titleType];
-			var minWidthWithTitle = titleWidth + (minBottomDimensions.x - minTabSize[titleType].x);
+			var tabDialogDiff = minBottomDimensions.x - minTabSize[titleType].x;
+			if (titleWidth > maxSize.x - tabDialogDiff)
+				titleWidth = maxSize.x - tabDialogDiff;
+
+
+			var minWidthWithTitle = titleWidth + tabDialogDiff;
 			if (minDim.x < minWidthWithTitle)
 				minDim.x = minWidthWithTitle;
 			if (minDim.x < minBottomDimensions.x)
@@ -174,6 +208,8 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		topPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, titleWidth);
 		titleTMP.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, titleWidth);
 		rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
+		// this needs to be set for UI raycasting
+		rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
 		// the bottom height can be adjusted through the bottom panel's layout.bottom
 		bottomPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
 	}
@@ -229,8 +265,50 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		bottomPanel.GetComponent<BottomPanel>().AddButtons(buttons);
 		if (recalculateDimensions)
 			RecalculateDimensions();
+	public void AddItem(CreatePanelItem createPanelItem)
+	{
+		switch (createPanelItem.dialogItemType)
+		{
+			case PanelItemType.Text:
+				AddText(createPanelItem.labelEx);
+				break;
+
+			case PanelItemType.InputField:
+				AddInputField(createPanelItem.inputFieldEx);
+				break;
+
+			case PanelItemType.Buttons:
+				AddButtons(createPanelItem.buttons, false);
+				break;
+		}
 	}
 
+
+	public void AddText(LabelEx labelEx)
+	{
+		bottomPanel.GetComponent<BottomPanel>().AddText(labelEx);
+		Refresh();
+	}
+
+	public void AddText(string text, float fontSize, Color fontColor, Vector2 minLabelDimensions, Vector2 maxLabelDimensions)
+	{
+		AddText(new LabelEx
+		{
+			text = text,
+			fontSize = fontSize,
+			fontColor = fontColor,
+			minLabelDimensions = minLabelDimensions,
+			maxLabelDimensions = maxLabelDimensions,
+		});
+	}
+
+
+	public TMP_InputField AddInputField(InputFieldEx inputFieldEx)
+	{
+		var inputField = bottomPanel.GetComponent<BottomPanel>().AddInputField(inputFieldEx);
+		RecalculateDimensions();
+		return inputField;
+	}
 
 	public void SetDialogResultOK()
 	{
@@ -258,15 +336,23 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 
 	public void Show(Vector2 position)
 	{
-		transform.position = position;
+		GetComponent<RectTransform>().anchoredPosition = position;
+		RecalculateDimensions();
 		gameObject.SetActive(true);
+		DesignManager.ShowDialog(designObject);
 	}
 
+	/// <summary>
+	/// DesignManager handles destruction of objects.
+	/// That way we can create a pool if we so desire.
+	/// </summary>
 	public void Close()
 	{
 		if (OnClose != null)
 			OnClose(this);
-		Destroy(gameObject);
+		OnClose = null;
+		gameObject.SetActive(false);
+		DesignManager.CloseDialog(GetComponent<RectTransform>());
 	}
 
 
@@ -292,6 +378,26 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		bottomPanel.GetComponent<BottomPanel>().ClearItems();
 	}
 
+#if UNITY_EDITOR
+	public void ClearItemsEditor()
+	{
+		bottomPanel.GetComponent<BottomPanel>().ClearItemsEditor();
+		RecalculateDimensions();
+	}
+
+
+	public void UpdateMaxDimensions(Vector2 maxDims)
+	{
+		maxSize = maxDims;
+		RecalculateDimensions();
+	}
+
+	public void SetAlwaysShrink(bool alwaysShrink)
+	{
+		alwaysShrinkToMinSize = alwaysShrink;
+		RecalculateDimensions();
+	}
+#endif
 
 	public void ResetToLastPosition()
 	{
@@ -318,6 +424,16 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 	}
 
 	public Vector2 GetMinDimensions()
+	{
+		throw new NotImplementedException();
+	}
+
+	public void SetHover(bool isHover)
+	{
+		throw new NotImplementedException();
+	}
+
+	public void UpdateHover(Vector3 posOfHover)
 	{
 		throw new NotImplementedException();
 	}

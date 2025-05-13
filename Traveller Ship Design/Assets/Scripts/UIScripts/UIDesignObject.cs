@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static CustomCursor;
 
 public class UIDesignObject : MonoBehaviour
 {
+	public CursorSpriteMode hoverCursorMode = CursorSpriteMode.UI_Default;
+	public CursorSpriteMode moveCursorMode = CursorSpriteMode.UI_Default;
 
 	private RectTransform _rect;
 	public RectTransform rect
@@ -18,8 +21,9 @@ public class UIDesignObject : MonoBehaviour
 		}
 	}
 
-	public bool isModal = false;
+	public bool isHoverable = false;
 	public bool isMoveable = false;
+	public bool isModal = false;
 	public bool isSelectable = false;
 	public bool hasCustomDimensions = false;
 	private IUIBehavior uiBehavior;
@@ -29,7 +33,46 @@ public class UIDesignObject : MonoBehaviour
 
 	void Awake()
 	{
-		SearchForDesignObjects();
+		SearchForDesignObject();
+	}
+
+	private void SearchForDesignObject()
+	{
+		var components = GetComponents<MonoBehaviour>();
+		foreach (var comp in components)
+		{
+			if (comp is IUIBehavior)
+			{
+				uiBehavior = (IUIBehavior)comp;
+				return;
+			}
+		}
+	}
+
+	public void SetHover(bool isHover)
+	{
+		if (!isHoverable)
+			return;
+
+		if (uiBehavior == null)
+			SearchForDesignObject();
+
+		uiBehavior.SetHover(isHover);
+		if (isHover)
+			CustomCursor.SetCursor(hoverCursorMode);
+		else
+			CustomCursor.SetCursor(CursorSpriteMode.Default);
+	}
+
+	public void UpdateHover(Vector3 posOfHover)
+	{
+		if (!isHoverable)
+			return;
+
+		if (uiBehavior == null)
+			SearchForDesignObject();
+
+		uiBehavior.UpdateHover(posOfHover);
 	}
 
 	public Vector2 GetMinDimensions()
@@ -37,7 +80,7 @@ public class UIDesignObject : MonoBehaviour
 		if (hasCustomDimensions)
 		{
 			if (uiBehavior == null)
-				SearchForDesignObjects();
+				SearchForDesignObject();
 			return uiBehavior.GetMinDimensions();
 		}
 
@@ -50,7 +93,7 @@ public class UIDesignObject : MonoBehaviour
 		if (isMoveable)
 		{
 			if (uiBehavior == null)
-				SearchForDesignObjects();
+				SearchForDesignObject();
 			uiBehavior.ResetToLastPosition();
 		}
 	}
@@ -60,7 +103,7 @@ public class UIDesignObject : MonoBehaviour
 		if (isSelectable)
 		{
 			if (uiBehavior == null)
-				SearchForDesignObjects();
+				SearchForDesignObject();
 			DesignManager.instance.toolTip.SetToolTip(tooltip);
 			return uiBehavior.Select();
 		}
@@ -73,7 +116,7 @@ public class UIDesignObject : MonoBehaviour
 		if (isSelectable)
 		{
 			if (uiBehavior == null)
-				SearchForDesignObjects();
+				SearchForDesignObject();
 
 			DesignManager.instance.toolTip.SetToolTip(null);
 			uiBehavior.Deselect();
@@ -82,16 +125,4 @@ public class UIDesignObject : MonoBehaviour
 
 
 
-	private void SearchForDesignObjects()
-	{
-		var components = GetComponents<MonoBehaviour>();
-		foreach (var comp in components)
-		{
-			if (comp is IUIBehavior)
-			{
-				uiBehavior = (IUIBehavior)comp;
-				return;
-			}
-		}
-	}
 }

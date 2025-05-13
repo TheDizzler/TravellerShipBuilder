@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8545389087224376146}
   - component: {fileID: 6852324341159985271}
   - component: {fileID: 3229364502913578900}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: BottomPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,8 +36,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0}
-  m_SizeDelta: {x: 0, y: 128}
+  m_AnchoredPosition: {x: 0, y: -64}
+  m_SizeDelta: {x: 0, y: 64}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5416971941935009492
 MonoBehaviour:
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 30
     m_Right: 30
-    m_Top: 72
+    m_Top: 14
     m_Bottom: 14
   m_ChildAlignment: 0
   m_Spacing: 8
@@ -93,13 +93,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1032f322c761dcb4ba3f9a728db6a540, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e6e949acc92e32044ba1efbc86825b9e, type: 3}
   m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 547066619828829163}
   - component: {fileID: 4424288148532533865}
   - component: {fileID: 6150541236856810287}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: TopPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 259.78, y: 68}
+  m_SizeDelta: {x: 345.52, y: 76}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8809890515692346264
 MonoBehaviour:
@@ -245,13 +245,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2b099bf690b015d4cacb0ab82301b56b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6894292793525a24fa59fd8deb1d217d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -278,8 +278,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7465219498174066458}
+  - component: {fileID: 2437800507641735234}
   - component: {fileID: 4861774239738029996}
   - component: {fileID: 1898654287109470755}
+  - component: {fileID: -686865344403366591}
+  - component: {fileID: 2421251425454645269}
   m_Layer: 5
   m_Name: DynamicPanel
   m_TagString: Untagged
@@ -306,8 +309,38 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 360, y: 66.1684}
-  m_Pivot: {x: 0, y: 1}
+  m_SizeDelta: {x: 409.52, y: 64}
+  m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &2437800507641735234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8223278145283361312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4d391fb12b49d94088545c8ab66912f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  createPanelItem:
+    dialogItemType: 1
+    labelEx:
+      text: Whew!
+      minLabelDimensions: {x: 64, y: 1}
+      maxLabelDimensions: {x: 1025, y: 0}
+      fontSize: 36
+      fontColor: {r: 0, g: 0, b: 0, a: 1}
+      fontAsset: {fileID: 0}
+    inputFieldEx:
+      placeholderText: Placeholder text
+      defaultText: 
+      fieldDimensions: {x: 354.2, y: 44}
+      fontSize: 109.3
+      placeHolderFontColor: {r: 0.3962264, g: 0.003737923, b: 0.003737923, a: 0.5}
+      fontColor: {r: 0.64779866, g: 0.042779066, b: 0.5598273, a: 1}
+      fontAsset: {fileID: 0}
+    buttons: 0
 --- !u!114 &4861774239738029996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,10 +371,13 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 1032f322c761dcb4ba3f9a728db6a540, type: 3}
     - {fileID: 21300000, guid: e62e5ed1b68a78749b14202b82b2522e, type: 3}
     - {fileID: 21300000, guid: e6e949acc92e32044ba1efbc86825b9e, type: 3}
-  titleType: 2
-  panelType: 4
+  minSize: {x: 128, y: 64}
+  maxSize: {x: 512, y: 0}
+  alwaysShrinkToMinSize: 0
+  titleType: 0
+  panelType: 6
   result: 0
-  _titleText: Traveller!
+  _titleText: Traveller!!!!! W!
   titleTMP: {fileID: 6903943988042537401}
   topPanel: {fileID: 2568309614081001759}
   bottomPanel: {fileID: 536658069957609326}
@@ -359,11 +395,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isModal: 1
+  hoverCursorMode: 9
+  moveCursorMode: 10
+  isHoverable: 0
   isMoveable: 0
+  isModal: 1
   isSelectable: 1
   hasCustomDimensions: 0
   tooltip: []
+--- !u!114 &-686865344403366591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8223278145283361312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2421251425454645269
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8223278145283361312}
+  m_CullTransparentMesh: 1
 --- !u!1 &8323344097758685840
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,7 +452,7 @@ GameObject:
   - component: {fileID: 3419301109821816428}
   - component: {fileID: 6903943988042537401}
   - component: {fileID: 5610139560218037181}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: TitleText (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -399,7 +476,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 259.78, y: 68}
+  m_SizeDelta: {x: 345.52, y: 76}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6903943988042537401
 MonoBehaviour:
@@ -421,7 +498,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Traveller!
+  m_text: Traveller!!!!! W!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_sharedMaterial: {fileID: -5212590573181050906, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
@@ -486,7 +563,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 12, y: 8, z: 48, w: 4}
+  m_margin: {x: 12, y: 8, z: 12, w: 12}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

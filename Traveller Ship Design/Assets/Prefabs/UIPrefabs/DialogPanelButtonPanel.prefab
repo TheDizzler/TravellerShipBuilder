@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1680454412601526349}
   - component: {fileID: 405449597442549011}
   - component: {fileID: 6065038642624891789}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 7040571989617064963}
   - component: {fileID: 1242869850839157736}
   - component: {fileID: 9104667784436780503}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: YesButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   - component: {fileID: 133612591655255237}
   - component: {fileID: 698034004838404069}
   - component: {fileID: 1731632071756472071}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: 'NoButton '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -414,7 +414,7 @@ GameObject:
   - component: {fileID: 8818626369108475116}
   - component: {fileID: 7601832850729489092}
   - component: {fileID: 1204940856121105683}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CancelButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -546,7 +546,7 @@ GameObject:
   - component: {fileID: 4936302004704511194}
   - component: {fileID: 1781120208917306525}
   - component: {fileID: 855093896524383116}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -682,7 +682,7 @@ GameObject:
   - component: {fileID: 2070163557342165017}
   - component: {fileID: 2815396503848411625}
   - component: {fileID: 565224369571648420}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -819,7 +819,7 @@ GameObject:
   - component: {fileID: 2828397145073048868}
   - component: {fileID: 4791743876892143004}
   - component: {fileID: 6896538824816725261}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: OKButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -954,7 +954,7 @@ GameObject:
   - component: {fileID: 7899581285383477695}
   - component: {fileID: 2229494213494269531}
   - component: {fileID: 5022085412885239388}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: DialogPanelButtonPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1057,7 +1057,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.392}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1092,7 +1092,7 @@ GameObject:
   - component: {fileID: 4319148496350285283}
   - component: {fileID: 8516956729793888188}
   - component: {fileID: 1123688129491558852}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

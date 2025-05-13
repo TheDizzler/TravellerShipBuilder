@@ -7,7 +7,7 @@ public class DragPanel : MonoBehaviour, IUIBehavior
 {
 	[SerializeField] private RectTransform parentRect;
 	private Vector2 startDragPos;
-	private bool isDragging = false;
+
 	private UIDesignObject _designObject;
 	public UIDesignObject designObject
 	{
@@ -19,6 +19,16 @@ public class DragPanel : MonoBehaviour, IUIBehavior
 		}
 	}
 
+	
+	public void SetHover(bool isHover)
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void UpdateHover(Vector3 posOfHover)
+	{
+		throw new System.NotImplementedException();
+	}
 
 	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput,
 		ref UIDesignObject currentlySelectedObject)
@@ -37,6 +47,9 @@ public class DragPanel : MonoBehaviour, IUIBehavior
 		startDragPos = GetUICoordinatesFromMousePos();
 	}
 
+	/// <summary>
+	/// TODO(Tristan): Check for windows bounds!
+	/// </summary>
 	public void MouseDrag()
 	{
 		var screenPosition = GetUICoordinatesFromMousePos();

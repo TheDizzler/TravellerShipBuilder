@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using static DesignManager;
 
-public interface IUIBehavior 
+public interface IUIBehavior
 {
 	public UIDesignObject designObject { get; }
+	public void SetHover(bool isHover);
+	public void UpdateHover(Vector3 posOfHover);
 	public void ResetToLastPosition();
 	/// <summary>
 	/// Actions (usually UI feedback?) to take when an object is selected.
@@ -13,7 +15,7 @@ public interface IUIBehavior
 	/// </summary>
 	/// <returns></returns>
 	public UIDesignObject Select();
-	
+
 	public void Deselect();
 	/// <summary>
 	/// Actions to take when the user left clicks on the object.

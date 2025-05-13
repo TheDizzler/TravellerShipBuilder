@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 230662985735286932}
   - component: {fileID: 9139544722843291066}
   - component: {fileID: 2099621496068818944}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 5761179207979531042}
   - component: {fileID: 3171321435051314732}
   - component: {fileID: 7490356970785544225}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ContextMenuItem (Button)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,8 +205,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isModal: 0
+  hoverCursorMode: 9
+  moveCursorMode: 9
+  isHoverable: 0
   isMoveable: 0
+  isModal: 0
   isSelectable: 0
   hasCustomDimensions: 1
   tooltip: []
