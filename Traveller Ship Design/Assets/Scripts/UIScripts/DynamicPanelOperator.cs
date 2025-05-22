@@ -1,42 +1,82 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
+
+public interface UIDataEx : ICloneable
+{
+	public PanelItemType dataType { get; }
+	public void ResetToDefaults();
+}
 
 public enum PanelItemType
 {
 	Text,
 	InputField,
-	Buttons
+	CheckBox,
+	Slider,
+	Buttons,
 }
 
 [Serializable]
-public class CreatePanelItem
+/// Needed for two different PropertyDrawer views.
+public class CreatePanelItem : PanelItem
 {
-	public PanelItemType dialogItemType;
 
-	public LabelEx labelEx;
-	public InputFieldEx inputFieldEx;
-
-	public ButtonPanel.DialogButton buttons;
 }
-
 
 
 [Serializable]
 public class PanelItem
 {
-	public PanelItemType dialogItemType;
-	public UIDesignObject uiDO;
+	public PanelItemType itemType;
+	public static Dictionary<PanelItemType, string> panelItemNames = new()
+	{
+		[PanelItemType.Text] = "labelEx",
+		[PanelItemType.InputField] = "inputFieldEx",
+		[PanelItemType.CheckBox] = "checkBoxEx",
+		[PanelItemType.Slider] = "sliderEx",
+		[PanelItemType.Buttons] = "buttonEx",
+	};
+
+	public LabelEx labelEx;
+	public InputFieldEx inputFieldEx;
+	public CheckBoxEx checkBoxEx;
+	public SliderEx sliderEx;
+	public ButtonDataEx buttonEx;
+
+	public UIDesignObject uiDesignObject;
+
+	public List<UIDataEx> GetAllItems()
+	{
+		return new List<UIDataEx>
+		{
+			labelEx,
+			inputFieldEx,
+			checkBoxEx,
+			sliderEx,
+			buttonEx,
+		};
+	}
+
+	public Dictionary<PanelItemType, UIDataEx> GetAllItemsByType()
+	{
+		var dict = new Dictionary<PanelItemType, UIDataEx>();
+		foreach (var data in GetAllItems())
+		{
+			dict.Add(data.dataType, data);
+		}
+
+		return dict;
+	}
 }
 
 [RequireComponent(typeof(DynamicPanel))]
 public class DynamicPanelOperator : MonoBehaviour
 {
 	[SerializeField] private CreatePanelItem createPanelItem;
-	//[SerializeField] private List<PanelItem> panelItems;
+	[SerializeField] public List<PanelItem> panelItems;
 
 	void Start()
 	{
@@ -45,10 +85,46 @@ public class DynamicPanelOperator : MonoBehaviour
 #endif
 	}
 
+#if UNITY_EDITOR
+	public void ResetToLabelDefaults()
+	{
+		foreach (UIDataEx itemEx in createPanelItem.GetAllItems())
+			itemEx.ResetToDefaults();
+	}
+
+	public void RecalculateDimensions()
+	{
+		var panel = GetComponent<DynamicPanel>();
+		panel.RecalculateDimensions();
+	}
+
 	public void AddItem()
 	{
 		var panel = GetComponent<DynamicPanel>();
 		panel.AddItem(createPanelItem);
+	}
+
+	public void Remove(UIDesignObject uiDO)
+	{
+		var panel = GetComponent<DynamicPanel>();
+		panel.RemoveItem(uiDO);
+	}
+
+	public void ResetToDefaults(PanelItem panelItem)
+	{
+		var allItems = panelItem.GetAllItemsByType();
+		allItems[panelItem.itemType].ResetToDefaults();
+		panelItem.uiDesignObject.UpdateBackingData(allItems[panelItem.itemType]);
+
+		var panel = GetComponent<DynamicPanel>();
+		panel.RecalculateDimensions();
+	}
+
+	public void RemoveItem(PanelItem item)
+	{
+		panelItems.Remove(item);
+		var panel = GetComponent<DynamicPanel>();
+		panel.RemoveItem(item.uiDesignObject);
 	}
 
 
@@ -87,4 +163,5 @@ public class DynamicPanelOperator : MonoBehaviour
 		var panel = GetComponent<DynamicPanel>();
 		panel.SetPanelStyle(panelStyle);
 	}
+#endif
 }

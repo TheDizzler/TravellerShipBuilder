@@ -1,16 +1,16 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.DebugUI;
 
 [Serializable]
-public class LabelEx
+public class LabelEx : UIDataEx 
 {
+	public PanelItemType dataType { get { return PanelItemType.Text; } }
+
 	[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
-	public string text;
+	public string text = "Text Label";
 	public Vector2 minLabelDimensions = new Vector2(64, 1);
 	[Tooltip("Max height is not used.")]
 	public Vector2 maxLabelDimensions = new Vector2(1025, 0);
@@ -24,6 +24,21 @@ public class LabelEx
 	public LabelEx(string text)
 	{
 		this.text = text;
+	}
+
+	public  void ResetToDefaults()
+	{
+		text = "Text Label";
+		minLabelDimensions = new Vector2(64, 1);
+		maxLabelDimensions = new Vector2(1025, 0);
+		fontSize = 36;
+		fontColor = Color.white;
+		fontAsset = null;
+	}
+
+	public object Clone()
+	{
+		return this.MemberwiseClone();
 	}
 }
 
@@ -45,7 +60,7 @@ public class UIExpandingLabel : MonoBehaviour, IUIBehavior
 		set
 		{
 			labelEx.text = value;
-			UpdateLabel();
+			UpdateBackingData();
 		}
 	}
 
@@ -55,7 +70,7 @@ public class UIExpandingLabel : MonoBehaviour, IUIBehavior
 		set
 		{
 			labelEx.fontColor = value;
-			UpdateLabel();
+			UpdateBackingData();
 		}
 	}
 
@@ -70,20 +85,26 @@ public class UIExpandingLabel : MonoBehaviour, IUIBehavior
 		}
 	}
 
-
-	public void UpdateLabel(LabelEx newLabel)
+	public UIDataEx GetBackingData()
 	{
-		labelEx = newLabel;
+		return labelEx;
+	}
+
+	public void UpdateBackingData(UIDataEx backingData)
+	{
+		labelEx = (LabelEx) backingData;
 		text = labelEx.text;
 	}
 
 
-	public void UpdateLabel()
+	public void UpdateBackingData()
 	{
 		textLabel.text = labelEx.text;
-		textLabel.ForceMeshUpdate();
 		textLabel.fontSize = labelEx.fontSize;
 		textLabel.color = labelEx.fontColor;
+		textLabel.font = labelEx.fontAsset;
+		textLabel.ForceMeshUpdate();
+		
 		var prefTextSize = textLabel.GetPreferredValues(text);
 		var textWidth = prefTextSize.x;
 		var textHeight = prefTextSize.y; // this should be the preferred height of a single line, right?
@@ -122,6 +143,7 @@ public class UIExpandingLabel : MonoBehaviour, IUIBehavior
 
 	public Vector2 GetMinDimensions()
 	{
+		UpdateBackingData();
 		var size = textLabel.rectTransform.sizeDelta;
 		size.x += textLabel.margin.x + textLabel.margin.z;
 		size.y += textLabel.margin.y + textLabel.margin.w;

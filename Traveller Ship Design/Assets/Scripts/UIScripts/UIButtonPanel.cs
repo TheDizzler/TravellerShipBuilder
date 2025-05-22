@@ -1,13 +1,42 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UIButtonPanel;
 
-public class ButtonPanel : MonoBehaviour, IUIBehavior
+[Serializable]
+public class ButtonDataEx : UIDataEx
+{
+	public PanelItemType dataType { get { return PanelItemType.Buttons; } }
+
+	public DialogButton buttons = DialogButton.OK;
+
+	public ButtonDataEx() { }
+
+	public ButtonDataEx(DialogButton buttonType)
+	{
+		buttons = buttonType;
+	}
+
+
+	public void ResetToDefaults()
+	{
+		buttons = DialogButton.OK;
+	}
+
+	public object Clone()
+	{
+		return this.MemberwiseClone();
+	}
+}
+
+
+public class UIButtonPanel : MonoBehaviour, IUIBehavior
 {
 	public enum DialogButton
 	{
-		None = 0x0,
+		//None = 0x0,
 		OK = 0x1,
 		OKCancel = 0x2,
 		YesNoCancel = 0x3,
@@ -22,14 +51,15 @@ public class ButtonPanel : MonoBehaviour, IUIBehavior
 	[UDictionary.Split(50, 50)]
 	private Dictionary<DialogButton, float> minButtonWidth = new()
 	{
-		[DialogButton.None] = 0,
+		//[DialogButton.None] = 0,
 		[DialogButton.OK] = 150,
 		[DialogButton.OKCancel] = 300,
 		[DialogButton.YesNoCancel] = 450,
 		[DialogButton.YesNo] = 300,
 	};
 
-	private DialogButton buttons;
+	[SerializeField] private ButtonDataEx buttons;
+
 	private UIDesignObject _designObject;
 	public UIDesignObject designObject
 	{
@@ -46,71 +76,82 @@ public class ButtonPanel : MonoBehaviour, IUIBehavior
 	[SerializeField] private GameObject noButton;
 	[SerializeField] private GameObject cancelButton;
 
-	public void SetButtons(DialogButton newButtons, DynamicPanel parent)
+
+	public UIDataEx GetBackingData()
 	{
-		buttons = newButtons;
+		return buttons;
+	}
+
+	public void SetResultListeners(DynamicPanel parent)
+	{
+		okButton.GetComponent<Button>().onClick.RemoveAllListeners();
+		okButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultOK);
+		cancelButton.GetComponent<Button>().onClick.RemoveAllListeners();
+		cancelButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultCancel);
+		yesButton.GetComponent<Button>().onClick.RemoveAllListeners();
+		yesButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultYes);
+		noButton.GetComponent<Button>().onClick.RemoveAllListeners();
+		noButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultNo);
+	}
+
+	public void UpdateBackingData(UIDataEx backingData)
+	{
+		buttons = (ButtonDataEx)backingData;
+
+		UpdateBackingData();
+	}
+
+
+	public void UpdateBackingData()
+	{
 		okButton.SetActive(false);
 		yesButton.SetActive(false);
 		noButton.SetActive(false);
 		cancelButton.SetActive(false);
 
-		switch (buttons)
+		switch (buttons.buttons)
 		{
 			case DialogButton.OK:
 			{
 				okButton.SetActive(true);
-				okButton.GetComponent<Button>().onClick.RemoveAllListeners();
-				okButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultOK);
+
 			}
 			break;
 
 			case DialogButton.OKCancel:
 			{
 				okButton.SetActive(true);
-				okButton.GetComponent<Button>().onClick.RemoveAllListeners();
-				okButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultOK);
 				cancelButton.SetActive(true);
-				cancelButton.GetComponent<Button>().onClick.RemoveAllListeners();
-				cancelButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultCancel);
 			}
 			break;
 
 			case DialogButton.YesNoCancel:
 			{
 				yesButton.SetActive(true);
-				yesButton.GetComponent<Button>().onClick.RemoveAllListeners();
-				yesButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultYes);
 				noButton.SetActive(true);
-				noButton.GetComponent<Button>().onClick.RemoveAllListeners();
-				noButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultNo);
 				cancelButton.SetActive(true);
-				cancelButton.GetComponent<Button>().onClick.RemoveAllListeners();
-				cancelButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultCancel);
 			}
 			break;
 
 			case DialogButton.YesNo:
 			{
 				yesButton.SetActive(true);
-				yesButton.GetComponent<Button>().onClick.RemoveAllListeners();
-				yesButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultYes);
 				noButton.SetActive(true);
-				noButton.GetComponent<Button>().onClick.RemoveAllListeners();
-				noButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultNo);
 			}
 			break;
 
-			case DialogButton.None:
-			{
-				Debug.LogException(new System.Exception("Invalid state call"));
-			}
-			break;
+			//case DialogButton.None:
+			//{
+			//	Debug.LogException(new System.Exception("Invalid state call"));
+			//}
+			//break;
 		}
 	}
 
 	public Vector2 GetMinDimensions()
 	{
-		return new Vector2(minButtonWidth[buttons], GetComponent<RectTransform>().sizeDelta.y);
+		UpdateBackingData();
+		return new Vector2(minButtonWidth[buttons.buttons], GetComponent<RectTransform>().sizeDelta.y);
 	}
 
 
@@ -147,4 +188,5 @@ public class ButtonPanel : MonoBehaviour, IUIBehavior
 	{
 		throw new System.NotImplementedException();
 	}
+
 }

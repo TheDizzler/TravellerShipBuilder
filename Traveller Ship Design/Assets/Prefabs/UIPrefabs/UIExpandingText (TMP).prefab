@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 46845985781952030}
   - component: {fileID: 7324103980625293524}
   m_Layer: 0
-  m_Name: DynamicPanelText (TMP)
+  m_Name: UIExpandingText (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 179.21, y: 42.41}
+  m_SizeDelta: {x: 170.21, y: 42.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2644291506069405767
 MonoBehaviour:
@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   labelEx:
-    text: Label Text!
+    text: Label Text
     minLabelDimensions: {x: 64, y: 1}
     maxLabelDimensions: {x: 1025, y: 0}
     fontSize: 36
@@ -80,6 +80,7 @@ MonoBehaviour:
   isModal: 0
   isSelectable: 0
   hasCustomDimensions: 1
+  hasUpdatableBackingData: 1
   tooltip: []
 --- !u!114 &46845985781952030
 MonoBehaviour:
@@ -101,7 +102,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Label Text!
+  m_text: Label Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_sharedMaterial: {fileID: -5212590573181050906, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}

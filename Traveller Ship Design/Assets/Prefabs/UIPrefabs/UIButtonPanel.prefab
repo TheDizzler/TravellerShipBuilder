@@ -172,7 +172,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 71, y: -15}
+  m_AnchoredPosition: {x: 62.5, y: -15}
   m_SizeDelta: {x: 125, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7040571989617064963
@@ -305,7 +305,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 225, y: -15}
+  m_AnchoredPosition: {x: 199.5, y: -15}
   m_SizeDelta: {x: 125, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &133612591655255237
@@ -955,7 +955,7 @@ GameObject:
   - component: {fileID: 2229494213494269531}
   - component: {fileID: 5022085412885239388}
   m_Layer: 0
-  m_Name: DialogPanelButtonPanel
+  m_Name: UIButtonPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -996,6 +996,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 339e43106b8b73748af4bd934d896ee3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttons:
+    buttons: 2
   okButton: {fileID: 6749889736822966019}
   yesButton: {fileID: 461001629351655048}
   noButton: {fileID: 1974796049591662254}
@@ -1012,10 +1014,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isModal: 0
+  hoverCursorMode: 9
+  moveCursorMode: 9
+  isHoverable: 0
   isMoveable: 0
+  isModal: 0
   isSelectable: 0
   hasCustomDimensions: 1
+  hasUpdatableBackingData: 1
   tooltip: []
 --- !u!114 &7899581285383477695
 MonoBehaviour:

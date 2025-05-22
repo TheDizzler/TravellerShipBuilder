@@ -59,6 +59,8 @@ public class DesignManager : MonoBehaviour
 		TextBlock,
 		TextInputField,
 		ButtonPanel,
+		CheckBox,
+		Slider,
 	}
 
 	[UDictionary.Split(50, 50)]

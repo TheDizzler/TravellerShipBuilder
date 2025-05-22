@@ -5,10 +5,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// TODO(Tristan): Selection color, Content Type, Char limit
+
 [Serializable]
-public class InputFieldEx
+/// TODO(Tristan): Char limit.
+public class InputFieldEx : UIDataEx
 {
+	public PanelItemType dataType { get { return PanelItemType.InputField; } }
+
 	[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
 	public string placeholderText = "Placeholder text";
 	[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
@@ -26,6 +29,22 @@ public class InputFieldEx
 	{
 		this.placeholderText = placeholderText;
 		this.defaultText = defaultText;
+	}
+
+	public void ResetToDefaults()
+	{
+		placeholderText = "Placeholder text";
+		defaultText = "";
+		fieldDimensions = new Vector2(275, 44);
+		fontSize = 18;
+		placeHolderFontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 128.0f / 256);
+		fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
+		fontAsset = null;
+	}
+		
+	public object Clone()
+	{
+		return this.MemberwiseClone();
 	}
 }
 
@@ -51,23 +70,27 @@ public class UIExpandingInputField : MonoBehaviour, IUIBehavior
 		}
 	}
 
-
-	public void UpdateInputField(InputFieldEx newInputFieldEx)
+	public UIDataEx GetBackingData()
 	{
-		inputFieldEx = newInputFieldEx;
-		UpdateInputField();
+		return inputFieldEx;
+	}
+
+	public void UpdateBackingData(UIDataEx backingData)
+	{
+		inputFieldEx = (InputFieldEx)backingData;
+		UpdateBackingData();
 	}
 
 
-	public void UpdateInputField()
+	public void UpdateBackingData()
 	{
-		//inputTMP.SetGlobalFontAsset();
-		//inputFieldTMP.fontAsset = inputFieldEx.placeholderEx.fontAsset;
+		inputFieldTMP.fontAsset = inputFieldEx.fontAsset;
 		inputFieldTMP.pointSize = inputFieldEx.fontSize;
 		placeholderLabel.text = inputFieldEx.placeholderText;
 		placeholderLabel.color = inputFieldEx.placeHolderFontColor;
 		placeholderLabel.ForceMeshUpdate();
 
+		textLabel.color = inputFieldEx.fontColor;
 
 		inputFieldTMP.text = inputFieldEx.defaultText;
 
@@ -88,6 +111,11 @@ public class UIExpandingInputField : MonoBehaviour, IUIBehavior
 	}
 
 
+	public Vector2 GetMinDimensions()
+	{
+		UpdateBackingData();
+		return image.rectTransform.sizeDelta;
+	}
 
 	public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
 	{
@@ -99,10 +127,6 @@ public class UIExpandingInputField : MonoBehaviour, IUIBehavior
 		throw new System.NotImplementedException();
 	}
 
-	public Vector2 GetMinDimensions()
-	{
-		throw new System.NotImplementedException();
-	}
 
 	public void ResetToLastPosition()
 	{

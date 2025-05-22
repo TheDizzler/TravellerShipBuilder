@@ -1,11 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
-using System;
-using static ButtonPanel;
 using static BottomPanel;
 
 
@@ -92,8 +91,6 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 	public DialogResult result;
 	public UnityAction<DynamicPanel> OnClose;
 
-	[SerializeField] private string _titleText;
-
 	[SerializeField] private TextMeshProUGUI titleTMP;
 	[SerializeField] private RectTransform topPanel;
 	[SerializeField] private RectTransform bottomPanel;
@@ -107,7 +104,6 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		get { return titleTMP.text; }
 		set
 		{
-			_titleText = value;
 			titleTMP.text = value;
 			titleTMP.ForceMeshUpdate();
 			RecalculateDimensions();
@@ -115,6 +111,11 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 	}
 
 	public UIDesignObject designObject { get; }
+
+	public void Awake()
+	{
+		Refresh();
+	}
 
 	public void SetTitle(string newTitleText, TitleLabelStyle titleLabelType)
 	{
@@ -153,17 +154,20 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		if (minDim.y < minSize.y)
 			minDim.y = minSize.y;
 
-		float titleWidth = titleTMP.GetPreferredValues(titleText).x;
+
 		Vector2 size;
 		if (alwaysShrinkToMinSize)
 			size = minSize;
 		else
 			size = rect.sizeDelta;
+		float titleWidth = titleTMP.GetPreferredValues(titleText).x;
 
 
 		if (titleType == TitleLabelStyle.Bar
 			|| titleType == TitleLabelStyle.None)
 		{
+			if (titleWidth < size.x)
+				titleWidth = size.x;
 			if (titleWidth < minDim.x)
 				titleWidth = minDim.x;
 			if (titleWidth < minTabSize[titleType].x)
@@ -217,7 +221,7 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 
 	public void UpdateTitle()
 	{
-		titleText = _titleText;
+		titleText = titleText;
 	}
 
 	public void UpdatePanel(TitleLabelStyle newTitleType)
@@ -259,38 +263,46 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		UpdateTitle();
 	}
 
+#if UNITY_EDITOR
+	public delegate void AddItemToDialog(UIDataEx uiData);
 
-	public void AddButtons(DialogButton buttons, bool recalculateDimensions)
+	readonly Dictionary<PanelItemType, System.Reflection.MethodInfo> functions = new()
 	{
-		bottomPanel.GetComponent<BottomPanel>().AddButtons(buttons);
-		if (recalculateDimensions)
-			RecalculateDimensions();
+		[PanelItemType.Text] = typeof(DynamicPanel).GetMethod("AddText"),
+		[PanelItemType.InputField] = typeof(DynamicPanel).GetMethod("AddInputField"),
+		[PanelItemType.CheckBox] = typeof(DynamicPanel).GetMethod("AddCheckBox"),
+		[PanelItemType.Slider] = typeof(DynamicPanel).GetMethod("AddSlider"),
+		[PanelItemType.Buttons] = typeof(DynamicPanel).GetMethod("AddButtons"),
+	};
+
 	public void AddItem(CreatePanelItem createPanelItem)
 	{
-		switch (createPanelItem.dialogItemType)
-		{
-			case PanelItemType.Text:
-				AddText(createPanelItem.labelEx);
-				break;
+		var itemData = createPanelItem.GetAllItemsByType()[createPanelItem.itemType];
+		functions[createPanelItem.itemType].Invoke(this, new object[] { itemData.Clone() });
+	}
+#endif
 
-			case PanelItemType.InputField:
-				AddInputField(createPanelItem.inputFieldEx);
-				break;
-
-			case PanelItemType.Buttons:
-				AddButtons(createPanelItem.buttons, false);
-				break;
-		}
+	public UISlider AddSlider(SliderEx sliderEx)
+	{
+		var slider = bottomPanel.GetComponent<BottomPanel>().AddSlider(sliderEx);
+		RecalculateDimensions();
+		return slider;
 	}
 
-
-	public void AddText(LabelEx labelEx)
+	public UICheckBox AddCheckBox(CheckBoxEx checkBoxEx)
 	{
-		bottomPanel.GetComponent<BottomPanel>().AddText(labelEx);
+		var checkBox = bottomPanel.GetComponent<BottomPanel>().AddCheckBox(checkBoxEx);
+		RecalculateDimensions();
+		return checkBox;
+	}
+
+	public void AddText(UIDataEx labelEx)
+	{
+		bottomPanel.GetComponent<BottomPanel>().AddText((LabelEx)labelEx);
 		Refresh();
 	}
 
-	public void AddText(string text, float fontSize, Color fontColor, Vector2 minLabelDimensions, Vector2 maxLabelDimensions)
+	public void AddText_NoData(string text, float fontSize, Color fontColor, Vector2 minLabelDimensions, Vector2 maxLabelDimensions)
 	{
 		AddText(new LabelEx
 		{
@@ -308,6 +320,12 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		var inputField = bottomPanel.GetComponent<BottomPanel>().AddInputField(inputFieldEx);
 		RecalculateDimensions();
 		return inputField;
+	}
+
+	public void AddButtons(ButtonDataEx buttons)
+	{
+		bottomPanel.GetComponent<BottomPanel>().AddButtons(buttons);
+		RecalculateDimensions();
 	}
 
 	public void SetDialogResultOK()
@@ -373,6 +391,13 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 
 	}
 
+
+	public void RemoveItem(UIDesignObject uiDO)
+	{
+		bottomPanel.GetComponent<BottomPanel>().RemoveItem(uiDO);
+
+	}
+
 	public void ClearItems()
 	{
 		bottomPanel.GetComponent<BottomPanel>().ClearItems();
@@ -434,6 +459,21 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 	}
 
 	public void UpdateHover(Vector3 posOfHover)
+	{
+		throw new NotImplementedException();
+	}
+
+	public UIDataEx GetBackingData()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void UpdateBackingData(UIDataEx backingData)
+	{
+		throw new NotImplementedException();
+	}
+
+	public void UpdateBackingData()
 	{
 		throw new NotImplementedException();
 	}

@@ -24,4 +24,7 @@ public interface IUIBehavior
 	/// <param name="keyInput"></param>
 	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, ref UIDesignObject currentlySelectedObject);
 	public Vector2 GetMinDimensions();
+	public UIDataEx GetBackingData();
+	public void UpdateBackingData(UIDataEx backingData);
+	public void UpdateBackingData();
 }

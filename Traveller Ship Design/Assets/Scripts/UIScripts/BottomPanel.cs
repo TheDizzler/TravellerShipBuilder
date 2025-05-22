@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static DesignManager;
-using static ButtonPanel;
+
 
 public class BottomPanel : MonoBehaviour
 {
@@ -59,29 +59,41 @@ public class BottomPanel : MonoBehaviour
 	}
 
 
-	public void AddButtons(DialogButton buttons)
+	public List<UIDesignObject> GetItems()
 	{
-		ButtonPanel buttonPanel = GetComponentInChildren<ButtonPanel>();
+		return items;
+	}
+
+	public void AddButtons(ButtonDataEx buttons)
+	{
+		UIButtonPanel buttonPanel = GetComponentInChildren<UIButtonPanel>();
 		if (buttonPanel == null)
 		{
-			if (buttons == DialogButton.None)
-				return;
 			var buttonPanelDO = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.ButtonPanel), transform);
-			buttonPanel = buttonPanelDO.GetComponent<ButtonPanel>();
+			buttonPanel = buttonPanelDO.GetComponent<UIButtonPanel>();
 			items.Add(buttonPanelDO);
 		}
-		else if (buttons == DialogButton.None)
-		{
-			items.Remove(buttonPanel.GetComponent<UIDesignObject>());
-#if UNITY_EDITOR
-			DestroyImmediate(buttonPanel.gameObject);
-#else
-			Destroy(buttonPanel.gameObject);
-#endif
-			return;
-		}
 
-		buttonPanel.SetButtons(buttons, parentPanel);
+		buttonPanel.UpdateBackingData(buttons);
+		buttonPanel.SetResultListeners(parentPanel);
+	}
+
+	public UISlider AddSlider(SliderEx sliderEx)
+	{
+		var sliderDO = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.Slider), transform);
+		var slider = sliderDO.GetComponent<UISlider>();
+		slider.UpdateBackingData(sliderEx);
+		items.Add(sliderDO);
+		return slider;
+	}
+
+	public UICheckBox AddCheckBox(CheckBoxEx checkBoxData)
+	{
+		var checkBoxDO = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.CheckBox), transform);
+		var checkBox = checkBoxDO.GetComponent<UICheckBox>();
+		checkBox.UpdateBackingData(checkBoxData);
+		items.Add(checkBoxDO);
+		return checkBox;
 	}
 
 	public void AddText(LabelEx labelEx)
@@ -94,7 +106,7 @@ public class BottomPanel : MonoBehaviour
 
 		var textBlock = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.TextBlock), transform);
 		var label = textBlock.GetComponent<UIExpandingLabel>();
-		label.UpdateLabel(labelEx);
+		label.UpdateBackingData(labelEx);
 		items.Add(textBlock);
 	}
 
@@ -118,7 +130,7 @@ public class BottomPanel : MonoBehaviour
 		var input = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.TextInputField), transform);
 		var inputRect = input.GetComponent<RectTransform>();
 		var inputField = input.GetComponent<UIExpandingInputField>();
-		inputField.UpdateInputField(inputFieldEx);
+		inputField.UpdateBackingData(inputFieldEx);
 		var inputTMP = input.GetComponent<TMP_InputField>();
 		inputTMP.onSubmit.AddListener(SubmitText);
 		items.Add(input);
@@ -166,6 +178,18 @@ public class BottomPanel : MonoBehaviour
 			else
 				AddMenuItem(action.Value, action.Key);
 		}
+	}
+
+	public void RemoveItem(UIDesignObject uiDO)
+	{
+		items.Remove(uiDO);
+#if UNITY_EDITOR
+		DestroyImmediate(uiDO.gameObject);
+#else
+		Destroy(uiDO.gameObject);
+#endif
+
+		parentPanel.RecalculateDimensions();
 	}
 
 	public void ClearItems()

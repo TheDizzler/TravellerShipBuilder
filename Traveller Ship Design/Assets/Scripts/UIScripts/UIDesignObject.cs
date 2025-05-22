@@ -26,6 +26,7 @@ public class UIDesignObject : MonoBehaviour
 	public bool isModal = false;
 	public bool isSelectable = false;
 	public bool hasCustomDimensions = false;
+	public bool hasUpdatableBackingData = false;
 	private IUIBehavior uiBehavior;
 
 
@@ -47,6 +48,8 @@ public class UIDesignObject : MonoBehaviour
 				return;
 			}
 		}
+
+		throw new Exception("UIDesignObject MUST have a IUIBehavior!");
 	}
 
 	public void SetHover(bool isHover)
@@ -98,6 +101,26 @@ public class UIDesignObject : MonoBehaviour
 		}
 	}
 
+	public void UpdateBackingData()
+	{
+		if (hasUpdatableBackingData)
+		{
+			if (uiBehavior == null)
+				SearchForDesignObject();
+			uiBehavior.UpdateBackingData();
+		}
+	}
+
+		public void UpdateBackingData(UIDataEx backingData)
+	{
+		if (hasUpdatableBackingData)
+		{
+			if (uiBehavior == null)
+				SearchForDesignObject();
+			uiBehavior.UpdateBackingData(backingData);
+		}
+	}
+
 	public UIDesignObject Select()
 	{
 		if (isSelectable)
@@ -122,7 +145,4 @@ public class UIDesignObject : MonoBehaviour
 			uiBehavior.Deselect();
 		}
 	}
-
-
-
 }

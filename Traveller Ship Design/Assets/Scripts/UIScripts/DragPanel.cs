@@ -19,7 +19,7 @@ public class DragPanel : MonoBehaviour, IUIBehavior
 		}
 	}
 
-	
+
 	public void SetHover(bool isHover)
 	{
 		throw new System.NotImplementedException();
@@ -83,6 +83,21 @@ public class DragPanel : MonoBehaviour, IUIBehavior
 	}
 
 	public Vector2 GetMinDimensions()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public UIDataEx GetBackingData()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void UpdateBackingData(UIDataEx backingData)
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void UpdateBackingData()
 	{
 		throw new System.NotImplementedException();
 	}
