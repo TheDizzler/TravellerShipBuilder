@@ -8,8 +8,6 @@ using UnityEngine.UI;
 using static DynamicPanel;
 
 
-
-
 [CustomEditor(typeof(DynamicPanel))]
 public class DynamicPanelEditor : Editor
 {
@@ -119,8 +117,6 @@ public class DynamicPanelOperatorEditor : Editor
 			adder.SetAlwaysShrink(alwaysShrink);
 		}
 
-
-
 		EditorGUI.BeginChangeCheck();
 		EditorGUILayout.PropertyField(createPanelItem);
 		EditorGUILayout.PropertyField(panelItemsSO);
@@ -185,6 +181,22 @@ public class UICheckBoxEditor : Editor
 }
 
 
+[CustomEditor(typeof(UIButton))]
+public class UIButtonEditor : Editor
+{
+	public override void OnInspectorGUI()
+	{
+		EditorGUI.BeginChangeCheck();
+		base.OnInspectorGUI();
+		if (EditorGUI.EndChangeCheck())
+		{
+			var button = (UIButton)target;
+			button.UpdateBackingData();
+		}
+	}
+}
+
+
 [CustomEditor(typeof(UIExpandingInputField))]
 public class UIExpandingInputFieldEditor : Editor
 {
@@ -192,12 +204,12 @@ public class UIExpandingInputFieldEditor : Editor
 	{
 		EditorGUI.BeginChangeCheck();
 		base.OnInspectorGUI();
-
 		if (EditorGUI.EndChangeCheck())
 		{
 			var inputField = (UIExpandingInputField)target;
 			inputField.UpdateBackingData();
 		}
+
 	}
 }
 
@@ -244,6 +256,43 @@ public class UILabelEditor : Editor
 	}
 }
 
+[CustomEditor(typeof(UISlider))]
+public class SliderCustomEditor : Editor
+{
+	private UISlider slider;
+	private RectTransform rect;
+	private Vector2 lastSize;
+
+	void OnEnable()
+	{
+		slider = (UISlider)target;
+		rect = slider.GetComponent<RectTransform>();
+		lastSize = rect.sizeDelta;
+	}
+
+
+	public override void OnInspectorGUI()
+	{
+		EditorGUI.BeginChangeCheck();
+		base.OnInspectorGUI();
+		if (EditorGUI.EndChangeCheck())
+		{
+			slider.UpdateBackingData();
+		}
+	}
+
+	public void OnSceneGUI()
+	{
+		var size = rect.sizeDelta;
+		if (size != lastSize)
+		{
+			slider.UpdateBackingData();
+			lastSize = size;
+		}
+	}
+}
+
+
 
 
 [CustomEditor(typeof(ExpandingLabel))]
@@ -258,82 +307,6 @@ public class LabelEditor : Editor
 		{
 			var panel = (ExpandingLabel)target;
 			panel.UpdateText();
-		}
-	}
-}
-
-
-[CustomEditor(typeof(UISlider))]
-public class SliderCustomEditor : Editor
-{
-	private UISlider slider;
-	private SliderEx sliderEx;
-	private RectTransform rect;
-	private Vector2 lastSize;
-
-	void OnEnable()
-	{
-		slider = (UISlider)target;
-		sliderEx = (SliderEx)slider.GetBackingData();
-		rect = slider.GetComponent<RectTransform>();
-		lastSize = rect.sizeDelta;
-	}
-
-
-	public override void OnInspectorGUI()
-	{
-		EditorGUI.BeginChangeCheck();
-
-		bool newIsInt = EditorGUILayout.Toggle("Whole Numbers", sliderEx.wholeNumbers);
-		if (newIsInt != sliderEx.wholeNumbers)
-		{
-			sliderEx.wholeNumbers = newIsInt;
-			if (sliderEx.wholeNumbers)
-			{
-				sliderEx.minValue = Mathf.RoundToInt(sliderEx.minValue);
-				sliderEx.maxValue = Mathf.RoundToInt(sliderEx.maxValue);
-				sliderEx.value = Mathf.RoundToInt(sliderEx.value);
-			}
-		}
-
-		float newMinValue = EditorGUILayout.FloatField("Min Value", sliderEx.minValue);
-		if (newMinValue != sliderEx.minValue)
-		{
-			if (sliderEx.wholeNumbers)
-				newMinValue = Mathf.RoundToInt(newMinValue);
-			if (newMinValue > sliderEx.maxValue)
-				newMinValue = sliderEx.maxValue;
-			sliderEx.minValue = newMinValue;
-		}
-
-		float newMaxValue = EditorGUILayout.FloatField("Max Value", sliderEx.maxValue);
-		if (newMaxValue != sliderEx.maxValue)
-		{
-			if (sliderEx.wholeNumbers)
-				newMaxValue = Mathf.RoundToInt(newMaxValue);
-			if (newMaxValue < sliderEx.minValue)
-				newMaxValue = sliderEx.minValue;
-			sliderEx.maxValue = newMaxValue;
-		}
-
-		float newValue = EditorGUILayout.Slider("Value", sliderEx.value, sliderEx.minValue, sliderEx.maxValue);
-		if (sliderEx.wholeNumbers)
-			newValue = Mathf.RoundToInt(newValue);
-		sliderEx.value = newValue;
-
-		if (EditorGUI.EndChangeCheck())
-		{
-			slider.UpdateBackingData();
-		}
-	}
-
-	public void OnSceneGUI()
-	{
-		var size = rect.sizeDelta;
-		if (size != lastSize)
-		{
-			slider.UpdateBackingData();
-			lastSize = size;
 		}
 	}
 }

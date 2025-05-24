@@ -6,15 +6,15 @@ using UnityEngine.UI;
 using static UIButtonPanel;
 
 [Serializable]
-public class ButtonDataEx : UIDataEx
+public class ButtonPanelDataEx : UIDataEx
 {
-	public PanelItemType dataType { get { return PanelItemType.Buttons; } }
+	public PanelItemType dataType { get { return PanelItemType.ButtonPanel; } }
 
 	public DialogButton buttons = DialogButton.OK;
 
-	public ButtonDataEx() { }
+	public ButtonPanelDataEx() { }
 
-	public ButtonDataEx(DialogButton buttonType)
+	public ButtonPanelDataEx(DialogButton buttonType)
 	{
 		buttons = buttonType;
 	}
@@ -36,7 +36,6 @@ public class UIButtonPanel : MonoBehaviour, IUIBehavior
 {
 	public enum DialogButton
 	{
-		//None = 0x0,
 		OK = 0x1,
 		OKCancel = 0x2,
 		YesNoCancel = 0x3,
@@ -51,14 +50,13 @@ public class UIButtonPanel : MonoBehaviour, IUIBehavior
 	[UDictionary.Split(50, 50)]
 	private Dictionary<DialogButton, float> minButtonWidth = new()
 	{
-		//[DialogButton.None] = 0,
 		[DialogButton.OK] = 150,
 		[DialogButton.OKCancel] = 300,
 		[DialogButton.YesNoCancel] = 450,
 		[DialogButton.YesNo] = 300,
 	};
 
-	[SerializeField] private ButtonDataEx buttons;
+	[SerializeField] private ButtonPanelDataEx buttons;
 
 	private UIDesignObject _designObject;
 	public UIDesignObject designObject
@@ -96,7 +94,7 @@ public class UIButtonPanel : MonoBehaviour, IUIBehavior
 
 	public void UpdateBackingData(UIDataEx backingData)
 	{
-		buttons = (ButtonDataEx)backingData;
+		buttons = (ButtonPanelDataEx)backingData;
 
 		UpdateBackingData();
 	}

@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2652043488210015540}
+  - component: {fileID: 4235460900820515980}
   - component: {fileID: 2671208435322713224}
   - component: {fileID: 2578596274991834713}
   m_Layer: 5
@@ -37,6 +38,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 245.46, y: 66.41}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4235460900820515980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3573942408160834987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  labelEx:
+    text: Button Text
+    minLabelDimensions: {x: 64, y: 64}
+    maxLabelDimensions: {x: 1025, y: 0}
+    fontSize: 36
+    fontColor: {r: 0, g: 0, b: 0, a: 1}
+    fontAsset: {fileID: 0}
+  textLabel: {fileID: 2671208435322713224}
+  image: {fileID: 4770955567978397481}
+  _designObject: {fileID: 0}
 --- !u!114 &2671208435322713224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,13 +168,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7796280320740207736}
-  - component: {fileID: 6327939893309506531}
+  - component: {fileID: 1978944217387945199}
   - component: {fileID: 6311154708473013455}
   - component: {fileID: 4770955567978397481}
   - component: {fileID: 6902153215532748074}
   - component: {fileID: 2975041999511188888}
   m_Layer: 5
-  m_Name: BoltedButton
+  m_Name: UIButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -177,7 +200,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 245.46, y: 66.41}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6327939893309506531
+--- !u!114 &1978944217387945199
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -186,19 +209,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 5027443682642349068}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
+  m_Script: {fileID: 11500000, guid: b6ebc21a77d911343936683f76b64830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  labelEx:
-    text: Button Text
-    minLabelDimensions: {x: 64, y: 1}
-    maxLabelDimensions: {x: 1025, y: 0}
-    fontSize: 36
-    fontColor: {r: 0, g: 0, b: 0, a: 1}
-    fontAsset: {fileID: 0}
-  textLabel: {fileID: 2671208435322713224}
-  image: {fileID: 4770955567978397481}
-  _designObject: {fileID: 0}
+  buttonEx:
+    labelEx:
+      text: Button Text
+      minLabelDimensions: {x: 64, y: 64}
+      maxLabelDimensions: {x: 1025, y: 0}
+      fontSize: 36
+      fontColor: {r: 0, g: 0, b: 0, a: 1}
+      fontAsset: {fileID: 0}
+  label: {fileID: 4235460900820515980}
+  _designObject: {fileID: 6311154708473013455}
 --- !u!114 &6311154708473013455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +240,8 @@ MonoBehaviour:
   isMoveable: 0
   isModal: 0
   isSelectable: 0
-  hasCustomDimensions: 0
+  hasCustomDimensions: 1
+  hasUpdatableBackingData: 1
   tooltip: []
 --- !u!114 &4770955567978397481
 MonoBehaviour:

@@ -64,7 +64,7 @@ public class BottomPanel : MonoBehaviour
 		return items;
 	}
 
-	public void AddButtons(ButtonDataEx buttons)
+	public void AddButtonPanel(ButtonPanelDataEx buttons)
 	{
 		UIButtonPanel buttonPanel = GetComponentInChildren<UIButtonPanel>();
 		if (buttonPanel == null)
@@ -76,6 +76,16 @@ public class BottomPanel : MonoBehaviour
 
 		buttonPanel.UpdateBackingData(buttons);
 		buttonPanel.SetResultListeners(parentPanel);
+	}
+	
+	public Button AddButton(ButtonEx buttonEx)
+	{
+		var buttonDO = Instantiate(DesignManager.GetUIPrefab(UIPrefabType.BoltedButton), transform);
+		var uiButton = buttonDO.GetComponent<UIButton>();
+		uiButton.UpdateBackingData(buttonEx);
+		items.Add(buttonDO);
+		var button = buttonDO.GetComponent<Button>();
+		return button;
 	}
 
 	public UISlider AddSlider(SliderEx sliderEx)

@@ -7,9 +7,16 @@ using UnityEngine.UI;
 
 public static class PropertyDrawerEx
 {
-	public static void SetProperty(SerializedProperty property, string propertyName, Rect position, ref float currentDrawerHeight)
+	public static void SetProperty(SerializedProperty subProperty, Rect position, ref float currentDrawerHeight)
 	{
-		var prop = property.FindPropertyRelative(propertyName);
+		var propRect = new Rect(position.x, position.y + currentDrawerHeight, position.width, EditorGUI.GetPropertyHeight(subProperty, true));
+		EditorGUI.PropertyField(propRect, subProperty);
+		currentDrawerHeight += propRect.height + EditorGUIUtility.standardVerticalSpacing;
+	}
+
+	public static void SetProperty(SerializedProperty mainProperty, string propertyName, Rect position, ref float currentDrawerHeight)
+	{
+		var prop = mainProperty.FindPropertyRelative(propertyName);
 		var propRect = new Rect(position.x, position.y + currentDrawerHeight, position.width, EditorGUI.GetPropertyHeight(prop, true));
 		EditorGUI.PropertyField(propRect, prop);
 		currentDrawerHeight += propRect.height + EditorGUIUtility.standardVerticalSpacing;
@@ -33,9 +40,7 @@ public class PanelItemDrawer : PropertyDrawer
 	{
 		heights = new();
 		foreach (PanelItemType itemType in Enum.GetValues(typeof(PanelItemType)))
-		{
 			heights.Add(itemType, 0);
-		}
 	}
 
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -132,36 +137,111 @@ public class CreatePanelItemDrawer : PropertyDrawer
 	}
 }
 
-[CustomPropertyDrawer(typeof(SliderEx))]
-public class SliderExDrawer : PropertyDrawer
-{
-	public static float drawerHeight;
 
+[CustomPropertyDrawer(typeof(SliderEx))]
+public class SliderExDrawer : UIExDrawer
+{
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
 		EditorGUI.BeginProperty(position, label, property);
 
 		drawerHeight = 0;
-		PropertyDrawerEx.SetProperty(property, "wholeNumbers", position, ref drawerHeight);
-		PropertyDrawerEx.SetProperty(property, "minValue", position, ref drawerHeight);
-		PropertyDrawerEx.SetProperty(property, "maxValue", position, ref drawerHeight);
-		PropertyDrawerEx.SetProperty(property, "value", position, ref drawerHeight);
+		var boolProp = property.FindPropertyRelative("wholeNumbers");
+		var minProp = property.FindPropertyRelative("minValue");
+		var maxProp = property.FindPropertyRelative("maxValue");
+		var valueProp = property.FindPropertyRelative("value");
+		
+		var showUnitsProp = property.FindPropertyRelative("showUnits");
+
+		var boolRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUI.GetPropertyHeight(boolProp, true));
+		drawerHeight += boolRect.height + EditorGUIUtility.standardVerticalSpacing;
+		var minRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUI.GetPropertyHeight(minProp, true));
+		drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
+		var maxRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUI.GetPropertyHeight(maxProp, true));
+		drawerHeight += maxRect.height + EditorGUIUtility.standardVerticalSpacing;
+		var valueRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUI.GetPropertyHeight(valueProp, true));
+		drawerHeight += valueRect.height + EditorGUIUtility.standardVerticalSpacing;
+
+		PropertyDrawerEx.SetProperty(property, "handleOffset", position, ref drawerHeight);
+
+		PropertyDrawerEx.SetProperty(showUnitsProp, position, ref drawerHeight);
+		if (showUnitsProp.boolValue)
+		{
+			var unitCountProp = property.FindPropertyRelative("unitCount");
+			var unitCountRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUI.GetPropertyHeight(unitCountProp, true));
+			drawerHeight += unitCountRect.height + EditorGUIUtility.standardVerticalSpacing;
+
+			unitCountProp.intValue = EditorGUI.IntSlider(unitCountRect, "Unit Count", unitCountProp.intValue, 2, 12);
+
+			PropertyDrawerEx.SetProperty(property, "unitVerticalOffset", position, ref drawerHeight);
+			// draw a short label
+			PropertyDrawerEx.SetProperty(property, "labelEx", position, ref drawerHeight);
+		}
+
+
+		// logic
+
+		bool newIsInt = EditorGUI.Toggle(boolRect, "Whole Numbers", boolProp.boolValue);
+		if (newIsInt != boolProp.boolValue)
+		{
+			boolProp.boolValue = newIsInt;
+			if (newIsInt)
+			{
+				minProp.floatValue = Mathf.RoundToInt(minProp.floatValue);
+				maxProp.floatValue = Mathf.RoundToInt(maxProp.floatValue);
+				valueProp.floatValue = Mathf.RoundToInt(valueProp.floatValue);
+			}
+		}
+
+		float newMinValue = EditorGUI.FloatField(minRect, "Min Value", minProp.floatValue);
+		if (newMinValue != minProp.floatValue)
+		{
+			if (newIsInt)
+				newMinValue = Mathf.RoundToInt(newMinValue);
+			if (newMinValue > maxProp.floatValue)
+				newMinValue = maxProp.floatValue;
+			minProp.floatValue = newMinValue;
+		}
+
+		float newMaxValue = EditorGUI.FloatField(maxRect, "Max Value", maxProp.floatValue);
+		if (newMaxValue != maxProp.floatValue)
+		{
+			if (newIsInt)
+				newMaxValue = Mathf.RoundToInt(newMaxValue);
+			if (newMaxValue < minProp.floatValue)
+				newMaxValue = minProp.floatValue;
+			maxProp.floatValue = newMaxValue;
+		}
+
+		float newValue = EditorGUI.Slider(valueRect, "Value", valueProp.floatValue, minProp.floatValue, maxProp.floatValue);
+
+		if (newIsInt)
+			newValue = Mathf.RoundToInt(newValue);
+		valueProp.floatValue = newValue;
+
 
 		EditorGUI.EndProperty();
 	}
+}
 
 
-	public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+[CustomPropertyDrawer(typeof(ButtonEx))]
+public class ButtonExDrawer : UIExDrawer
+{
+	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
-		return drawerHeight;
+		EditorGUI.BeginProperty(position, label, property);
+
+		drawerHeight = 0;
+		PropertyDrawerEx.SetProperty(property, "labelEx", position, ref drawerHeight);
+
+		EditorGUI.EndProperty();
 	}
 }
 
 [CustomPropertyDrawer(typeof(CheckBoxEx))]
-public class CheckBoxExDrawer : PropertyDrawer
+public class CheckBoxExDrawer : UIExDrawer
 {
-	public static float drawerHeight;
-
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
 		EditorGUI.BeginProperty(position, label, property);
@@ -172,65 +252,50 @@ public class CheckBoxExDrawer : PropertyDrawer
 
 		EditorGUI.EndProperty();
 	}
-
-
-	public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-	{
-		return drawerHeight;
-	}
 }
 
 [CustomPropertyDrawer(typeof(InputFieldEx))]
-public class InputFieldExDrawer : PropertyDrawer
+public class InputFieldExDrawer : UIExDrawer
 {
-	public static float inputFieldDrawerHeight;
-
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
 		EditorGUI.BeginProperty(position, label, property);
 
-		inputFieldDrawerHeight = 0;
+		drawerHeight = 0;
 		var labelRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 		EditorGUI.LabelField(labelRect, "Placeholder Text");
-		inputFieldDrawerHeight += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+		drawerHeight += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
 		++EditorGUI.indentLevel;
 		{
-			PropertyDrawerEx.SetProperty(property, "placeholderText", position, ref inputFieldDrawerHeight);
-			PropertyDrawerEx.SetProperty(property, "placeHolderFontColor", position, ref inputFieldDrawerHeight);
+			PropertyDrawerEx.SetProperty(property, "placeholderText", position, ref drawerHeight);
+			PropertyDrawerEx.SetProperty(property, "placeHolderFontColor", position, ref drawerHeight);
 		}
 		--EditorGUI.indentLevel;
 
-		labelRect = new Rect(position.x, position.y + inputFieldDrawerHeight, position.width, EditorGUIUtility.singleLineHeight);
+		labelRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
 		EditorGUI.LabelField(labelRect, "Text");
-		inputFieldDrawerHeight += labelRect.height + EditorGUIUtility.standardVerticalSpacing;
+		drawerHeight += labelRect.height + EditorGUIUtility.standardVerticalSpacing;
 
 		++EditorGUI.indentLevel;
 		{
-			PropertyDrawerEx.SetProperty(property, "defaultText", position, ref inputFieldDrawerHeight);
-			PropertyDrawerEx.SetProperty(property, "fontColor", position, ref inputFieldDrawerHeight);
+			PropertyDrawerEx.SetProperty(property, "defaultText", position, ref drawerHeight);
+			PropertyDrawerEx.SetProperty(property, "fontColor", position, ref drawerHeight);
 		}
 		--EditorGUI.indentLevel;
 
-		PropertyDrawerEx.SetProperty(property, "fontSize", position, ref inputFieldDrawerHeight);
-		PropertyDrawerEx.SetProperty(property, "fontAsset", position, ref inputFieldDrawerHeight);
-		PropertyDrawerEx.SetProperty(property, "fieldDimensions", position, ref inputFieldDrawerHeight);
+		PropertyDrawerEx.SetProperty(property, "fontSize", position, ref drawerHeight);
+		PropertyDrawerEx.SetProperty(property, "fontAsset", position, ref drawerHeight);
+		PropertyDrawerEx.SetProperty(property, "fieldDimensions", position, ref drawerHeight);
 
 		EditorGUI.EndProperty();
-	}
-
-	public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-	{
-		return inputFieldDrawerHeight;
 	}
 }
 
 
 [CustomPropertyDrawer(typeof(LabelEx))]
-public class LabelExDrawer : PropertyDrawer
+public class LabelExDrawer : UIExDrawer
 {
-	public static float drawerHeight;
-
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
 		EditorGUI.BeginProperty(position, label, property);
@@ -263,19 +328,13 @@ public class LabelExDrawer : PropertyDrawer
 
 		EditorGUI.EndProperty();
 	}
-
-	public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-	{
-		return drawerHeight;
-	}
 }
 
 
 
-[CustomPropertyDrawer(typeof(ButtonDataEx))]
-public class ButtonDataDrawer : PropertyDrawer
+[CustomPropertyDrawer(typeof(ButtonPanelDataEx))]
+public class ButtonDataDrawer : UIExDrawer
 {
-	public static float drawerHeight;
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
 		EditorGUI.BeginProperty(position, label, property);
@@ -286,9 +345,16 @@ public class ButtonDataDrawer : PropertyDrawer
 
 		EditorGUI.EndProperty();
 	}
+}
+
+
+public class UIExDrawer : PropertyDrawer
+{
+	public float drawerHeight;
 
 	public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 	{
 		return drawerHeight;
 	}
 }
+

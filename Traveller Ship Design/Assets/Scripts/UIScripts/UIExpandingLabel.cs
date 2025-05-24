@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [Serializable]
-public class LabelEx : UIDataEx 
+public class LabelEx : UIDataEx
 {
 	public PanelItemType dataType { get { return PanelItemType.Text; } }
 
@@ -26,7 +26,7 @@ public class LabelEx : UIDataEx
 		this.text = text;
 	}
 
-	public  void ResetToDefaults()
+	public void ResetToDefaults()
 	{
 		text = "Text Label";
 		minLabelDimensions = new Vector2(64, 1);
@@ -92,7 +92,7 @@ public class UIExpandingLabel : MonoBehaviour, IUIBehavior
 
 	public void UpdateBackingData(UIDataEx backingData)
 	{
-		labelEx = (LabelEx) backingData;
+		labelEx = (LabelEx)backingData;
 		text = labelEx.text;
 	}
 
@@ -104,7 +104,7 @@ public class UIExpandingLabel : MonoBehaviour, IUIBehavior
 		textLabel.color = labelEx.fontColor;
 		textLabel.font = labelEx.fontAsset;
 		textLabel.ForceMeshUpdate();
-		
+
 		var prefTextSize = textLabel.GetPreferredValues(text);
 		var textWidth = prefTextSize.x;
 		var textHeight = prefTextSize.y; // this should be the preferred height of a single line, right?
@@ -144,10 +144,17 @@ public class UIExpandingLabel : MonoBehaviour, IUIBehavior
 	public Vector2 GetMinDimensions()
 	{
 		UpdateBackingData();
-		var size = textLabel.rectTransform.sizeDelta;
-		size.x += textLabel.margin.x + textLabel.margin.z;
-		size.y += textLabel.margin.y + textLabel.margin.w;
-		return size;
+		if (image == null)
+		{
+			var size = textLabel.rectTransform.sizeDelta;
+			size.x += textLabel.margin.x + textLabel.margin.z;
+			size.y += textLabel.margin.y + textLabel.margin.w;
+			return size;
+		}
+		else
+		{
+			return image.rectTransform.sizeDelta;
+		}
 	}
 
 	public void SetHover(bool isHover)

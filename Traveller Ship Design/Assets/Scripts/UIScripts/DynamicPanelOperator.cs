@@ -16,7 +16,8 @@ public enum PanelItemType
 	InputField,
 	CheckBox,
 	Slider,
-	Buttons,
+	Button,
+	ButtonPanel,
 }
 
 [Serializable]
@@ -37,14 +38,16 @@ public class PanelItem
 		[PanelItemType.InputField] = "inputFieldEx",
 		[PanelItemType.CheckBox] = "checkBoxEx",
 		[PanelItemType.Slider] = "sliderEx",
-		[PanelItemType.Buttons] = "buttonEx",
+		[PanelItemType.ButtonPanel] = "buttonPanelEx",
+		[PanelItemType.Button] = "buttonEx",
 	};
 
 	public LabelEx labelEx;
 	public InputFieldEx inputFieldEx;
 	public CheckBoxEx checkBoxEx;
 	public SliderEx sliderEx;
-	public ButtonDataEx buttonEx;
+	public ButtonEx buttonEx;
+	public ButtonPanelDataEx buttonPanelEx;
 
 	public UIDesignObject uiDesignObject;
 
@@ -56,6 +59,7 @@ public class PanelItem
 			inputFieldEx,
 			checkBoxEx,
 			sliderEx,
+			buttonPanelEx,
 			buttonEx,
 		};
 	}

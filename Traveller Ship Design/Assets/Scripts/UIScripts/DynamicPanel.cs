@@ -264,15 +264,14 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 	}
 
 #if UNITY_EDITOR
-	public delegate void AddItemToDialog(UIDataEx uiData);
-
 	readonly Dictionary<PanelItemType, System.Reflection.MethodInfo> functions = new()
 	{
 		[PanelItemType.Text] = typeof(DynamicPanel).GetMethod("AddText"),
 		[PanelItemType.InputField] = typeof(DynamicPanel).GetMethod("AddInputField"),
 		[PanelItemType.CheckBox] = typeof(DynamicPanel).GetMethod("AddCheckBox"),
 		[PanelItemType.Slider] = typeof(DynamicPanel).GetMethod("AddSlider"),
-		[PanelItemType.Buttons] = typeof(DynamicPanel).GetMethod("AddButtons"),
+		[PanelItemType.Button] = typeof(DynamicPanel).GetMethod("AddButton"),
+		[PanelItemType.ButtonPanel] = typeof(DynamicPanel).GetMethod("AddButtonPanel"),
 	};
 
 	public void AddItem(CreatePanelItem createPanelItem)
@@ -281,6 +280,13 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		functions[createPanelItem.itemType].Invoke(this, new object[] { itemData.Clone() });
 	}
 #endif
+
+	public Button AddButton(ButtonEx buttonEx)
+	{
+		var button = bottomPanel.GetComponent<BottomPanel>().AddButton(buttonEx);
+		RecalculateDimensions();
+		return button;
+	}
 
 	public UISlider AddSlider(SliderEx sliderEx)
 	{
@@ -294,6 +300,13 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 		var checkBox = bottomPanel.GetComponent<BottomPanel>().AddCheckBox(checkBoxEx);
 		RecalculateDimensions();
 		return checkBox;
+	}
+
+	public TMP_InputField AddInputField(InputFieldEx inputFieldEx)
+	{
+		var inputField = bottomPanel.GetComponent<BottomPanel>().AddInputField(inputFieldEx);
+		RecalculateDimensions();
+		return inputField;
 	}
 
 	public void AddText(UIDataEx labelEx)
@@ -315,16 +328,14 @@ public class DynamicPanel : MonoBehaviour, IUIBehavior
 	}
 
 
-	public TMP_InputField AddInputField(InputFieldEx inputFieldEx)
-	{
-		var inputField = bottomPanel.GetComponent<BottomPanel>().AddInputField(inputFieldEx);
-		RecalculateDimensions();
-		return inputField;
-	}
 
-	public void AddButtons(ButtonDataEx buttons)
+	/// <summary>
+	/// For dialog boxes with a Result.
+	/// </summary>
+	/// <param name="buttons"></param>
+	public void AddButtonPanel(ButtonPanelDataEx buttons)
 	{
-		bottomPanel.GetComponent<BottomPanel>().AddButtons(buttons);
+		bottomPanel.GetComponent<BottomPanel>().AddButtonPanel(buttons);
 		RecalculateDimensions();
 	}
 

@@ -8,29 +8,52 @@ using UnityEngine.UI;
 public class SliderEx : UIDataEx
 {
 	public PanelItemType dataType { get { return PanelItemType.Slider; } }
+
 	public float minValue = 0;
 	public float maxValue = 4;
 	public float value = 0;
 	public bool wholeNumbers = true;
+	public bool showUnits = true;
+	public int unitCount = 2;
+	public int unitVerticalOffset = 16;
+	public Vector2 handleOffset = new Vector2(16, 16);
+	public LabelEx labelEx = new LabelEx
+	{
+		fontColor = Color.black,
+		fontSize = 18,
+		minLabelDimensions = new Vector2(8, 8),
+	};
 
 
-	public  void ResetToDefaults()
+	public void ResetToDefaults()
 	{
 		minValue = 0;
 		maxValue = 4;
 		value = 0;
 		wholeNumbers = true;
+		showUnits = false;
+		unitCount = 2;
+		unitVerticalOffset = 16;
+		handleOffset = new Vector2(16, 16);
+
+		labelEx.ResetToDefaults();
+		labelEx.fontColor = Color.black;
+		labelEx.fontSize = 18;
+		labelEx.minLabelDimensions = new Vector2(8, 8);
 	}
-	
+
 	public object Clone()
 	{
-		return this.MemberwiseClone();
+		var clone = (SliderEx)this.MemberwiseClone();
+		clone.labelEx = (LabelEx)labelEx.Clone();
+		return clone;
 	}
 }
 
 public class UISlider : MonoBehaviour, IUIBehavior
 {
 	[SerializeField] private SliderEx sliderEx;
+
 
 	private UIDesignObject _designObject;
 	public UIDesignObject designObject
@@ -61,6 +84,7 @@ public class UISlider : MonoBehaviour, IUIBehavior
 
 	public Vector2 GetMinDimensions()
 	{
+		UpdateBackingData();
 		return GetComponent<SliderCustom>().GetMinDimensions();
 	}
 
