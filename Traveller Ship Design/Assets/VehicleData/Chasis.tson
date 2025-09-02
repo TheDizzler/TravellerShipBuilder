@@ -1,0 +1,11 @@
+// Basics: name, skill, TL, agility, Spaces, costPerSpace, hullPerSpace, shippingTonsPerSpace, traits, examples
+Light Ground Vehicle, Drive (wheel), 4, 0, 1-20, 750, 2, 0.5, ,"Ground cars" "Motorbikes" "Pickup Trucks",
+// TechTable: TL, Speed, Range
+4, Very Slow, 100
+5-6, Slow, 200
+7-8, Medium, 400
+9-10, High, 500
+11+, Fast, 600
+// Options: how this data will be consumed will need to be thought about. Maybe just the name here which gets cross-referenced later.
+Open Frame,
+	

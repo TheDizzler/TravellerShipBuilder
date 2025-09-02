@@ -6,6 +6,7 @@ TagManager:
   tags:
   - WallSegmentCollider
   - linePointIndicator
+  - ClickBlocker
   layers:
   - Default
   - TransparentFX
@@ -38,7 +39,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Geomorph Screenshot
   m_SortingLayers:
   - name: Default
     uniqueID: 0
