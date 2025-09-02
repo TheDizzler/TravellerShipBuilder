@@ -71,11 +71,11 @@ MonoBehaviour:
   tooltip:
   - Click to drag corner.
   - Alt-click to delete corner.
-  isHoverable: 0
-  isMoveable: 0
-  isCreateable: 0
-  isInteractable: 0
-  isSelectable: 0
+  isHoverable: 1
+  isMoveable: 1
+  isCreateable: 1
+  isInteractable: 1
+  isSelectable: 1
 --- !u!212 &4930974036437321890
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -248,11 +248,11 @@ MonoBehaviour:
   minorSelectColor: {r: 1, g: 0.76862746, b: 1, a: 1}
   tooltip:
   - Something like alt-click to change the size of the door.
-  isHoverable: 0
-  isMoveable: 0
-  isCreateable: 0
-  isInteractable: 0
-  isSelectable: 0
+  isHoverable: 1
+  isMoveable: 1
+  isCreateable: 1
+  isInteractable: 1
+  isSelectable: 1
 --- !u!212 &9177000346097605429
 SpriteRenderer:
   m_ObjectHideFlags: 0

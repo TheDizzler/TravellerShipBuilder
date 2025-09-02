@@ -68,11 +68,11 @@ MonoBehaviour:
   selectColor: {r: 1, g: 0, b: 1, a: 1}
   minorSelectColor: {r: 1, g: 0.765, b: 1, a: 1}
   tooltip: []
-  isHoverable: 0
+  isHoverable: 1
   isMoveable: 0
   isCreateable: 0
-  isInteractable: 0
-  isSelectable: 0
+  isInteractable: 1
+  isSelectable: 1
 --- !u!61 &2191678015811733399
 BoxCollider2D:
   m_ObjectHideFlags: 0

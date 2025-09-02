@@ -24,7 +24,7 @@ public class ToolTip : MonoBehaviour
 		var text = "";
 		foreach (var tip in toolTips)
 		{
-			text += "•" + tip + "\n";
+			text += "• " + tip + "\n";
 		}
 
 		hintText.text = text.Trim();

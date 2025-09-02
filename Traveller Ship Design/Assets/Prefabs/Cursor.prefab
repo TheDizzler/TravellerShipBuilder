@@ -45,19 +45,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: {x: 0, y: 0}
-  handOpen: {fileID: 2800000, guid: dd1ad5f5c2aa35240bfd05858aacd109, type: 3}
-  handClosed: {fileID: 2800000, guid: 422de43b0b0edfa4bb7af8c78fccd22a, type: 3}
-  handPoint: {fileID: 2800000, guid: 2a3ccfa676da38b4688f5c66f86a8827, type: 3}
-  handPointUp: {fileID: 2800000, guid: f0a7829b5eeaf254db2328c7fec28abe, type: 3}
-  resizeAHorizontal: {fileID: 2800000, guid: c5dd0efa0869ce84eba73b7714852bc3, type: 3}
-  resizeACross: {fileID: 2800000, guid: af9244d5e8da0394db790b7e7d888766, type: 3}
-  resizeACrossDiagonal: {fileID: 2800000, guid: 7c0e31ae6001f6b42936b156d29492a4, type: 3}
-  resizeCCross: {fileID: 2800000, guid: b0be28630952bb1448f2332fa3af5e70, type: 3}
-  resizeCCrossDiagonal: {fileID: 2800000, guid: 59f830d12d44cd544b5fe69e51afe037, type: 3}
-  handOpenHotspot: {x: 24, y: 30}
-  handPointHotspot: {x: 24, y: 30}
-  handPointUpHotspot: {x: 29, y: 7}
-  resizeCrossHotspot: {x: 32, y: 32}
-  resizeHorizontalHotspot: {x: 32, y: 32}
+  cursorTextures:
+    keys: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d000000
+    values:
+    - {fileID: 2800000, guid: dd1ad5f5c2aa35240bfd05858aacd109, type: 3}
+    - {fileID: 2800000, guid: 2a3ccfa676da38b4688f5c66f86a8827, type: 3}
+    - {fileID: 2800000, guid: 422de43b0b0edfa4bb7af8c78fccd22a, type: 3}
+    - {fileID: 2800000, guid: 7c0e31ae6001f6b42936b156d29492a4, type: 3}
+    - {fileID: 2800000, guid: 7c0e31ae6001f6b42936b156d29492a4, type: 3}
+    - {fileID: 2800000, guid: 2a3ccfa676da38b4688f5c66f86a8827, type: 3}
+    - {fileID: 2800000, guid: af9244d5e8da0394db790b7e7d888766, type: 3}
+    - {fileID: 2800000, guid: c5dd0efa0869ce84eba73b7714852bc3, type: 3}
+    - {fileID: 2800000, guid: 4822442d2c23e534599eb963feb27c21, type: 3}
+    - {fileID: 2800000, guid: f0a7829b5eeaf254db2328c7fec28abe, type: 3}
+    - {fileID: 2800000, guid: 422de43b0b0edfa4bb7af8c78fccd22a, type: 3}
+    - {fileID: 2800000, guid: 1fe6bddb2f515794cafefec09a0f2bcd, type: 3}
+    - {fileID: 2800000, guid: 7ae1ff72bcb1d5048b9277146fff48cb, type: 3}
+    - {fileID: 2800000, guid: 0a9eebccff5c508408747682b118d9eb, type: 3}
+  cursorHotspots:
+    keys:
+    - {fileID: 2800000, guid: dd1ad5f5c2aa35240bfd05858aacd109, type: 3}
+    - {fileID: 2800000, guid: 422de43b0b0edfa4bb7af8c78fccd22a, type: 3}
+    - {fileID: 2800000, guid: 2a3ccfa676da38b4688f5c66f86a8827, type: 3}
+    - {fileID: 2800000, guid: f0a7829b5eeaf254db2328c7fec28abe, type: 3}
+    - {fileID: 2800000, guid: c5dd0efa0869ce84eba73b7714852bc3, type: 3}
+    - {fileID: 2800000, guid: af9244d5e8da0394db790b7e7d888766, type: 3}
+    - {fileID: 2800000, guid: 7c0e31ae6001f6b42936b156d29492a4, type: 3}
+    - {fileID: 2800000, guid: b0be28630952bb1448f2332fa3af5e70, type: 3}
+    - {fileID: 2800000, guid: 59f830d12d44cd544b5fe69e51afe037, type: 3}
+    - {fileID: 2800000, guid: 1fe6bddb2f515794cafefec09a0f2bcd, type: 3}
+    - {fileID: 2800000, guid: 7ae1ff72bcb1d5048b9277146fff48cb, type: 3}
+    - {fileID: 0}
+    values:
+    - {x: 24, y: 30}
+    - {x: 24, y: 30}
+    - {x: 24, y: 30}
+    - {x: 29, y: 7}
+    - {x: 32, y: 32}
+    - {x: 32, y: 32}
+    - {x: 32, y: 32}
+    - {x: 32, y: 32}
+    - {x: 32, y: 32}
+    - {x: 0, y: 10}
+    - {x: 0, y: 0}
+    - {x: 0, y: 0}
   gridCursorMode: 0
   uiCursorMode: 0

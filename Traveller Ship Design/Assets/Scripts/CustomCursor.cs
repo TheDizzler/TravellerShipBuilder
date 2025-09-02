@@ -9,21 +9,12 @@ public class CustomCursor : MonoBehaviour
 	public Vector2 debug;
 
 	private static CustomCursor instance;
-	[SerializeField] private Texture2D handOpen;
-	[SerializeField] private Texture2D handClosed;
-	[SerializeField] private Texture2D handPoint;
-	[SerializeField] private Texture2D handPointUp;
-	[SerializeField] private Texture2D resizeAHorizontal;
-	[SerializeField] private Texture2D resizeACross;
-	[SerializeField] private Texture2D resizeACrossDiagonal;
-	[SerializeField] private Texture2D resizeCCross;
-	[SerializeField] private Texture2D resizeCCrossDiagonal;
 
-	[SerializeField] private Vector2 handOpenHotspot = new Vector2(24, 30);
-	[SerializeField] private Vector2 handPointHotspot = new Vector2(24, 30);
-	[SerializeField] private Vector2 handPointUpHotspot = new Vector2(29, 7);
-	[SerializeField] private Vector2 resizeCrossHotspot = new Vector2(32, 32);
-	[SerializeField] private Vector2 resizeHorizontalHotspot = new Vector2(32, 32);
+	[UDictionary.Split(50, 50)]
+	[SerializeField] private UDictionary<CursorSpriteMode, Texture2D> cursorTextures;
+	[UDictionary.Split(50, 50)]
+	[SerializeField] private UDictionary<Texture2D, Vector2> cursorHotspots;
+
 	/// <summary>
 	/// public for debugging purposes.
 	/// </summary>
@@ -36,14 +27,24 @@ public class CustomCursor : MonoBehaviour
 	public enum CursorSpriteMode
 	{
 		Default,
-		HoverWallControlPoint,
-		Scroll,
+
 		MoveDoor,
 		MoveWallControlPoint,
-		UI,
-		HoverWall,
 		HoverDoor,
-		ResizeHorizontal
+		HoverWall,
+		HoverWallControlPoint,
+
+		Scroll,
+		ResizeHorizontal,
+
+		ZoomIn,
+
+		UI_Default,
+		UI_Move,
+		UI_Caret,
+		UI_Menu,
+
+		Disabled,
 	}
 
 
@@ -69,57 +70,17 @@ public class CustomCursor : MonoBehaviour
 
 	private void _SetCursor(CursorSpriteMode cursorMode, bool isUICursor)
 	{
-		//Debug.Log(cursorMode);
 		if (isUICursor)
 			uiCursorMode = cursorMode;
 		else
 			gridCursorMode = cursorMode;
-		switch (cursorMode)
+
+		var texture = cursorTextures[cursorMode];
+		if (!cursorHotspots.TryGetValue(texture, out var hotspot))
 		{
-			default:
-			case CursorSpriteMode.Default:
-			{
-				Cursor.SetCursor(handOpen, handOpenHotspot, CursorMode.Auto);
-			}
-			break;
-
-			case CursorSpriteMode.HoverWall:
-			{
-				Cursor.SetCursor(handPoint, handPointHotspot, CursorMode.Auto);
-			}
-			break;
-
-			case CursorSpriteMode.HoverWallControlPoint:
-			case CursorSpriteMode.HoverDoor:
-			{
-				Cursor.SetCursor(resizeACross, resizeCrossHotspot, CursorMode.Auto);
-			}
-			break;
-
-			case CursorSpriteMode.MoveWallControlPoint:
-			case CursorSpriteMode.MoveDoor:
-			{
-				Cursor.SetCursor(resizeACrossDiagonal, resizeCrossHotspot, CursorMode.Auto);
-			}
-			break;
-
-			case CursorSpriteMode.ResizeHorizontal:
-			{
-				Cursor.SetCursor(resizeAHorizontal, resizeHorizontalHotspot, CursorMode.Auto);
-			}
-			break;
-
-			case CursorSpriteMode.Scroll:
-			{
-				Cursor.SetCursor(handClosed, handOpenHotspot, CursorMode.Auto);
-			}
-			break;
-
-			case CursorSpriteMode.UI:
-			{
-				Cursor.SetCursor(handPointUp, handPointUpHotspot, CursorMode.Auto);
-			}
-			break;
+			hotspot = Vector2.zero;
 		}
+
+		Cursor.SetCursor(texture, hotspot, CursorMode.Auto);
 	}
 }
