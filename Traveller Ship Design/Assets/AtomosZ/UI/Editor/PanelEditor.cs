@@ -107,11 +107,17 @@ namespace AtomosZ.UI.EditorZ
 				bool isOrderChanged = false;
 				for (int i = 0; i < newControls.Count; ++i)
 				{
-					newOrder.Add(adder.panelControls[i].uiDesignObject);
-					if (newControls[i].uiDesignObject != adder.panelControls[i].uiDesignObject)
+					if (adder.panelControls[i].uiDesignObject == null)
 					{
-						isOrderChanged = true;
-						//Debug.Log("Order changed!");
+						Debug.LogError($"Null uiDesignObject in index {i} of type {adder.panelControls[i].controlType}");
+					}
+					else
+					{
+						newOrder.Add(adder.panelControls[i].uiDesignObject);
+						if (newControls[i].uiDesignObject != adder.panelControls[i].uiDesignObject)
+						{
+							isOrderChanged = true;
+						}
 					}
 				}
 
@@ -149,8 +155,8 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUILayout.PropertyField(createPanelControl);
 			EditorGUILayout.PropertyField(panelControlsSO);
 
-
-			if (serializedObject.ApplyModifiedProperties() || panelSO.ApplyModifiedProperties())
+			var panelSOUpdated = panelSO.ApplyModifiedProperties();
+			if (serializedObject.ApplyModifiedProperties() || panelSOUpdated)
 				adder.Refresh();
 
 			if (GUILayout.Button("Clear All"))

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6170590193817473966}
   - component: {fileID: 46845985781952030}
   - component: {fileID: 7324103980625293524}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: UIExpandingText
   m_TagString: Untagged
   m_Icon: {fileID: 0}

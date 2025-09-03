@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
-using UnityEngine.UI;
 
 using static CustomCursor;
 
@@ -29,7 +28,10 @@ namespace AtomosZ.UI
 		public bool isMoveable = false;
 		public bool isModal = false;
 		public bool isSelectable = false;
-		public bool hasCustomDimensions = false;
+		/// <summary>
+		/// This is basically mandatory and should not be an option. Only useful for toggling off when creating a new control.
+		/// </summary>
+		public bool hasCustomDimensions = true;
 		public bool hasUpdatableBackingData = false;
 
 		private IUIBehavior uiBehavior;
@@ -44,6 +46,11 @@ namespace AtomosZ.UI
 
 		private void SearchForDesignObject()
 		{
+#if UNITY_EDITOR
+			if (gameObject.layer != 5)
+				Debug.LogError("GameObject Layer is NOT set to UI!");
+#endif
+
 			var components = GetComponents<MonoBehaviour>();
 			foreach (var comp in components)
 			{

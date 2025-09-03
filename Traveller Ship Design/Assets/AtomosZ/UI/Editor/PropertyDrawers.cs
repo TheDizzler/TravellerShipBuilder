@@ -159,7 +159,6 @@ namespace AtomosZ.UI.EditorZ
 
 			var optionsProp = property.FindPropertyRelative("options");
 			PropertyDrawerEx.SetProperty(optionsProp, position, ref drawerHeight);
-			var maxOptions = optionsProp.arraySize - 1;
 
 			var isMultiSelectProp = property.FindPropertyRelative("isMultiSelect");
 			PropertyDrawerEx.SetProperty(isMultiSelectProp, position, ref drawerHeight);
@@ -167,22 +166,30 @@ namespace AtomosZ.UI.EditorZ
 			var defaultProp = property.FindPropertyRelative("defaultSelection");
 			if (isMultiSelectProp.boolValue)
 			{
-				PropertyDrawerEx.SetProperty(defaultProp, position, ref drawerHeight);
-				for (int i = 0; i < defaultProp.arraySize; ++i)
+				var selected = defaultProp.intValue;
+				var newSelection = 0;
+				int bit = 1;
+				PropertyDrawerEx.CreateLabel("Default Selections", position, ref drawerHeight);
+				++EditorGUI.indentLevel;
+				for (int i = 0; i < optionsProp.arraySize; ++i)
 				{
-					var selection = defaultProp.GetArrayElementAtIndex(i);
-					if (selection.intValue < 0)
-						selection.intValue = 0;
-					else if (selection.intValue > maxOptions)
-						selection.intValue = maxOptions;
+					var option = optionsProp.GetArrayElementAtIndex(i);
+					var text = option.displayName;
+					var toggleRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
+					if (EditorGUI.Toggle(toggleRect, text, (selected & bit) == bit))
+						newSelection |= bit;
+					bit <<= 1;
+					drawerHeight += toggleRect.height + EditorGUIUtility.standardVerticalSpacing;
 				}
+				--EditorGUI.indentLevel;
+
+				defaultProp.intValue = newSelection;
 			}
 			else
 			{
-
-				var selected = defaultProp.GetArrayElementAtIndex(0);
+				var selected = defaultProp.intValue;
 				var intRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-				EditorGUI.IntSlider(intRect, selected, 0, maxOptions);
+				defaultProp.intValue = EditorGUI.IntSlider(intRect, selected, 0, optionsProp.arraySize - 1);
 				drawerHeight += intRect.height + EditorGUIUtility.standardVerticalSpacing;
 			}
 
@@ -190,6 +197,8 @@ namespace AtomosZ.UI.EditorZ
 
 			PropertyDrawerEx.SetProperty(property, "fontSize", position, ref drawerHeight);
 			PropertyDrawerEx.SetProperty(property, "fontColor", position, ref drawerHeight);
+
+			EditorGUI.EndProperty();
 		}
 	}
 
@@ -260,7 +269,6 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.EndProperty();
 		}
 	}
-
 
 	[CustomPropertyDrawer(typeof(SliderEx))]
 	public class SliderExDrawer : UIExDrawer
@@ -385,7 +393,6 @@ namespace AtomosZ.UI.EditorZ
 		}
 	}
 
-
 	[CustomPropertyDrawer(typeof(ButtonEx))]
 	public class ButtonExDrawer : UIExDrawer
 	{
@@ -454,7 +461,6 @@ namespace AtomosZ.UI.EditorZ
 		}
 	}
 
-
 	[CustomPropertyDrawer(typeof(LabelEx))]
 	public class LabelExDrawer : UIExDrawer
 	{
@@ -505,8 +511,6 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.EndProperty();
 		}
 	}
-
-
 
 	[CustomPropertyDrawer(typeof(ButtonPanelEx))]
 	public class ButtonDataDrawer : UIExDrawer

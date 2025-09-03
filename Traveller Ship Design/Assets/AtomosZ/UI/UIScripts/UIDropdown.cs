@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using TMPro;
 
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
+
+using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
@@ -17,6 +18,7 @@ namespace AtomosZ.UI
 
 		public float fontSize = 14;
 		public Color fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
+
 		public TMP_FontAsset fontAsset;
 		public List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>
 		{
@@ -27,7 +29,7 @@ namespace AtomosZ.UI
 		};
 
 		[Tooltip("Ordinal of default selection. -1 == always select last option, 0 == always first option.")]
-		public List<int> defaultSelection = new List<int> { 0 };
+		public int defaultSelection = 0;
 		public bool isMultiSelect = false;
 		public List<UIDropdown.OnSelectionChangedDelegate> onValueChangedActions = new();
 
@@ -39,12 +41,12 @@ namespace AtomosZ.UI
 			options.Add(new TMP_Dropdown.OptionData { text = "Option 3" });
 			options.Add(new TMP_Dropdown.OptionData { text = "Option 4" });
 			isMultiSelect = false;
-			defaultSelection.Clear();
-			defaultSelection.Add(0);
+			defaultSelection = 0;
 			onValueChangedActions.Clear();
 
 			fontSize = 14;
 			fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
+			fontAsset = null;
 		}
 
 		public object Clone()
@@ -64,10 +66,6 @@ namespace AtomosZ.UI
 		{
 			get
 			{
-#if UNITY_EDITOR
-				if (gameObject.layer != 5)
-					Debug.LogError("GameObject Layer is NOT set to UI!");
-#endif
 				if (_designObject == null)
 					_designObject = GetComponent<UIDesignObject>();
 				return _designObject;
@@ -75,11 +73,8 @@ namespace AtomosZ.UI
 		}
 
 
-
 		[SerializeField] private TMP_Dropdown dropdown;
-		[SerializeField] private UIExpandingLabel label;
 		[SerializeField] private DropdownEx dropdownEx;
-
 
 
 
@@ -108,6 +103,11 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
+			dropdown.captionText.font = dropdownEx.fontAsset;
+			dropdown.captionText.fontSize = dropdownEx.fontSize;
+			dropdown.captionText.color = dropdownEx.fontColor;
+
+
 			dropdown.ClearOptions();
 			dropdown.AddOptions(dropdownEx.options);
 
@@ -117,10 +117,13 @@ namespace AtomosZ.UI
 			foreach (var action in dropdownEx.onValueChangedActions)
 				dropdown.onValueChanged.AddListener(delegate { action.Invoke(dropdown.value); });
 
-			dropdown.onValueChanged.AddListener(delegate { SelectionChanged(dropdown.value); });
+			dropdown.onValueChanged.AddListener(delegate { SelectionChangedDebug(dropdown.value); });
+
+			dropdown.value = dropdownEx.defaultSelection;
 		}
 
-		private void SelectionChanged(int num)
+		[Conditional("DEBUG")]
+		private void SelectionChangedDebug(int num)
 		{
 			string selected = "";
 			if (dropdownEx.isMultiSelect)
@@ -133,7 +136,7 @@ namespace AtomosZ.UI
 					for (int i = 0; i < dropdownEx.options.Count; ++i)
 					{
 						if ((num & bit) == bit)
-							selected += "Option " + i;
+							selected += " • Option " + i;
 						bit <<= 1;
 					}
 				}
@@ -154,7 +157,9 @@ namespace AtomosZ.UI
 		public Vector2 GetMinDimensions()
 		{
 			UpdateBackingData();
-			return label.GetMinDimensions();
+			var rect = GetComponent<RectTransform>();
+			var sDelta = rect.sizeDelta;
+			return sDelta;
 		}
 
 		public void ResetToLastPosition()
