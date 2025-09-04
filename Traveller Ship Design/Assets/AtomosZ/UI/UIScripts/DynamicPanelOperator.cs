@@ -29,14 +29,12 @@ namespace AtomosZ.UI
 		Dropdown,
 	}
 
+#if DEBUG
 	/// <summary>
 	/// IMPORTANT(Tristan): Needed for two different PropertyDrawer views.
 	/// </summary>
 	[Serializable]
-	public class CreatePanelControl : PanelControl
-	{
-
-	}
+	public class CreatePanelControl : PanelControl { }
 
 
 	[Serializable]
@@ -93,7 +91,15 @@ namespace AtomosZ.UI
 
 			return dict;
 		}
+
+		public IUIDataEx GetData()
+		{
+			var field = typeof(PanelControl).GetField(panelControlNames[controlType]);
+			var control = field.GetValue(this);
+			return (IUIDataEx)control;
+		}
 	}
+#endif
 
 	/// <summary>
 	/// A monobehaviour only used in the editor for building dynamic dialog boxes.

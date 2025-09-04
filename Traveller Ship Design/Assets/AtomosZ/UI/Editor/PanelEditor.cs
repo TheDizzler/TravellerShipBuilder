@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using TMPro;
+
 using UnityEditor;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 using static AtomosZ.UI.DynamicPanel;
 
@@ -45,18 +48,23 @@ namespace AtomosZ.UI.EditorZ
 		private RectTransform rect;
 		private Vector2 lastSize;
 		private BottomPanel bottomPanel;
-		private DynamicPanelOperator adder;
-		private DynamicPanel panel;
+		private Image tabImage;
+		private Image panelImage;
+		private TextMeshProUGUI titleTextTMP;
+		private DynamicPanelOperator dynPanelOp;
+		private DynamicPanel dynPanel;
 		private SerializedProperty panelControlsSO;
 
 
 		void OnEnable()
 		{
-			adder = (DynamicPanelOperator)target;
-			panel = adder.GetComponent<DynamicPanel>();
-			bottomPanel = adder.GetComponentInChildren<BottomPanel>();
-
-			panelSO = new SerializedObject(panel);
+			dynPanelOp = (DynamicPanelOperator)target;
+			dynPanel = dynPanelOp.GetComponent<DynamicPanel>();
+			bottomPanel = dynPanelOp.GetComponentInChildren<BottomPanel>();
+			tabImage = dynPanelOp.GetComponentInChildren<DragPanel>().GetComponent<Image>();
+			panelImage = bottomPanel.GetComponent<Image>();
+			titleTextTMP = tabImage.GetComponentInChildren<TextMeshProUGUI>();
+			panelSO = new SerializedObject(dynPanel);
 			titleStyle = panelSO.FindProperty("titleType");
 			titleText = panelSO.FindProperty("_titleText");
 			centerTitleText = panelSO.FindProperty("centerTitleText");
@@ -70,12 +78,12 @@ namespace AtomosZ.UI.EditorZ
 
 			createPanelControl = serializedObject.FindProperty("createPanelControl");
 
-			rect = adder.GetComponent<RectTransform>();
+			rect = dynPanelOp.GetComponent<RectTransform>();
 			lastSize = rect.sizeDelta;
 
 			BuildControlList();
 
-			adder.Refresh();
+			dynPanelOp.Refresh();
 		}
 
 		private void BuildControlList()
@@ -86,11 +94,12 @@ namespace AtomosZ.UI.EditorZ
 			{
 				if (!control.TryGetComponent<IUIBehavior>(out var uiBehavior))
 				{
-					Debug.Log($"control {control.name} has not UIBehavior");
+					Debug.LogError($"control {control.name} has no UIBehavior");
 					continue;
 				}
 
 				var dataEx = uiBehavior.GetBackingData();
+
 				object panelControl = new PanelControl
 				{
 					uiDesignObject = uiBehavior.designObject,
@@ -101,40 +110,33 @@ namespace AtomosZ.UI.EditorZ
 				newControls.Add((PanelControl)panelControl);
 			}
 
-			if (adder.panelControls.Count == newControls.Count)
+			dynPanelOp.panelControls = newControls;
+			oldCtrlCount = newControls.Count;
+
+			panelControlsSO = serializedObject.FindProperty("panelControls");
+		}
+
+		private int oldCtrlCount = 0;
+		private void UpdateControlList()
+		{
+			var currentControls = bottomPanel.GetControlsFromTransform();
+			var pCtrls = dynPanelOp.panelControls;
+
+
+			if (currentControls.Count != pCtrls.Count)
 			{
-				var newOrder = new List<UIDesignObject>(newControls.Count);
-				bool isOrderChanged = false;
-				for (int i = 0; i < newControls.Count; ++i)
+				BuildControlList();
+			}
+			else if (pCtrls.Count == 0 || pCtrls.Count != oldCtrlCount)
+				return;
+			else
+			{
+				dynPanelOp.ClearAllUIControls();
+				foreach (var ctrl in pCtrls)
 				{
-					if (adder.panelControls[i].uiDesignObject == null)
-					{
-						Debug.LogError($"Null uiDesignObject in index {i} of type {adder.panelControls[i].controlType}");
-					}
-					else
-					{
-						newOrder.Add(adder.panelControls[i].uiDesignObject);
-						if (newControls[i].uiDesignObject != adder.panelControls[i].uiDesignObject)
-						{
-							isOrderChanged = true;
-						}
-					}
-				}
-
-				if (isOrderChanged)
-				{
-					for (int i = 0; i < newOrder.Count; ++i)
-					{
-						bottomPanel.ReorderControls(newOrder);
-					}
-
-					BuildControlList();
-					return;
+					dynPanel.AddUIControl(ctrl.GetData());
 				}
 			}
-
-			adder.panelControls = newControls;
-			panelControlsSO = serializedObject.FindProperty("panelControls");
 		}
 
 		public override void OnInspectorGUI()
@@ -142,7 +144,7 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.BeginChangeCheck();
 			EditorGUILayout.PropertyField(titleStyle);
 			EditorGUILayout.PropertyField(titleText);
-			if (panel.titleType == TitleLabelStyle.Bar)
+			if (dynPanel.titleType == TitleLabelStyle.Bar)
 				EditorGUILayout.PropertyField(centerTitleText);
 			EditorGUILayout.PropertyField(panelStyle);
 			EditorGUILayout.PropertyField(minDims);
@@ -156,14 +158,29 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUILayout.PropertyField(panelControlsSO);
 
 			var panelSOUpdated = panelSO.ApplyModifiedProperties();
-			if (serializedObject.ApplyModifiedProperties() || panelSOUpdated)
-				adder.Refresh();
+			var soUpdated = serializedObject.ApplyModifiedProperties();
+			if (soUpdated || panelSOUpdated)
+			{
+				dynPanelOp.Refresh();
+			}
+
+
 
 			if (GUILayout.Button("Clear All"))
-				adder.Clear();
+			{
+				dynPanelOp.ClearAllUIControls();
+			}
+
 
 			if (EditorGUI.EndChangeCheck())
-				BuildControlList();
+			{
+				UpdateControlList();
+
+				PrefabUtility.RecordPrefabInstancePropertyModifications(dynPanel);
+				PrefabUtility.RecordPrefabInstancePropertyModifications(tabImage);
+				PrefabUtility.RecordPrefabInstancePropertyModifications(panelImage);
+				PrefabUtility.RecordPrefabInstancePropertyModifications(titleTextTMP);
+			}
 		}
 
 		public void OnSceneGUI()
@@ -171,7 +188,7 @@ namespace AtomosZ.UI.EditorZ
 			var size = rect.sizeDelta;
 			if (size != lastSize)
 			{
-				adder.Refresh();
+				dynPanelOp.Refresh();
 				lastSize = size;
 			}
 		}
@@ -186,7 +203,7 @@ namespace AtomosZ.UI.EditorZ
 
 		public void OnSceneGUI()
 		{
-			// lock the panel size so it can't get changed except by it's parent 
+			// lock the dynPanel size so it can't get changed except by it's parent 
 			BottomPanel panel = (BottomPanel)target;
 			var rect = panel.GetComponent<RectTransform>();
 			if (lastSize != rect.sizeDelta)
