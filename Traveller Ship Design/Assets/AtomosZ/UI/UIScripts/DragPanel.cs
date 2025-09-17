@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-using static DesignManager;
+using static AtomosZ.Keyboard;
+
 
 namespace AtomosZ.UI
 {
@@ -33,7 +34,7 @@ namespace AtomosZ.UI
 		{
 		}
 
-		public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput,
+		public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput,
 			ref UIDesignObject currentlySelectedObject)
 		{
 			if (currentlySelectedObject != null)
@@ -47,7 +48,7 @@ namespace AtomosZ.UI
 
 		public void BeginDrag()
 		{
-			startDragPos = GetUICoordinatesFromMousePos();
+			startDragPos = UIInput.GetUICoordinates(Input.mousePosition);
 			panel.isDragging = true;
 			CustomCursor.SetCursor(panel.designObject.moveCursorMode);
 		}
@@ -57,7 +58,7 @@ namespace AtomosZ.UI
 		/// </summary>
 		public void MouseDrag()
 		{
-			var screenPosition = GetUICoordinatesFromMousePos();
+			var screenPosition = UIInput.GetUICoordinates(Input.mousePosition);
 			Vector2 diff = screenPosition - startDragPos;
 			parentRect.anchoredPosition += diff;
 			startDragPos = screenPosition;
@@ -65,7 +66,7 @@ namespace AtomosZ.UI
 
 		public void EndDrag()
 		{
-			var screenPosition = GetUICoordinatesFromMousePos();
+			var screenPosition = UIInput.GetUICoordinates(Input.mousePosition);
 			Vector2 diff = screenPosition - startDragPos;
 			parentRect.anchoredPosition += diff;
 			panel.isDragging = false;

@@ -8,6 +8,8 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
+using static AtomosZ.Keyboard;
 using static CustomCursor;
 using static DesignManager;
 
@@ -245,7 +247,7 @@ public class DesignObject : MonoBehaviour
 	/// </summary>
 	/// <param name="mouseWorldPos"></param>
 	/// <param name="keyInput"></param>
-	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput,
+	public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput,
 		ref DesignObject currentlySelectedObject, ref EditMode editMode)
 	{
 		if (!isSelectable)

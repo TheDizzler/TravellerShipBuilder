@@ -129,18 +129,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkBoxEx:
-    isOn: 1
+    scriptableObj: {fileID: 0}
+    useCustomCheckImage: 0
+    useCustomBoxImage: 0
+    checkSprite: {fileID: 0}
+    boxSprite: {fileID: 0}
+    isOnByDefault: 0
     labelEx:
       text: CheckBox
-      minLabelDimensions: {x: 64, y: 1}
-      maxLabelDimensions: {x: 220, y: 1}
+      scriptableObj: {fileID: 11400000, guid: a595bfb26efa22540b8467a90b4b5f0f, type: 2}
+      useCustomFontSize: 0
+      useCustomFontColor: 0
+      useCustomFontAsset: 0
       fontSize: 18
       fontColor: {r: 0, g: 0, b: 0, a: 1}
       fontAsset: {fileID: 0}
+      minLabelDimensions: {x: 64, y: 1}
+      maxLabelDimensions: {x: 220, y: 1}
     action:
       m_PersistentCalls:
         m_Calls: []
-  background: {fileID: 377748177167822696}
+  backgroundRect: {fileID: 377748177167822696}
+  boxImage: {fileID: 4751154145943114303}
+  checkImage: {fileID: 4927640585714093458}
   textLabel: {fileID: 7618200045658159183}
   toggle: {fileID: 4613445078176205474}
   parentPanel: {fileID: 0}
@@ -224,7 +235,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!114 &4332647557573541685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -484,8 +495,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+      propertyPath: labelEx.scriptableObj
+      value: 
+      objectReference: {fileID: 11400000, guid: a595bfb26efa22540b8467a90b4b5f0f, type: 2}
+    - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: labelEx.maxLabelDimensions.x
       value: 220
+      objectReference: {fileID: 0}
+    - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+      propertyPath: labelEx.maxLabelDimensions.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3705265916941669611, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: m_Name

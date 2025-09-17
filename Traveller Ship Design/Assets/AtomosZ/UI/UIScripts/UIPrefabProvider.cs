@@ -4,8 +4,6 @@ using TMPro;
 
 using UnityEngine;
 
-using static CustomCursor;
-
 namespace AtomosZ.UI
 {
 	public class UIPrefabProvider : MonoBehaviour
@@ -43,17 +41,23 @@ namespace AtomosZ.UI
 			//GeomorphDisplayPanel,
 		}
 
+		[SerializeField] public UIExpandingLabelScriptableObject textScriptObj;
+		[SerializeField] public UIExpandingLabelScriptableObject dropdownScriptObj;
+		[SerializeField] public UICheckBoxScriptableObject checkBoxScriptObj;
+		[SerializeField] public UIExpandingInputFieldScriptableObject inputFieldScriptObj;
+		[SerializeField] public UISliderScriptableObject sliderScriptObj;
+		[SerializeField] public UIButtonScriptableObject buttonScriptObj;
+		[SerializeField] public UIButtonPanelScriptableObject buttonPanelScriptObj;
+		[SerializeField] public UIImageViewScriptableObject imageViewScriptObj;
+		[SerializeField] public UIImageViewPanelScriptableObject imageViewPanelScriptObj;
+
+		[Tooltip("This is populated by an Editor script. Editing manually is futile.")]
 		[UDictionary.Split(50, 50)]
 		public UDictionary<UIPrefabType, UIDesignObject> uiPrefabs;
 
 		[SerializeField] private TMP_FontAsset defaultFont;
 		[SerializeField] private Canvas uiCanvas;
-		/// <summary>
-		/// serialized for debugging
-		/// </summary>
-		[SerializeField]
-		private LinkedList<DynamicPanel> dialogStack = new();
-
+		
 
 		public static UIDesignObject GetPrefab(UIPrefabType prefabType)
 		{
@@ -82,9 +86,9 @@ namespace AtomosZ.UI
 //		private DynamicPanel _GetDynamicPanel()
 //		{
 //			var panelUIObject = Instantiate(GetUIPrefab(UIPrefabType.DynamicPanel));
-//			var panel = panelUIObject.GetComponent<DynamicPanel>();
+//			var panelRect = panelUIObject.GetComponent<DynamicPanel>();
 //			//AddToCanvas(panelUIObject.transform);
-//			return panel;
+//			return panelRect;
 //		}
 
 
@@ -115,9 +119,9 @@ namespace AtomosZ.UI
 //		}
 
 
-//		public static void CloseDialog(DynamicPanel panel)
+//		public static void CloseDialog(DynamicPanel panelRect)
 //		{
-//			instance._CloseDialog(panel);
+//			instance._CloseDialog(panelRect);
 //		}
 
 //		/// <summary>
@@ -125,21 +129,21 @@ namespace AtomosZ.UI
 //		/// Change this too object pool?
 //		/// </summary>
 //		/// <param name="dialogRect"></param>
-//		private void _CloseDialog(DynamicPanel panel)
+//		private void _CloseDialog(DynamicPanel panelRect)
 //		{
-//			if (!dialogStack.Contains(panel))
+//			if (!dialogStack.Contains(panelRect))
 //			{
 //				Debug.LogError("Panel isn't in stack???");
 //			}
 
-//			dialogStack.Remove(panel);
-//			if (panel.modalClickBlocker != null)
+//			dialogStack.Remove(panelRect);
+//			if (panelRect.modalClickBlocker != null)
 //			{
-//				Destroy(panel.modalClickBlocker.gameObject);
+//				Destroy(panelRect.modalClickBlocker.gameObject);
 //			}
 
-//			Destroy(panel.gameObject);
-//			// turn off UI mode, so next update will check for another panel in the stack.
+//			Destroy(panelRect.gameObject);
+//			// turn off UI mode, so next update will check for another panelRect in the stack.
 //			// this will prevent any wierd click throughs
 //			ToggleUIMode(false, CursorSpriteMode.Default);
 //		}
@@ -148,11 +152,11 @@ namespace AtomosZ.UI
 //		{
 //			Debug.LogError(titleText + "\n" + errorMsg);
 
-//			var panel = GetDynamicPanel();
-//			panel.showCloseButton = true;
-//			panel.SetTitle(titleText, DynamicPanel.TitleLabelStyle.Bar);
-//			panel.AddText_NoData(errorMsg);
-//			panel.Show(Vector2.zero);
+//			var panelRect = GetDynamicPanel();
+//			panelRect.showCloseButton = true;
+//			panelRect.SetTitle(titleText, DynamicPanel.TitleLabelStyle.Bar);
+//			panelRect.AddText_NoData(errorMsg);
+//			panelRect.Show(Vector2.zero);
 //		}
 
 
@@ -166,47 +170,47 @@ namespace AtomosZ.UI
 //		int panelCount = 1;
 //		public void MakeModalPanel()
 //		{
-//			var panel = GetDynamicPanel();
-//			panel.designObject.isModal = true;
-//			panel.AddText(new LabelEx("Panel " + panelCount++));
+//			var panelRect = GetDynamicPanel();
+//			panelRect.designObject.isModal = true;
+//			panelRect.AddText(new LabelEx("Panel " + panelCount++));
 //			var button = new ButtonEx
 //			{
 //				labelEx = new LabelEx("Modal Panel"),
 //				action = new UnityEngine.Events.UnityEvent(),
 //			};
 //			button.action.AddListener(MakeModalPanel);
-//			panel.AddButton(button);
+//			panelRect.AddButton(button);
 //			button = new ButtonEx
 //			{
 //				labelEx = new LabelEx("Non Modal Panel"),
 //				action = new UnityEngine.Events.UnityEvent(),
 //			};
 //			button.action.AddListener(MakeNonModalPanel);
-//			panel.AddButton(button);
-//			panel.SetTitle("Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
-//			panel.Show(Vector2.zero);
+//			panelRect.AddButton(button);
+//			panelRect.SetTitle("Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
+//			panelRect.Show(Vector2.zero);
 //		}
 
 //		public void MakeNonModalPanel()
 //		{
-//			var panel = GetDynamicPanel();
-//			panel.AddText(new LabelEx("Panel " + panelCount++));
+//			var panelRect = GetDynamicPanel();
+//			panelRect.AddText(new LabelEx("Panel " + panelCount++));
 //			var button = new ButtonEx
 //			{
 //				labelEx = new LabelEx("Modal Panel"),
 //				action = new UnityEngine.Events.UnityEvent(),
 //			};
 //			button.action.AddListener(MakeModalPanel);
-//			panel.AddButton(button);
+//			panelRect.AddButton(button);
 //			button = new ButtonEx
 //			{
 //				labelEx = new LabelEx("Non Modal Panel"),
 //				action = new UnityEngine.Events.UnityEvent(),
 //			};
 //			button.action.AddListener(MakeNonModalPanel);
-//			panel.AddButton(button);
-//			panel.SetTitle("Non Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
-//			panel.Show(Vector2.zero);
+//			panelRect.AddButton(button);
+//			panelRect.SetTitle("Non Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
+//			panelRect.Show(Vector2.zero);
 //		}
 //#endif
 	}

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace AtomosZ.UI
 {
 	/// <summary>
-	/// A simple class to block any clicks from being registered when a modal dialog box is open.
+	/// A simple class to block any clicks from being registered when a modal dialog boxImage is open.
 	/// </summary>
 	public class ModalClickBlocker : MonoBehaviour, IUIBehavior
 	{
@@ -21,7 +21,7 @@ namespace AtomosZ.UI
 		{
 		}
 
-		public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
 		{
 			throw new System.NotImplementedException();
 		}

@@ -1,27 +1,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using UnityEngine.Events;
-using static DesignManager;
-using static AtomosZ.UI.DynamicPanel;
-using static AtomosZ.UI.BottomPanel;
-using static AtomosZ.UI.UIButtonPanel;
 using System.Diagnostics;
+
+using TMPro;
+
+using UnityEditor;
+using UnityEditor.ShaderGraph;
+
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
+
+using static AtomosZ.Keyboard;
+using static AtomosZ.UI.BottomPanel;
+using static AtomosZ.UI.DynamicPanel;
+using static AtomosZ.UI.UIButtonPanel;
+
+using Debug = UnityEngine.Debug;
+
 
 
 namespace AtomosZ.UI
 {
-	public class UIDynamicPanelEx
-	{
-		public TitleLabelStyle titleLabelStyle;
-		public string titleText;
-		public BottomPanelStyle panelStyle;
-		public Vector2 maxPanelSize;
-		public bool alwaysShrinkToMinSize;
-	}
+	//public class UIDynamicPanelEx
+	//{
+	//	public TitleLabelStyle titleLabelStyle;
+	//	public string titleText;
+	//	public BottomPanelStyle panelStyle;
+	//	public Vector2 maxPanelSize;
+	//	public bool alwaysShrinkToMinSize;
+	//}
 
 	public class DynamicPanel : MonoBehaviour, IUIBehavior
 	{
@@ -52,7 +61,7 @@ namespace AtomosZ.UI
 		[SerializeField] private UDictionary<BottomPanelStyle, Sprite> panelSprites;
 
 		/// <summary>
-		/// Tab width, height, bottom panel y offset, bottom panel min height
+		/// Tab width, height, bottom panelRect y offset, bottom panelRect min height
 		/// </summary>
 		private readonly Dictionary<TitleLabelStyle, Vector4> minTabSize = new()
 		{
@@ -74,11 +83,11 @@ namespace AtomosZ.UI
 
 		public readonly Dictionary<TitleLabelStyle, Vector2> panelControlsPosition = new()
 		{
-			[TitleLabelStyle.SquareTab] = new Vector2(165, -26),
-			[TitleLabelStyle.BladedTab] = new Vector2(165, -26),
-			[TitleLabelStyle.BladedBar] = new Vector2(165, -26),
-			[TitleLabelStyle.Bar] = new Vector2(165, 0),
-			[TitleLabelStyle.None] = new Vector2(165, -26),
+			[TitleLabelStyle.SquareTab] = new Vector2(135, -20),
+			[TitleLabelStyle.BladedTab] = new Vector2(135, -20),
+			[TitleLabelStyle.BladedBar] = new Vector2(135, 0),
+			[TitleLabelStyle.Bar] = new Vector2(135, 0),
+			[TitleLabelStyle.None] = new Vector2(135, -20),
 		};
 
 		public readonly Dictionary<TitleLabelStyle, Vector4> bottomPanelPadding = new()
@@ -93,7 +102,7 @@ namespace AtomosZ.UI
 
 
 		/// <summary>
-		/// Minimum dimensions for the entire panel, top and bottom.
+		/// Minimum dimensions for the entire panelRect, top and bottom.
 		/// </summary>
 		private readonly Dictionary<TitleLabelStyle, Vector2> minDimensions = new()
 		{
@@ -109,8 +118,8 @@ namespace AtomosZ.UI
 		[SerializeField] public Vector2 maxSize = new Vector2(256, 0);
 		[SerializeField] public bool alwaysShrinkToMinSize;
 
-		public TitleLabelStyle titleType;
-		public BottomPanelStyle panelType;
+		[SerializeField] public TitleLabelStyle titleType;
+		[SerializeField] public BottomPanelStyle panelType;
 
 		public DialogResult result;
 		public UnityAction<DynamicPanel> OnClose;
@@ -130,6 +139,8 @@ namespace AtomosZ.UI
 		[SerializeField] public bool showMinimizeButton;
 		[SerializeField] public bool showMaximizeButton;
 		[SerializeField] public bool showCloseButton;
+
+		private UIPrefabProvider uiProvider;
 
 		[HideInInspector]
 		public UIDesignObject modalClickBlocker;
@@ -156,6 +167,7 @@ namespace AtomosZ.UI
 
 		private UIDesignObject _designObject;
 		private bool isMinimized = false;
+		private bool isDirty = false;
 
 		public UIDesignObject designObject
 		{
@@ -179,9 +191,9 @@ namespace AtomosZ.UI
 		/// <param name="keyInput"></param>
 		/// <returns>True if input consumed.</returns>
 		/// <exception cref="Exception"></exception>
-		public bool Input(KeyInput keyInput)
+		public bool Input(ModifierKey keyInput)
 		{
-			if ((keyInput & KeyInput.Esc) == KeyInput.Esc
+			if ((keyInput & ModifierKey.Esc) == ModifierKey.Esc
 				&& (_designObject.isModal || isContextMenu))
 			{
 				SetDialogResultDefaultNegative();
@@ -263,9 +275,20 @@ namespace AtomosZ.UI
 			Refresh();
 		}
 
+		/// <summary>
+		/// If would be better if this didn't have to run at all if !isDirty.
+		/// </summary>
+		void LateUpdate()
+		{
+			if (isDirty)
+			{
+				RecalculateDimensions();
+				isDirty = false;
+			}
+		}
 
 		/// <summary>
-		/// TODO(Tristan): Allow tall title bars?
+		/// 
 		/// </summary>
 		public void RecalculateDimensions()
 		{
@@ -311,7 +334,7 @@ namespace AtomosZ.UI
 			}
 			else
 			{
-				// calculate child panel perfered sizes
+				// calculate child panelRect perfered sizes
 				var minDim = bottomPanel.GetMinDimensions();
 				if (minDim.x < minSize.x)
 					minDim.x = minSize.x;
@@ -324,7 +347,7 @@ namespace AtomosZ.UI
 				{
 					float buttonWidth = GetControlButtonWidth();
 
-					// calculate space from end of title to edge of panel
+					// calculate space from end of title to edge of panelRect
 
 					if (centerTitleText)
 					{
@@ -394,7 +417,7 @@ namespace AtomosZ.UI
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
 			// this needs to be set for UI raycasting
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
-			// the bottom height can be adjusted through the bottom panel's layout.bottom
+			// the bottom height can be adjusted through the bottom panelRect's layout.bottom
 			bottomPanelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
 		}
 
@@ -437,6 +460,7 @@ namespace AtomosZ.UI
 			Refresh();
 		}
 
+
 		/// <summary>
 		/// A total recalculation of all dimensions.
 		/// </summary>
@@ -471,142 +495,150 @@ namespace AtomosZ.UI
 			minimizeButton.gameObject.SetActive(showMinimizeButton);
 			maximizeButton.gameObject.SetActive(showMaximizeButton);
 
-			panelControlLayout.transform.position = panelControlsPosition[titleType];
+			panelControlLayout.transform.localPosition = panelControlsPosition[titleType];
 
 			UpdateTitle();
+
+#if DEBUG
+			PrefabUtility.RecordPrefabInstancePropertyModifications(titleImage);
+			PrefabUtility.RecordPrefabInstancePropertyModifications(panelImage);
+			PrefabUtility.RecordPrefabInstancePropertyModifications(panelControlLayout);
+			PrefabUtility.RecordPrefabInstancePropertyModifications(titleTMP);
+			bottomPanel.RecordPrefabInstances();
+#endif
 		}
 
-#if UNITY_EDITOR
-		readonly Dictionary<PanelControlType, System.Reflection.MethodInfo> functions = new()
-		{
-			[PanelControlType.Text] = typeof(DynamicPanel).GetMethod("AddText"),
-			[PanelControlType.InputField] = typeof(DynamicPanel).GetMethod("AddInputField"),
-			[PanelControlType.CheckBox] = typeof(DynamicPanel).GetMethod("AddCheckBox"),
-			[PanelControlType.Slider] = typeof(DynamicPanel).GetMethod("AddSlider"),
-			[PanelControlType.Button] = typeof(DynamicPanel).GetMethod("AddButton"),
-			[PanelControlType.ButtonPanel] = typeof(DynamicPanel).GetMethod("AddButtonPanel"),
-			[PanelControlType.Image] = typeof(DynamicPanel).GetMethod("AddImage"),
-			[PanelControlType.ImagePanel] = typeof(DynamicPanel).GetMethod("AddImagePanel"),
-			[PanelControlType.Dropdown] = typeof(DynamicPanel).GetMethod("AddDropdown"),
-		};
 
-		public void AddControl(CreatePanelControl createPanelControl)
+
+		/// <summary>
+		/// Just nukes existing controls and reconstructs them with the data.
+		/// </summary>
+		/// <param name="uiControls"></param>
+		[System.Diagnostics.Conditional("DEBUG")]
+		public void UpdateData(List<UIControl> uiControls)
 		{
-			var controlDataEx = createPanelControl.GetAllControlsByType()[createPanelControl.controlType];
-			functions[createPanelControl.controlType].Invoke(this, new object[] { controlDataEx.Clone() });
-#if UNITY_EDITOR
+			ClearControlsEditor();
+			for (int i = 0; i < uiControls.Count; ++i)
+			{
+				AddUIControl(uiControls[i].GetData());
+			}
+		}
+
+		/// <summary>
+		/// Creates a UI control using the default UI scriptable objects.<br/>
+		/// Cast the returned reference to the UIControl you are creating.<br/>
+		/// </summary>
+		/// <param name="uiControlType"></param>
+		/// <returns></returns>
+		public IUIBehavior AddUIControl(UIControlType uiControlType)
+		{
+#if DEBUG
+			if (uiProvider == null)
+			{
+				uiProvider = transform.GetComponentInParent<UIPrefabProvider>();
+				if (uiProvider == null)
+				{
+					Debug.LogException(new Exception("what do in prefab edit more?"));
+					return null;
+				}
+			}
+#endif
+
+			switch (uiControlType)
+			{
+				case UIControlType.Text:
+					return AddUIControl(new LabelEx(uiProvider.textScriptObj));
+
+				case UIControlType.InputField:
+					return AddUIControl(new InputFieldEx(uiProvider.inputFieldScriptObj));
+
+				case UIControlType.Dropdown:
+					return AddUIControl(new DropdownEx(uiProvider.dropdownScriptObj));
+
+				case UIControlType.CheckBox:
+					return AddUIControl(new CheckBoxEx(uiProvider.checkBoxScriptObj));
+
+				case UIControlType.Button:
+					return AddUIControl(new ButtonEx(uiProvider.buttonScriptObj));
+
+				default:
+					Debug.LogException(new Exception($"{uiControlType} not yet implemented"));
+					return null;
+			}
+		}
+
+
+		public IUIBehavior AddUIControl(IUIDataEx uiDataEx)
+		{
+			var uiElement = bottomPanel.AddUIControl(uiDataEx);
+
+#if DEBUG
 			if (!Application.isPlaying)
 				RecalculateDimensions();
+			else
+				isDirty = true;
+#else
+			isDirty = true;
 #endif
+			return uiElement;
 		}
-#endif
 
-		//		public T AddUIControl<T>(IUIDataEx uiDataEx) where T : IUIBehavior
-		//		{
-		//			var uiElement = bottomPanel.AddControl(uiDataEx);
-		//#if UNITY_EDITOR
-		//			if (!Application.isPlaying)
-		//				RecalculateDimensions();
-		//#endif
-		//			return uiElement;
-		//		}
+		public UIButton AddButton(ButtonEx buttonEx)
+		{
+			return (UIButton)AddUIControl(buttonEx);
+		}
 
 		/// <summary>
 		/// For dialog boxes with a Result.
 		/// </summary>
 		/// <param name="buttons"></param>
-		public void AddButtonPanel(ButtonPanelEx buttons)
+		public UIButtonPanel AddButtonPanel(ButtonPanelEx buttons)
 		{
-			bottomPanel.AddButtonPanel(buttons);
-			RecalculateDimensions();
+			return (UIButtonPanel)AddUIControl(buttons);
 		}
 
 		public UIImageViewPanel AddImagePanel(ImageViewDataEx viewData)
 		{
-			var uiElement = bottomPanel.AddImagePanel(viewData);
-#if UNITY_EDITOR
-			if (!Application.isPlaying)
-				RecalculateDimensions();
-#endif
-			return uiElement;
+			return (UIImageViewPanel)AddUIControl(viewData);
 		}
 
 		public UIDropdown AddDropdown(DropdownEx dropdownData)
 		{
-			var uiElement = bottomPanel.AddDropdown(dropdownData);
-#if UNITY_EDITOR
-			if (!Application.isPlaying)
-				RecalculateDimensions();
-#endif
-			return uiElement;
+			return (UIDropdown)AddUIControl(dropdownData);
 		}
 
-		public ImageView AddImage(ImageEx imageEx)
+		public UIImageView AddImage(ImageEx imageEx)
 		{
-			var uiElemet = bottomPanel.AddImage(imageEx);
-#if UNITY_EDITOR
-			if (!Application.isPlaying)
-				RecalculateDimensions();
-#endif
-			return uiElemet;
-		}
-
-		public Button AddButton(ButtonEx buttonEx)
-		{
-			var button = bottomPanel.AddButton(buttonEx);
-#if UNITY_EDITOR
-			if (!Application.isPlaying)
-				RecalculateDimensions();
-#endif
-			return button;
+			return (UIImageView)AddUIControl(imageEx);
 		}
 
 		public UISlider AddSlider(SliderEx sliderEx)
 		{
-			var slider = bottomPanel.AddSlider(sliderEx);
-#if UNITY_EDITOR
-			if (!Application.isPlaying)
-				RecalculateDimensions();
-#endif
-			return slider;
+			return (UISlider)AddUIControl(sliderEx);
 		}
 
 		public UICheckBox AddCheckBox(CheckBoxEx checkBoxEx)
 		{
-			var checkBox = bottomPanel.AddCheckBox(checkBoxEx);
-#if UNITY_EDITOR
-			if (!Application.isPlaying)
-				RecalculateDimensions();
-#endif
-			return checkBox;
+			return (UICheckBox)AddUIControl(checkBoxEx);
 		}
 
-		public TMP_InputField AddInputField(InputFieldEx inputFieldEx)
+		public UIExpandingInputField AddInputField(InputFieldEx inputFieldEx)
 		{
-			var inputField = bottomPanel.AddInputField(inputFieldEx);
-#if UNITY_EDITOR
-			if (!Application.isPlaying)
-				RecalculateDimensions();
-#endif
-			return inputField;
+			return (UIExpandingInputField)AddUIControl(inputFieldEx);
 		}
 
-		public void AddText(LabelEx labelEx)
+		public UIExpandingLabel AddText(LabelEx labelEx)
 		{
-			bottomPanel.AddText(labelEx);
-#if UNITY_EDITOR
-			if (!Application.isPlaying)
-				Refresh();
-#endif
+			return (UIExpandingLabel)AddUIControl(labelEx);
 		}
 
 		/// <summary>
 		/// _NoData tag added to prvent ambiguous call warning
 		/// </summary>
 		/// <param name="text"></param>
-		public void AddText_NoData(string text)
+		public UIExpandingLabel AddText_NoData(string text)
 		{
-			bottomPanel.AddText(new LabelEx
+			return (UIExpandingLabel)AddUIControl(new LabelEx
 			{
 				text = text
 			});
@@ -616,15 +648,15 @@ namespace AtomosZ.UI
 		/// _NoData tag added to prvent ambiguous call warning
 		/// </summary>
 		/// <param name="text"></param>
-		public void AddText_NoData(string text, float fontSize, Color fontColor, Vector2 minLabelDimensions, Vector2 maxLabelDimensions)
+		public UIExpandingLabel AddText_NoData(string text, float fontSize, Color fontColor, Vector2 minLabelDimensions, Vector2 maxLabelDimensions)
 		{
-			bottomPanel.AddText(new LabelEx
+			return (UIExpandingLabel)AddUIControl(new LabelEx
 			{
 				text = text,
-				fontSize = fontSize,
-				fontColor = fontColor,
-				minLabelDimensions = minLabelDimensions,
-				maxLabelDimensions = maxLabelDimensions,
+				//fontSize = fontSize,
+				//fontColor = fontColor,
+				//minLabelDimensions = minLabelDimensions,
+				//maxLabelDimensions = maxLabelDimensions,
 			});
 		}
 
@@ -706,17 +738,25 @@ namespace AtomosZ.UI
 			isContextMenu = true;
 			bottomPanel.SetContextMenuActions(clickActions);
 			RecalculateDimensions();
+			isDirty = true;
 		}
 
+
+		public void RemoveControl(IUIDataEx data)
+		{
+			bottomPanel.RemoveControl(data);
+		}
 
 		public void RemoveControl(UIDesignObject uiDO)
 		{
 			bottomPanel.RemoveControl(uiDO);
+			isDirty = true;
 		}
 
 		public void ClearControls()
 		{
 			bottomPanel.ClearControls();
+			isDirty = true;
 		}
 
 		[Conditional("DEBUG")]
@@ -759,7 +799,7 @@ namespace AtomosZ.UI
 			Close();
 		}
 
-		public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+		public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
 		{
 			throw new NotImplementedException();
 		}

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,26 +15,51 @@ namespace AtomosZ.UI
 	[Serializable]
 	public class ButtonPanelEx : IUIDataEx
 	{
-		public PanelControlType dataType { get { return PanelControlType.ButtonPanel; } }
+		public UIControlType dataType { get { return UIControlType.ButtonPanel; } }
+
+		public UIButtonPanelScriptableObject scriptableObj;
 
 		public DialogButton buttons = DialogButton.OK;
 
-		public ButtonPanelEx() { }
+		public bool useCustomOKButton = false;
+		public bool useCustomCancelButton = false;
+		public bool useCustomYesButton = false;
+		public bool useCustomNoButton = false;
+		public ButtonEx okButton;
+		public ButtonEx cancelButton;
+		public ButtonEx yesButton;
+		public ButtonEx noButton;
+
+		public ButtonPanelEx(UIButtonPanelScriptableObject scriptObj)
+		{
+			scriptableObj = scriptObj;
+		}
 
 		public ButtonPanelEx(DialogButton buttonType)
 		{
 			buttons = buttonType;
+
+			useCustomOKButton = true;
+			okButton.labelEx.fontSize = 24;
+			okButton.labelEx.fontColor = Color.white;
+
+			useCustomCancelButton = true;
+			cancelButton.labelEx.fontSize = 24;
+			cancelButton.labelEx.fontColor = Color.white;
+
+			useCustomYesButton = true;
+			yesButton.labelEx.fontSize = 24;
+			yesButton.labelEx.fontColor = Color.white;
+
+			useCustomNoButton = true;
+			noButton.labelEx.fontSize = 24;
+			noButton.labelEx.fontColor = Color.white;
 		}
 
 
 		public void ResetToDefaults()
 		{
 			buttons = DialogButton.OK;
-		}
-
-		public object Clone()
-		{
-			return this.MemberwiseClone();
 		}
 	}
 
@@ -61,7 +88,7 @@ namespace AtomosZ.UI
 			[DialogButton.YesNo] = 300,
 		};
 
-		[SerializeField] private ButtonPanelEx buttons;
+		[SerializeField] private ButtonPanelEx buttonPanelEx;
 
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -74,6 +101,94 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public ButtonEx okButtonData
+		{
+			get
+			{
+				if (buttonPanelEx.useCustomOKButton || buttonPanelEx.scriptableObj == null)
+				{
+					return buttonPanelEx.okButton;
+				}
+
+				return buttonPanelEx.scriptableObj.okButton;
+			}
+		}
+
+		public ButtonEx cancelButtonData
+		{
+			get
+			{
+				if (buttonPanelEx.useCustomCancelButton || buttonPanelEx.scriptableObj == null)
+				{
+					return buttonPanelEx.cancelButton;
+				}
+
+				return buttonPanelEx.scriptableObj.cancelButton;
+			}
+		}
+
+		public ButtonEx yesButtonData
+		{
+			get
+			{
+				if (buttonPanelEx.useCustomYesButton || buttonPanelEx.scriptableObj == null)
+				{
+					return buttonPanelEx.yesButton;
+				}
+
+				return buttonPanelEx.scriptableObj.yesButton;
+			}
+		}
+
+		public ButtonEx noButtonData
+		{
+			get
+			{
+				if (buttonPanelEx.useCustomNoButton || buttonPanelEx.scriptableObj == null)
+				{
+					return buttonPanelEx.noButton;
+				}
+
+				return buttonPanelEx.scriptableObj.noButton;
+			}
+		}
+
+
+		public Sprite ButtonSpriteAsset(ButtonEx buttonEx)
+		{
+			if (buttonEx.useCustomSprite || buttonEx.scriptableObj == null)
+				return buttonEx.sprite;
+			return buttonEx.scriptableObj.sprite;
+		}
+
+		public TMP_FontAsset ButtonFontAsset(ButtonEx buttonEx)
+		{
+			if (buttonEx.scriptableObj == null)
+				return buttonEx.labelEx.fontAsset;
+			if (buttonEx.scriptableObj.labelEx.useCustomFontAsset || buttonEx.scriptableObj.labelEx.scriptableObj == null)
+				return buttonEx.scriptableObj.labelEx.fontAsset;
+			return buttonEx.scriptableObj.labelEx.scriptableObj.fontAsset;
+		}
+
+		public Color ButtonFontColor(ButtonEx buttonEx)
+		{
+			if (buttonEx.scriptableObj == null)
+				return buttonEx.labelEx.fontColor;
+			if (buttonEx.scriptableObj.labelEx.useCustomFontColor || buttonEx.scriptableObj.labelEx.scriptableObj == null)
+				return buttonEx.scriptableObj.labelEx.fontColor;
+			return buttonEx.scriptableObj.labelEx.scriptableObj.fontColor;
+		}
+
+		public float ButtonFontSize(ButtonEx buttonEx)
+		{
+			if (buttonEx.scriptableObj == null)
+				return buttonEx.labelEx.fontSize;
+			if (buttonEx.scriptableObj.labelEx.useCustomFontSize || buttonEx.scriptableObj.labelEx.scriptableObj == null)
+				return buttonEx.scriptableObj.labelEx.fontSize;
+			return buttonEx.scriptableObj.labelEx.scriptableObj.fontSize;
+		}
+
+
 		[SerializeField] private GameObject okButton;
 		[SerializeField] private GameObject yesButton;
 		[SerializeField] private GameObject noButton;
@@ -82,7 +197,7 @@ namespace AtomosZ.UI
 
 		public IUIDataEx GetBackingData()
 		{
-			return buttons;
+			return buttonPanelEx;
 		}
 
 		public void SetResultListeners(DynamicPanel parent)
@@ -99,7 +214,7 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
-			buttons = (ButtonPanelEx)backingData;
+			buttonPanelEx = (ButtonPanelEx)backingData;
 			UpdateBackingData();
 		}
 
@@ -111,7 +226,14 @@ namespace AtomosZ.UI
 			noButton.SetActive(false);
 			cancelButton.SetActive(false);
 
-			switch (buttons.buttons)
+
+			SetButton(okButtonData, okButton);
+			SetButton(cancelButtonData, cancelButton);
+			SetButton(yesButtonData, yesButton);
+			SetButton(noButtonData, noButton);
+
+
+			switch (buttonPanelEx.buttons)
 			{
 				case DialogButton.OK:
 				{
@@ -149,10 +271,23 @@ namespace AtomosZ.UI
 			}
 		}
 
+		private void SetButton(ButtonEx buttonData, GameObject button)
+		{
+			if (buttonData == null)
+				return;
+			var sprite = ButtonSpriteAsset(buttonData);
+			if (sprite != null)
+				button.GetComponent<Image>().sprite = sprite;
+			var tmp = button.GetComponentInChildren<TextMeshProUGUI>();
+			tmp.font = ButtonFontAsset(buttonData);
+			tmp.color = ButtonFontColor(buttonData);
+			tmp.fontSize = ButtonFontSize(buttonData);
+		}
+
 		public Vector2 GetMinDimensions()
 		{
 			UpdateBackingData();
-			return new Vector2(minButtonWidth[buttons.buttons], GetComponent<RectTransform>().sizeDelta.y);
+			return new Vector2(minButtonWidth[buttonPanelEx.buttons], GetComponent<RectTransform>().sizeDelta.y);
 		}
 
 
@@ -171,7 +306,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
 		{
 			throw new System.NotImplementedException();
 		}

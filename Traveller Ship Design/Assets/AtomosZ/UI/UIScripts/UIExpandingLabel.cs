@@ -4,6 +4,7 @@ using System.Collections;
 using TMPro;
 
 using UnityEngine;
+
 using UnityEngine.UI;
 
 namespace AtomosZ.UI
@@ -11,38 +12,80 @@ namespace AtomosZ.UI
 	[Serializable]
 	public class LabelEx : IUIDataEx
 	{
-		public PanelControlType dataType { get { return PanelControlType.Text; } }
+		public UIControlType dataType { get { return UIControlType.Text; } }
 
 		[Tooltip("IMPORTANT(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
 		public string text = "Text Label";
-		public Vector2 minLabelDimensions = new Vector2(64, 1);
-		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
-		public Vector2 maxLabelDimensions = new Vector2(1025, 256);
-		public float fontSize = 36;
-		public Color fontColor = Color.white;
-		public TMP_FontAsset fontAsset;
 
-		public LabelEx() { }
+		public UIExpandingLabelScriptableObject scriptableObj;
+
+		public bool useCustomFontSize = true;
+		public bool useCustomFontColor = true;
+		public bool useCustomFontAsset = true;
+		[Tooltip("Default: 36")]
+		[SerializeField] public float fontSize;
+		[SerializeField] public Color fontColor;
+		[SerializeField] public TMP_FontAsset fontAsset;
+
+		[SerializeField] public Vector2 minLabelDimensions = new Vector2(64, 1);
+		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
+		[SerializeField] public Vector2 maxLabelDimensions = new Vector2(1025, 256);
+
+		public LabelEx()
+		{
+			ResetToDefaults();
+		}
 
 		public LabelEx(string text)
 		{
+			ResetToDefaults();
 			this.text = text;
+		}
+
+		public LabelEx(UIExpandingLabelScriptableObject textScriptObj)
+		{
+			this.scriptableObj = textScriptObj;
+			useCustomFontSize = false;
+			useCustomFontColor = false;
+			useCustomFontAsset = false;
+			SetToScriptableObjectValues();
+		}
+
+		public void SetToScriptableObjectValues()
+		{
+			if (scriptableObj == null)
+				ResetToDefaults();
+			else
+			{
+				fontSize = scriptableObj.fontSize;
+				fontColor = scriptableObj.fontColor;
+				fontAsset = scriptableObj.fontAsset;
+			}
 		}
 
 		public void ResetToDefaults()
 		{
-			text = "Text Label";
+			useCustomFontSize = true;
+			useCustomFontColor = true;
+			useCustomFontAsset = true;
 			minLabelDimensions = new Vector2(64, 1);
-			maxLabelDimensions = new Vector2(1025, 0);
-			fontSize = 36;
+			maxLabelDimensions = new Vector2(1025, 256);
+			fontSize = 36.0f;
 			fontColor = Color.white;
 			fontAsset = null;
 		}
 
-		public object Clone()
+
+		/// <summary>
+		/// @IMPORTANT(Tristan): This is required for UISlider & UIImageView!
+		/// </summary>
+		/// <returns></returns>
+		public LabelEx Clone()
 		{
-			return this.MemberwiseClone();
+			return (LabelEx) this.MemberwiseClone();
 		}
+
+
 	}
 
 	public class UIExpandingLabel : MonoBehaviour, IUIBehavior
@@ -51,6 +94,7 @@ namespace AtomosZ.UI
 
 		[SerializeField] private TextMeshProUGUI textLabel;
 		[SerializeField] private Image image;
+
 
 		/// <summary>
 		/// TODO(Tristan): Now that using LabelEx use of this property should be strongly guarded.<br/>
@@ -69,12 +113,45 @@ namespace AtomosZ.UI
 
 		public Color color
 		{
-			get { return labelEx.fontColor; }
-			set
+			get
 			{
-				labelEx.fontColor = value;
-				UpdateBackingData();
+				if (labelEx.useCustomFontColor || labelEx.scriptableObj == null)
+					return labelEx.fontColor;
+				return labelEx.scriptableObj.fontColor;
 			}
+			//set
+			//{
+			//	labelEx.overrideFontColor = true;
+			//	labelEx.fontColor = value;
+			//	textLabel.color = value;
+			//	UpdateBackingData();
+			//}
+		}
+
+		public float fontSize
+		{
+			get
+			{
+				if (labelEx.useCustomFontSize || labelEx.scriptableObj == null)
+					return labelEx.fontSize;
+				return labelEx.scriptableObj.fontSize;
+			}
+		}
+
+		public TMP_FontAsset fontAsset
+		{
+			get
+			{
+				if (labelEx.useCustomFontAsset || labelEx.scriptableObj == null)
+					return labelEx.fontAsset;
+				return labelEx.scriptableObj.fontAsset;
+			}
+			//set
+			//{
+			//	labelEx.fontAsset = value;
+			//	textLabel.font = value;
+			//	UpdateBackingData();
+			//}
 		}
 
 		public UIDesignObject _designObject;
@@ -93,23 +170,30 @@ namespace AtomosZ.UI
 			return labelEx;
 		}
 
-		public void UpdateBackingData(IUIDataEx backingData)
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public void UpdateUI()
 		{
-			labelEx = (LabelEx)backingData;
-			if (labelEx.minLabelDimensions.x > labelEx.maxLabelDimensions.x)
-				labelEx.maxLabelDimensions.x = labelEx.minLabelDimensions.x;
-			if (labelEx.minLabelDimensions.y > labelEx.maxLabelDimensions.y)
-				labelEx.maxLabelDimensions.y = labelEx.minLabelDimensions.y;
-			text = labelEx.text;
+			UpdateBackingData();
+		}
+
+
+		public void UpdateBackingData(IUIDataEx dataEx)
+		{
+			labelEx = (LabelEx)dataEx;
+			UpdateBackingData();
 		}
 
 
 		public void UpdateBackingData()
 		{
 			textLabel.text = labelEx.text;
-			textLabel.fontSize = labelEx.fontSize;
-			textLabel.color = labelEx.fontColor;
-			textLabel.font = labelEx.fontAsset;
+			textLabel.color = color;
+			textLabel.font = fontAsset;
+			textLabel.fontSize = fontSize;
+
 			textLabel.ForceMeshUpdate();
 
 			var prefTextSize = textLabel.GetPreferredValues(text);
@@ -157,6 +241,8 @@ namespace AtomosZ.UI
 			}
 		}
 
+
+
 		public Vector2 GetMinDimensions()
 		{
 			UpdateBackingData();
@@ -198,7 +284,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
 		{
 			throw new System.NotImplementedException();
 		}

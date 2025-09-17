@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+
+using static AtomosZ.Keyboard;
 using static DesignManager;
 using static RoomSerializer;
 
@@ -282,7 +284,7 @@ public class Door : MonoBehaviour, IDesignBehavior
 	/// <param name="keyInput"></param>
 	/// <param name="currentlySelectedObject"></param>
 	/// <param name="editMode"></param>
-	public void Clicked(Vector3 worldPos, KeyInput keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
+	public void Clicked(Vector3 worldPos, ModifierKey keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
 	{
 		if (currentlySelectedObject != null)
 		{
@@ -296,7 +298,7 @@ public class Door : MonoBehaviour, IDesignBehavior
 		this.StartDrag();
 
 		editMode = EditMode.MoveObject;
-		//if ((keyInput & KeyInput.Ctrl) == KeyInput.Ctrl)
+		//if ((keyInput & ModifierKey.Ctrl) == ModifierKey.Ctrl)
 		//{
 		//	CustomCursor.SetCursor(CustomCursor.CursorSpriteMode.ResizeHorizontal);
 		//}

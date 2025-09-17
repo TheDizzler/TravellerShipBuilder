@@ -4,13 +4,12 @@ using System.Collections.Generic;
 
 using AtomosZ.UI;
 
-using TMPro;
-
 using UnityEditor;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+using static AtomosZ.Keyboard;
 using static AtomosZ.UI.UIPrefabProvider;
 using static CustomCursor;
 
@@ -38,24 +37,6 @@ public class DesignManager : MonoBehaviour
 	{
 		return instance.prefabs[prefabType];
 	}
-	//public static UIDesignObject GetPrefab(UIPrefabType prefabType)
-	//{
-	//	return instance.uiPrefabs[prefabType];
-	//}
-
-	//public static UIDesignObject GetUIPrefab(UIPrefabType prefabType)
-	//{
-	//	return instance.uiPrefabs[prefabType];
-	//}
-
-	///// <summary>
-	///// Is this necessary? Nullifying the fontasset has the same effect.
-	///// </summary>
-	///// <returns></returns>
-	//public static TMP_FontAsset GetDefaultFont()
-	//{
-	//	return instance.defaultFont;
-	//}
 
 	public static DynamicPanel GetDynamicPanel()
 	{
@@ -90,32 +71,13 @@ public class DesignManager : MonoBehaviour
 		RoomPrefab,
 	}
 
-	//public enum UIPrefabType
-	//{
-	//	DynamicPanel,
-	//	Button,
-	//	MenuControlButton,
-	//	MenuDivider,
-	//	ExpandingText,
-	//	InputField,
-	//	ButtonPanel,
-	//	CheckBox,
-	//	Slider,
-	//	ModalClickBlocker,
-	//	ImageView,
-	//	ImageViewPanel,
-	//	GeomorphDisplayPanel,
-	//}
 
 	[UDictionary.Split(50, 50)]
 	[SerializeField] private UDictionary<PrefabType, DesignObject> prefabs;
-	[UDictionary.Split(50, 50)]
-	[SerializeField] private UDictionary<UIPrefabType, UIDesignObject> uiPrefabs;
-
-	//[SerializeField] private TMP_FontAsset defaultFont;
 
 	public ToolTip toolTip;
 	[SerializeField] private Canvas uiCanvas;
+	[SerializeField] private UIInput uiInput;
 	[SerializeField] private GameObject objectPicker;
 	[SerializeField] private DynamicPanel roomGeomorphTab;
 	[SerializeField] private GameObject cursorPrefab;
@@ -238,20 +200,15 @@ public class DesignManager : MonoBehaviour
 		var panel = GetDynamicPanel();
 		panel.designObject.isModal = true;
 		panel.AddText(new LabelEx("Panel " + panelCount++));
-		var button = new ButtonEx
-		{
-			labelEx = new LabelEx("Modal Panel"),
-			action = new UnityEngine.Events.UnityEvent(),
-		};
-		button.action.AddListener(MakeModalPanel);
-		panel.AddButton(button);
-		button = new ButtonEx
-		{
-			labelEx = new LabelEx("Non Modal Panel"),
-			action = new UnityEngine.Events.UnityEvent(),
-		};
-		button.action.AddListener(MakeNonModalPanel);
-		panel.AddButton(button);
+
+		var button = (UIButton)panel.AddUIControl(UIControlType.Button);
+		var buttonEx = (ButtonEx)button.GetBackingData();
+		buttonEx.labelEx.text = "Modal Panel"; // this will probably break. I need to decide how to handle 
+		buttonEx.AddListener(MakeModalPanel);
+		button = (UIButton)panel.AddUIControl(UIControlType.Button);
+		buttonEx = (ButtonEx)button.GetBackingData();
+		buttonEx.labelEx.text = "Non Modal Panel";
+		buttonEx.AddListener(MakeNonModalPanel);
 		panel.SetTitle("Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
 		panel.Show(Vector2.zero);
 	}
@@ -260,20 +217,14 @@ public class DesignManager : MonoBehaviour
 	{
 		var panel = DesignManager.GetDynamicPanel();
 		panel.AddText(new LabelEx("Panel " + panelCount++));
-		var button = new ButtonEx
-		{
-			labelEx = new LabelEx("Modal Panel"),
-			action = new UnityEngine.Events.UnityEvent(),
-		};
-		button.action.AddListener(MakeModalPanel);
-		panel.AddButton(button);
-		button = new ButtonEx
-		{
-			labelEx = new LabelEx("Non Modal Panel"),
-			action = new UnityEngine.Events.UnityEvent(),
-		};
-		button.action.AddListener(MakeNonModalPanel);
-		panel.AddButton(button);
+		var button = (UIButton)panel.AddUIControl(UIControlType.Button);
+		var buttonEx = (ButtonEx)button.GetBackingData();
+		buttonEx.labelEx.text = "Modal Panel"; // this will probably break. I need to decide how to handle 
+		buttonEx.AddListener(MakeModalPanel);
+		button = (UIButton)panel.AddUIControl(UIControlType.Button);
+		buttonEx = (ButtonEx)button.GetBackingData();
+		buttonEx.labelEx.text = "Non Modal Panel";
+		buttonEx.AddListener(MakeNonModalPanel);
 		panel.SetTitle("Non Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
 		panel.Show(Vector2.zero);
 	}
@@ -320,7 +271,7 @@ public class DesignManager : MonoBehaviour
 		var mouseWorldPos = GetMouseWorldPos();
 		var newCntrlPnt = Instantiate(prefabs[PrefabType.WallControlPointPrefab], mouseWorldPos, Quaternion.identity);
 		var designObject = newCntrlPnt.GetComponent<DesignObject>();
-		designObject.Clicked(mouseWorldPos, KeyInput.None, ref selectedObject, ref editMode);
+		designObject.Clicked(mouseWorldPos, ModifierKey.None, ref selectedObject, ref editMode);
 		SetEditMode(EditMode.CreateObject);
 		isUIUpdate = true;  // we want to consume a frame of input before switching out of UI mode
 	}
@@ -329,7 +280,7 @@ public class DesignManager : MonoBehaviour
 	{
 		var room = Room.CreateFromSerializedData(roomData);
 		var mouseWorldPos = GetMouseWorldPos();
-		room.Clicked(mouseWorldPos, KeyInput.None, ref selectedObject, ref editMode);
+		room.Clicked(mouseWorldPos, ModifierKey.None, ref selectedObject, ref editMode);
 		SetEditMode(EditMode.CreateObject);
 		isUIUpdate = true;  // we want to consume a frame of input before switching out of UI mode
 	}
@@ -339,7 +290,7 @@ public class DesignManager : MonoBehaviour
 		var mouseWorldPos = GetMouseWorldPos();
 		var door = Instantiate(prefabs[PrefabType.DoorPrefab], mouseWorldPos, Quaternion.identity);
 		var designObject = door.GetComponent<DesignObject>();
-		designObject.Clicked(mouseWorldPos, KeyInput.None, ref selectedObject, ref editMode);
+		designObject.Clicked(mouseWorldPos, ModifierKey.None, ref selectedObject, ref editMode);
 		SetEditMode(EditMode.CreateObject);
 		isUIUpdate = true;  // we want to consume a frame of input before switching out of UI mode
 	}
@@ -397,8 +348,8 @@ public class DesignManager : MonoBehaviour
 			return;
 		}
 
-		// is there a topmost panel?
-		// is the topmost panel busy with something (i.e. dragging)
+		// is there a topmost panelRect?
+		// is the topmost panelRect busy with something (i.e. dragging)
 		//		this is to prevent fast dragging movements from flickering the mousecursor
 		// 
 
@@ -414,10 +365,10 @@ public class DesignManager : MonoBehaviour
 			GetEventSystemRaycastResults(Input.mousePosition),
 			out UIDesignObject mouseOverUIObject);
 
-		KeyInput keyInput = GetKeyInput();
+		ModifierKey modifierKeys = GetModifierKeyInput();
 		if (topDialog != null)
 		{
-			if (topDialog.Input(keyInput))
+			if (topDialog.Input(modifierKeys))
 				return;
 			if (topDialog.isDragging)
 				return;
@@ -468,7 +419,7 @@ public class DesignManager : MonoBehaviour
 		}
 
 		Vector3 mouseWorldPos = GetMouseWorldPos();
-		KeyInput keyInput = GetKeyInput();
+		ModifierKey modifierKeys = GetModifierKeyInput();
 		if (dialogStack.Count != 0)
 		{
 			var topDialog = dialogStack.Last.Value;
@@ -476,7 +427,7 @@ public class DesignManager : MonoBehaviour
 			//return;
 			if (topDialog.isContextMenu)
 			{
-				if ((keyInput & KeyInput.Esc) == KeyInput.Esc
+				if ((modifierKeys & ModifierKey.Esc) == ModifierKey.Esc
 					|| Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
 				{
 					topDialog.Close();
@@ -487,13 +438,13 @@ public class DesignManager : MonoBehaviour
 
 		if (Input.mouseScrollDelta != Vector2.zero)
 		{
-			if ((keyInput & KeyInput.Ctrl) == KeyInput.Ctrl)
+			if ((modifierKeys & ModifierKey.Ctrl) == ModifierKey.Ctrl)
 			{
 				var newY = mainCamera.transform.position.y + Input.mouseScrollDelta.y * zoomMultiplier;
 				mainCamera.transform.position = new Vector3(
 					mainCamera.transform.position.x, newY, mainCamera.transform.position.z);
 			}
-			else if ((keyInput & KeyInput.Shift) == KeyInput.Shift)
+			else if ((modifierKeys & ModifierKey.Shift) == ModifierKey.Shift)
 			{
 				var newX = mainCamera.transform.position.x + Input.mouseScrollDelta.y * zoomMultiplier;
 				mainCamera.transform.position = new Vector3(
@@ -555,14 +506,14 @@ public class DesignManager : MonoBehaviour
 		{
 			if (snapToGrid)
 			{
-				if ((keyInput & KeyInput.Ctrl) != KeyInput.Ctrl)
+				if ((modifierKeys & ModifierKey.Ctrl) != ModifierKey.Ctrl)
 				{
 					mouseWorldPos = selectedObject.SnapToGrid(mouseWorldPos);
 				}
 			}
 			else
 			{
-				if ((keyInput & KeyInput.Ctrl) == KeyInput.Ctrl)
+				if ((modifierKeys & ModifierKey.Ctrl) == ModifierKey.Ctrl)
 				{
 					mouseWorldPos = selectedObject.SnapToGrid(mouseWorldPos);
 				}
@@ -581,7 +532,7 @@ public class DesignManager : MonoBehaviour
 					}
 					else
 					{
-						hoverObject.Clicked(mouseWorldPos, keyInput, ref selectedObject, ref editMode);
+						hoverObject.Clicked(mouseWorldPos, modifierKeys, ref selectedObject, ref editMode);
 						SetEditMode(editMode);
 					}
 				}
@@ -589,14 +540,14 @@ public class DesignManager : MonoBehaviour
 				{
 					if (hoverObject != null)
 					{
-						var contextMenu = hoverObject.GetContextMenu(GetUICoordinatesFromMousePos());
+						var contextMenu = hoverObject.GetContextMenu(uiInput.GetUICoordinatesFromMousePos());
 					}
 					else
 					{
 						DeselectObject();
 					}
 				}
-				else if (keyInput == KeyInput.Esc)
+				else if (modifierKeys == ModifierKey.Esc)
 				{
 					DeselectObject();
 				}
@@ -641,7 +592,7 @@ public class DesignManager : MonoBehaviour
 						{
 							Destroy(selectedObject.gameObject); // this SHOULD be just a temporary cursor object/icon.
 							selectedObject = createdObject;
-							selectedObject.Clicked(mouseWorldPos, keyInput, ref selectedObject, ref editMode);
+							selectedObject.Clicked(mouseWorldPos, modifierKeys, ref selectedObject, ref editMode);
 						}
 						else
 						{
@@ -651,7 +602,7 @@ public class DesignManager : MonoBehaviour
 						SetEditMode(newEditMode);
 					}
 				}
-				else if (Input.GetMouseButtonDown(1) || keyInput == KeyInput.Esc)
+				else if (Input.GetMouseButtonDown(1) || modifierKeys == ModifierKey.Esc)
 				{
 					if (editMode == EditMode.CreateObject)
 					{
@@ -678,18 +629,18 @@ public class DesignManager : MonoBehaviour
 		}
 	}
 
-	public static Vector2 GetUICoordinatesFromMousePos()
-	{
-		return instance._GetUICoordinatesFromMousePos();
-	}
+	//public static Vector2 GetUICoordinatesFromMousePos()
+	//{
+	//	return instance._GetUICoordinatesFromMousePos();
+	//}
 
-	private Vector2 _GetUICoordinatesFromMousePos()
-	{
-		Vector2 mousePos = Input.mousePosition;
-		RectTransformUtility.ScreenPointToLocalPointInRectangle(
-			uiCanvas.GetComponent<RectTransform>(), mousePos, uiCamera, out Vector2 uiPos);
-		return uiPos;
-	}
+	//private Vector2 _GetUICoordinatesFromMousePos()
+	//{
+	//	Vector2 mousePos = Input.mousePosition;
+	//	RectTransformUtility.ScreenPointToLocalPointInRectangle(
+	//		uiCanvas.GetComponent<RectTransform>(), mousePos, uiCamera, out Vector2 uiPos);
+	//	return uiPos;
+	//}
 
 	//private void DeselectUIObject()
 	//{
@@ -721,29 +672,29 @@ public class DesignManager : MonoBehaviour
 		return new List<string> { noContextTips[nextTip] };
 	}
 
-	public enum KeyInput
-	{
-		None = 0x0,
-		Ctrl = 0x1,
-		Alt = 0x2,
-		Esc = 0x4,
-		Shift = 0x8,
-	}
+	//public enum ModifierKey
+	//{
+	//	None = 0x0,
+	//	Ctrl = 0x1,
+	//	Alt = 0x2,
+	//	Esc = 0x4,
+	//	Shift = 0x8,
+	//}
 
-	private KeyInput GetKeyInput()
-	{
-		KeyInput input = KeyInput.None;
+	//private ModifierKey GetModifierKeyInput()
+	//{
+	//	ModifierKey input = ModifierKey.None;
 
-		if (Input.GetKeyDown(KeyCode.Escape))
-			return KeyInput.Esc;
-		if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
-			input |= KeyInput.Ctrl;
-		if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
-			input |= KeyInput.Alt;
-		if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-			input |= KeyInput.Shift;
-		return input;
-	}
+	//	if (Input.GetKeyDown(KeyCode.Escape))
+	//		return ModifierKey.Esc;
+	//	if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+	//		input |= ModifierKey.Ctrl;
+	//	if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
+	//		input |= ModifierKey.Alt;
+	//	if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+	//		input |= ModifierKey.Shift;
+	//	return input;
+	//}
 
 	private void SetEditMode(EditMode newEditMode)
 	{
@@ -942,7 +893,7 @@ public class DesignManager : MonoBehaviour
 		}
 
 		Destroy(panel.gameObject);
-		// turn off UI mode, so next update will check for another panel in the stack.
+		// turn off UI mode, so next update will check for another panelRect in the stack.
 		// this will prevent any wierd click throughs
 		ToggleUIMode(false, CursorSpriteMode.Default);
 	}

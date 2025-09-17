@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using static AtomosZ.Keyboard;
 using static DesignManager;
 
 public class WallControlPoint : MonoBehaviour, IDesignBehavior
@@ -172,7 +174,7 @@ public class WallControlPoint : MonoBehaviour, IDesignBehavior
 			wall.Deselect();
 	}
 
-	public void Clicked(Vector3 worldPos, KeyInput keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
+	public void Clicked(Vector3 worldPos, ModifierKey keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
 	{
 		if (currentlySelectedObject != null)
 		{
@@ -180,7 +182,7 @@ public class WallControlPoint : MonoBehaviour, IDesignBehavior
 				currentlySelectedObject.Deselect();
 		}
 
-		if ((keyInput & KeyInput.Ctrl) == KeyInput.Ctrl && wall.IsEndControlPoint(this))
+		if ((keyInput & ModifierKey.Ctrl) == ModifierKey.Ctrl && wall.IsEndControlPoint(this))
 		{
 			var newCtrlPnt = wall.AddControlPointToEnd(worldPos,
 				index, ref currentlySelectedObject, ref editMode);

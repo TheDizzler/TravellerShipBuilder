@@ -11,29 +11,55 @@ namespace AtomosZ.UI
 	[Serializable]
 	public class ButtonEx : IUIDataEx
 	{
-		public PanelControlType dataType { get { return PanelControlType.Button; } }
+		public UIControlType dataType { get { return UIControlType.Button; } }
 		public UnityEvent action = null;
 
-		public LabelEx labelEx = new LabelEx
-		{
-			text = "Button Text",
-			fontColor = Color.black,
-		};
+		public UIButtonScriptableObject scriptableObj;
+
+		public bool useCustomSprite = false;
+		public Sprite sprite;
+
+		public LabelEx labelEx;
 
 
-		public void ResetToDefaults()
+		/// <summary>
+		/// To change the TextMeshPro label, manipulate ButtonEx.labelEx.
+		/// </summary>
+		public ButtonEx(UIButtonScriptableObject scriptObj)
 		{
-			labelEx.ResetToDefaults();
-			labelEx.text = "Button Text";
-			labelEx.fontColor = Color.black;
-			action = null;
+			scriptableObj = scriptObj;
+			//if (scriptableObj.labelEx == null)
+			//	labelEx = new LabelEx
+			//	{
+			//		text = "Button Text",
+			//		fontColor = Color.black,
+			//	};
 		}
 
-		public object Clone()
+		/// <summary>
+		/// To change fontColor, manipulate ButtonEx.labelEx.fontColor.
+		/// </summary>
+		/// <param name="buttonText"></param>
+		/// <param name="fontSize"></param>
+		public ButtonEx(string buttonText, float fontSize = 36)
 		{
-			var clone = (ButtonEx)this.MemberwiseClone();
-			clone.labelEx = (LabelEx)labelEx.Clone();
-			return clone;
+			labelEx = new LabelEx
+			{
+				fontColor = Color.black,
+			};
+
+			labelEx.text = buttonText;
+			labelEx.fontSize = fontSize;
+
+			useCustomSprite = true;
+		}
+
+
+		public void AddListener(UnityAction newAction)
+		{
+			if (action == null)
+				action = new UnityEngine.Events.UnityEvent();
+			action.AddListener(newAction);
 		}
 	}
 
@@ -41,6 +67,7 @@ namespace AtomosZ.UI
 	{
 		[SerializeField] private ButtonEx buttonEx;
 		[SerializeField] private UIExpandingLabel label;
+		[SerializeField] private Image image;
 
 
 
@@ -55,11 +82,36 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public IUIDataEx labelEx
+		{
+			get
+			{
+				if (buttonEx.scriptableObj == null)
+				{
+					if (buttonEx.labelEx == null)
+						throw new Exception("A LabelEx is required");
+					return buttonEx.labelEx;
+				}
+
+				return buttonEx.scriptableObj.labelEx;
+			}
+		}
+
+		public Sprite sprite
+		{
+			get
+			{
+				if (buttonEx.useCustomSprite || buttonEx.scriptableObj == null)
+				{
+					return buttonEx.sprite;
+				}
+
+				return buttonEx.scriptableObj.sprite;
+			}
+		}
+
 		public IUIDataEx GetBackingData()
 		{
-			// if I'm not mistaken, we should not need to get the labelEx since
-			// it SHOULD be the same reference.
-			//buttonEx.labelEx = (LabelEx)label.GetBackingData();
 			return buttonEx;
 		}
 
@@ -71,15 +123,35 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			label.UpdateBackingData(buttonEx.labelEx);
+			label.UpdateBackingData(labelEx);
 			var button = GetComponent<Button>();
 			button.onClick.RemoveAllListeners();
 			if (buttonEx.action != null)
 			{
 				button.onClick.AddListener(() => buttonEx.action.Invoke());
 			}
+
+			if (sprite != null)
+				image.sprite = sprite;
 		}
 
+		/// <summary>
+		/// Adds action to the listener and the backingdata.
+		/// </summary>
+		/// <param name="action"></param>
+		public void AddListener(UnityEvent action)
+		{
+			buttonEx.action.AddListener(() => action.Invoke());
+		}
+
+		/// <summary>
+		/// Adds action to the listener and the backingdata.
+		/// </summary>
+		/// <param name="action"></param>
+		public void AddListener(Action action)
+		{
+			buttonEx.action.AddListener(() => action.Invoke());
+		}
 
 		public Vector2 GetMinDimensions()
 		{
@@ -88,7 +160,7 @@ namespace AtomosZ.UI
 		}
 
 
-		public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput,
+		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput,
 			ref UIDesignObject currentlySelectedObject)
 		{
 			throw new NotImplementedException();

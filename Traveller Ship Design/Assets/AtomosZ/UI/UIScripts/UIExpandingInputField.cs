@@ -13,40 +13,78 @@ namespace AtomosZ.UI
 	/// TODO(Tristan): Char limit.
 	public class InputFieldEx : IUIDataEx
 	{
-		public PanelControlType dataType { get { return PanelControlType.InputField; } }
+		public UIControlType dataType { get { return UIControlType.InputField; } }
 
 		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
 		public string placeholderText = "Placeholder text";
 		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
 		public string defaultText;
+
 		public Vector2 fieldDimensions = new Vector2(275, 44);
-		public float fontSize = 18;
-		public Color placeHolderFontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 128.0f / 256);
-		public Color fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
+
+
+		public UIExpandingInputFieldScriptableObject scriptableObj;
+
+
+		public bool useCustomFontSize = true;
+		public bool useCustomPlaceholderFontColor = true;
+		public bool useCustomFontColor = true;
+		public bool useCustomFontAsset = true;
+		public float fontSize;
+		public Color placeholderFontColor;
+		public Color fontColor;
 		public TMP_FontAsset fontAsset;
 
-		public InputFieldEx() { }
+		public InputFieldEx(UIExpandingInputFieldScriptableObject scriptObj)
+		{
+			scriptableObj = scriptObj;
+			useCustomFontSize = false;
+			useCustomPlaceholderFontColor = false;
+			useCustomFontColor = false;
+			useCustomFontAsset = false;
+		}
+
+		public InputFieldEx()
+		{
+			ResetToDefaults();
+		}
 
 		public InputFieldEx(string placeholderText, string defaultText)
 		{
 			this.placeholderText = placeholderText;
 			this.defaultText = defaultText;
+			ResetToDefaults();
 		}
+
+		public void SetToScriptableObjectValues()
+		{
+			if (scriptableObj == null)
+				ResetToDefaults();
+			else
+			{
+				fontSize = scriptableObj.fontSize;
+				fontColor = scriptableObj.fontColor;
+				fontAsset = scriptableObj.fontAsset;
+				placeholderFontColor = scriptableObj.placeholderFontColor;
+			}
+		}
+
 
 		public void ResetToDefaults()
 		{
+			useCustomFontSize = true;
+			useCustomPlaceholderFontColor = true;
+			useCustomFontColor = true;
+			useCustomFontAsset = true;
+
 			placeholderText = "Placeholder text";
 			defaultText = "";
 			fieldDimensions = new Vector2(275, 44);
-			fontSize = 18;
-			placeHolderFontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 128.0f / 256);
-			fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
-			fontAsset = null;
-		}
 
-		public object Clone()
-		{
-			return this.MemberwiseClone();
+			placeholderFontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 128.0f / 256);
+			fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
+			fontSize = 18;
+			fontAsset = null;
 		}
 	}
 
@@ -72,6 +110,46 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public TMP_FontAsset fontAsset
+		{
+			get
+			{
+				if (inputFieldEx.useCustomFontAsset || inputFieldEx.scriptableObj == null)
+					return inputFieldEx.fontAsset;
+				return inputFieldEx.scriptableObj.fontAsset;
+			}
+		}
+
+		public float fontSize
+		{
+			get
+			{
+				if (inputFieldEx.useCustomFontSize || inputFieldEx.scriptableObj == null)
+					return inputFieldEx.fontSize;
+				return inputFieldEx.scriptableObj.fontSize;
+			}
+		}
+
+		public Color placeholderFontColor
+		{
+			get
+			{
+				if (inputFieldEx.useCustomPlaceholderFontColor || inputFieldEx.scriptableObj == null)
+					return inputFieldEx.placeholderFontColor;
+				return inputFieldEx.scriptableObj.placeholderFontColor;
+			}
+		}
+
+		public Color fontColor
+		{
+			get
+			{
+				if (inputFieldEx.useCustomFontColor || inputFieldEx.scriptableObj == null)
+					return inputFieldEx.fontColor;
+				return inputFieldEx.scriptableObj.fontColor;
+			}
+		}
+
 		public IUIDataEx GetBackingData()
 		{
 			return inputFieldEx;
@@ -86,14 +164,14 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			inputFieldTMP.fontAsset = inputFieldEx.fontAsset;
-			inputFieldTMP.pointSize = inputFieldEx.fontSize;
+			inputFieldTMP.fontAsset = fontAsset;
+			inputFieldTMP.pointSize = fontSize;
+			placeholderLabel.color = placeholderFontColor;
 			placeholderLabel.text = inputFieldEx.placeholderText;
-			placeholderLabel.color = inputFieldEx.placeHolderFontColor;
+
 			placeholderLabel.ForceMeshUpdate();
 
-			textLabel.color = inputFieldEx.fontColor;
-
+			textLabel.color = fontColor;
 			inputFieldTMP.text = inputFieldEx.defaultText;
 
 			image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, inputFieldEx.fieldDimensions.x);
@@ -119,7 +197,7 @@ namespace AtomosZ.UI
 			return image.rectTransform.sizeDelta;
 		}
 
-		public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
 		{
 			throw new System.NotImplementedException();
 		}

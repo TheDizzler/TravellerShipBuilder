@@ -8,41 +8,44 @@ namespace AtomosZ.UI
 	[Serializable]
 	public class ImageEx : IUIDataEx
 	{
-		public PanelControlType dataType { get { return PanelControlType.Image; } }
+		public UIControlType dataType { get { return UIControlType.Image; } }
+
+		public UIImageViewScriptableObject scriptableObject;
+
 
 		public bool isVisible = true;
 		public Sprite sprite;
 		public bool forceSize = false;
 		public Vector2 size = new Vector2(256, 256);
 		public bool showCaption = true;
-		public LabelEx labelEx = new LabelEx
-		{
-			fontColor = Color.black,
-			fontSize = 36,
-			text = "Caption #00",
-		};
+		public LabelEx labelEx;
+		//= new LabelEx
+		//{
+		//	//fontColor = Color.black,
+		//	//fontSize = 36,
+		//	text = "Caption #00",
+		//};
 
-		public object Clone()
+
+		public ImageEx(UIImageViewScriptableObject scriptObj)
 		{
-			var clone = (ImageEx)this.MemberwiseClone();
-			clone.labelEx = (LabelEx)labelEx.Clone();
-			return clone;
+			scriptableObject = scriptObj;
 		}
 
-		public void ResetToDefaults()
-		{
-			forceSize = false;
-			size = new Vector2(256, 256);
-			labelEx = new LabelEx
-			{
-				fontColor = Color.black,
-				fontSize = 36,
-				text = "Caption #00",
-			};
-		}
+		//public void ResetToDefaults()
+		//{
+		//	forceSize = false;
+		//	size = new Vector2(256, 256);
+		//	labelEx = new LabelEx
+		//	{
+		//		//fontColor = Color.black,
+		//		//fontSize = 36,
+		//		text = "Caption #00",
+		//	};
+		//}
 	}
 
-	public class ImageView : MonoBehaviour, IUIBehavior
+	public class UIImageView : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private Image image;
 		[SerializeField] private UIExpandingLabel caption;
@@ -74,6 +77,7 @@ namespace AtomosZ.UI
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
 			imageEx = (ImageEx)backingData;
+			imageEx.labelEx = imageEx.labelEx.Clone();
 			UpdateBackingData();
 		}
 
@@ -147,7 +151,7 @@ namespace AtomosZ.UI
 			//throw new System.NotImplementedException();
 		}
 
-		public void Clicked(Vector3 mouseWorldPos, DesignManager.KeyInput keyInput, ref UIDesignObject currentlySelectedObject)
+		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
 		{
 			throw new System.NotImplementedException();
 		}

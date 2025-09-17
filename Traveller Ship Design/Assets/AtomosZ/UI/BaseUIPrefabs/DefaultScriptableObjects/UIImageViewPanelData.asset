@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ab5940a3d7fa84499ba3b53b719991, type: 3}
+  m_Name: UIImageViewPanelData
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIImageViewPanelScriptableObject
+  imageSize: {x: 256, y: 256}
+  maxPanelSize: {x: 512, y: 512}
+  imageViewData: {fileID: 11400000, guid: 04ca78633c910a242b8446e33520c341, type: 2}
+  labelData: {fileID: 11400000, guid: 452293887a8c2c14cb3962fd59ed503c, type: 2}
+  defaultSprite: {fileID: 2420301657204973463, guid: 42144bbdcc437ee4bbcb02fddb490d3b, type: 3}

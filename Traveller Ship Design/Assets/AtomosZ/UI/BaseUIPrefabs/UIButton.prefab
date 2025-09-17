@@ -52,11 +52,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   labelEx:
     text: Button Text
-    minLabelDimensions: {x: 64, y: 64}
-    maxLabelDimensions: {x: 1025, y: 0}
+    scriptableObj: {fileID: 0}
+    useCustomFontSize: 1
+    useCustomFontColor: 1
+    useCustomFontAsset: 1
     fontSize: 36
     fontColor: {r: 0, g: 0, b: 0, a: 1}
     fontAsset: {fileID: 0}
+    minLabelDimensions: {x: 64, y: 64}
+    maxLabelDimensions: {x: 1025, y: 64}
   textLabel: {fileID: 2671208435322713224}
   image: {fileID: 4770955567978397481}
   _designObject: {fileID: 0}
@@ -216,14 +220,22 @@ MonoBehaviour:
     action:
       m_PersistentCalls:
         m_Calls: []
+    scriptableObj: {fileID: 0}
+    useCustomSprite: 1
+    sprite: {fileID: 0}
     labelEx:
       text: Button Text
-      minLabelDimensions: {x: 64, y: 64}
-      maxLabelDimensions: {x: 1025, y: 64}
+      scriptableObj: {fileID: 0}
+      useCustomFontSize: 1
+      useCustomFontColor: 1
+      useCustomFontAsset: 1
       fontSize: 36
       fontColor: {r: 0, g: 0, b: 0, a: 1}
       fontAsset: {fileID: 0}
+      minLabelDimensions: {x: 64, y: 64}
+      maxLabelDimensions: {x: 1025, y: 64}
   label: {fileID: 4235460900820515980}
+  image: {fileID: 4770955567978397481}
   _designObject: {fileID: 6311154708473013455}
 --- !u!114 &6311154708473013455
 MonoBehaviour:

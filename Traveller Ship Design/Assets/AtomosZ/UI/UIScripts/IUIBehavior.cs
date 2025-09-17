@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-using static DesignManager;
+using static AtomosZ.Keyboard;
 
 namespace AtomosZ.UI
 {
@@ -30,7 +30,7 @@ namespace AtomosZ.UI
 		/// </summary>
 		/// <param name="mouseWorldPos">This <i><b>should</b></i> be on or at least within the vicinity of this object.</param>
 		/// <param name="keyInput"></param>
-		public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, ref UIDesignObject currentlySelectedObject);
+		public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput, ref UIDesignObject currentlySelectedObject);
 		public Vector2 GetMinDimensions();
 		public IUIDataEx GetBackingData();
 		public void UpdateBackingData(IUIDataEx backingData);

@@ -7,51 +7,31 @@ using UnityEngine;
 
 namespace AtomosZ.UI
 {
-	/// <summary>
-	/// Make sure your implementing class has [Serializable] !
-	/// </summary>
-	public interface IUIDataEx : ICloneable
-	{
-		public PanelControlType dataType { get; }
-		public void ResetToDefaults();
-	}
-
-	public enum PanelControlType
-	{
-		Text,
-		InputField,
-		CheckBox,
-		Slider,
-		Button,
-		ButtonPanel,
-		Image,
-		ImagePanel,
-		Dropdown,
-	}
-
 #if DEBUG
 	/// <summary>
 	/// IMPORTANT(Tristan): Needed for two different PropertyDrawer views.
 	/// </summary>
-	[Serializable]
-	public class CreatePanelControl : PanelControl { }
+	[Serializable]	
+	[Obsolete()]
+	public class CreatePanelControl : PanelControl_dep { }
 
-
+	
+	[Obsolete()]
 	[Serializable]
-	public class PanelControl
+	public class PanelControl_dep
 	{
-		public PanelControlType controlType;
-		public static Dictionary<PanelControlType, string> panelControlNames = new()
+		public UIControlType controlType;
+		public static Dictionary<UIControlType, string> panelControlNames = new()
 		{
-			[PanelControlType.Text] = "labelEx",
-			[PanelControlType.InputField] = "inputFieldEx",
-			[PanelControlType.CheckBox] = "checkBoxEx",
-			[PanelControlType.Slider] = "sliderEx",
-			[PanelControlType.ButtonPanel] = "buttonPanelEx",
-			[PanelControlType.Button] = "buttonEx",
-			[PanelControlType.Image] = "imageEx",
-			[PanelControlType.ImagePanel] = "imagePanelEx",
-			[PanelControlType.Dropdown] = "dropdownEx",
+			[UIControlType.Text] = "labelEx",
+			[UIControlType.InputField] = "inputFieldEx",
+			[UIControlType.CheckBox] = "checkBoxEx",
+			[UIControlType.Slider] = "sliderEx",
+			[UIControlType.ButtonPanel] = "buttonPanelEx",
+			[UIControlType.Button] = "buttonEx",
+			[UIControlType.Image] = "imageEx",
+			[UIControlType.ImagePanel] = "imagePanelEx",
+			[UIControlType.Dropdown] = "dropdownEx",
 		};
 
 		public LabelEx labelEx;
@@ -64,7 +44,6 @@ namespace AtomosZ.UI
 		public ButtonPanelEx buttonPanelEx;
 		public DropdownEx dropdownEx;
 
-
 		public UIDesignObject uiDesignObject;
 
 		public List<IUIDataEx> GetAllControls()
@@ -72,7 +51,7 @@ namespace AtomosZ.UI
 			var list = new List<IUIDataEx>();
 			foreach (var controlName in panelControlNames)
 			{
-				var field = typeof(PanelControl).GetField(controlName.Value);
+				var field = typeof(PanelControl_dep).GetField(controlName.Value);
 				var control = field.GetValue(this);
 				list.Add((IUIDataEx)control);
 			}
@@ -80,9 +59,9 @@ namespace AtomosZ.UI
 			return list;
 		}
 
-		public Dictionary<PanelControlType, IUIDataEx> GetAllControlsByType()
+		public Dictionary<UIControlType, IUIDataEx> GetAllControlsByType()
 		{
-			var dict = new Dictionary<PanelControlType, IUIDataEx>();
+			var dict = new Dictionary<UIControlType, IUIDataEx>();
 			var allControls = GetAllControls();
 			foreach (var data in allControls)
 			{
@@ -94,7 +73,7 @@ namespace AtomosZ.UI
 
 		public IUIDataEx GetData()
 		{
-			var field = typeof(PanelControl).GetField(panelControlNames[controlType]);
+			var field = typeof(PanelControl_dep).GetField(panelControlNames[controlType]);
 			var control = field.GetValue(this);
 			return (IUIDataEx)control;
 		}
@@ -106,10 +85,12 @@ namespace AtomosZ.UI
 	/// This monobehaviour self-destructs on Start().
 	/// </summary>
 	[RequireComponent(typeof(DynamicPanel))]
+	
+	[Obsolete("Been replaced with DyanPanelOp")]
 	public class DynamicPanelOperator : MonoBehaviour
 	{
 		[SerializeField] private CreatePanelControl createPanelControl;
-		[SerializeField] public List<PanelControl> panelControls;
+		[SerializeField] public List<PanelControl_dep> panelControls;
 
 
 		void Start()
@@ -119,13 +100,13 @@ namespace AtomosZ.UI
 #endif
 		}
 
-
+		[Obsolete("No need")]
 		[Conditional("DEBUG")]
 		public void ResetToLabelDefaults()
 		{
 			var allControls = createPanelControl.GetAllControls();
-			foreach (IUIDataEx controlEx in allControls)
-				controlEx.ResetToDefaults();
+			//foreach (IUIDataEx controlEx in allControls)
+			//	controlEx.ResetToDefaults();
 		}
 
 		[Conditional("DEBUG")]
@@ -142,11 +123,13 @@ namespace AtomosZ.UI
 			panel.RecalculateDimensions();
 		}
 
+		[Obsolete("No need")]
 		[Conditional("DEBUG")]
 		public void AddControl()
 		{
 			var panel = GetComponent<DynamicPanel>();
-			panel.AddControl(createPanelControl);
+			//var controlDataEx = (IUIDataEx)createPanelControl.GetAllControlsByType()[createPanelControl.controlType].Clone();
+			//panelRect.AddUIControl(controlDataEx);
 		}
 
 		[Conditional("DEBUG")]
@@ -157,10 +140,18 @@ namespace AtomosZ.UI
 		}
 
 		[Conditional("DEBUG")]
-		public void ResetToDefaults(PanelControl panelControl)
+		public void Remove(IUIDataEx data)
+		{
+			var panel = GetComponent<DynamicPanel>();
+			panel.RemoveControl(data);
+		}
+
+		[Obsolete("No need")]
+		[Conditional("DEBUG")]
+		public void ResetToDefaults(PanelControl_dep panelControl)
 		{
 			var allControls = panelControl.GetAllControlsByType();
-			allControls[panelControl.controlType].ResetToDefaults();
+			//allControls[panelControl.controlType].ResetToDefaults();
 			panelControl.uiDesignObject.UpdateBackingData(allControls[panelControl.controlType]);
 
 			var panel = GetComponent<DynamicPanel>();
@@ -168,15 +159,30 @@ namespace AtomosZ.UI
 		}
 
 		[Conditional("DEBUG")]
-		public void RemoveControl(PanelControl control)
+		public void RemoveControl(PanelControl_dep control)
 		{
-			panelControls.Remove(control);
 			var panel = GetComponent<DynamicPanel>();
-			panel.RemoveControl(control.uiDesignObject);
+			foreach (var ctrl in panelControls)
+			{
+				if (ctrl.uiDesignObject == control.uiDesignObject)
+				{
+					panelControls.Remove(ctrl);
+					panel.RemoveControl(ctrl.uiDesignObject);
+					break;
+				}
+			}
 		}
 
 		[Conditional("DEBUG")]
-		public void Clear()
+		public void RemoveControl(IUIDataEx data)
+		{
+			//panelControls.Remove(data);
+			var panel = GetComponent<DynamicPanel>();
+			panel.RemoveControl(data);
+		}
+
+		[Conditional("DEBUG")]
+		public void ClearAllUIControls()
 		{
 			var panel = GetComponent<DynamicPanel>();
 			panel.ClearControlsEditor();

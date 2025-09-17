@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4747009652071960255}
   - component: {fileID: 7221397167034544767}
   - component: {fileID: 3997567427778128451}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: UIImageView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 2488315987466801428}
   - component: {fileID: 1932646406951213162}
   - component: {fileID: 187563356031008854}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}

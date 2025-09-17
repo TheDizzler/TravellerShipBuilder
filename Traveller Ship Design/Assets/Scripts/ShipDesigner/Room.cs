@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using AtomosZ.UI;
 
 using TMPro;
-using Unity.VisualScripting;
+
 using UnityEngine;
+
+using static AtomosZ.Keyboard;
 using static DesignManager;
 using static RoomSerializer;
 
@@ -80,7 +82,7 @@ public class Room : MonoBehaviour, IDesignBehavior
 
 	}
 
-	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput,
+	public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput,
 		ref DesignObject currentlySelectedObject, ref EditMode editMode)
 	{
 		if (currentlySelectedObject != null)
@@ -211,15 +213,11 @@ public class Room : MonoBehaviour, IDesignBehavior
 		{
 			panel.SetTitle("Room already exists", DynamicPanel.TitleLabelStyle.Bar);
 			panel.AddText_NoData($"Room with same name already exists. Overwrite or save as alternate?");
-			var checkBox = new CheckBoxEx
-			{
-				labelEx = new LabelEx("Overwrite"),
-				isOn = false,
-				action = new UnityEngine.Events.UnityEvent<bool>(),
-			};
-
-			checkBox.action.AddListener(OnOverwriteToggled);
-			panel.AddCheckBox(checkBox);
+			var checkBox = (UICheckBox)panel.AddUIControl(UIControlType.CheckBox);
+			var checkBoxData = (CheckBoxEx)checkBox.GetBackingData();
+			checkBoxData.isOnByDefault = false;
+			checkBoxData.action = new UnityEngine.Events.UnityEvent<bool>();
+			checkBoxData.action.AddListener(OnOverwriteToggled);
 
 			int altNum = 0;
 			string altName;
@@ -243,11 +241,8 @@ public class Room : MonoBehaviour, IDesignBehavior
 			}
 			while (!RoomSerializer.IsNameUnique(altName));
 
-			inputField = panel.AddInputField(new InputFieldEx("Enter new room name", altName));
-			panel.AddButtonPanel(new ButtonPanelEx
-			{
-				buttons = UIButtonPanel.DialogButton.OKCancel,
-			});
+			inputField = panel.AddInputField(new InputFieldEx("Enter new room name", altName)).GetComponent<TMP_InputField>();
+			panel.AddButtonPanel(new ButtonPanelEx(UIButtonPanel.DialogButton.OKCancel));
 
 			panel.OnClose += SaveRenamePanelClosed;
 		}
@@ -285,7 +280,7 @@ public class Room : MonoBehaviour, IDesignBehavior
 	{
 		var panel = DesignManager.GetDynamicPanel();
 		panel.designObject.isModal = true;
-		inputField = panel.AddInputField(new InputFieldEx("Enter new room name", roomLabel.text));
+		inputField = panel.AddInputField(new InputFieldEx("Enter new room name", roomLabel.text)).GetComponent<TMP_InputField>();
 		panel.AddButtonPanel(new ButtonPanelEx(UIButtonPanel.DialogButton.OKCancel));
 		panel.SetTitle("Enter room name", DynamicPanel.TitleLabelStyle.BladedBar);
 

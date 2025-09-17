@@ -8,7 +8,7 @@ using UnityEngine;
 namespace AtomosZ.UI
 {
 	/// <summary>
-	/// This is a NON-canvas Text label!<br/>It does NOT implement IUIBehavior!
+	/// This is a NON-UIcanvas Text label!<br/>It does NOT implement IUIBehavior!
 	/// </summary>
 	public class ExpandingLabel : MonoBehaviour
 	{

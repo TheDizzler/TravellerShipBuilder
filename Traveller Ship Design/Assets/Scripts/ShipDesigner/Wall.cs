@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using static AtomosZ.Keyboard;
 using static DesignManager;
 using static RoomSerializer;
 
@@ -148,7 +150,7 @@ public class Wall : MonoBehaviour, IDesignBehavior
 		pointIndicator.ToggleIndicator(false);
 	}
 
-	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
+	public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
 	{
 		if (currentlySelectedObject != null)
 		{
@@ -156,7 +158,7 @@ public class Wall : MonoBehaviour, IDesignBehavior
 		}
 
 
-		if ((keyInput & KeyInput.Ctrl) == KeyInput.Ctrl)
+		if ((keyInput & ModifierKey.Ctrl) == ModifierKey.Ctrl)
 		{
 			var ctrlPnt = AddControlPoint(mouseWorldPos);
 			currentlySelectedObject = ctrlPnt.designObject;

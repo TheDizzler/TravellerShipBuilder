@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+
+using static AtomosZ.Keyboard;
 using static DesignManager;
 
 
@@ -84,7 +86,7 @@ public class WallSegmentCollider : MonoBehaviour, IDesignBehavior
 
 	}
 
-	public void Clicked(Vector3 worldPos, KeyInput keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
+	public void Clicked(Vector3 worldPos, ModifierKey keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode)
 	{
 		wall.Clicked(worldPos, keyInput, ref currentlySelectedObject, ref editMode);
 	}

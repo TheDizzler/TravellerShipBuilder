@@ -181,7 +181,7 @@ public static class RoomSerializer
 			var mainCamera = Camera.main;
 			Camera.main.enabled = false;
 
-			// Step 1: Enable the screenshot camera and set its background color to transparent
+			// Step 1: Enable the screenshot camera and set its backgroundRect color to transparent
 			var screenshotCamera = DesignManager.GetScreenshotCamera();
 			screenshotCamera.gameObject.SetActive(true);
 			screenshotCamera.clearFlags = CameraClearFlags.SolidColor;

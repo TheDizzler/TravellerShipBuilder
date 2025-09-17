@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using AtomosZ.UI;
 
 using UnityEngine;
+
+using static AtomosZ.Keyboard;
 using static DesignManager;
 
 public class RoomLabel : MonoBehaviour, IDesignBehavior
@@ -46,7 +48,7 @@ public class RoomLabel : MonoBehaviour, IDesignBehavior
 		room.Deselect();
 	}
 
-	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput,
+	public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput,
 		ref DesignObject currentlySelectedObject, ref EditMode editMode)
 	{
 		room.Clicked(mouseWorldPos, keyInput, ref currentlySelectedObject, ref editMode);

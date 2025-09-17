@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 056a379b8e535fe449ffbec14bdac4a5, type: 3}
+  m_Name: UISliderData
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UISliderScriptableObject
+  showHandle: 1
+  showUnits: 1
+  unitSpan: 1
+  labelEx:
+    text: notused
+    scriptableObj: {fileID: 11400000, guid: 61dfff6e0e90d684bacdfda1e1cdce05, type: 2}
+    useCustomFontSize: 0
+    useCustomFontColor: 0
+    useCustomFontAsset: 0
+    fontSize: 18
+    fontColor: {r: 0, g: 0, b: 0, a: 1}
+    fontAsset: {fileID: 0}
+    minLabelDimensions: {x: 8, y: 8}
+    maxLabelDimensions: {x: 64, y: 256}

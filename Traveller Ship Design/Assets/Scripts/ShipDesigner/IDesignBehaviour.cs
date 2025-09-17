@@ -1,6 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using static AtomosZ.Keyboard;
 using static DesignManager;
 
 public interface IDesignBehavior
@@ -18,7 +19,7 @@ public interface IDesignBehavior
 	/// </summary>
 	/// <param name="mouseWorldPos">This <i><b>should</b></i> be on or at least within the vicinity of this object.</param>
 	/// <param name="keyInput"></param>
-	public void Clicked(Vector3 mouseWorldPos, KeyInput keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode);
+	public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode);
 	public void SetHover(bool isHovering);
 	public void UpdateHover(Vector3 posOfHover);
 	public void GetContextMenuItems(List<DesignAction> actionDict);

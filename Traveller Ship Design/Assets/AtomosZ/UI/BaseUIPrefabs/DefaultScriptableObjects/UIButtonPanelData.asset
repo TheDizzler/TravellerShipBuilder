@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e83b878b0514b14994d14495887c440, type: 3}
+  m_Name: UIButtonPanelData
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIButtonPanelScriptableObject
+  okButton:
+    action:
+      m_PersistentCalls:
+        m_Calls: []
+    scriptableObj: {fileID: 11400000, guid: f8d07fc9c6ef81840b3a6cea0c39bb00, type: 2}
+    useCustomSprite: 0
+    sprite: {fileID: 21300000, guid: dedd25b3ecc1c4346b28eeee4fcacbf3, type: 3}
+    labelEx:
+      text: Text Label
+      scriptableObj: {fileID: 0}
+      useCustomFontSize: 1
+      useCustomFontColor: 1
+      useCustomFontAsset: 1
+      fontSize: 36
+      fontColor: {r: 1, g: 1, b: 1, a: 1}
+      fontAsset: {fileID: 0}
+      minLabelDimensions: {x: 64, y: 1}
+      maxLabelDimensions: {x: 1025, y: 256}
+  cancelButton:
+    action:
+      m_PersistentCalls:
+        m_Calls: []
+    scriptableObj: {fileID: 11400000, guid: d87e401b96e817f469543be4c6f85e3c, type: 2}
+    useCustomSprite: 0
+    sprite: {fileID: 0}
+    labelEx:
+      text: Text Label
+      scriptableObj: {fileID: 0}
+      useCustomFontSize: 1
+      useCustomFontColor: 1
+      useCustomFontAsset: 1
+      fontSize: 36
+      fontColor: {r: 1, g: 1, b: 1, a: 1}
+      fontAsset: {fileID: 0}
+      minLabelDimensions: {x: 64, y: 1}
+      maxLabelDimensions: {x: 1025, y: 256}
+  yesButton:
+    action:
+      m_PersistentCalls:
+        m_Calls: []
+    scriptableObj: {fileID: 11400000, guid: 1231fbd9947022441b666004a78049ec, type: 2}
+    useCustomSprite: 0
+    sprite: {fileID: 0}
+    labelEx:
+      text: Text Label
+      scriptableObj: {fileID: 0}
+      useCustomFontSize: 1
+      useCustomFontColor: 1
+      useCustomFontAsset: 1
+      fontSize: 36
+      fontColor: {r: 1, g: 1, b: 1, a: 1}
+      fontAsset: {fileID: 0}
+      minLabelDimensions: {x: 64, y: 1}
+      maxLabelDimensions: {x: 1025, y: 256}
+  noButton:
+    action:
+      m_PersistentCalls:
+        m_Calls: []
+    scriptableObj: {fileID: 11400000, guid: 479b33a6b94a040479f06ff7e52867ed, type: 2}
+    useCustomSprite: 0
+    sprite: {fileID: 0}
+    labelEx:
+      text: Text Label
+      scriptableObj: {fileID: 0}
+      useCustomFontSize: 1
+      useCustomFontColor: 1
+      useCustomFontAsset: 1
+      fontSize: 36
+      fontColor: {r: 1, g: 1, b: 1, a: 1}
+      fontAsset: {fileID: 0}
+      minLabelDimensions: {x: 64, y: 1}
+      maxLabelDimensions: {x: 1025, y: 256}

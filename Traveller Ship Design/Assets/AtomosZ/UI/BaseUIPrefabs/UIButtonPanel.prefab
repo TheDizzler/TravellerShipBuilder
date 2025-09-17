@@ -74,8 +74,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4278628864
+  m_fontColor: {r: 0, g: 0.6981132, b: 0.023564357, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -195,7 +195,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 1032f322c761dcb4ba3f9a728db6a540, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -328,7 +328,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 874647bf55c41114b86afa32925f0a46, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -420,7 +420,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8141357792149577385
 RectTransform:
   m_ObjectHideFlags: 0
@@ -436,9 +436,9 @@ RectTransform:
   - {fileID: 4319148496350285283}
   m_Father: {fileID: 8581739949491361681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 336.5, y: -15}
   m_SizeDelta: {x: 125, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8818626369108475116
@@ -517,7 +517,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 8d2a9c7a5c887bf45b947d6445d62561, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -601,8 +601,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4278628864
+  m_fontColor: {r: 0, g: 0.6981132, b: 0.023564357, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -745,8 +745,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4278255615
+  m_fontColor: {r: 1, g: 1, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -922,7 +922,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 1032f322c761dcb4ba3f9a728db6a540, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -954,7 +954,7 @@ GameObject:
   - component: {fileID: 7899581285383477695}
   - component: {fileID: 2229494213494269531}
   - component: {fileID: 5022085412885239388}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: UIButtonPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -996,8 +996,85 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 339e43106b8b73748af4bd934d896ee3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttons:
-    buttons: 2
+  buttonPanelEx:
+    scriptableObj: {fileID: 11400000, guid: 56557aa7b7c6fad48b93d20458c100fb, type: 2}
+    buttons: 1
+    useCustomOKButton: 0
+    useCustomCancelButton: 0
+    useCustomYesButton: 0
+    useCustomNoButton: 0
+    okButton:
+      action:
+        m_PersistentCalls:
+          m_Calls: []
+      scriptableObj: {fileID: 11400000, guid: 479b33a6b94a040479f06ff7e52867ed, type: 2}
+      useCustomSprite: 0
+      sprite: {fileID: 21300000, guid: 13c0280effb815d4384bc6cab4ee2810, type: 3}
+      labelEx:
+        text: Text Label
+        scriptableObj: {fileID: 0}
+        useCustomFontSize: 1
+        useCustomFontColor: 1
+        useCustomFontAsset: 1
+        fontSize: 36
+        fontColor: {r: 1, g: 1, b: 1, a: 1}
+        fontAsset: {fileID: 0}
+        minLabelDimensions: {x: 64, y: 1}
+        maxLabelDimensions: {x: 1025, y: 256}
+    cancelButton:
+      action:
+        m_PersistentCalls:
+          m_Calls: []
+      scriptableObj: {fileID: 11400000, guid: f8d07fc9c6ef81840b3a6cea0c39bb00, type: 2}
+      useCustomSprite: 0
+      sprite: {fileID: 0}
+      labelEx:
+        text: Text Label
+        scriptableObj: {fileID: 0}
+        useCustomFontSize: 1
+        useCustomFontColor: 1
+        useCustomFontAsset: 1
+        fontSize: 36
+        fontColor: {r: 1, g: 1, b: 1, a: 1}
+        fontAsset: {fileID: 0}
+        minLabelDimensions: {x: 64, y: 1}
+        maxLabelDimensions: {x: 1025, y: 256}
+    yesButton:
+      action:
+        m_PersistentCalls:
+          m_Calls: []
+      scriptableObj: {fileID: 11400000, guid: d87e401b96e817f469543be4c6f85e3c, type: 2}
+      useCustomSprite: 0
+      sprite: {fileID: 0}
+      labelEx:
+        text: Text Label
+        scriptableObj: {fileID: 0}
+        useCustomFontSize: 1
+        useCustomFontColor: 1
+        useCustomFontAsset: 1
+        fontSize: 36
+        fontColor: {r: 1, g: 1, b: 1, a: 1}
+        fontAsset: {fileID: 0}
+        minLabelDimensions: {x: 64, y: 1}
+        maxLabelDimensions: {x: 1025, y: 256}
+    noButton:
+      action:
+        m_PersistentCalls:
+          m_Calls: []
+      scriptableObj: {fileID: 11400000, guid: f8d07fc9c6ef81840b3a6cea0c39bb00, type: 2}
+      useCustomSprite: 0
+      sprite: {fileID: 0}
+      labelEx:
+        text: Text Label
+        scriptableObj: {fileID: 0}
+        useCustomFontSize: 1
+        useCustomFontColor: 1
+        useCustomFontAsset: 1
+        fontSize: 36
+        fontColor: {r: 1, g: 1, b: 1, a: 1}
+        fontAsset: {fileID: 0}
+        minLabelDimensions: {x: 64, y: 1}
+        maxLabelDimensions: {x: 1025, y: 256}
   okButton: {fileID: 6749889736822966019}
   yesButton: {fileID: 461001629351655048}
   noButton: {fileID: 1974796049591662254}
@@ -1022,9 +1099,6 @@ MonoBehaviour:
   isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 1
-  test:
-    keys: []
-    values: 
   tooltip: []
 --- !u!114 &7899581285383477695
 MonoBehaviour:
@@ -1164,8 +1238,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4278190335
+  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
