@@ -3,11 +3,8 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-using static AtomosZ.UI.DynamicPanel;
-
 namespace AtomosZ.UI
 {
-
 	/// <summary>
 	/// Make sure your implementing class has [Serializable] !
 	/// </summary>
@@ -16,6 +13,40 @@ namespace AtomosZ.UI
 		public UIControlType dataType { get; }
 	}
 
+	public static class IUDataExExtensions
+	{
+		public static string GetReferenceName(this IUIDataEx dataEx)
+		{
+			switch (dataEx.dataType)
+			{
+				case UIControlType.Button:
+					return ((ButtonEx)dataEx).referenceName;
+				case UIControlType.ButtonPanel:
+					return ((ButtonPanelEx)dataEx).referenceName;
+				case UIControlType.CheckBox:
+					return ((CheckBoxEx)dataEx).referenceName;
+				case UIControlType.Dropdown:
+					return ((DropdownEx)dataEx).referenceName;
+				case UIControlType.Image:
+					return ((ImageEx)dataEx).referenceName;
+				case UIControlType.ImagePanel:
+					return ((ImageViewDataEx)dataEx).referenceName;
+				case UIControlType.InputField:
+					return ((InputFieldEx)dataEx).referenceName;
+				case UIControlType.Slider:
+					return ((SliderEx)dataEx).referenceName;
+				case UIControlType.Text:
+					return ((LabelEx)dataEx).referenceName;
+				case UIControlType.Panel:
+					return ((PanelEx)dataEx).referenceName;
+				//case UIControlType.TabControl:
+				//	return ((TabControlEx)dataEx).referenceName;
+
+				default:
+					throw new Exception($"{dataEx.dataType} not yet implemented");
+			}
+		}
+	}
 
 	public enum UIControlType
 	{
@@ -28,8 +59,14 @@ namespace AtomosZ.UI
 		Image,
 		ImagePanel,
 		Dropdown,
+		TabControl,
+		Panel,
 	}
 
+#if DEBUG
+	/// <summary>
+	/// This purely and Editor class for creating and manipulating UI controls.
+	/// </summary>
 	[Serializable]
 	public class UIControl
 	{
@@ -45,6 +82,7 @@ namespace AtomosZ.UI
 			[UIControlType.Image] = "imageEx",
 			[UIControlType.ImagePanel] = "imagePanelEx",
 			[UIControlType.Dropdown] = "dropdownEx",
+			[UIControlType.Panel] = "panelEx",
 		};
 
 		[SerializeReference] public LabelEx labelEx;
@@ -56,6 +94,7 @@ namespace AtomosZ.UI
 		[SerializeReference] public ImageViewDataEx imagePanelEx;
 		[SerializeReference] public ButtonPanelEx buttonPanelEx;
 		[SerializeReference] public DropdownEx dropdownEx;
+		[SerializeReference] public PanelEx panelEx;
 
 		public IUIDataEx GetData()
 		{
@@ -63,14 +102,8 @@ namespace AtomosZ.UI
 			var control = (IUIDataEx)field.GetValue(this);
 			return control;
 		}
-
-		[Obsolete("No need")]
-		public void ResetToDefaults()
-		{
-			//GetData().ResetToDefaults();
-		}
 	}
-
+#endif
 
 	/// <summary>
 	/// This will not keep any (non-editor) data.
@@ -139,7 +172,7 @@ namespace AtomosZ.UI
 				case UIControlType.Image:
 					return dynaPan.AddUIControl(new ImageEx(imageViewScriptObj));
 
-					case UIControlType.ImagePanel:
+				case UIControlType.ImagePanel:
 					return dynaPan.AddUIControl(new ImageViewDataEx(imageViewPanelScriptObj));
 
 				default:
@@ -165,19 +198,22 @@ namespace AtomosZ.UI
 				inputFieldScriptObj = uiProvider.inputFieldScriptObj;
 			if (sliderScriptObj == null)
 				sliderScriptObj = uiProvider.sliderScriptObj;
+			if (buttonScriptObj == null)
+				buttonScriptObj = uiProvider.buttonScriptObj;
+			if (buttonPanelScriptObj == null)
+				buttonPanelScriptObj = uiProvider.buttonPanelScriptObj;
+			if (imageViewScriptObj == null)
+				imageViewScriptObj = uiProvider.imageViewScriptObj;
+			if (imageViewPanelScriptObj == null)
+				imageViewPanelScriptObj = uiProvider.imageViewPanelScriptObj;
+
 		}
 
-		//public void ResetToDefaults(UIControl ctrl)
-		//{
-		//	ctrl.ResetToDefaults();
-		//	//dynaPan.UpdateData(uiControls);
-		//}
 
 		public void RemoveControl(UIControl uiControl)
 		{
 			var uiData = uiControl.GetData();
 			dynaPan.RemoveControl(uiData);
-			//uiControls.Remove(uiControl);
 		}
 	}
 }

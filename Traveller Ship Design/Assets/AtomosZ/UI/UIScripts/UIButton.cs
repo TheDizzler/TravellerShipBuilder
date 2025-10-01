@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -12,7 +12,10 @@ namespace AtomosZ.UI
 	public class ButtonEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Button; } }
+		public string referenceName;
+
 		public UnityEvent action = null;
+		public bool fillParentHorizontal = false;
 
 		public UIButtonScriptableObject scriptableObj;
 
@@ -28,12 +31,14 @@ namespace AtomosZ.UI
 		public ButtonEx(UIButtonScriptableObject scriptObj)
 		{
 			scriptableObj = scriptObj;
-			//if (scriptableObj.labelEx == null)
-			//	labelEx = new LabelEx
-			//	{
-			//		text = "Button Text",
-			//		fontColor = Color.black,
-			//	};
+			if (scriptableObj == null || scriptableObj.labelEx == null)
+			{
+				labelEx = new LabelEx("Button Text")
+				{
+					fontColor = Color.black,
+					fontSize = 36,
+				};
+			}
 		}
 
 		/// <summary>
@@ -43,13 +48,11 @@ namespace AtomosZ.UI
 		/// <param name="fontSize"></param>
 		public ButtonEx(string buttonText, float fontSize = 36)
 		{
-			labelEx = new LabelEx
+			labelEx = new LabelEx(buttonText)
 			{
 				fontColor = Color.black,
+				fontSize = fontSize,
 			};
-
-			labelEx.text = buttonText;
-			labelEx.fontSize = fontSize;
 
 			useCustomSprite = true;
 		}
@@ -69,7 +72,7 @@ namespace AtomosZ.UI
 		[SerializeField] private UIExpandingLabel label;
 		[SerializeField] private Image image;
 
-
+		public string referenceName { get { return buttonEx.referenceName; } }
 
 		public UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -82,14 +85,12 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public IUIDataEx labelEx
+		public LabelEx labelEx
 		{
 			get
 			{
 				if (buttonEx.scriptableObj == null)
 				{
-					if (buttonEx.labelEx == null)
-						throw new Exception("A LabelEx is required");
 					return buttonEx.labelEx;
 				}
 
@@ -123,16 +124,32 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
+			if (string.IsNullOrEmpty(labelEx.referenceName))
+				labelEx.referenceName = transform.name;
+			
+			if (sprite != null)
+				image.sprite = sprite;
+
+			var layout = GetComponent<LayoutElement>();
+			if (buttonEx.fillParentHorizontal)
+				layout.flexibleWidth = 1;
+			else
+				layout.flexibleWidth = 0;
+
+			TextMeshProUGUI textLabel = label.GetComponent<TextMeshProUGUI>();
+			var labelHorzMargins = + textLabel.margin.x + textLabel.margin.z;
+			layout.minWidth = labelEx.minLabelDimensions.x + labelHorzMargins;
 			label.UpdateBackingData(labelEx);
+			var labelDim = label.GetMinDimensions();
+			layout.preferredWidth = labelDim.x + labelHorzMargins;
+
+
 			var button = GetComponent<Button>();
 			button.onClick.RemoveAllListeners();
 			if (buttonEx.action != null)
 			{
 				button.onClick.AddListener(() => buttonEx.action.Invoke());
 			}
-
-			if (sprite != null)
-				image.sprite = sprite;
 		}
 
 		/// <summary>

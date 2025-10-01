@@ -1,34 +1,148 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using TMPro;
-
 using UnityEditor;
-
 using UnityEngine;
 using UnityEngine.UI;
-
-using static AtomosZ.UI.UIButtonPanel;
 using static AtomosZ.UI.UIPrefabProvider;
 
 namespace AtomosZ.UI
 {
-	public class BottomPanel : MonoBehaviour
+	[Serializable]
+	public class PanelEx : IUIDataEx
 	{
-		public enum DialogResult
+		public UIControlType dataType { get { return UIControlType.Panel; } }
+		/// <summary>
+		/// This is the name we use to modify this UIControl.
+		/// </summary>
+		public string referenceName;
+
+		public UIPanelScriptableObject scriptableObj;
+
+		public Sprite backgroundSprite;
+		public Vector2 minDimensions = new Vector2(96, 64);
+		public RectOffset layoutPadding = new RectOffset(32, 32, 16, 16);
+		public float layoutSpacing = 8;
+
+
+		public bool useCustomBackgroundSprite = false;
+		public bool useCustomMinDimensions = false;
+		public bool useCustomLayoutPadding = false;
+		public bool useCustomLayoutSpacing = false;
+
+		public PanelEx(UIPanelScriptableObject scriptObj)
 		{
-			None,
-			OK,
-			Cancel,
-			Yes,
-			No,
+			scriptableObj = scriptObj;
+			if (scriptableObj == null)
+			{
+				useCustomBackgroundSprite = true;
+				useCustomMinDimensions = true;
+				useCustomLayoutPadding = true;
+				useCustomLayoutSpacing = true;
+			}
+		}
+	}
+
+	public class UIPanel : MonoBehaviour, IUIBehavior
+	{
+		[SerializeField] private PanelEx panelEx;
+		public string referenceName { get { return panelEx.referenceName; } }
+		public UIDesignObject _designObject;
+
+		public UIDesignObject designObject
+		{
+			get
+			{
+				if (_designObject == null)
+					_designObject = GetComponent<UIDesignObject>();
+				return _designObject;
+			}
 		}
 
+		public Sprite sprite
+		{
+			get
+			{
+				if (panelEx.scriptableObj == null || panelEx.useCustomBackgroundSprite)
+					return panelEx.backgroundSprite;
+				else
+					return panelEx.scriptableObj.backgroundSprite;
+			}
 
-		[SerializeField] private DynamicPanel parentPanel;
+			set
+			{
+				panelEx.backgroundSprite = value;
+				panelEx.useCustomBackgroundSprite = true;
+				UpdateBackingData();
+			}
+		}
 
-		private Dictionary<string, UIDesignObject> uiControls = new();
+		public RectOffset layoutPadding
+		{
+			get
+			{
+				if (panelEx.scriptableObj == null || panelEx.useCustomLayoutPadding)
+					return panelEx.layoutPadding;
+				else
+					return new RectOffset(
+						(int)panelEx.scriptableObj.layoutPadding.x,
+						(int)panelEx.scriptableObj.layoutPadding.y,
+						(int)panelEx.scriptableObj.layoutPadding.z,
+						(int)panelEx.scriptableObj.layoutPadding.w);
+			}
+
+			set
+			{
+				panelEx.layoutPadding = value;
+				panelEx.useCustomLayoutPadding = true;
+				UpdateBackingData();
+			}
+		}
+
+		public float layoutSpacing
+		{
+			get
+			{
+				if (panelEx.scriptableObj == null || panelEx.useCustomLayoutPadding)
+					return panelEx.layoutSpacing;
+				else
+					return panelEx.scriptableObj.layoutSpacing;
+			}
+
+			set
+			{
+				panelEx.layoutSpacing = value;
+				panelEx.useCustomLayoutSpacing = true;
+				UpdateBackingData();
+			}
+		}
+
+		public Vector2 minDimensions
+		{
+			get
+			{
+				if (panelEx.scriptableObj == null || panelEx.useCustomMinDimensions)
+					return panelEx.minDimensions;
+				else
+					return panelEx.scriptableObj.minDimensions;
+			}
+
+			set
+			{
+				panelEx.minDimensions = value;
+				panelEx.useCustomMinDimensions = true;
+				UpdateBackingData();
+			}
+		}
+
+		public IUIBehavior parentPanel;
+		[SerializeField] public UIControlLookup uiControls;
+
+
+
+		public RectTransform rect;
+
 
 
 		[System.Diagnostics.Conditional("DEBUG")]
@@ -38,6 +152,36 @@ namespace AtomosZ.UI
 			PrefabUtility.RecordPrefabInstancePropertyModifications(GetComponent<VerticalLayoutGroup>());
 		}
 
+
+		public IUIDataEx GetBackingData()
+		{
+			return panelEx;
+		}
+
+		public void UpdateBackingData(IUIDataEx backingData)
+		{
+			panelEx = (PanelEx)backingData;
+			UpdateBackingData();
+		}
+
+		public void UpdateBackingData()
+		{
+			if (sprite != null)
+				GetComponent<Image>().sprite = sprite;
+
+			var layout = GetComponent<VerticalLayoutGroup>();
+			layout.padding = layoutPadding;
+			layout.spacing = layoutSpacing;
+			RecalculateDimensions();
+		}
+
+		public void RecalculateDimensions()
+		{
+			var minDims = GetMinDimensions();
+			if (rect == null)
+				rect = GetComponent<RectTransform>();
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDims.y);
+		}
 
 		public Vector2 GetMinDimensions()
 		{
@@ -62,10 +206,15 @@ namespace AtomosZ.UI
 			minDim.y += layout.spacing * (activeChildren - 1);
 			minDim.x += layout.padding.left + layout.padding.right;
 			//Debug.Log(minDim);
+
+			if (minDim.x < minDimensions.x)
+				minDim.x = minDimensions.x;
+			if (minDim.y < minDimensions.y)
+				minDim.y = minDimensions.y;
 			return minDim;
 		}
 
-		
+
 		public void ShowControls(bool showControls)
 		{
 			foreach (var child in uiControls)
@@ -75,44 +224,21 @@ namespace AtomosZ.UI
 		}
 
 
-		public Dictionary<string, UIDesignObject> GetControls()
+		public UIControlLookup GetControls()
 		{
 			return uiControls;
 		}
 
-		public Dictionary<string, UIDesignObject> GetControlsFromTransform()
+		public UIControlLookup GetControlsFromTransform()
 		{
 			uiControls.Clear();
 			foreach (Transform child in transform)
 			{
 				var uiObject = child.GetComponent<UIDesignObject>();
-				uiControls.Add(uiObject.name, uiObject);
+				uiControls.Add(uiObject.referenceName, uiObject);
 			}
 
 			return uiControls;
-		}
-
-		public void ReorderControls(List<Transform> newOrder)
-		{
-			transform.DetachChildren();
-			foreach (Transform child in newOrder)
-				child.SetParent(transform);
-		}
-
-
-		public DialogButton GetPanelButtons()
-		{
-			DialogButton buttons = (DialogButton)(-1);
-			foreach (var control in uiControls)
-			{
-				var data = control.Value.GetBackingData();
-				if (data == null)
-					continue;
-				if (data.dataType == UIControlType.ButtonPanel)
-					buttons = ((ButtonPanelEx)data).buttons;
-			}
-
-			return buttons;
 		}
 
 		public UIDesignObject GetControl(string controlRefName)
@@ -172,6 +298,7 @@ namespace AtomosZ.UI
 		/// <returns></returns>
 		private UIButtonPanel AddButtonPanel(ButtonPanelEx dataEx)
 		{
+			//throw new Exception("AddButtonPanel not yet implemented");
 			UIButtonPanel buttonPanel = GetComponentInChildren<UIButtonPanel>();
 			if (buttonPanel == null)
 			{
@@ -182,8 +309,19 @@ namespace AtomosZ.UI
 			}
 
 			buttonPanel.UpdateBackingData(dataEx);
-			buttonPanel.SetResultListeners(parentPanel);
+
+			var parentPanel = GetComponentInParent<DynamicPanel>();
+			if (parentPanel != null)
+				buttonPanel.SetResultListeners(parentPanel);
 			return buttonPanel;
+		}
+
+		private void SubmitText(string currentText)
+		{
+			//throw new Exception("AddButtonPanel not yet implemented");
+			var parentPanel = GetComponentInParent<DynamicPanel>();
+			if (parentPanel != null)
+				parentPanel.SetDialogResultOK();
 		}
 
 		private UIDropdown AddDropdown(DropdownEx dataEx)
@@ -283,20 +421,18 @@ namespace AtomosZ.UI
 			else
 			{
 				int count = 0;
-				var controlName = uiDO.name;
+				var uiDOName = uiDO.name.Replace("(Clone)", "");
+				var controlName = uiDOName;
 				while (!uiControls.TryAdd(controlName, uiDO))
 				{
 					++count;
-					controlName = $"{uiDO.name}_{count.ToString("00")}";
+					controlName = $"{uiDOName}_{count.ToString("00")}";
 				}
 				uiDO.name = controlName;
 			}
 		}
 
-		private void SubmitText(string currentText)
-		{
-			parentPanel.SetDialogResultOK();
-		}
+
 
 
 		/// <summary>
@@ -304,36 +440,29 @@ namespace AtomosZ.UI
 		/// </summary>
 		public void SetToParentSize()
 		{
-			parentPanel.Refresh();
+			var parentPanel = GetComponentInParent<DynamicPanel>();
+			if (parentPanel != null)
+				parentPanel.Refresh();
 			var rect = GetComponent<RectTransform>();
 			rect.sizeDelta = new Vector2(0, rect.sizeDelta.y);
 		}
 
 
-		/// <summary>
-		/// Can add multiple methods to a single UnityAction as below:<br/>
-		/// <c>
-		/// UnityAction action = null;<br/>
-		/// action += () => FunctionWithParam("name");<br/>
-		/// action += () => FunctionNoParam();<br/>
-		/// action += delegate {// some code here};</c>
-		/// 
-		/// Add a null object to add a divider.
-		/// </summary>
-		/// <param name="clickActions"></param>
-		public void SetContextMenuActions(List<DesignAction> clickActions)
+
+
+		public void RemoveControl(KeyValuePair<string, UIDesignObject> control)
 		{
-			var layout = GetComponent<VerticalLayoutGroup>();
-			layout.spacing = 12;
-			layout.padding = new RectOffset(layout.padding.left, layout.padding.right, layout.padding.top, 0);
-			ClearControls();
-			foreach (var action in clickActions)
-			{
-				if (action == null)
-					AddDivider();
-				else
-					AddMenuControl(action);
-			}
+			uiControls.Remove(control);
+#if DEBUG
+			if (Application.isEditor && !Application.isPlaying)
+				DestroyImmediate(control.Value.gameObject);
+			else
+				Destroy(control.Value.gameObject);
+
+			RecordPrefabInstances();
+#else
+			Destroy(control.Value.gameObject);
+#endif
 		}
 
 		public void RemoveControl(IUIDataEx data)
@@ -348,6 +477,8 @@ namespace AtomosZ.UI
 						DestroyImmediate(cntrl.gameObject);
 					else
 						Destroy(cntrl.gameObject);
+
+					RecordPrefabInstances();
 #else
 					Destroy(cntrl.gameObject);
 #endif
@@ -381,7 +512,7 @@ namespace AtomosZ.UI
 			uiControls.Clear();
 		}
 
-#if UNITY_EDITOR
+		[System.Diagnostics.Conditional("UNITY_EDITOR")]
 		public void ClearControlsEditor()
 		{
 			foreach (var control in uiControls)
@@ -395,7 +526,33 @@ namespace AtomosZ.UI
 
 			uiControls.Clear();
 		}
-#endif
+
+		/// <summary>
+		/// Can add multiple methods to a single UnityAction as below:<br/>
+		/// <c>
+		/// UnityAction action = null;<br/>
+		/// action += () => FunctionWithParam("name");<br/>
+		/// action += () => FunctionNoParam();<br/>
+		/// action += delegate {// some code here};</c>
+		/// 
+		/// Add a null object to add a divider.
+		/// </summary>
+		/// <param name="clickActions"></param>
+		public void SetContextMenuActions(List<DesignAction> clickActions)
+		{
+			var layout = GetComponent<VerticalLayoutGroup>();
+			layout.spacing = 12;
+			layout.padding = new RectOffset(layout.padding.left, layout.padding.right, layout.padding.top, 0);
+			ClearControls();
+			foreach (var action in clickActions)
+			{
+				if (action == null)
+					AddDivider();
+				else
+					AddMenuControl(action);
+			}
+		}
+
 
 		private void AddDivider()
 		{
@@ -412,15 +569,45 @@ namespace AtomosZ.UI
 
 		private void AddMenuControl(DesignAction clickAction)
 		{
-			clickAction += parentPanel.Close;
-			var menuControl = Instantiate(UIPrefabProvider.GetPrefab(UIPrefabType.MenuControlButton), transform);
+			//	clickAction += parentPanel.Close;
+			//	var menuControl = Instantiate(UIPrefabProvider.GetPrefab(UIPrefabType.MenuControlButton), transform);
 
-			var button = menuControl.GetComponent<Button>();
-			button.onClick.AddListener(clickAction.action);
-			button.interactable = clickAction.enabled;
-			menuControl.GetComponentInChildren<UIExpandingLabel>().SetText(clickAction.buttonText, false);
+			//	var button = menuControl.GetComponent<Button>();
+			//	button.onClick.AddListener(clickAction.action);
+			//	button.interactable = clickAction.enabled;
+			//	menuControl.GetComponentInChildren<UIExpandingLabel>().SetText(clickAction.buttonText, false);
 
-			AddControl(UIPrefabType.MenuControlButton, menuControl);
+			//	AddControl(UIPrefabType.MenuControlButton, menuControl);
+		}
+
+		public void SetHover(bool isHover)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void UpdateHover(Vector3 posOfHover)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ResetToLastPosition()
+		{
+			throw new NotImplementedException();
+		}
+
+		public UIDesignObject Select()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Deselect()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

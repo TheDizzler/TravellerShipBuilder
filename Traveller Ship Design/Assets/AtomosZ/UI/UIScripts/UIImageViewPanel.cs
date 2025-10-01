@@ -17,6 +17,7 @@ namespace AtomosZ.UI
 	public class ImageViewDataEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.ImagePanel; } }
+		public string referenceName;
 
 		/// <summary>
 		/// I have decided that this MAY NOT be NULL!<br/>
@@ -74,7 +75,7 @@ namespace AtomosZ.UI
 
 		[SerializeField] public Dictionary<ImageEx, UIImageView> images = new();
 
-
+		public string referenceName { get { return viewDataEx.referenceName; } }
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -109,6 +110,9 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
+			if (string.IsNullOrEmpty(viewDataEx.referenceName))
+				viewDataEx.referenceName = transform.name;
+
 			var rect = GetComponent<RectTransform>();
 			var panelSize = rect.sizeDelta;
 

@@ -1,11 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
-using UnityEditor;
-
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 using static CustomCursor;
 
@@ -176,6 +172,16 @@ namespace AtomosZ.UI
 
 				DesignManager.instance.toolTip.SetToolTip(null);
 				uiBehavior.Deselect();
+			}
+		}
+
+		public string referenceName
+		{
+			get
+			{
+				if (uiBehavior == null)
+					SearchForDesignObject();
+				return uiBehavior.referenceName;
 			}
 		}
 	}

@@ -16,6 +16,7 @@ namespace AtomosZ.UI
 	public class ButtonPanelEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.ButtonPanel; } }
+		public string referenceName;
 
 		public UIButtonPanelScriptableObject scriptableObj;
 
@@ -33,12 +34,23 @@ namespace AtomosZ.UI
 		public ButtonPanelEx(UIButtonPanelScriptableObject scriptObj)
 		{
 			scriptableObj = scriptObj;
+			if (scriptObj == null)
+			{
+				NoSOSetup();
+			}
 		}
+
 
 		public ButtonPanelEx(DialogButton buttonType)
 		{
 			buttons = buttonType;
 
+			NoSOSetup();
+		}
+
+
+		private void NoSOSetup()
+		{
 			useCustomOKButton = true;
 			okButton.labelEx.fontSize = 24;
 			okButton.labelEx.fontColor = Color.white;
@@ -54,12 +66,6 @@ namespace AtomosZ.UI
 			useCustomNoButton = true;
 			noButton.labelEx.fontSize = 24;
 			noButton.labelEx.fontColor = Color.white;
-		}
-
-
-		public void ResetToDefaults()
-		{
-			buttons = DialogButton.OK;
 		}
 	}
 
@@ -89,6 +95,8 @@ namespace AtomosZ.UI
 		};
 
 		[SerializeField] private ButtonPanelEx buttonPanelEx;
+		public string referenceName { get { return buttonPanelEx.referenceName; } }
+
 
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -195,10 +203,6 @@ namespace AtomosZ.UI
 		[SerializeField] private GameObject cancelButton;
 
 
-		public IUIDataEx GetBackingData()
-		{
-			return buttonPanelEx;
-		}
 
 		public void SetResultListeners(DynamicPanel parent)
 		{
@@ -212,6 +216,12 @@ namespace AtomosZ.UI
 			noButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultNo);
 		}
 
+
+		public IUIDataEx GetBackingData()
+		{
+			return buttonPanelEx;
+		}
+
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
 			buttonPanelEx = (ButtonPanelEx)backingData;
@@ -221,6 +231,9 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
+			if (buttonPanelEx.referenceName == null)
+				buttonPanelEx.referenceName = gameObject.name;
+
 			okButton.SetActive(false);
 			yesButton.SetActive(false);
 			noButton.SetActive(false);

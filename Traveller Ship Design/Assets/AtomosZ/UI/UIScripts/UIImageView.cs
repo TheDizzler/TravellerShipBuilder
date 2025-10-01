@@ -9,6 +9,7 @@ namespace AtomosZ.UI
 	public class ImageEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Image; } }
+		public string referenceName;
 
 		public UIImageViewScriptableObject scriptableObject;
 
@@ -19,30 +20,20 @@ namespace AtomosZ.UI
 		public Vector2 size = new Vector2(256, 256);
 		public bool showCaption = true;
 		public LabelEx labelEx;
-		//= new LabelEx
-		//{
-		//	//fontColor = Color.black,
-		//	//fontSize = 36,
-		//	text = "Caption #00",
-		//};
 
 
 		public ImageEx(UIImageViewScriptableObject scriptObj)
 		{
 			scriptableObject = scriptObj;
+			if (scriptableObject == null)
+			{
+				labelEx = new LabelEx("Caption #00")
+				{
+					fontColor = Color.black,
+					fontSize = 36,
+				};
+			}
 		}
-
-		//public void ResetToDefaults()
-		//{
-		//	forceSize = false;
-		//	size = new Vector2(256, 256);
-		//	labelEx = new LabelEx
-		//	{
-		//		//fontColor = Color.black,
-		//		//fontSize = 36,
-		//		text = "Caption #00",
-		//	};
-		//}
 	}
 
 	public class UIImageView : MonoBehaviour, IUIBehavior
@@ -51,6 +42,7 @@ namespace AtomosZ.UI
 		[SerializeField] private UIExpandingLabel caption;
 		[SerializeField] private ImageEx imageEx;
 
+		public string referenceName { get { return imageEx.referenceName; } }
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -77,12 +69,19 @@ namespace AtomosZ.UI
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
 			imageEx = (ImageEx)backingData;
-			imageEx.labelEx = imageEx.labelEx.Clone();
+			if (imageEx.scriptableObject != null)
+				imageEx.labelEx = imageEx.scriptableObject.labelEx.Clone();
+			else
+				imageEx.labelEx = imageEx.labelEx.Clone();
+
 			UpdateBackingData();
 		}
 
 		public void UpdateBackingData()
 		{
+			if (string.IsNullOrEmpty(imageEx.referenceName))
+				imageEx.referenceName = transform.name;
+
 			gameObject.SetActive(imageEx.isVisible);
 			if (!imageEx.isVisible)
 				return;

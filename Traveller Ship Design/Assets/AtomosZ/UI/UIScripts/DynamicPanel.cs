@@ -6,7 +6,6 @@ using System.Diagnostics;
 using TMPro;
 
 using UnityEditor;
-using UnityEditor.ShaderGraph;
 
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,7 +13,6 @@ using UnityEngine.UI;
 
 using static AtomosZ.Keyboard;
 using static AtomosZ.UI.BottomPanel;
-using static AtomosZ.UI.DynamicPanel;
 using static AtomosZ.UI.UIButtonPanel;
 
 using Debug = UnityEngine.Debug;
@@ -23,15 +21,6 @@ using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
-	//public class UIDynamicPanelEx
-	//{
-	//	public TitleLabelStyle titleLabelStyle;
-	//	public string titleText;
-	//	public BottomPanelStyle panelStyle;
-	//	public Vector2 maxPanelSize;
-	//	public bool alwaysShrinkToMinSize;
-	//}
-
 	public class DynamicPanel : MonoBehaviour, IUIBehavior
 	{
 		public enum TitleLabelStyle
@@ -120,6 +109,10 @@ namespace AtomosZ.UI
 
 		[SerializeField] public TitleLabelStyle titleType;
 		[SerializeField] public BottomPanelStyle panelType;
+		[SerializeField] public List<BottomPanel> tabs;
+		[Min(0)]
+		public int selectedTabIndex;
+
 
 		public DialogResult result;
 		public UnityAction<DynamicPanel> OnClose;
@@ -127,7 +120,7 @@ namespace AtomosZ.UI
 		[SerializeField] private TextMeshProUGUI titleTMP;
 		[SerializeField] private RectTransform topPanelRect;
 		[SerializeField] private RectTransform bottomPanelRect;
-		[SerializeField] private BottomPanel bottomPanel;
+		//[SerializeField] private BottomPanel bottomPanel;
 
 		[SerializeField] private Image titleImage;
 		[SerializeField] private Image panelImage;
@@ -141,6 +134,10 @@ namespace AtomosZ.UI
 		[SerializeField] public bool showCloseButton;
 
 		private UIPrefabProvider uiProvider;
+		/// <summary>
+		/// DynamicPanel should not need a reference name.
+		/// </summary>
+		public string referenceName { get { return null; } }
 
 		[HideInInspector]
 		public UIDesignObject modalClickBlocker;
@@ -179,9 +176,19 @@ namespace AtomosZ.UI
 			}
 		}
 
+
+
+		/// <summary>
+		/// Reset is called when the script is attached and not in playmode.
+		/// </summary>
+		//public void Reset()
+		//{
+
+		//}
+
 		public void Awake()
 		{
-			bottomPanel.GetControlsFromTransform();
+			tabs[selectedTabIndex].GetControlsFromTransform();
 			Refresh();
 		}
 
@@ -206,7 +213,7 @@ namespace AtomosZ.UI
 
 		public void SetDialogResultDefaultNegative()
 		{
-			DialogButton buttons = bottomPanel.GetPanelButtons();
+			DialogButton buttons = tabs[selectedTabIndex].GetPanelButtons();
 
 			switch (buttons)
 			{
@@ -287,6 +294,12 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public void SelectTab(int tabIndex)
+		{
+			selectedTabIndex = tabIndex;
+			isDirty = true;
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -335,7 +348,7 @@ namespace AtomosZ.UI
 			else
 			{
 				// calculate child panelRect perfered sizes
-				var minDim = bottomPanel.GetMinDimensions();
+				var minDim = tabs[selectedTabIndex].GetMinDimensions();
 				if (minDim.x < minSize.x)
 					minDim.x = minSize.x;
 				if (minDim.y < minSize.y)
@@ -504,7 +517,7 @@ namespace AtomosZ.UI
 			PrefabUtility.RecordPrefabInstancePropertyModifications(panelImage);
 			PrefabUtility.RecordPrefabInstancePropertyModifications(panelControlLayout);
 			PrefabUtility.RecordPrefabInstancePropertyModifications(titleTMP);
-			bottomPanel.RecordPrefabInstances();
+			tabs[selectedTabIndex].RecordPrefabInstances();
 #endif
 		}
 
@@ -522,6 +535,25 @@ namespace AtomosZ.UI
 			{
 				AddUIControl(uiControls[i].GetData());
 			}
+		}
+
+		/// <summary>
+		/// Searchs all tab for the first instance of controlRefName.
+		/// @TODO(Tristan): prevent same ref name being used on any tab.
+		/// </summary>
+		/// <param name="controlRefName"></param>
+		/// <returns></returns>
+		public UIDesignObject GetControl(string controlRefName)
+		{
+			var allControls = new List<UIDesignObject>();
+			foreach (var tab in tabs)
+			{
+				var control = tab.GetControl(controlRefName);
+				if (control != null)
+					return control;
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -570,7 +602,7 @@ namespace AtomosZ.UI
 
 		public IUIBehavior AddUIControl(IUIDataEx uiDataEx)
 		{
-			var uiElement = bottomPanel.AddUIControl(uiDataEx);
+			var uiElement = tabs[selectedTabIndex].AddUIControl(uiDataEx);
 
 #if DEBUG
 			if (!Application.isPlaying)
@@ -638,10 +670,7 @@ namespace AtomosZ.UI
 		/// <param name="text"></param>
 		public UIExpandingLabel AddText_NoData(string text)
 		{
-			return (UIExpandingLabel)AddUIControl(new LabelEx
-			{
-				text = text
-			});
+			return (UIExpandingLabel)AddUIControl(new LabelEx(text));
 		}
 
 		/// <summary>
@@ -650,13 +679,12 @@ namespace AtomosZ.UI
 		/// <param name="text"></param>
 		public UIExpandingLabel AddText_NoData(string text, float fontSize, Color fontColor, Vector2 minLabelDimensions, Vector2 maxLabelDimensions)
 		{
-			return (UIExpandingLabel)AddUIControl(new LabelEx
+			return (UIExpandingLabel)AddUIControl(new LabelEx(text)
 			{
-				text = text,
-				//fontSize = fontSize,
-				//fontColor = fontColor,
-				//minLabelDimensions = minLabelDimensions,
-				//maxLabelDimensions = maxLabelDimensions,
+				fontSize = fontSize,
+				fontColor = fontColor,
+				minLabelDimensions = minLabelDimensions,
+				maxLabelDimensions = maxLabelDimensions,
 			});
 		}
 
@@ -719,7 +747,9 @@ namespace AtomosZ.UI
 		public void Minimize()
 		{
 			isMinimized = !isMinimized;
-			bottomPanel.ShowControls(!isMinimized);
+			// is this necessary?
+			// @TODO(Tristan): performance testing to see if controls are still being "drawn" even if this panel is hidden
+			tabs[selectedTabIndex].ShowControls(!isMinimized);
 			Refresh();
 		}
 
@@ -736,7 +766,7 @@ namespace AtomosZ.UI
 		public void SetContextMenuActions(List<DesignAction> clickActions)
 		{
 			isContextMenu = true;
-			bottomPanel.SetContextMenuActions(clickActions);
+			tabs[selectedTabIndex].SetContextMenuActions(clickActions);
 			RecalculateDimensions();
 			isDirty = true;
 		}
@@ -744,25 +774,25 @@ namespace AtomosZ.UI
 
 		public void RemoveControl(IUIDataEx data)
 		{
-			bottomPanel.RemoveControl(data);
+			tabs[selectedTabIndex].RemoveControl(data);
 		}
 
 		public void RemoveControl(UIDesignObject uiDO)
 		{
-			bottomPanel.RemoveControl(uiDO);
+			tabs[selectedTabIndex].RemoveControl(uiDO);
 			isDirty = true;
 		}
 
 		public void ClearControls()
 		{
-			bottomPanel.ClearControls();
+			tabs[selectedTabIndex].ClearControls();
 			isDirty = true;
 		}
 
 		[Conditional("DEBUG")]
 		public void ClearControlsEditor()
 		{
-			bottomPanel.ClearControlsEditor();
+			tabs[selectedTabIndex].ClearControlsEditor();
 			RecalculateDimensions();
 		}
 
@@ -806,7 +836,8 @@ namespace AtomosZ.UI
 
 		public Vector2 GetMinDimensions()
 		{
-			throw new NotImplementedException();
+			isDirty = true;
+			return Vector2.zero;
 		}
 
 		public void SetHover(bool isHover)

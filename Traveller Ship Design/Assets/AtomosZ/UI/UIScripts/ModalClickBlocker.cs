@@ -11,7 +11,10 @@ namespace AtomosZ.UI
 	public class ModalClickBlocker : MonoBehaviour, IUIBehavior
 	{
 		public UIDesignObject designObject { get; }
-
+		/// <summary>
+		/// ModalClickBlocker should not need a reference name.
+		/// </summary>
+		public string referenceName { get { return null; } }
 
 		public void SetHover(bool isHover)
 		{

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,7 +13,24 @@ namespace AtomosZ.UI
 	/// </summary>
 	public interface IUIBehavior
 	{
+		/// <summary>
+		/// Replace this auto-generated property with the following:
+		/// <code>
+		/// public UIDesignObject _designObject;
+		/// public UIDesignObject designObject
+		/// {
+		///		get
+		/// 	{
+		/// 		if (_designObject == null)
+		/// 			_designObject = GetComponent&lt;UIDesignObject>();
+		/// 		return _designObject;
+		///		}
+		/// }
+		/// </code>
+		/// </summary>
 		public UIDesignObject designObject { get; }
+		public string referenceName { get; }
+
 		public void SetHover(bool isHover);
 		public void UpdateHover(Vector3 posOfHover);
 		public void ResetToLastPosition();
@@ -31,9 +49,40 @@ namespace AtomosZ.UI
 		/// <param name="mouseWorldPos">This <i><b>should</b></i> be on or at least within the vicinity of this object.</param>
 		/// <param name="keyInput"></param>
 		public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput, ref UIDesignObject currentlySelectedObject);
+		//public void RecalculateDimension();
 		public Vector2 GetMinDimensions();
 		public IUIDataEx GetBackingData();
 		public void UpdateBackingData(IUIDataEx backingData);
 		public void UpdateBackingData();
+
+	}
+
+	public static class IUIBehaviorExtensions
+	{
+		/// <summary>
+		/// Makes a call to the parent that changes have been made.
+		/// If no parent is found, start recalculating up from here using the standard GetMinDimensions() method.
+		/// </summary>
+		/// <param name="uiBehavior"></param>
+		/// <param name="thisObject">that GameObject of this IUIBehavior</param>
+		public static void Refresh(this IUIBehavior uiBehavior, GameObject thisObject)
+		{
+			if (thisObject.transform.parent != null)
+			{
+				var parentIUI = thisObject.transform.parent.GetComponentInParent<IUIBehavior>();
+				if (parentIUI != null)
+				{
+					if (parentIUI.designObject == null)
+					{
+						Debug.LogException(new Exception("parent is null???"));
+						uiBehavior.GetMinDimensions();
+					}
+					Refresh(parentIUI, parentIUI.designObject.gameObject);
+					return;
+				}
+			}
+
+			uiBehavior.GetMinDimensions();
+		}
 	}
 }

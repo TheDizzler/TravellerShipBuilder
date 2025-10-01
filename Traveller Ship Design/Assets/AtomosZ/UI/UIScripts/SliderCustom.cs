@@ -68,8 +68,6 @@ namespace AtomosZ.UI
 			{
 				if (sliderEx.scriptableObj == null)
 				{
-					if (sliderEx.labelEx == null)
-						throw new Exception("A LabelEx is required");
 					return sliderEx.labelEx;
 				}
 
@@ -200,6 +198,8 @@ namespace AtomosZ.UI
 			}
 
 			var boundingBox = GetLargestBoundingBox();
+			if (boundingBox.height < sliderEx.minDimensions.y)
+				boundingBox.height = sliderEx.minDimensions.y;
 			baseRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, boundingBox.height);
 			//if (boundingBox.width > baseRect.rect.width) // this creates an infinite growth
 			//	baseRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, boundingBox.width);
@@ -238,7 +238,7 @@ namespace AtomosZ.UI
 			unitLabels.Clear();
 		}
 
-		public Rect GetLargestBoundingBox()
+		private Rect GetLargestBoundingBox()
 		{
 			//var panelDims = new Rect(panelRect.position.x, panelRect.position.y, panelRect.rect.width, panelRect.rect.height);
 

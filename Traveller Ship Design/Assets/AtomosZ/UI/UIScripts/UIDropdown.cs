@@ -7,7 +7,7 @@ using TMPro;
 
 using UnityEngine;
 using UnityEngine.Events;
-
+using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
@@ -16,6 +16,10 @@ namespace AtomosZ.UI
 	public class DropdownEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Dropdown; } }
+		public string referenceName;
+
+		public bool fillParentHorizontal = true;
+		public Vector2 minDimensions = new Vector2(512, 64);
 
 		public UIExpandingLabelScriptableObject scriptableObj;
 
@@ -37,6 +41,10 @@ namespace AtomosZ.UI
 			new TMP_Dropdown.OptionData{ text = "Option 4" },
 		};
 
+		/// <summary>
+		/// A delegate to auto-populate the options list.<br/>
+		/// NOTE: any changes to the list will be erased when the control refreshes unless the listeners are removed from this.
+		/// </summary>
 		public UnityEvent<DropdownEx> SetOptions = null;
 
 
@@ -46,16 +54,13 @@ namespace AtomosZ.UI
 		public UnityEvent<int> onValueChangedAction = null;
 
 
-		public DropdownEx() { }
-		public DropdownEx(List<TMP_Dropdown.OptionData> options)
+		public DropdownEx(UIExpandingLabelScriptableObject textScriptObj, List<TMP_Dropdown.OptionData> options)
 		{
-			ResetToDefaults();
 			this.options = options;
 		}
 
-		public DropdownEx(List<string> stringOptions)
+		public DropdownEx(UIExpandingLabelScriptableObject textScriptObj, List<string> stringOptions)
 		{
-			ResetToDefaults();
 			this.options.Clear();
 			foreach (var opt in stringOptions)
 				options.Add(new TMP_Dropdown.OptionData { text = opt });
@@ -65,54 +70,22 @@ namespace AtomosZ.UI
 		{
 			this.scriptableObj = textScriptObj;
 
-			SetToScriptableObjectValues();
-		}
-
-		private void SetToScriptableObjectValues()
-		{
 			if (scriptableObj == null)
-				ResetToDefaults();
-			else
 			{
-				fontSize = scriptableObj.fontSize;
-				fontColor = scriptableObj.fontColor;
-				fontAsset = scriptableObj.fontAsset;
+				useCustomFontSize = true;
+				useCustomFontColor = true;
+				useCustomFontAsset = true;
 			}
 		}
-
-		private void ResetToDefaults()
-		{
-			if (SetOptions != null)
-				SetOptions.RemoveAllListeners();
-
-			useCustomFontSize = true;
-			useCustomFontColor = true;
-			useCustomFontAsset = true;
-
-			options.Clear();
-			options.Add(new TMP_Dropdown.OptionData { text = "Option 1" });
-			options.Add(new TMP_Dropdown.OptionData { text = "Option 2" });
-			options.Add(new TMP_Dropdown.OptionData { text = "Option 3" });
-			options.Add(new TMP_Dropdown.OptionData { text = "Option 4" });
-			isMultiSelect = false;
-			defaultSelection = 0;
-			onValueChangedAction = null;
-
-			fontSize = 14;
-			fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
-			fontAsset = null;
-		}
-
-		//public object Clone()
-		//{
-		//	var clone = (DropdownEx)this.MemberwiseClone();
-		//	return clone;
-		//}
 	}
 
 
 	public class UIDropdown : MonoBehaviour, IUIBehavior
 	{
+		[SerializeField] private TMP_Dropdown dropdown;
+		[SerializeField] private DropdownEx dropdownEx;
+		public string referenceName { get { return dropdownEx.referenceName; } }
+
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -154,10 +127,12 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[SerializeField] private TMP_Dropdown dropdown;
-		[SerializeField] private DropdownEx dropdownEx;
 
 
+		public void OnEnable()
+		{
+			UpdateBackingData(dropdownEx);
+		}
 
 		public UIDesignObject Select()
 		{
@@ -179,15 +154,6 @@ namespace AtomosZ.UI
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
 			dropdownEx = (DropdownEx)backingData;
-			UpdateBackingData();
-		}
-
-		public void UpdateBackingData()
-		{
-			dropdown.captionText.font = fontAsset;
-			dropdown.captionText.fontSize = fontSize;
-			dropdown.captionText.color = fontColor;
-
 
 			dropdown.ClearOptions();
 			if (dropdownEx.SetOptions != null)
@@ -198,16 +164,34 @@ namespace AtomosZ.UI
 			dropdown.value = dropdownEx.defaultSelection;
 
 			dropdown.onValueChanged.RemoveAllListeners();
-			if (Application.isPlaying)
-				if (dropdownEx.onValueChangedAction != null)
-					dropdown.onValueChanged.AddListener(delegate { dropdownEx.onValueChangedAction.Invoke(dropdown.value); });
+			if (dropdownEx.onValueChangedAction != null)
+			{
+				dropdown.onValueChanged.AddListener(delegate
+					{
+						dropdownEx.onValueChangedAction.Invoke(dropdown.value);
+					});
+			}
 
-			//dropdown.onValueChanged.AddListener(delegate { TestDebug(dropdown.value); });
+			UpdateBackingData();
+		}
 
+		public void UpdateBackingData()
+		{
+			if (string.IsNullOrEmpty(dropdownEx.referenceName))
+				dropdownEx.referenceName = transform.name;
 
+			dropdown.captionText.font = fontAsset;
+			dropdown.captionText.fontSize = fontSize;
+			dropdown.captionText.color = fontColor;
 
+			var layout = GetComponent<LayoutElement>();
+			if (dropdownEx.fillParentHorizontal)
+				layout.flexibleWidth = 1;
+			else
+				layout.flexibleWidth = -1;
 
-
+			layout.minWidth = dropdownEx.minDimensions.x;
+			layout.minHeight = dropdownEx.minDimensions.y;
 		}
 
 		/// <summary>
@@ -216,7 +200,8 @@ namespace AtomosZ.UI
 		/// <param name="action"></param>
 		public void AddListener(UnityEvent<int> action)
 		{
-			dropdownEx.onValueChangedAction.AddListener(delegate { action.Invoke(dropdown.value); });
+			dropdownEx.onValueChangedAction.AddListener(delegate
+			{ action.Invoke(dropdown.value); });
 		}
 
 		/// <summary>
@@ -225,7 +210,8 @@ namespace AtomosZ.UI
 		/// <param name="action"></param>
 		public void AddListener(Action<int> action)
 		{
-			dropdownEx.onValueChangedAction.AddListener(delegate { action.Invoke(dropdown.value); });
+			dropdownEx.onValueChangedAction.AddListener(delegate
+			{ action.Invoke(dropdown.value); });
 		}
 
 		[Conditional("DEBUG")]

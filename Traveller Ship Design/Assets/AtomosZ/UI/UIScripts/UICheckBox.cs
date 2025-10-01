@@ -15,6 +15,7 @@ namespace AtomosZ.UI
 	public class CheckBoxEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.CheckBox; } }
+		public string referenceName;
 
 		public UICheckBoxScriptableObject scriptableObj;
 
@@ -38,30 +39,16 @@ namespace AtomosZ.UI
 		public CheckBoxEx(UICheckBoxScriptableObject scriptObj)
 		{
 			this.scriptableObj = scriptObj;
-			SetToScriptableObjectValues();
-		}
-
-		public void SetToScriptableObjectValues()
-		{
 			if (scriptableObj == null)
-				ResetToDefaults();
-			else
 			{
-				scriptableObj.labelEx.SetToScriptableObjectValues();
+				useCustomCheckImage = true;
+				useCustomBoxImage = true;
+				labelEx = new LabelEx("Checkbox")
+				{
+					fontSize = 14,
+					fontColor = Color.black,
+				};
 			}
-		}
-
-		private void ResetToDefaults()
-		{
-			if (labelEx != null)
-				labelEx.ResetToDefaults();
-
-			useCustomCheckImage = true;
-			useCustomBoxImage = true;
-
-			if (action != null)
-				action.RemoveAllListeners();
-			isOnByDefault = false;
 		}
 	}
 
@@ -75,8 +62,9 @@ namespace AtomosZ.UI
 		public UIExpandingLabel textLabel;
 		public Toggle toggle;
 
+		public string referenceName { get { return checkBoxEx.referenceName; } }
+
 		private UIDesignObject _designObject;
-		public DynamicPanel parentPanel;
 
 		public UIDesignObject designObject
 		{
@@ -114,8 +102,6 @@ namespace AtomosZ.UI
 			{
 				if (checkBoxEx.scriptableObj == null)
 				{
-					if (checkBoxEx.labelEx == null)
-						throw new Exception("A LabelEx is required");
 					return checkBoxEx.labelEx;
 				}
 
@@ -136,6 +122,9 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
+			if (string.IsNullOrEmpty(checkBoxEx.referenceName))
+				checkBoxEx.referenceName = transform.name;
+
 			toggle.isOn = checkBoxEx.isOnByDefault;
 			toggle.onValueChanged.RemoveAllListeners();
 			toggle.onValueChanged.AddListener(OnToggled);

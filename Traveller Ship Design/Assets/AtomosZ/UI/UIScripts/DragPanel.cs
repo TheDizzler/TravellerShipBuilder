@@ -11,7 +11,7 @@ namespace AtomosZ.UI
 	public class DragPanel : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private DynamicPanel panel;
-		[SerializeField] private RectTransform parentRect;
+		[SerializeField] private RectTransform panelRect;
 		private Vector2 startDragPos;
 
 		private UIDesignObject _designObject;
@@ -25,6 +25,10 @@ namespace AtomosZ.UI
 			}
 		}
 
+		/// <summary>
+		/// DragPanel does not require a reference name.
+		/// </summary>
+		public string referenceName { get { return null; } }
 
 		public void SetHover(bool isHover)
 		{
@@ -60,7 +64,7 @@ namespace AtomosZ.UI
 		{
 			var screenPosition = UIInput.GetUICoordinates(Input.mousePosition);
 			Vector2 diff = screenPosition - startDragPos;
-			parentRect.anchoredPosition += diff;
+			panelRect.anchoredPosition += diff;
 			startDragPos = screenPosition;
 		}
 
@@ -68,11 +72,16 @@ namespace AtomosZ.UI
 		{
 			var screenPosition = UIInput.GetUICoordinates(Input.mousePosition);
 			Vector2 diff = screenPosition - startDragPos;
-			parentRect.anchoredPosition += diff;
+			panelRect.anchoredPosition += diff;
 			panel.isDragging = false;
 			CustomCursor.SetCursor(panel.designObject.hoverCursorMode);
 		}
 
+
+		public void PointerUp()
+		{
+			panel.SelectTab(transform.GetSiblingIndex());
+		}
 
 
 		public void ResetToLastPosition()

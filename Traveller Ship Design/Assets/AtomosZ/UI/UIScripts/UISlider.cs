@@ -15,8 +15,11 @@ namespace AtomosZ.UI
 	public class SliderEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Slider; } }
+		public string referenceName;
 
 		public UISliderScriptableObject scriptableObj;
+		public bool fillParentHorizontal = true;
+		public Vector2 minDimensions = new Vector2(126, 64);
 
 		public bool useCustomShowHandle = false;
 		//public bool useCustomHandleSprite = false;
@@ -39,92 +42,23 @@ namespace AtomosZ.UI
 		public float value = 0;
 		public bool wholeNumbers = true;
 
-
-
 		public LabelEx labelEx;
-		// = new LabelEx
-		//{
-		//fontColor = Color.black,
-		//fontSize = 18,
-		//minLabelDimensions = new Vector2(8, 8),
-		//};
-
-		public SliderEx()
-		{
-			ResetToDefaults();
-		}
 
 		public SliderEx(UISliderScriptableObject sliderSO)
 		{
 			scriptableObj = sliderSO;
-			SetToScriptableObjectValues();
-		}
-
-		public void SetToScriptableObjectValues()
-		{
-			if (scriptableObj == null)
-				ResetToDefaults();
-			else
+			if (sliderSO == null)
 			{
-				if (scriptableObj.labelEx == null)
+				useCustomShowHandle = true;
+				useCustomShowUnits = true;
+				useCustomUnitSpan = true;
+				labelEx = new LabelEx("")
 				{
-					labelEx = new LabelEx()
-					{
-						fontColor = Color.black,
-						fontSize = 18,
-						minLabelDimensions = new Vector2(8, 8),
-					};
-				}
-				else
-				{
-					scriptableObj.labelEx.SetToScriptableObjectValues();
-					//scriptableObj.labelEx.fontColor = Color.black;
-					//scriptableObj.labelEx.fontSize = 18;
-					//scriptableObj.labelEx.minLabelDimensions = new Vector2(8, 8);
-				}
-
-
-				showUnits = scriptableObj.showUnits;
-				showHandle = scriptableObj.showHandle;
-				unitSpan = scriptableObj.unitSpan;
-			}
-		}
-
-		public void ResetToDefaults()
-		{
-			useCustomShowHandle = true;
-			useCustomShowUnits = true;
-			useCustomUnitSpan = true;
-			//useCustomHandleSprite = true;
-			//useCustomHandleOffset = true;
-			//useCustomUnitVerticalOffset = true;
-
-			minValue = 0;
-			maxValue = 4;
-			value = 0;
-			wholeNumbers = true;
-			showUnits = false;
-			showHandle = true;
-			unitSpan = 1;
-			unitVerticalOffset = 0;
-			handleOffset = new Vector2(16, 16);
-
-			// what do when labelEx null?
-			if (labelEx == null)
-			{
-				labelEx = new LabelEx()
-				{
+					referenceName = "_slider_labelEx",
 					fontColor = Color.black,
 					fontSize = 18,
 					minLabelDimensions = new Vector2(8, 8),
 				};
-			}
-			else
-			{
-				labelEx.ResetToDefaults();
-				labelEx.fontColor = Color.black;
-				labelEx.fontSize = 18;
-				labelEx.minLabelDimensions = new Vector2(8, 8);
 			}
 		}
 	}
@@ -132,7 +66,7 @@ namespace AtomosZ.UI
 	public class UISlider : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private SliderEx sliderEx;
-
+		public string referenceName { get { return sliderEx.referenceName; } }
 
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -168,18 +102,38 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			GetComponent<SliderCustom>().UpdateSlider(sliderEx);
+			if (string.IsNullOrEmpty(sliderEx.referenceName))
+				sliderEx.referenceName = transform.name;
+			//name = sliderEx.referenceName;
+
+			var layout = GetComponent<LayoutElement>();
+			if (sliderEx.fillParentHorizontal)
+				layout.flexibleWidth = 1;
+			else
+				layout.flexibleWidth = 0;
+
+			layout.minWidth = sliderEx.minDimensions.x;
+			layout.minHeight = sliderEx.minDimensions.y;
+
+			Canvas.ForceUpdateCanvases();
+			var slider = GetComponent<SliderCustom>();
+			slider.UpdateSlider(sliderEx);
 #if DEBUG
 			// this required or the handle will not report the correct value after becoming active.
 			if (!Application.isPlaying)
-				GetComponent<SliderCustom>().UpdateSlider(sliderEx);
+				slider.UpdateSlider(sliderEx);
 #endif
+			//var sliderDim = slider.GetMinDimensions();
+			//if (sliderDim.x < sliderEx.minDimensions.x)
+			//	sliderDim.x = sliderEx.minDimensions.x;
+			
 		}
 
 		public Vector2 GetMinDimensions()
 		{
 			UpdateBackingData();
-			return GetComponent<SliderCustom>().GetMinDimensions();
+			//return GetComponent<SliderCustom>().GetMinDimensions();
+			return GetComponent<RectTransform>().sizeDelta;
 		}
 
 		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput,

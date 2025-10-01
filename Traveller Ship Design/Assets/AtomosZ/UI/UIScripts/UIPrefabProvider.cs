@@ -51,6 +51,7 @@ namespace AtomosZ.UI
 		[SerializeField] public UIImageViewScriptableObject imageViewScriptObj;
 		[SerializeField] public UIImageViewPanelScriptableObject imageViewPanelScriptObj;
 
+
 		[Tooltip("This is populated by an Editor script. Editing manually is futile.")]
 		[UDictionary.Split(50, 50)]
 		public UDictionary<UIPrefabType, UIDesignObject> uiPrefabs;

@@ -154,7 +154,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2133971191905619525
 RectTransform:
   m_ObjectHideFlags: 0
@@ -170,9 +170,9 @@ RectTransform:
   - {fileID: 1680454412601526349}
   m_Father: {fileID: 8581739949491361681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 62.5, y: -15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 125, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7040571989617064963
@@ -287,7 +287,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3377699650909919485
 RectTransform:
   m_ObjectHideFlags: 0
@@ -303,9 +303,9 @@ RectTransform:
   - {fileID: 2070163557342165017}
   m_Father: {fileID: 8581739949491361681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 199.5, y: -15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 125, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &133612591655255237
@@ -420,7 +420,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8141357792149577385
 RectTransform:
   m_ObjectHideFlags: 0
@@ -436,9 +436,9 @@ RectTransform:
   - {fileID: 4319148496350285283}
   m_Father: {fileID: 8581739949491361681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 336.5, y: -15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 125, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8818626369108475116
@@ -825,7 +825,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4520209397473497765
 RectTransform:
   m_ObjectHideFlags: 0
@@ -841,9 +841,9 @@ RectTransform:
   - {fileID: 4936302004704511194}
   m_Father: {fileID: 8581739949491361681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 62.5, y: -15}
   m_SizeDelta: {x: 125, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2828397145073048868
@@ -997,13 +997,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonPanelEx:
+    referenceName: 
     scriptableObj: {fileID: 11400000, guid: 56557aa7b7c6fad48b93d20458c100fb, type: 2}
-    buttons: 1
+    buttons: 3
     useCustomOKButton: 0
     useCustomCancelButton: 0
     useCustomYesButton: 0
     useCustomNoButton: 0
     okButton:
+      referenceName: 
       action:
         m_PersistentCalls:
           m_Calls: []
@@ -1011,6 +1013,7 @@ MonoBehaviour:
       useCustomSprite: 0
       sprite: {fileID: 21300000, guid: 13c0280effb815d4384bc6cab4ee2810, type: 3}
       labelEx:
+        referenceName: 
         text: Text Label
         scriptableObj: {fileID: 0}
         useCustomFontSize: 1
@@ -1022,6 +1025,7 @@ MonoBehaviour:
         minLabelDimensions: {x: 64, y: 1}
         maxLabelDimensions: {x: 1025, y: 256}
     cancelButton:
+      referenceName: 
       action:
         m_PersistentCalls:
           m_Calls: []
@@ -1029,6 +1033,7 @@ MonoBehaviour:
       useCustomSprite: 0
       sprite: {fileID: 0}
       labelEx:
+        referenceName: 
         text: Text Label
         scriptableObj: {fileID: 0}
         useCustomFontSize: 1
@@ -1040,6 +1045,7 @@ MonoBehaviour:
         minLabelDimensions: {x: 64, y: 1}
         maxLabelDimensions: {x: 1025, y: 256}
     yesButton:
+      referenceName: 
       action:
         m_PersistentCalls:
           m_Calls: []
@@ -1047,6 +1053,7 @@ MonoBehaviour:
       useCustomSprite: 0
       sprite: {fileID: 0}
       labelEx:
+        referenceName: 
         text: Text Label
         scriptableObj: {fileID: 0}
         useCustomFontSize: 1
@@ -1058,6 +1065,7 @@ MonoBehaviour:
         minLabelDimensions: {x: 64, y: 1}
         maxLabelDimensions: {x: 1025, y: 256}
     noButton:
+      referenceName: 
       action:
         m_PersistentCalls:
           m_Calls: []
@@ -1065,6 +1073,7 @@ MonoBehaviour:
       useCustomSprite: 0
       sprite: {fileID: 0}
       labelEx:
+        referenceName: 
         text: Text Label
         scriptableObj: {fileID: 0}
         useCustomFontSize: 1

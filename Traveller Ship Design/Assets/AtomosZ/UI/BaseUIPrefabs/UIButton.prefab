@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   labelEx:
+    referenceName: Text (TMP)
     text: Button Text
     scriptableObj: {fileID: 0}
     useCustomFontSize: 1
@@ -59,7 +60,7 @@ MonoBehaviour:
     fontSize: 36
     fontColor: {r: 0, g: 0, b: 0, a: 1}
     fontAsset: {fileID: 0}
-    minLabelDimensions: {x: 64, y: 64}
+    minLabelDimensions: {x: 10, y: 64}
     maxLabelDimensions: {x: 1025, y: 64}
   textLabel: {fileID: 2671208435322713224}
   image: {fileID: 4770955567978397481}
@@ -174,6 +175,7 @@ GameObject:
   - component: {fileID: 7796280320740207736}
   - component: {fileID: 1978944217387945199}
   - component: {fileID: 6311154708473013455}
+  - component: {fileID: 4183874405391670221}
   - component: {fileID: 4770955567978397481}
   - component: {fileID: 6902153215532748074}
   - component: {fileID: 2975041999511188888}
@@ -217,13 +219,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonEx:
+    referenceName: 
     action:
       m_PersistentCalls:
         m_Calls: []
+    fillParentHorizontal: 0
     scriptableObj: {fileID: 0}
     useCustomSprite: 1
     sprite: {fileID: 0}
     labelEx:
+      referenceName: Text (TMP)
       text: Button Text
       scriptableObj: {fileID: 0}
       useCustomFontSize: 1
@@ -232,7 +237,7 @@ MonoBehaviour:
       fontSize: 36
       fontColor: {r: 0, g: 0, b: 0, a: 1}
       fontAsset: {fileID: 0}
-      minLabelDimensions: {x: 64, y: 64}
+      minLabelDimensions: {x: 10, y: 64}
       maxLabelDimensions: {x: 1025, y: 64}
   label: {fileID: 4235460900820515980}
   image: {fileID: 4770955567978397481}
@@ -258,6 +263,26 @@ MonoBehaviour:
   hasCustomDimensions: 1
   hasUpdatableBackingData: 1
   tooltip: []
+--- !u!114 &4183874405391670221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5027443682642349068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: 62
+  m_MinHeight: -1
+  m_PreferredWidth: 297.46002
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 0
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &4770955567978397481
 MonoBehaviour:
   m_ObjectHideFlags: 0

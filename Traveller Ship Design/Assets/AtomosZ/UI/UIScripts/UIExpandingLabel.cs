@@ -13,66 +13,47 @@ namespace AtomosZ.UI
 	public class LabelEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Text; } }
+		/// <summary>
+		/// This is the name we use to modify this UIControl.
+		/// </summary>
+		public string referenceName;
 
 		[Tooltip("IMPORTANT(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
 		public string text = "Text Label";
 
 		public UIExpandingLabelScriptableObject scriptableObj;
 
-		public bool useCustomFontSize = true;
-		public bool useCustomFontColor = true;
-		public bool useCustomFontAsset = true;
+		public bool useCustomFontSize = false;
+		public bool useCustomFontColor = false;
+		public bool useCustomFontAsset = false;
 		[Tooltip("Default: 36")]
-		[SerializeField] public float fontSize;
-		[SerializeField] public Color fontColor;
+		[SerializeField] public float fontSize = 36;
+		[SerializeField] public Color fontColor = Color.white;
 		[SerializeField] public TMP_FontAsset fontAsset;
 
-		[SerializeField] public Vector2 minLabelDimensions = new Vector2(64, 1);
+		[SerializeField] public Vector2 minLabelDimensions = new Vector2(64, 10);
 		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
 		[SerializeField] public Vector2 maxLabelDimensions = new Vector2(1025, 256);
 
-		public LabelEx()
-		{
-			ResetToDefaults();
-		}
 
 		public LabelEx(string text)
 		{
-			ResetToDefaults();
 			this.text = text;
+			useCustomFontSize = true;
+			useCustomFontColor = true;
+			useCustomFontAsset = true;
 		}
 
 		public LabelEx(UIExpandingLabelScriptableObject textScriptObj)
 		{
 			this.scriptableObj = textScriptObj;
-			useCustomFontSize = false;
-			useCustomFontColor = false;
-			useCustomFontAsset = false;
-			SetToScriptableObjectValues();
-		}
-
-		public void SetToScriptableObjectValues()
-		{
 			if (scriptableObj == null)
-				ResetToDefaults();
-			else
 			{
-				fontSize = scriptableObj.fontSize;
-				fontColor = scriptableObj.fontColor;
-				fontAsset = scriptableObj.fontAsset;
+				useCustomFontSize = true;
+				useCustomFontColor = true;
+				useCustomFontAsset = true;
 			}
-		}
 
-		public void ResetToDefaults()
-		{
-			useCustomFontSize = true;
-			useCustomFontColor = true;
-			useCustomFontAsset = true;
-			minLabelDimensions = new Vector2(64, 1);
-			maxLabelDimensions = new Vector2(1025, 256);
-			fontSize = 36.0f;
-			fontColor = Color.white;
-			fontAsset = null;
 		}
 
 
@@ -82,7 +63,7 @@ namespace AtomosZ.UI
 		/// <returns></returns>
 		public LabelEx Clone()
 		{
-			return (LabelEx) this.MemberwiseClone();
+			return (LabelEx)this.MemberwiseClone();
 		}
 
 
@@ -95,21 +76,24 @@ namespace AtomosZ.UI
 		[SerializeField] private TextMeshProUGUI textLabel;
 		[SerializeField] private Image image;
 
-
+		public string referenceName { get { return labelEx.referenceName; } }
 		/// <summary>
-		/// TODO(Tristan): Now that using LabelEx use of this property should be strongly guarded.<br/>
 		/// NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's "empty", 
 		/// so the length will NEVER equal zero!
 		/// </summary>
 		public string text
 		{
 			get { return textLabel.text; }
-			set
-			{
-				labelEx.text = value;
-				UpdateBackingData();
-			}
 		}
+
+		public void SetText(string text, bool recalculateDimensions)
+		{
+			labelEx.text = text;
+			if (!recalculateDimensions)
+				return;
+			this.Refresh(gameObject);
+		}
+
 
 		public Color color
 		{
@@ -119,13 +103,13 @@ namespace AtomosZ.UI
 					return labelEx.fontColor;
 				return labelEx.scriptableObj.fontColor;
 			}
-			//set
-			//{
-			//	labelEx.overrideFontColor = true;
-			//	labelEx.fontColor = value;
-			//	textLabel.color = value;
-			//	UpdateBackingData();
-			//}
+		}
+
+		public void SetColor(Color newColor)
+		{
+			labelEx.fontColor = newColor;
+			textLabel.color = newColor;
+			labelEx.useCustomFontColor = true;
 		}
 
 		public float fontSize
@@ -146,12 +130,6 @@ namespace AtomosZ.UI
 					return labelEx.fontAsset;
 				return labelEx.scriptableObj.fontAsset;
 			}
-			//set
-			//{
-			//	labelEx.fontAsset = value;
-			//	textLabel.font = value;
-			//	UpdateBackingData();
-			//}
 		}
 
 		public UIDesignObject _designObject;
@@ -171,14 +149,6 @@ namespace AtomosZ.UI
 		}
 
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public void UpdateUI()
-		{
-			UpdateBackingData();
-		}
-
 
 		public void UpdateBackingData(IUIDataEx dataEx)
 		{
@@ -189,55 +159,70 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
+			if (string.IsNullOrEmpty(labelEx.referenceName))
+				labelEx.referenceName = transform.name;
+			//name = labelEx.referenceName;
+
 			textLabel.text = labelEx.text;
 			textLabel.color = color;
 			textLabel.font = fontAsset;
 			textLabel.fontSize = fontSize;
 
-			textLabel.ForceMeshUpdate();
+			textLabel.ForceMeshUpdate(false, true);
 
 			var prefTextSize = textLabel.GetPreferredValues(text);
-			var textWidth = prefTextSize.x;
-			var minTextHeight = prefTextSize.y; // this should be the preferred height of a single line, right?
-			if (minTextHeight < labelEx.minLabelDimensions.y)
-				minTextHeight = labelEx.minLabelDimensions.y;
-			var textHeight = minTextHeight;
+			var singleLineTextHeight = prefTextSize.y; // this is the height of a single line
+			var singleLineTextWidth = prefTextSize.x; // this is the width if the text was on a single line
 
-			if (textWidth < labelEx.minLabelDimensions.x)
-				textWidth = labelEx.minLabelDimensions.x;
+			var prefTextWidth = textLabel.preferredWidth;
 
-			var tmpRect = textLabel.rectTransform;
-			var labelSize = new Vector2(textWidth, textHeight);
-			if (textWidth > labelEx.maxLabelDimensions.x)
-			{
-				textWidth = labelEx.maxLabelDimensions.x;
-				labelSize.x = textWidth;
 
-				tmpRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textWidth);
-				tmpRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, labelEx.maxLabelDimensions.y);
-				textLabel.ForceMeshUpdate();
+			//var renderedValues = textLabel.GetRenderedValues();
 
-				var renderedValues = textLabel.GetRenderedValues();
-				prefTextSize = textLabel.GetPreferredValues();
-				textHeight = renderedValues.y;
-				if (textHeight < minTextHeight)
-					textHeight = minTextHeight;
-				if (textHeight > labelEx.maxLabelDimensions.y)
-					textHeight = labelEx.maxLabelDimensions.y;
-				tmpRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, textHeight);
+			var newWidth = prefTextSize.x;
+			if (newWidth > prefTextWidth)
+				newWidth = prefTextWidth;
+			if (newWidth > singleLineTextWidth)
+				newWidth = singleLineTextWidth;
+			if (newWidth > labelEx.maxLabelDimensions.x)
+				newWidth = labelEx.maxLabelDimensions.x;
+			else if (newWidth < labelEx.minLabelDimensions.x)
+				newWidth = labelEx.minLabelDimensions.x;
 
-				labelSize.y = textHeight + textLabel.margin.y + textLabel.margin.w;
-			}
-			else
-			{
-				tmpRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textWidth);
-				tmpRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, textHeight);
-			}
+			var textLabelRect = textLabel.rectTransform;
+			textLabelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+			textLabel.ForceMeshUpdate(false, true);
+			//Canvas.ForceUpdateCanvases();
+
+
+			//var prefTextHeight = textLabel.preferredHeight;
+
+			//var pixelAdjWidth = textLabel.GetPixelAdjustedRect().width; // this is only accurate when canvas is in Screen Space
+			//var newLineCount = singleLineTextWidth / newWidth;
+			//if (singleLineTextWidth - pixelAdjWidth < 1)
+			//	newLineCount = 1;
+			//float newHeight = Mathf.Ceil(newLineCount) * singleLineTextHeight;
+			//var prefValues = textLabel.GetPreferredValues();
+			//if (prefValues.y != newHeight)
+			//	newHeight = prefValues.y;
+			//var newHeight = textLabel.GetPreferredValues().y;
+			var prefForcedWidth = textLabel.GetPreferredValues(textLabelRect.sizeDelta.x - (textLabel.margin.x + textLabel.margin.z), 0);
+			var newHeight = prefForcedWidth.y;
+			if (newHeight < labelEx.minLabelDimensions.y)
+				newHeight = labelEx.minLabelDimensions.y;
+			//if (newHeight > 50)
+			//	newHeight = newHeight ;
+			textLabelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
+			textLabel.ForceMeshUpdate(false, true);
+
 
 			if (image != null)
 			{
-				image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, labelSize.x);
-				image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, labelSize.y);
+				var imageLabelSize = new Vector2(newWidth, newHeight);
+				//imageLabelSize.x += (textLabel.margin.x + textLabel.margin.z);
+				imageLabelSize.y = newHeight /*+ textLabel.margin.y*/ /*+ textLabel.margin.w*/;
+				image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, imageLabelSize.x);
+				image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, imageLabelSize.y);
 			}
 		}
 

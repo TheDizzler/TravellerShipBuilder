@@ -14,77 +14,55 @@ namespace AtomosZ.UI
 	public class InputFieldEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.InputField; } }
+		public string referenceName;
+		public UIExpandingInputFieldScriptableObject scriptableObj;
+
+
+		public bool useCustomFontSize = false;
+		public bool useCustomPlaceholderFontColor = false;
+		public bool useCustomFontColor = false;
+		public bool useCustomFontAsset = false;
+		public float fontSize = 18;
+		public Color placeholderFontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 128.0f / 256);
+		public Color fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
+		public TMP_FontAsset fontAsset;
+
 
 		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
 		public string placeholderText = "Placeholder text";
 		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
-		public string defaultText;
+		public string defaultText = "";
 
 		public Vector2 fieldDimensions = new Vector2(275, 44);
 
 
-		public UIExpandingInputFieldScriptableObject scriptableObj;
-
-
-		public bool useCustomFontSize = true;
-		public bool useCustomPlaceholderFontColor = true;
-		public bool useCustomFontColor = true;
-		public bool useCustomFontAsset = true;
-		public float fontSize;
-		public Color placeholderFontColor;
-		public Color fontColor;
-		public TMP_FontAsset fontAsset;
-
 		public InputFieldEx(UIExpandingInputFieldScriptableObject scriptObj)
 		{
 			scriptableObj = scriptObj;
-			useCustomFontSize = false;
-			useCustomPlaceholderFontColor = false;
-			useCustomFontColor = false;
-			useCustomFontAsset = false;
+			if (scriptableObj == null)
+			{
+				useCustomFontSize = true;
+				useCustomPlaceholderFontColor = true;
+				useCustomFontColor = true;
+				useCustomFontAsset = true;
+			}
+
 		}
 
-		public InputFieldEx()
+		public InputFieldEx(UIExpandingInputFieldScriptableObject scriptObj, string placeholderText, string defaultText = "")
 		{
-			ResetToDefaults();
+			this.placeholderText = placeholderText;
+			this.defaultText = defaultText;
 		}
 
 		public InputFieldEx(string placeholderText, string defaultText)
 		{
 			this.placeholderText = placeholderText;
 			this.defaultText = defaultText;
-			ResetToDefaults();
-		}
-
-		public void SetToScriptableObjectValues()
-		{
-			if (scriptableObj == null)
-				ResetToDefaults();
-			else
-			{
-				fontSize = scriptableObj.fontSize;
-				fontColor = scriptableObj.fontColor;
-				fontAsset = scriptableObj.fontAsset;
-				placeholderFontColor = scriptableObj.placeholderFontColor;
-			}
-		}
-
-
-		public void ResetToDefaults()
-		{
 			useCustomFontSize = true;
 			useCustomPlaceholderFontColor = true;
 			useCustomFontColor = true;
 			useCustomFontAsset = true;
-
-			placeholderText = "Placeholder text";
-			defaultText = "";
-			fieldDimensions = new Vector2(275, 44);
-
-			placeholderFontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 128.0f / 256);
-			fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
-			fontSize = 18;
-			fontAsset = null;
 		}
 	}
 
@@ -99,6 +77,7 @@ namespace AtomosZ.UI
 		[SerializeField] private RectTransform textAreaRect;
 		[SerializeField] private Image image;
 
+		public string referenceName { get { return inputFieldEx.referenceName; } }
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -164,6 +143,9 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
+			if (string.IsNullOrEmpty(inputFieldEx.referenceName))
+				inputFieldEx.referenceName = transform.name;
+
 			inputFieldTMP.fontAsset = fontAsset;
 			inputFieldTMP.pointSize = fontSize;
 			placeholderLabel.color = placeholderFontColor;

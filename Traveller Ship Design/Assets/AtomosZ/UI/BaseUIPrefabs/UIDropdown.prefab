@@ -211,7 +211,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_fontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -433,6 +433,7 @@ GameObject:
   - component: {fileID: 4055350152107424683}
   - component: {fileID: 3132597873559246341}
   - component: {fileID: 3898854370579401519}
+  - component: {fileID: 947029655043986366}
   - component: {fileID: 9155688087169936532}
   - component: {fileID: 351424338598274322}
   - component: {fileID: 8129282478058831701}
@@ -479,6 +480,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropdown: {fileID: 351424338598274322}
   dropdownEx:
+    referenceName: 
+    fillParentHorizontal: 0
+    minDimensions: {x: 256, y: 64}
+    scriptableObj: {fileID: 0}
+    useCustomFontSize: 0
+    useCustomFontColor: 0
+    useCustomFontAsset: 0
     fontSize: 14
     fontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 1}
     fontAsset: {fileID: 0}
@@ -495,6 +503,9 @@ MonoBehaviour:
     - m_Text: Option 4
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
+    SetOptions:
+      m_PersistentCalls:
+        m_Calls: []
     defaultSelection: 0
     isMultiSelect: 0
     onValueChangedAction:
@@ -521,6 +532,26 @@ MonoBehaviour:
   hasCustomDimensions: 1
   hasUpdatableBackingData: 1
   tooltip: []
+--- !u!114 &947029655043986366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3595655409325189416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: 256
+  m_MinHeight: 64
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &9155688087169936532
 MonoBehaviour:
   m_ObjectHideFlags: 0

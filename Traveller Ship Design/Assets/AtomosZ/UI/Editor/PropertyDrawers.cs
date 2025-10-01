@@ -32,15 +32,6 @@ namespace AtomosZ.UI.EditorZ
 
 			this.SetProperty(property, UIControl.panelControlNames[controlType], position, ref drawerHeight);
 
-
-			//var resetButtonRect = new Rect(position.x, position.y + drawerHeight, 175, EditorGUIUtility.singleLineHeight);	
-			//if (GUI.Button(resetButtonRect, "Reset to Default"))
-			//{
-			//	var dpo = (DynaPanelOp)property.serializedObject.targetObject;
-			//	var ctrl = (UIControl)property.boxedValue;
-			//	dpo.ResetToDefaults(ctrl);
-			//}
-
 			var removeButtonRect = new Rect(position.x + 100, position.y + drawerHeight, 175, EditorGUIUtility.singleLineHeight);
 			if (GUI.Button(removeButtonRect, "Remove"))
 			{
@@ -140,6 +131,10 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
 
+			this.SetProperty(property, "referenceName", position, ref drawerHeight);
+			this.SetProperty(property, "fillParentHorizontal", position, ref drawerHeight);
+			this.SetProperty(property, "minDimensions", position, ref drawerHeight);
+
 			var setOptionsProp = property.FindPropertyRelative("SetOptions");
 			this.SetProperty(setOptionsProp, position, ref drawerHeight);
 
@@ -195,15 +190,17 @@ namespace AtomosZ.UI.EditorZ
 				var customFontColorProp = property.FindPropertyRelative("fontColor");
 				var customFontAssetProp = property.FindPropertyRelative("fontAsset");
 				var textSo = (UIExpandingLabelScriptableObject)textSOProp.boxedValue;
+				if (textSo != null)
+				{
+					var isCustomFontSizeProp = property.FindPropertyRelative("useCustomFontSize");
+					this.SetOverridableProperty(isCustomFontSizeProp, customFontSizeProp, textSo.fontSize, position, ref drawerHeight);
 
-				var isCustomFontSizeProp = property.FindPropertyRelative("useCustomFontSize");
-				this.SetOverridableProperty(isCustomFontSizeProp, customFontSizeProp, textSo.fontSize, position, ref drawerHeight);
+					var isCustomFontColorProp = property.FindPropertyRelative("useCustomFontColor");
+					this.SetOverridableProperty(isCustomFontColorProp, customFontColorProp, textSo.fontColor, position, ref drawerHeight);
 
-				var isCustomFontColorProp = property.FindPropertyRelative("useCustomFontColor");
-				this.SetOverridableProperty(isCustomFontColorProp, customFontColorProp, textSo.fontColor, position, ref drawerHeight);
-
-				var isCustomFontAssetProp = property.FindPropertyRelative("useCustomFontAsset");
-				this.SetOverridableProperty(isCustomFontAssetProp, customFontAssetProp, textSo.fontColor, position, ref drawerHeight);
+					var isCustomFontAssetProp = property.FindPropertyRelative("useCustomFontAsset");
+					this.SetOverridableProperty(isCustomFontAssetProp, customFontAssetProp, textSo.fontColor, position, ref drawerHeight);
+				}
 				--EditorGUI.indentLevel;
 			}
 
@@ -220,6 +217,8 @@ namespace AtomosZ.UI.EditorZ
 		{
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
+
+			this.SetProperty(property, "referenceName", position, ref drawerHeight);
 
 			var imageViewProp = property.FindPropertyRelative("scriptableObj");
 			this.SetProperty(imageViewProp, position, ref drawerHeight);
@@ -280,8 +279,10 @@ namespace AtomosZ.UI.EditorZ
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
 			EditorGUI.BeginProperty(position, label, property);
-
 			drawerHeight = 0;
+
+			this.SetProperty(property, "referenceName", position, ref drawerHeight);
+
 			this.SetProperty(property, "isVisible", position, ref drawerHeight);
 			this.SetProperty(property, "sprite", position, ref drawerHeight);
 			this.SetProperty(property, "forceSize", position, ref drawerHeight);
@@ -308,6 +309,9 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
 
+			this.SetProperty(property, "referenceName", position, ref drawerHeight);
+			this.SetProperty(property, "fillParentHorizontal", position, ref drawerHeight);
+			this.SetProperty(property, "minDimensions", position, ref drawerHeight);
 
 			var sliderSOProp = property.FindPropertyRelative("scriptableObj");
 			this.SetProperty(sliderSOProp, position, ref drawerHeight);
@@ -543,10 +547,56 @@ namespace AtomosZ.UI.EditorZ
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
 			EditorGUI.BeginProperty(position, label, property);
-
 			drawerHeight = 0;
+
+			this.SetProperty(property, "referenceName", position, ref drawerHeight);
+
 			this.SetProperty(property, "isOnByDefault", position, ref drawerHeight);
 			this.SetProperty(property, "labelEx", position, ref drawerHeight);
+
+			EditorGUI.EndProperty();
+		}
+	}
+
+	[CustomPropertyDrawer(typeof(PanelEx))]
+	public class PanelExDrawer : UIExDrawer
+	{
+		private bool isExpanded;
+
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+		{
+			EditorGUI.BeginProperty(position, label, property);
+			drawerHeight = 0;
+
+			this.SetProperty(property, "referenceName", position, ref drawerHeight);
+
+			isExpanded = this.CreateFoldout("Overridable values", isExpanded, position, ref drawerHeight);
+			if (isExpanded)
+			{
+				++EditorGUI.indentLevel;
+				var inputSOProp = property.FindPropertyRelative("scriptableObj");
+				this.SetProperty(inputSOProp, position, ref drawerHeight);
+
+				var customBackgroundSpriteProp = property.FindPropertyRelative("backgroundSprite");
+				var customMinDimenProp = property.FindPropertyRelative("minDimensions");
+				var customLayoutPaddingProp = property.FindPropertyRelative("layoutPadding");
+				var customLayoutSpacingProp = property.FindPropertyRelative("layoutSpacing");
+				var panelSO = (UIPanelScriptableObject)inputSOProp.boxedValue;
+
+				var isCustomFontSizeProp = property.FindPropertyRelative("useCustomBackgroundSprite");
+				this.SetOverridableProperty(isCustomFontSizeProp, customBackgroundSpriteProp, panelSO.backgroundSprite, position, ref drawerHeight);
+
+				var isCustomDimenProp = property.FindPropertyRelative("useCustomMinDimensions");
+				this.SetOverridableProperty(isCustomDimenProp, customMinDimenProp, panelSO.minDimensions, position, ref drawerHeight);
+
+				var isCustomLayoutPaddingProp = property.FindPropertyRelative("useCustomLayoutPadding");
+				this.SetOverridableProperty(isCustomLayoutPaddingProp, customLayoutPaddingProp, panelSO.layoutPadding, position, ref drawerHeight);
+
+				var isCustomLayoutSpacingProp = property.FindPropertyRelative("useCustomLayoutSpacing");
+				this.SetOverridableProperty(isCustomLayoutSpacingProp, customLayoutSpacingProp, panelSO.layoutSpacing, position, ref drawerHeight);
+				--EditorGUI.indentLevel;
+			}
+
 
 			EditorGUI.EndProperty();
 		}
@@ -561,6 +611,8 @@ namespace AtomosZ.UI.EditorZ
 		{
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
+
+			this.SetProperty(property, "referenceName", position, ref drawerHeight);
 
 			this.SetProperty(property, "placeholderText", position, ref drawerHeight);
 			this.SetProperty(property, "defaultText", position, ref drawerHeight);
@@ -609,6 +661,9 @@ namespace AtomosZ.UI.EditorZ
 		{
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
+
+			this.SetProperty(property, "referenceName", position, ref drawerHeight);
+
 
 
 			this.SetProperty(property, "text", position, ref drawerHeight);
@@ -659,10 +714,25 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
 
+			this.SetProperty(property, "referenceName", position, ref drawerHeight);
+
 			var buttonSOProp = property.FindPropertyRelative("scriptableObj");
 			this.SetProperty(buttonSOProp, position, ref drawerHeight);
 
 			var buttonSO = (UIButtonScriptableObject)buttonSOProp.boxedValue;
+			if (buttonSO == null)
+			{
+				this.SetProperty(property, "labelEx", position, ref drawerHeight);
+			}
+			else
+			{
+				var text = buttonSO.labelEx.text;
+				buttonSO.labelEx.text = this.CreateTextField("Button Text", text, position, ref drawerHeight);
+			}
+
+			this.SetProperty(property, "fillParentHorizontal", position, ref drawerHeight);
+
+
 			var useCustomSpriteProp = property.FindPropertyRelative("useCustomSprite");
 			var customSpriteProp = property.FindPropertyRelative("sprite");
 
@@ -679,7 +749,7 @@ namespace AtomosZ.UI.EditorZ
 			this.SetProperty(property, "action", position, ref drawerHeight);
 
 
-			this.CreateLabel("Text settings:", position, ref drawerHeight);
+			this.CreateLabel("Text Label Settings:", position, ref drawerHeight);
 			if (buttonSO == null)
 			{
 				++EditorGUI.indentLevel;
@@ -754,6 +824,9 @@ namespace AtomosZ.UI.EditorZ
 		{
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
+
+			this.SetProperty(property, "referenceName", position, ref drawerHeight);
+
 			var enumRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
 			drawerHeight += enumRect.height + EditorGUIUtility.standardVerticalSpacing;
 			EditorGUI.PropertyField(enumRect, property.FindPropertyRelative("buttons"));
@@ -848,6 +921,15 @@ namespace AtomosZ.UI.EditorZ
 			var labelRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
 			EditorGUI.LabelField(labelRect, labelText);
 			drawerHeight += labelRect.height + EditorGUIUtility.standardVerticalSpacing;
+		}
+
+
+		public static string CreateTextField(this PropertyDrawer propertyDrawer,
+			string labelText, string textInField, Rect position, ref float drawerHeight)
+		{
+			var labelRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
+			drawerHeight += labelRect.height + EditorGUIUtility.standardVerticalSpacing;
+			return EditorGUI.TextField(labelRect, labelText, textInField);
 		}
 
 
@@ -971,7 +1053,7 @@ namespace AtomosZ.UI.EditorZ
 		/// <param name="position"></param>
 		/// <param name="drawerHeight"></param>
 		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer, SerializedProperty overrideBoolProp,
-		SerializedProperty overrideValueProp, TMP_FontAsset value, Rect position, ref float drawerHeight)
+			SerializedProperty overrideValueProp, TMP_FontAsset value, Rect position, ref float drawerHeight)
 		{
 			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
 			if (overrideBoolProp.boolValue)
@@ -1040,6 +1122,99 @@ namespace AtomosZ.UI.EditorZ
 				GUI.enabled = true;
 			}
 		}
+
+		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
+			SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
+			Vector2 defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
+		{
+			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
+			if (overrideBoolProp.boolValue)
+				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
+			else
+			{
+				GUI.enabled = false;
+				var minRect = new Rect(position.x, position.y + drawerHeight,
+					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
+				EditorGUI.Vector2Field(minRect, "default value", defaultValueFromScriptableObject);
+				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
+				GUI.enabled = true;
+			}
+		}
+
+
+		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
+			SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
+			Vector3 defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
+		{
+			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
+			if (overrideBoolProp.boolValue)
+				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
+			else
+			{
+				GUI.enabled = false;
+				var minRect = new Rect(position.x, position.y + drawerHeight,
+					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
+				EditorGUI.Vector3Field(minRect, "default value", defaultValueFromScriptableObject);
+				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
+				GUI.enabled = true;
+			}
+		}
+
+		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
+			SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
+			Vector4 defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
+		{
+			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
+			if (overrideBoolProp.boolValue)
+				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
+			else
+			{
+				GUI.enabled = false;
+				var minRect = new Rect(position.x, position.y + drawerHeight,
+					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
+				EditorGUI.Vector4Field(minRect, "default value", defaultValueFromScriptableObject);
+				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
+				GUI.enabled = true;
+			}
+		}
+
+		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
+			SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
+			Vector2Int defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
+		{
+			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
+			if (overrideBoolProp.boolValue)
+				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
+			else
+			{
+				GUI.enabled = false;
+				var minRect = new Rect(position.x, position.y + drawerHeight,
+					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
+				EditorGUI.Vector2IntField(minRect, "default value", defaultValueFromScriptableObject);
+				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
+				GUI.enabled = true;
+			}
+		}
+
+
+		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
+			SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
+			Vector3Int defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
+		{
+			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
+			if (overrideBoolProp.boolValue)
+				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
+			else
+			{
+				GUI.enabled = false;
+				var minRect = new Rect(position.x, position.y + drawerHeight,
+					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
+				EditorGUI.Vector3IntField(minRect, "default value", defaultValueFromScriptableObject);
+				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
+				GUI.enabled = true;
+			}
+		}
+
 
 		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
 		SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
