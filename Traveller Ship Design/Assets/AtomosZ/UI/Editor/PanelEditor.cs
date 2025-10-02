@@ -280,15 +280,17 @@ namespace AtomosZ.UI.EditorZ
 	public class TabControlEditor : Editor
 	{
 		private UITabControl tabControl;
-		private UDictionary<GameObject, UIPanel> tabPanels;
+		private TabLookupDictionary tabPanels;
 		private int removeTabIndex;
 		private static bool isTabEditFoldout = true;
-		private bool isPanelEditFoldout;
+		private bool isPanelEditFoldout = true;
+		private bool isPanelFoldout;
 
 		void OnEnable()
 		{
 			tabControl = (UITabControl)target;
 			tabPanels = tabControl.tabPanels;
+			removeTabIndex = tabPanels.Count - 1;
 		}
 
 		public override void OnInspectorGUI()
@@ -304,6 +306,8 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUILayout.PropertyField(serializedObject.FindProperty("panelsTransform"));
 
 
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("selectedTabIndex"));
+
 			if (isPanelEditFoldout = EditorGUILayout.Foldout(isPanelEditFoldout, "Panel Edit", true))
 			{
 				++EditorGUI.indentLevel;
@@ -311,10 +315,20 @@ namespace AtomosZ.UI.EditorZ
 
 				EditorGUILayout.PropertyField(serializedObject.FindProperty("panelWidthAdjust"));
 
-				foreach (var tabPanel in tabPanels)
-				{
 
+				var selectedTabPanel = tabPanels[tabControl.selectedTabIndex];
+				var selectedTab = selectedTabPanel.Key;
+				var selectedPanel = selectedTabPanel.Value;
+				UIPanelEditor panelEditor = (UIPanelEditor)Editor.CreateEditor(selectedPanel, typeof(UIPanelEditor));
+
+				if (isPanelFoldout = EditorGUILayout.Foldout(isPanelFoldout, "Edit selected Panel " + selectedTab.name, true))
+				{
+					++EditorGUI.indentLevel;
+
+					panelEditor.OnInspectorGUI();
+					--EditorGUI.indentLevel;
 				}
+
 				--EditorGUI.indentLevel;
 			}
 
@@ -322,17 +336,18 @@ namespace AtomosZ.UI.EditorZ
 			{
 				++EditorGUI.indentLevel;
 				EditorGUILayout.PropertyField(serializedObject.FindProperty("tabItemPrefab"));
-				EditorGUILayout.PropertyField(serializedObject.FindProperty("tabPanels"));
+
 				if (GUILayout.Button("Add Tab"))
 				{
 					tabControl.AddTab(tabControl.panelExData);
+					removeTabIndex = tabPanels.Count - 1;
 					EditorUtility.SetDirty(tabControl);
 				}
 
 				EditorGUILayout.PropertyField(serializedObject.FindProperty("tabHorizontaloffset"));
 				EditorGUILayout.PropertyField(serializedObject.FindProperty("firstTabSprite"));
 				EditorGUILayout.PropertyField(serializedObject.FindProperty("tabSprite"));
-				EditorGUILayout.PropertyField(serializedObject.FindProperty("selectedTabIndex"));
+
 				EditorGUILayout.PropertyField(serializedObject.FindProperty("selectedTabColor"));
 				EditorGUILayout.PropertyField(serializedObject.FindProperty("deselectedTabColor"));
 
@@ -344,7 +359,7 @@ namespace AtomosZ.UI.EditorZ
 					if (removeTabIndex < 0)
 						removeTabIndex = 0;
 
-					if (GUILayout.Button("Remove Tab"))
+					if (GUILayout.Button("Remove " + tabPanels[removeTabIndex].Key.name))
 					{
 						tabControl.RemoveTab(removeTabIndex);
 						EditorUtility.SetDirty(tabControl);
@@ -375,7 +390,7 @@ namespace AtomosZ.UI.EditorZ
 		private UIPanel panel;
 		private RectTransform rect;
 		private PanelEx panelEx;
-		private UIControlLookup uiControls;
+		private ControlLookupDictionary uiControls;
 		private Dictionary<UIDesignObject, bool> isFoldout = new();
 		//private Dictionary<UIControlType, SerializedProperty> scriptableObjects;
 		private UIControlType currentType;
@@ -610,7 +625,7 @@ namespace AtomosZ.UI.EditorZ
 							break;
 						}
 						//else
-							
+
 					}
 				}
 				--EditorGUI.indentLevel;

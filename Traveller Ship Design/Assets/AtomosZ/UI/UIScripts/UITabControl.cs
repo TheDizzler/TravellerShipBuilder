@@ -8,6 +8,11 @@ using UnityEngine.UI;
 
 namespace AtomosZ.UI
 {
+	[Serializable]
+	public class TabLookupDictionary : CustomDictionary<GameObject, UIPanel>
+	{
+	}
+
 	public class UITabControl : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private string _referenceName;
@@ -28,9 +33,8 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[UDictionary.Split(50, 50)]
 		[SerializeField]
-		public UDictionary<GameObject, UIPanel> tabPanels;
+		public TabLookupDictionary tabPanels;
 
 		public UIPanelScriptableObject panelExData;
 
@@ -51,8 +55,6 @@ namespace AtomosZ.UI
 
 		public Sprite firstTabSprite;
 		public Sprite tabSprite;
-
-
 
 
 		[Conditional("DEBUG")]
@@ -248,12 +250,12 @@ namespace AtomosZ.UI
 
 		private GameObject SelectedTab()
 		{
-			return tabPanels.Keys[selectedTabIndex];
+			return tabPanels[selectedTabIndex].Key;
 		}
 
 		public UIPanel SelectedPanel()
 		{
-			return tabPanels.Values[selectedTabIndex];
+			return tabPanels[selectedTabIndex].Value;
 		}
 
 		public void SetHover(bool isHover)

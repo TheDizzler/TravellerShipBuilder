@@ -14,9 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPanelScriptableObject
   backgroundSprite: {fileID: 0}
   minDimensions: {x: 96, y: 64}
-  layoutPadding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  layoutSpacing: 0
+  layoutPadding: {x: 32, y: 32, z: 16, w: 16}
+  layoutSpacing: 8

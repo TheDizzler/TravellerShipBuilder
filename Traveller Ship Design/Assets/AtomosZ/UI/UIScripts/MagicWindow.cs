@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
@@ -91,12 +89,12 @@ namespace AtomosZ.UI
 
 
 
-		public UIControlLookup GetControls()
+		public ControlLookupDictionary GetControls()
 		{
 			return panel.GetControls();
 		}
 
-		public UIControlLookup GetControlsFromTransform()
+		public ControlLookupDictionary GetControlsFromTransform()
 		{
 			if (panel != null)
 				return panel.GetControlsFromTransform();

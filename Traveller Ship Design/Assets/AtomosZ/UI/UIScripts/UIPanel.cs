@@ -10,6 +10,9 @@ using static AtomosZ.UI.UIPrefabProvider;
 namespace AtomosZ.UI
 {
 	[Serializable]
+	public class ControlLookupDictionary : CustomDictionary<string, UIDesignObject> { }
+
+	[Serializable]
 	public class PanelEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Panel; } }
@@ -137,12 +140,9 @@ namespace AtomosZ.UI
 		}
 
 		public IUIBehavior parentPanel;
-		[SerializeField] public UIControlLookup uiControls;
-
-
+		[SerializeField] public ControlLookupDictionary uiControls;
 
 		public RectTransform rect;
-
 
 
 		[System.Diagnostics.Conditional("DEBUG")]
@@ -224,12 +224,12 @@ namespace AtomosZ.UI
 		}
 
 
-		public UIControlLookup GetControls()
+		public ControlLookupDictionary GetControls()
 		{
 			return uiControls;
 		}
 
-		public UIControlLookup GetControlsFromTransform()
+		public ControlLookupDictionary GetControlsFromTransform()
 		{
 			uiControls.Clear();
 			foreach (Transform child in transform)
@@ -261,14 +261,12 @@ namespace AtomosZ.UI
 					return AddCheckBox((CheckBoxEx)uiDataEx);
 				case UIControlType.Dropdown:
 					return AddDropdown((DropdownEx)uiDataEx);
-
 				case UIControlType.Image:
 					return AddImage((ImageEx)uiDataEx);
 				case UIControlType.ImagePanel:
 					return AddImagePanel((ImageViewDataEx)uiDataEx);
 				case UIControlType.InputField:
 					return AddInputField((InputFieldEx)uiDataEx);
-
 				case UIControlType.Slider:
 					return AddSlider((SliderEx)uiDataEx);
 				case UIControlType.Text:

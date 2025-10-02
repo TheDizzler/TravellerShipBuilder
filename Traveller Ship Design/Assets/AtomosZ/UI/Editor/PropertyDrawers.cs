@@ -122,7 +122,7 @@ namespace AtomosZ.UI.EditorZ
 
 
 	[CustomPropertyDrawer(typeof(DropdownEx))]
-	public class DropdownExDrawer : UIExDrawer
+	public class DropdownExDrawer : DrawerEx
 	{
 		private bool isExpanded;
 
@@ -211,7 +211,7 @@ namespace AtomosZ.UI.EditorZ
 	}
 
 	[CustomPropertyDrawer(typeof(ImageViewDataEx))]
-	public class ImageViewDataExDrawer : UIExDrawer
+	public class ImageViewDataExDrawer : DrawerEx
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -274,7 +274,7 @@ namespace AtomosZ.UI.EditorZ
 	}
 
 	[CustomPropertyDrawer(typeof(ImageEx))]
-	public class ImageExDrawer : UIExDrawer
+	public class ImageExDrawer : DrawerEx
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -302,7 +302,7 @@ namespace AtomosZ.UI.EditorZ
 	/// @TODO(Tristan): maxSigFigs<br/>
 	/// </summary>
 	[CustomPropertyDrawer(typeof(SliderEx))]
-	public class SliderExDrawer : UIExDrawer
+	public class SliderExDrawer : DrawerEx
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -542,7 +542,7 @@ namespace AtomosZ.UI.EditorZ
 	}
 
 	[CustomPropertyDrawer(typeof(CheckBoxEx))]
-	public class CheckBoxExDrawer : UIExDrawer
+	public class CheckBoxExDrawer : DrawerEx
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -559,7 +559,7 @@ namespace AtomosZ.UI.EditorZ
 	}
 
 	[CustomPropertyDrawer(typeof(PanelEx))]
-	public class PanelExDrawer : UIExDrawer
+	public class PanelExDrawer : DrawerEx
 	{
 		private bool isExpanded;
 
@@ -603,7 +603,7 @@ namespace AtomosZ.UI.EditorZ
 	}
 
 	[CustomPropertyDrawer(typeof(InputFieldEx))]
-	public class InputFieldExDrawer : UIExDrawer
+	public class InputFieldExDrawer : DrawerEx
 	{
 		private bool isExpanded;
 
@@ -655,7 +655,7 @@ namespace AtomosZ.UI.EditorZ
 
 
 	[CustomPropertyDrawer(typeof(LabelEx))]
-	public class LabelExDrawer : UIExDrawer
+	public class LabelExDrawer : DrawerEx
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -707,7 +707,7 @@ namespace AtomosZ.UI.EditorZ
 
 
 	[CustomPropertyDrawer(typeof(ButtonEx))]
-	public class ButtonExDrawer : UIExDrawer
+	public class ButtonExDrawer : DrawerEx
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -818,7 +818,7 @@ namespace AtomosZ.UI.EditorZ
 	}
 
 	[CustomPropertyDrawer(typeof(ButtonPanelEx))]
-	public class ButtonDataDrawer : UIExDrawer
+	public class ButtonDataDrawer : DrawerEx
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -870,7 +870,7 @@ namespace AtomosZ.UI.EditorZ
 	}
 
 
-	public class UIExDrawer : PropertyDrawer
+	public class DrawerEx : PropertyDrawer
 	{
 		public float drawerHeight;
 

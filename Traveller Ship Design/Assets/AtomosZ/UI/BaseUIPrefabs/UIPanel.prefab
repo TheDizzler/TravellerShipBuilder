@@ -69,8 +69,8 @@ MonoBehaviour:
     useCustomLayoutSpacing: 0
   _designObject: {fileID: 1551854222198439915}
   uiControls:
-    names: []
-    controls: []
+    keys: []
+    values: []
   rect: {fileID: 2538911062827000086}
 --- !u!114 &1551854222198439915
 MonoBehaviour:
