@@ -29,7 +29,9 @@ namespace AtomosZ.UI
 		/// </code>
 		/// </summary>
 		public UIDesignObject designObject { get; }
-		public string referenceName { get; }
+		public string referenceName { get; set;}
+
+		public IUIBehavior GetControl(string controlRefName);
 
 		public void SetHover(bool isHover);
 		public void UpdateHover(Vector3 posOfHover);
@@ -83,6 +85,21 @@ namespace AtomosZ.UI
 			}
 
 			uiBehavior.GetMinDimensions();
+		}
+
+		internal static void SetNameToReferenceName(this IUIBehavior uiBehavior, GameObject gameObject)
+		{
+			if (string.IsNullOrEmpty(uiBehavior.referenceName))
+				uiBehavior.referenceName = gameObject.name;
+#if UNITY_EDITOR
+			// Prefabs need to maintain their prefab name
+			var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+			if (stage == null)
+				gameObject.name = uiBehavior.referenceName;
+#else
+			if (gameObject.scene.IsValid()) // this line is probably unnecessary
+				gameObject.name = uiBehavior.referenceName;
+#endif
 		}
 	}
 }

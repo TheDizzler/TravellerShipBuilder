@@ -45,6 +45,13 @@ namespace AtomosZ.UI.EditorZ
 				provider.imageViewScriptObj = AssetDatabase.LoadAssetAtPath<UIImageViewScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UIImageViewData.asset");
 			if (provider.imageViewPanelScriptObj == null)
 				provider.imageViewPanelScriptObj = AssetDatabase.LoadAssetAtPath<UIImageViewPanelScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UIImageViewPanelData.asset");
+
+			if (provider.tabbedWindowScriptObj == null)
+				provider.tabbedWindowScriptObj = AssetDatabase.LoadAssetAtPath<UITabControlScriptableObject>(DEFAULT_SO_FOLDER_PATH + "TabControlData_Tabbed.asset");
+			if (provider.titleBarWindowScriptObj == null)
+				provider.titleBarWindowScriptObj = AssetDatabase.LoadAssetAtPath<UITabControlScriptableObject>(DEFAULT_SO_FOLDER_PATH + "TabControlData_TitleBar.asset");
+			if (provider.contextMenuWindowScriptObj == null)
+				provider.contextMenuWindowScriptObj = AssetDatabase.LoadAssetAtPath<UITabControlScriptableObject>(DEFAULT_SO_FOLDER_PATH + "TabControlData_ContextMenu.asset");
 		}
 	}
 }

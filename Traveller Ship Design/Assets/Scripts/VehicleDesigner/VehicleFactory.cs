@@ -13,7 +13,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 	public class VehicleFactory : MonoBehaviour
 	{
 		[SerializeField] private UIInput uiInput;
-		[SerializeField] private DynamicPanel chassisPanel;
+		[SerializeField] private MagicWindow designWindow;
 
 
 		public static void SetChassisOptions(DropdownEx dropdown)
@@ -44,14 +44,27 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 
 		public void OnChassisChanged(int selectionIndex)
 		{
-			var dropdown = chassisPanel.GetControl("chassis_dropdown").GetComponent<TMP_Dropdown>();
-			dropdown.RefreshShownValue();
+			var chassisDropdownCtrl = designWindow.GetControl("chassis_dropdown");
+			if (chassisDropdownCtrl == null)
+			{
+				Debug.LogError("chassis_dropdown is missing");
+				return;
+			}
+
+			var chassisDropdown = ((UIDropdown)chassisDropdownCtrl).GetComponent<TMP_Dropdown>();
+			chassisDropdown.RefreshShownValue();
 
 			bool recalc = false;
 			if (Application.isPlaying)
 				recalc = true;
-			var uiDO = chassisPanel.GetControl("msg_textLabel");
-			var label = uiDO.GetComponent<UIExpandingLabel>();
+			var uiDO = designWindow.GetControl("msg_textLabel");
+			if (uiDO == null)
+			{
+				Debug.LogError("msg_textLabel is missing");
+				return;
+			}
+
+			var label = (UIExpandingLabel)uiDO;
 
 			if (!VehicleComponents.chassisList.TryGetValue((ChassisType)selectionIndex, out Chassis chassis))
 			{
@@ -62,7 +75,19 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 
 			label.SetColor(Color.white);
 			label.SetText($"{chassis.name}", recalc);
-		}
 
+			var slider = (UISlider)designWindow.GetControl("techLevel_slider");
+
+			if (slider == null)
+			{
+				Debug.LogError("techLevel_slider is missing");
+				return;
+			}
+
+			slider.min = chassis.techLevel;
+			slider.max = 16;
+
+			//var tabPanel = designWindow.AddTab();
+		}
 	}
 }

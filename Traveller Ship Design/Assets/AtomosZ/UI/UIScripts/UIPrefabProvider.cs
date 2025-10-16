@@ -35,6 +35,8 @@ namespace AtomosZ.UI
 			ImageView,
 			ImageViewPanel,
 			Dropdown,
+			TabControl,
+			Spinner,
 			/// <summary>
 			/// this is not a base UI prefab.
 			/// </summary>
@@ -50,6 +52,10 @@ namespace AtomosZ.UI
 		[SerializeField] public UIButtonPanelScriptableObject buttonPanelScriptObj;
 		[SerializeField] public UIImageViewScriptableObject imageViewScriptObj;
 		[SerializeField] public UIImageViewPanelScriptableObject imageViewPanelScriptObj;
+
+		[SerializeField] public UITabControlScriptableObject tabbedWindowScriptObj;
+		[SerializeField] public UITabControlScriptableObject titleBarWindowScriptObj;
+		[SerializeField] public UITabControlScriptableObject contextMenuWindowScriptObj;
 
 
 		[Tooltip("This is populated by an Editor script. Editing manually is futile.")]

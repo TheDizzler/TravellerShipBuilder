@@ -480,7 +480,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropdown: {fileID: 351424338598274322}
   dropdownEx:
-    referenceName: 
+    referenceName: dropdown
     fillParentHorizontal: 0
     minDimensions: {x: 256, y: 64}
     scriptableObj: {fileID: 0}

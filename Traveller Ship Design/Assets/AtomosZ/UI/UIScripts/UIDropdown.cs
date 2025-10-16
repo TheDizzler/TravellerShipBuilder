@@ -19,7 +19,7 @@ namespace AtomosZ.UI
 		public string referenceName;
 
 		public bool fillParentHorizontal = true;
-		public Vector2 minDimensions = new Vector2(512, 64);
+		public Vector2 minDimensions = new Vector2(256, 64);
 
 		public UIExpandingLabelScriptableObject scriptableObj;
 
@@ -84,7 +84,7 @@ namespace AtomosZ.UI
 	{
 		[SerializeField] private TMP_Dropdown dropdown;
 		[SerializeField] private DropdownEx dropdownEx;
-		public string referenceName { get { return dropdownEx.referenceName; } }
+		public string referenceName { get { return dropdownEx.referenceName; } set { dropdownEx.referenceName = value; } }
 
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -95,6 +95,13 @@ namespace AtomosZ.UI
 					_designObject = GetComponent<UIDesignObject>();
 				return _designObject;
 			}
+		}
+
+		public IUIBehavior GetControl(string controlRefName)
+		{
+			if (referenceName == controlRefName)
+				return this;
+			return null;
 		}
 
 		public TMP_FontAsset fontAsset
@@ -154,6 +161,12 @@ namespace AtomosZ.UI
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
 			dropdownEx = (DropdownEx)backingData;
+			UpdateBackingData();
+		}
+
+		public void UpdateBackingData()
+		{
+			this.SetNameToReferenceName(gameObject);
 
 			dropdown.ClearOptions();
 			if (dropdownEx.SetOptions != null)
@@ -171,14 +184,6 @@ namespace AtomosZ.UI
 						dropdownEx.onValueChangedAction.Invoke(dropdown.value);
 					});
 			}
-
-			UpdateBackingData();
-		}
-
-		public void UpdateBackingData()
-		{
-			if (string.IsNullOrEmpty(dropdownEx.referenceName))
-				dropdownEx.referenceName = transform.name;
 
 			dropdown.captionText.font = fontAsset;
 			dropdown.captionText.fontSize = fontSize;

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using AtomosZ.EditorZ;
 using TMPro;
 
 using UnityEditor;
@@ -119,6 +119,33 @@ namespace AtomosZ.UI.EditorZ
 
 
 
+
+
+	[CustomPropertyDrawer(typeof(TabLookupDictionary))]
+	public class TabLookupDictionaryDrawer : DrawerEx
+	{
+		private bool isExpanded = true;
+
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+		{
+			EditorGUI.BeginProperty(position, label, property);
+			drawerHeight = 0;
+
+			if (isExpanded = this.CreateFoldout("Panels", isExpanded, position, ref drawerHeight))
+			{
+				++EditorGUI.indentLevel;
+				var tabPanelDict = (TabLookupDictionary)property.boxedValue;
+				foreach (var tabPanel in tabPanelDict)
+				{
+					this.CreateLabel(tabPanel.Key.name, position, ref drawerHeight);
+
+				}
+				--EditorGUI.indentLevel;
+			}
+
+			EditorGUI.EndProperty();
+		}
+	}
 
 
 	[CustomPropertyDrawer(typeof(DropdownEx))]
@@ -304,12 +331,18 @@ namespace AtomosZ.UI.EditorZ
 	[CustomPropertyDrawer(typeof(SliderEx))]
 	public class SliderExDrawer : DrawerEx
 	{
+		private bool isTextLabelExpanded;
+
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
 
 			this.SetProperty(property, "referenceName", position, ref drawerHeight);
+
+			this.SetProperty(property, "isEnabled", position, ref drawerHeight);
+
+
 			this.SetProperty(property, "fillParentHorizontal", position, ref drawerHeight);
 			this.SetProperty(property, "minDimensions", position, ref drawerHeight);
 
@@ -456,69 +489,74 @@ namespace AtomosZ.UI.EditorZ
 			}
 
 
-			this.CreateLabel("Text settings:", position, ref drawerHeight);
-			if (sliderSO == null)
+			if (isTextLabelExpanded = this.CreateFoldout("Text settings:", isTextLabelExpanded, position, ref drawerHeight))
 			{
-				++EditorGUI.indentLevel;
-				SerializedProperty labelProp = property.FindPropertyRelative("labelEx");
-				this.SetProperty(labelProp, position, ref drawerHeight);
+				if (sliderSO == null)
+				{
+					++EditorGUI.indentLevel;
+					SerializedProperty labelProp = property.FindPropertyRelative("labelEx");
+					this.SetProperty(labelProp, position, ref drawerHeight);
 
-				// draw a short label
-				++EditorGUI.indentLevel;
-				this.SetProperty(labelProp, "fontSize", position, ref drawerHeight);
-				this.SetProperty(labelProp, "fontColor", position, ref drawerHeight);
-				this.SetProperty(labelProp, "fontAsset", position, ref drawerHeight);
-				--EditorGUI.indentLevel;
+					// draw a short label
+					++EditorGUI.indentLevel;
+					this.SetProperty(labelProp, "fontSize", position, ref drawerHeight);
+					this.SetProperty(labelProp, "fontColor", position, ref drawerHeight);
+					this.SetProperty(labelProp, "fontAsset", position, ref drawerHeight);
+					--EditorGUI.indentLevel;
+
+					--EditorGUI.indentLevel;
+				}
+				else
+				{
+					var labelEx = sliderSO.labelEx;
+
+					++EditorGUI.indentLevel;
+					// is this going to serialize?
+					labelEx.useCustomFontSize = labelEx.scriptableObj == null || this.CreateToggle(labelEx.useCustomFontSize, "Use custom font size", position, ref drawerHeight);
+
+					if (!labelEx.useCustomFontSize)
+					{
+						GUI.enabled = false;
+						this.CreateFloatField(labelEx.scriptableObj.fontSize, "Font Size", position, ref drawerHeight);
+						GUI.enabled = true;
+					}
+					else
+					{
+						labelEx.fontSize = this.CreateFloatField(labelEx.fontSize, "Font Size", position, ref drawerHeight);
+					}
+
+
+
+					labelEx.useCustomFontColor = labelEx.scriptableObj == null || this.CreateToggle(labelEx.useCustomFontColor, "Use custom font color", position, ref drawerHeight);
+					if (!labelEx.useCustomFontColor)
+					{
+						GUI.enabled = false;
+						this.CreateColorField(labelEx.scriptableObj.fontColor, "Font Color", position, ref drawerHeight);
+						GUI.enabled = true;
+					}
+					else
+					{
+						labelEx.fontColor = this.CreateColorField(labelEx.fontColor, "fontColor", position, ref drawerHeight);
+					}
+
+					labelEx.useCustomFontAsset = labelEx.scriptableObj == null || this.CreateToggle(labelEx.useCustomFontAsset, "Use custom font asset", position, ref drawerHeight);
+					if (!labelEx.useCustomFontAsset)
+					{
+						GUI.enabled = false;
+						this.CreateObjectField<TMP_FontAsset>(labelEx.scriptableObj.fontAsset, "Font Asset", position, ref drawerHeight);
+						GUI.enabled = true;
+					}
+					else
+						labelEx.fontAsset = this.CreateObjectField<TMP_FontAsset>(labelEx.fontAsset, "fontAsset", position, ref drawerHeight);
+
+					--EditorGUI.indentLevel;
+
+					//PrefabUtility.RecordPrefabInstancePropertyModifications(pi.uiDesignObject.transform);
+				}
+
 			}
-			else
-			{
-				var labelEx = sliderSO.labelEx;
 
-				++EditorGUI.indentLevel;
-				// is this going to serialize?
-				labelEx.useCustomFontSize = labelEx.scriptableObj == null || this.CreateToggle(labelEx.useCustomFontSize, "Use custom font size", position, ref drawerHeight);
-
-				if (!labelEx.useCustomFontSize)
-				{
-					GUI.enabled = false;
-					this.CreateFloatField(labelEx.scriptableObj.fontSize, "Font Size", position, ref drawerHeight);
-					GUI.enabled = true;
-				}
-				else
-				{
-					labelEx.fontSize = this.CreateFloatField(labelEx.fontSize, "Font Size", position, ref drawerHeight);
-				}
-
-
-
-				labelEx.useCustomFontColor = labelEx.scriptableObj == null || this.CreateToggle(labelEx.useCustomFontColor, "Use custom font color", position, ref drawerHeight);
-				if (!labelEx.useCustomFontColor)
-				{
-					GUI.enabled = false;
-					this.CreateColorField(labelEx.scriptableObj.fontColor, "Font Color", position, ref drawerHeight);
-					GUI.enabled = true;
-				}
-				else
-				{
-					labelEx.fontColor = this.CreateColorField(labelEx.fontColor, "fontColor", position, ref drawerHeight);
-				}
-
-				labelEx.useCustomFontAsset = labelEx.scriptableObj == null || this.CreateToggle(labelEx.useCustomFontAsset, "Use custom font asset", position, ref drawerHeight);
-				if (!labelEx.useCustomFontAsset)
-				{
-					GUI.enabled = false;
-					this.CreateObjectField<TMP_FontAsset>(labelEx.scriptableObj.fontAsset, "Font Asset", position, ref drawerHeight);
-					GUI.enabled = true;
-				}
-				else
-					labelEx.fontAsset = this.CreateObjectField<TMP_FontAsset>(labelEx.fontAsset, "fontAsset", position, ref drawerHeight);
-
-				--EditorGUI.indentLevel;
-
-				//PrefabUtility.RecordPrefabInstancePropertyModifications(pi.uiDesignObject.transform);
-			}
 			--EditorGUI.indentLevel;
-
 			EditorGUI.EndProperty();
 		}
 
@@ -568,7 +606,7 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
 
-			this.SetProperty(property, "referenceName", position, ref drawerHeight);
+			this.SetProperty(property, "referenceName", position, ref drawerHeight, new GUIContent("Panel Reference Name"));
 
 			isExpanded = this.CreateFoldout("Overridable values", isExpanded, position, ref drawerHeight);
 			if (isExpanded)
@@ -619,36 +657,56 @@ namespace AtomosZ.UI.EditorZ
 
 			this.SetProperty(property, "fieldDimensions", position, ref drawerHeight);
 
-
-			isExpanded = this.CreateFoldout("Overridable values", isExpanded, position, ref drawerHeight);
-			if (isExpanded)
+			var inputSOProp = property.FindPropertyRelative("scriptableObj");
+			if (inputSOProp == null || inputSOProp.boxedValue == null)
 			{
+				this.CreateLabel("Text Parameters", position, ref drawerHeight);
 				++EditorGUI.indentLevel;
-				var inputSOProp = property.FindPropertyRelative("scriptableObj");
+			
 				this.SetProperty(inputSOProp, position, ref drawerHeight);
 
 				var customFontSizeProp = property.FindPropertyRelative("fontSize");
+				this.SetProperty(customFontSizeProp, position, ref drawerHeight);
 				var customFontColorProp = property.FindPropertyRelative("fontColor");
+				this.SetProperty(customFontColorProp, position, ref drawerHeight);
 				var customPlaceholderFontColorProp = property.FindPropertyRelative("placeholderFontColor");
-				var customFontAssetProp = property.FindPropertyRelative("fontAsset");
-				var textSo = (UIExpandingInputFieldScriptableObject)inputSOProp.boxedValue;
+				this.SetProperty(customPlaceholderFontColorProp, position, ref drawerHeight);
 
-				var isCustomFontSizeProp = property.FindPropertyRelative("useCustomFontSize");
-				this.SetOverridableProperty(isCustomFontSizeProp, customFontSizeProp, textSo.fontSize, position, ref drawerHeight);
-
-				var isCustomFontColorProp = property.FindPropertyRelative("useCustomFontColor");
-				this.SetOverridableProperty(isCustomFontColorProp, customFontColorProp, textSo.fontColor, position, ref drawerHeight);
-
-				var isCustomPlaceholderFontColorProp = property.FindPropertyRelative("useCustomPlaceholderFontColor");
-				this.SetOverridableProperty(isCustomPlaceholderFontColorProp, customPlaceholderFontColorProp, textSo.placeholderFontColor, position, ref drawerHeight);
-
-				var isCustomFontAssetProp = property.FindPropertyRelative("useCustomFontAsset");
-				this.SetOverridableProperty(isCustomFontAssetProp, customFontAssetProp, textSo.fontColor, position, ref drawerHeight);
 				--EditorGUI.indentLevel;
 			}
+			else
+			{
+				isExpanded = this.CreateFoldout("Scriptable Object values", isExpanded, position, ref drawerHeight);
+				if (isExpanded)
+				{
+					++EditorGUI.indentLevel;
+
+					this.SetProperty(inputSOProp, position, ref drawerHeight);
+
+					var customFontSizeProp = property.FindPropertyRelative("fontSize");
+					var customFontColorProp = property.FindPropertyRelative("fontColor");
+					var customPlaceholderFontColorProp = property.FindPropertyRelative("placeholderFontColor");
+					var customFontAssetProp = property.FindPropertyRelative("fontAsset");
+					var textSo = (UIExpandingInputFieldScriptableObject)inputSOProp.boxedValue;
+
+					var isCustomFontSizeProp = property.FindPropertyRelative("useCustomFontSize");
+					this.SetOverridableProperty(isCustomFontSizeProp, customFontSizeProp, textSo.fontSize, position, ref drawerHeight);
+
+					var isCustomFontColorProp = property.FindPropertyRelative("useCustomFontColor");
+					this.SetOverridableProperty(isCustomFontColorProp, customFontColorProp, textSo.fontColor, position, ref drawerHeight);
+
+					var isCustomPlaceholderFontColorProp = property.FindPropertyRelative("useCustomPlaceholderFontColor");
+					this.SetOverridableProperty(isCustomPlaceholderFontColorProp, customPlaceholderFontColorProp, textSo.placeholderFontColor, position, ref drawerHeight);
+
+					var isCustomFontAssetProp = property.FindPropertyRelative("useCustomFontAsset");
+					this.SetOverridableProperty(isCustomFontAssetProp, customFontAssetProp, textSo.fontColor, position, ref drawerHeight);
+
+					--EditorGUI.indentLevel;
+				}
 
 
-			EditorGUI.EndProperty();
+				EditorGUI.EndProperty();
+			}
 		}
 	}
 
@@ -662,9 +720,7 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
 
-			this.SetProperty(property, "referenceName", position, ref drawerHeight);
-
-
+			this.SetProperty(property, "referenceName", position, ref drawerHeight, new GUIContent("Label Reference Name"));
 
 			this.SetProperty(property, "text", position, ref drawerHeight);
 
@@ -697,6 +753,12 @@ namespace AtomosZ.UI.EditorZ
 
 					var isCustomFontAssetProp = property.FindPropertyRelative("useCustomFontAsset");
 					this.SetOverridableProperty(isCustomFontAssetProp, customFontAssetProp, textSo.fontAsset, position, ref drawerHeight);
+				}
+				else
+				{
+					this.SetProperty(customFontSizeProp, position, ref drawerHeight);
+					this.SetProperty(customFontColorProp, position, ref drawerHeight);
+					this.SetProperty(customFontAssetProp, position, ref drawerHeight);
 				}
 				--EditorGUI.indentLevel;
 			}
@@ -866,372 +928,6 @@ namespace AtomosZ.UI.EditorZ
 			}
 			--EditorGUI.indentLevel;
 			--EditorGUI.indentLevel;
-		}
-	}
-
-
-	public class DrawerEx : PropertyDrawer
-	{
-		public float drawerHeight;
-
-		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-		{
-			return drawerHeight;
-		}
-	}
-
-
-
-	public static class PropertyDrawerEx
-	{
-		public static void SetProperty(this PropertyDrawer propertyDrawer,
-			SerializedProperty subProperty, Rect position, ref float drawerHeight)
-		{
-			if (subProperty == null)
-			{
-				Debug.LogException(new Exception($"subProperty is null"));
-				return;
-			}
-
-			var propRect = new Rect(position.x, position.y + drawerHeight,
-				position.width, EditorGUI.GetPropertyHeight(subProperty, true));
-			EditorGUI.PropertyField(propRect, subProperty);
-			drawerHeight += propRect.height + EditorGUIUtility.standardVerticalSpacing;
-		}
-
-		public static void SetProperty(this PropertyDrawer propertyDrawer, SerializedProperty mainProperty,
-			string propertyName, Rect position, ref float drawerHeight)
-		{
-			var prop = mainProperty.FindPropertyRelative(propertyName);
-			if (prop == null)
-			{
-				Debug.LogException(new Exception($"No property found by name {propertyName} on {mainProperty.name}"));
-				return;
-			}
-
-			var propRect = new Rect(position.x, position.y + drawerHeight,
-				position.width, EditorGUI.GetPropertyHeight(prop, true));
-			EditorGUI.PropertyField(propRect, prop);
-			drawerHeight += propRect.height + EditorGUIUtility.standardVerticalSpacing;
-		}
-
-
-		public static void CreateLabel(this PropertyDrawer propertyDrawer, string labelText, Rect position, ref float drawerHeight)
-		{
-			var labelRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			EditorGUI.LabelField(labelRect, labelText);
-			drawerHeight += labelRect.height + EditorGUIUtility.standardVerticalSpacing;
-		}
-
-
-		public static string CreateTextField(this PropertyDrawer propertyDrawer,
-			string labelText, string textInField, Rect position, ref float drawerHeight)
-		{
-			var labelRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			drawerHeight += labelRect.height + EditorGUIUtility.standardVerticalSpacing;
-			return EditorGUI.TextField(labelRect, labelText, textInField);
-		}
-
-
-		public static int CreateIntField(this PropertyDrawer propertyDrawer, int value, string label, Rect position, ref float drawerHeight)
-		{
-			var rect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			var result = EditorGUI.IntField(rect, label, value);
-			drawerHeight += rect.height + EditorGUIUtility.standardVerticalSpacing;
-			return result;
-		}
-
-		public static float CreateFloatField(this PropertyDrawer propertyDrawer, float value, string label, Rect position, ref float drawerHeight)
-		{
-			var rect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			var result = EditorGUI.FloatField(rect, label, value);
-			drawerHeight += rect.height + EditorGUIUtility.standardVerticalSpacing;
-			return result;
-		}
-
-		public static Vector2 CreateVector2Field(this PropertyDrawer propertyDrawer, Vector2 value, string label, Rect position, ref float drawerHeight)
-		{
-			var rect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			var result = EditorGUI.Vector2Field(rect, label, value);
-			drawerHeight += rect.height + EditorGUIUtility.standardVerticalSpacing;
-			return result;
-		}
-
-		public static Color CreateColorField(this PropertyDrawer propertyDrawer, Color value, string label, Rect position, ref float drawerHeight)
-		{
-			var rect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			var result = EditorGUI.ColorField(rect, label, value);
-			drawerHeight += rect.height + EditorGUIUtility.standardVerticalSpacing;
-			return result;
-		}
-
-		public static bool CreateToggle(this PropertyDrawer propertyDrawer, bool value, string label, Rect position, ref float drawerHeight)
-		{
-			var rect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			var result = EditorGUI.Toggle(rect, label, value);
-			drawerHeight += rect.height + EditorGUIUtility.standardVerticalSpacing;
-			return result;
-		}
-
-
-		public static int CreateSlider(this PropertyDrawer propertyDrawer, string label, int value,
-			int leftValue, int rightValue, Rect position, ref float drawerHeight)
-		{
-			var rect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			var result = EditorGUI.IntSlider(rect, label, value, leftValue, rightValue);
-			drawerHeight += rect.height + EditorGUIUtility.standardVerticalSpacing;
-			return result;
-		}
-
-
-		public static float CreateSlider(this PropertyDrawer propertyDrawer, string label, float value,
-			float leftValue, float rightValue, Rect position, ref float drawerHeight)
-		{
-			var rect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			var result = EditorGUI.Slider(rect, label, value, leftValue, rightValue);
-			drawerHeight += rect.height + EditorGUIUtility.standardVerticalSpacing;
-			return result;
-		}
-
-		public static T CreateObjectField<T>(this PropertyDrawer propertyDrawer,
-			UnityEngine.Object obj, string label, Rect position, ref float drawerHeight) where T : UnityEngine.Object
-		{
-			var rect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			var result = (T)EditorGUI.ObjectField(rect, label, obj, typeof(T), true);
-			drawerHeight += rect.height + EditorGUIUtility.standardVerticalSpacing;
-			return result;
-		}
-
-		public static bool CreateFoldout(this PropertyDrawer propertyDrawer, string labelText, bool isExpanded, Rect position, ref float drawerHeight)
-		{
-			Rect rect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-			bool newIsExpanded = EditorGUI.Foldout(rect, isExpanded, new GUIContent(labelText), true);
-			drawerHeight += rect.height + EditorGUIUtility.standardVerticalSpacing;
-			return newIsExpanded;
-		}
-
-		/// <summary>
-		/// Bool
-		/// </summary>
-		/// <param name="scriptabelObjectIsNull"></param>
-		/// <param name="scriptableObjectBoolValue">Not used if scriptabelObjectIsNull.</param>
-		/// <param name="useCustomBoolProp"></param>
-		/// <param name="nonScriptableObjectBoolProp"></param>
-		/// <param name="position"></param>
-		/// <param name="drawerHeight"></param>
-		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer, bool scriptabelObjectIsNull,
-			bool scriptableObjectBoolValue, SerializedProperty useCustomBoolProp,
-			SerializedProperty nonScriptableObjectBoolProp, Rect position, ref float drawerHeight)
-		{
-			if (scriptabelObjectIsNull)
-			{
-				useCustomBoolProp.boolValue = true;
-				SetProperty(propertyDrawer, nonScriptableObjectBoolProp, position, ref drawerHeight);
-				//GUI.enabled = false;
-				//this.SetProperty(useCustomBoolProp, position, ref drawerHeight); // should always be true
-				//GUI.enabled = true;
-			}
-			else
-			{
-				SetProperty(propertyDrawer, nonScriptableObjectBoolProp, position, ref drawerHeight);
-				useCustomBoolProp.boolValue = nonScriptableObjectBoolProp.boolValue != scriptableObjectBoolValue;
-
-				GUI.enabled = false;
-				SetProperty(propertyDrawer, useCustomBoolProp, position, ref drawerHeight); // is true sliderSO.showHandle != customShowHandleProp.boolValue
-				GUI.enabled = true;
-			}
-		}
-
-
-		/// <summary>
-		/// TMP_FontAsset
-		/// </summary>
-		/// <param name="propertyDrawer"></param>
-		/// <param name="overrideBoolProp"></param>
-		/// <param name="overrideValueProp"></param>
-		/// <param name="value"></param>
-		/// <param name="position"></param>
-		/// <param name="drawerHeight"></param>
-		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer, SerializedProperty overrideBoolProp,
-			SerializedProperty overrideValueProp, TMP_FontAsset value, Rect position, ref float drawerHeight)
-		{
-			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
-			if (overrideBoolProp.boolValue)
-				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
-			else
-			{
-				GUI.enabled = false;
-				var minRect = new Rect(position.x, position.y + drawerHeight,
-					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
-				EditorGUI.ObjectField(minRect, "default value", value, typeof(TMP_FontAsset), false);
-				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
-				GUI.enabled = true;
-			}
-		}
-
-		/// <summary>
-		/// Color
-		/// </summary>
-		/// <param name="propertyDrawer"></param>
-		/// <param name="overrideBoolProp"></param>
-		/// <param name="overrideValueProp"></param>
-		/// <param name="value"></param>
-		/// <param name="position"></param>
-		/// <param name="drawerHeight"></param>
-		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
-		SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
-			Color value, Rect position, ref float drawerHeight)
-		{
-			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
-			if (overrideBoolProp.boolValue)
-				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
-			else
-			{
-				GUI.enabled = false;
-				var minRect = new Rect(position.x, position.y + drawerHeight,
-					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
-				EditorGUI.ColorField(minRect, "default value", value);
-				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
-				GUI.enabled = true;
-			}
-		}
-
-		/// <summary>
-		/// Float
-		/// </summary>
-		/// <param name="propertyDrawer"></param>
-		/// <param name="overrideBoolProp"></param>
-		/// <param name="overrideValueProp"></param>
-		/// <param name="defaultValueFromScriptableObject"></param>
-		/// <param name="position"></param>
-		/// <param name="drawerHeight"></param>
-		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
-		SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
-			float defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
-		{
-			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
-			if (overrideBoolProp.boolValue)
-				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
-			else
-			{
-				GUI.enabled = false;
-				var minRect = new Rect(position.x, position.y + drawerHeight,
-					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
-				EditorGUI.FloatField(minRect, "default value", defaultValueFromScriptableObject);
-				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
-				GUI.enabled = true;
-			}
-		}
-
-		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
-			SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
-			Vector2 defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
-		{
-			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
-			if (overrideBoolProp.boolValue)
-				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
-			else
-			{
-				GUI.enabled = false;
-				var minRect = new Rect(position.x, position.y + drawerHeight,
-					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
-				EditorGUI.Vector2Field(minRect, "default value", defaultValueFromScriptableObject);
-				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
-				GUI.enabled = true;
-			}
-		}
-
-
-		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
-			SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
-			Vector3 defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
-		{
-			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
-			if (overrideBoolProp.boolValue)
-				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
-			else
-			{
-				GUI.enabled = false;
-				var minRect = new Rect(position.x, position.y + drawerHeight,
-					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
-				EditorGUI.Vector3Field(minRect, "default value", defaultValueFromScriptableObject);
-				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
-				GUI.enabled = true;
-			}
-		}
-
-		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
-			SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
-			Vector4 defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
-		{
-			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
-			if (overrideBoolProp.boolValue)
-				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
-			else
-			{
-				GUI.enabled = false;
-				var minRect = new Rect(position.x, position.y + drawerHeight,
-					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
-				EditorGUI.Vector4Field(minRect, "default value", defaultValueFromScriptableObject);
-				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
-				GUI.enabled = true;
-			}
-		}
-
-		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
-			SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
-			Vector2Int defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
-		{
-			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
-			if (overrideBoolProp.boolValue)
-				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
-			else
-			{
-				GUI.enabled = false;
-				var minRect = new Rect(position.x, position.y + drawerHeight,
-					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
-				EditorGUI.Vector2IntField(minRect, "default value", defaultValueFromScriptableObject);
-				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
-				GUI.enabled = true;
-			}
-		}
-
-
-		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
-			SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
-			Vector3Int defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
-		{
-			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
-			if (overrideBoolProp.boolValue)
-				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
-			else
-			{
-				GUI.enabled = false;
-				var minRect = new Rect(position.x, position.y + drawerHeight,
-					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
-				EditorGUI.Vector3IntField(minRect, "default value", defaultValueFromScriptableObject);
-				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
-				GUI.enabled = true;
-			}
-		}
-
-
-		public static void SetOverridableProperty(this PropertyDrawer propertyDrawer,
-		SerializedProperty overrideBoolProp, SerializedProperty overrideValueProp,
-			Sprite defaultValueFromScriptableObject, Rect position, ref float drawerHeight)
-		{
-			SetProperty(propertyDrawer, overrideBoolProp, position, ref drawerHeight);
-			if (overrideBoolProp.boolValue)
-				SetProperty(propertyDrawer, overrideValueProp, position, ref drawerHeight);
-			else
-			{
-				GUI.enabled = false;
-				var minRect = new Rect(position.x, position.y + drawerHeight,
-					position.width, EditorGUI.GetPropertyHeight(overrideValueProp, true));
-				EditorGUI.ObjectField(minRect, "default sprite", defaultValueFromScriptableObject, typeof(Sprite), false);
-				drawerHeight += minRect.height + EditorGUIUtility.standardVerticalSpacing;
-				GUI.enabled = true;
-			}
 		}
 	}
 }

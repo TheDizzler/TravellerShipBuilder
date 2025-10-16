@@ -42,7 +42,7 @@ namespace AtomosZ.UI
 		[SerializeField] private UIExpandingLabel caption;
 		[SerializeField] private ImageEx imageEx;
 
-		public string referenceName { get { return imageEx.referenceName; } }
+		public string referenceName { get { return imageEx.referenceName; }  set { imageEx.referenceName = value; }}
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -52,6 +52,13 @@ namespace AtomosZ.UI
 					_designObject = GetComponent<UIDesignObject>();
 				return _designObject;
 			}
+		}
+
+		public IUIBehavior GetControl(string controlRefName)
+		{
+			if (referenceName == controlRefName)
+				return this;
+			return caption.GetControl(controlRefName);
 		}
 
 
@@ -79,8 +86,7 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			if (string.IsNullOrEmpty(imageEx.referenceName))
-				imageEx.referenceName = transform.name;
+			this.SetNameToReferenceName(gameObject);
 
 			gameObject.SetActive(imageEx.isVisible);
 			if (!imageEx.isVisible)

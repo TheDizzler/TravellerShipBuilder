@@ -28,7 +28,14 @@ namespace AtomosZ.UI
 		/// <summary>
 		/// DragPanel does not require a reference name.
 		/// </summary>
-		public string referenceName { get { return null; } }
+		public string referenceName { get; set; }
+
+		public IUIBehavior GetControl(string controlRefName)
+		{
+			if (referenceName == controlRefName)
+				return this;
+			return null;
+		}
 
 		public void SetHover(bool isHover)
 		{

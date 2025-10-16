@@ -86,7 +86,7 @@ namespace AtomosZ.UI
 	/// </summary>
 	[RequireComponent(typeof(DynamicPanel))]
 	
-	[Obsolete("Been replaced with DyanPanelOp")]
+	[Obsolete("Replaced with MagicWindow")]
 	public class DynamicPanelOperator : MonoBehaviour
 	{
 		[SerializeField] private CreatePanelControl createPanelControl;

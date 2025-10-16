@@ -75,7 +75,7 @@ namespace AtomosZ.UI
 
 		[SerializeField] public Dictionary<ImageEx, UIImageView> images = new();
 
-		public string referenceName { get { return viewDataEx.referenceName; } }
+		public string referenceName { get { return viewDataEx.referenceName; } set { viewDataEx.referenceName = value; }}
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -97,6 +97,21 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public IUIBehavior GetControl(string controlRefName)
+		{
+			if (referenceName == controlRefName)
+				return this;
+			foreach (var image in images)
+			{
+				var ctrl = image.Value.GetControl(controlRefName);
+				if (ctrl != null)
+					return ctrl;
+			}
+
+			return null;
+		}
+
+
 		public IUIDataEx GetBackingData()
 		{
 			return viewDataEx;
@@ -110,8 +125,7 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			if (string.IsNullOrEmpty(viewDataEx.referenceName))
-				viewDataEx.referenceName = transform.name;
+			this.SetNameToReferenceName(gameObject);
 
 			var rect = GetComponent<RectTransform>();
 			var panelSize = rect.sizeDelta;

@@ -95,9 +95,9 @@ namespace AtomosZ.UI
 		};
 
 		[SerializeField] private ButtonPanelEx buttonPanelEx;
-		public string referenceName { get { return buttonPanelEx.referenceName; } }
+		public string referenceName { get { return buttonPanelEx.referenceName; } set { buttonPanelEx.referenceName = value; } }
 
-
+		
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -202,6 +202,21 @@ namespace AtomosZ.UI
 		[SerializeField] private GameObject noButton;
 		[SerializeField] private GameObject cancelButton;
 
+		public IUIBehavior GetControl(string controlRefName)
+		{
+			if (referenceName == controlRefName)
+				return this;
+			if (okButton.GetComponent<UIButton>().referenceName == controlRefName)
+				return okButton.GetComponent<UIButton>();
+			if (yesButton.GetComponent<UIButton>().referenceName == controlRefName)
+				return yesButton.GetComponent<UIButton>();
+			if (yesButton.GetComponent<UIButton>().referenceName == controlRefName)
+				return yesButton.GetComponent<UIButton>();
+			if (cancelButton.GetComponent<UIButton>().referenceName == controlRefName)
+				return cancelButton.GetComponent<UIButton>();
+			return null;
+		}
+
 
 
 		public void SetResultListeners(DynamicPanel parent)
@@ -231,8 +246,7 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			if (buttonPanelEx.referenceName == null)
-				buttonPanelEx.referenceName = gameObject.name;
+			this.SetNameToReferenceName(gameObject);
 
 			okButton.SetActive(false);
 			yesButton.SetActive(false);

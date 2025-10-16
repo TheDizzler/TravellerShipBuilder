@@ -47,7 +47,7 @@ namespace AtomosZ.UI
 		{
 #if UNITY_EDITOR
 			if (gameObject.layer != 5)
-				Debug.LogError("GameObject Layer is NOT set to UI!");
+				Debug.LogError($"{gameObject.name} Layer is NOT set to UI!");
 #endif
 
 			var components = GetComponents<MonoBehaviour>();
@@ -173,6 +173,13 @@ namespace AtomosZ.UI
 				DesignManager.instance.toolTip.SetToolTip(null);
 				uiBehavior.Deselect();
 			}
+		}
+
+		public IUIBehavior GetUIBehavior()
+		{
+			if (uiBehavior == null)
+				SearchForDesignObject();
+			return uiBehavior;
 		}
 
 		public string referenceName

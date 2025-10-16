@@ -76,7 +76,12 @@ namespace AtomosZ.UI
 		[SerializeField] private TextMeshProUGUI textLabel;
 		[SerializeField] private Image image;
 
-		public string referenceName { get { return labelEx.referenceName; } }
+		public string referenceName
+		{
+			get { return labelEx.referenceName; }
+			set { labelEx.referenceName = value; }
+		}
+
 		/// <summary>
 		/// NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's "empty", 
 		/// so the length will NEVER equal zero!
@@ -112,6 +117,30 @@ namespace AtomosZ.UI
 			labelEx.useCustomFontColor = true;
 		}
 
+
+		public enum Alignment
+		{
+			Left,
+			Center,
+			Right
+		}
+
+		public void SetTextAlignment(Alignment newAlignment)
+		{
+			switch (newAlignment)
+			{
+				case Alignment.Left:
+					textLabel.horizontalAlignment = HorizontalAlignmentOptions.Left;
+					break;
+				case Alignment.Center:
+					textLabel.horizontalAlignment = HorizontalAlignmentOptions.Center;
+					break;
+				case Alignment.Right:
+					textLabel.horizontalAlignment = HorizontalAlignmentOptions.Right;
+					break;
+			}
+		}
+
 		public float fontSize
 		{
 			get
@@ -143,6 +172,13 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public IUIBehavior GetControl(string controlRefName)
+		{
+			if (referenceName == controlRefName)
+				return this;
+			return null;
+		}
+
 		public IUIDataEx GetBackingData()
 		{
 			return labelEx;
@@ -157,11 +193,14 @@ namespace AtomosZ.UI
 		}
 
 
+		public void SetSize(float newWidth)
+		{
+			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+			textLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+		}
 		public void UpdateBackingData()
 		{
-			if (string.IsNullOrEmpty(labelEx.referenceName))
-				labelEx.referenceName = transform.name;
-			//name = labelEx.referenceName;
+			this.SetNameToReferenceName(gameObject);
 
 			textLabel.text = labelEx.text;
 			textLabel.color = color;

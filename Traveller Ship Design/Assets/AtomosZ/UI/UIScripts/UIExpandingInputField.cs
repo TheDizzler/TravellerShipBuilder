@@ -6,6 +6,7 @@ using TMPro;
 
 using UnityEngine;
 using UnityEngine.UI;
+using static AtomosZ.UI.UIExpandingLabel;
 
 namespace AtomosZ.UI
 {
@@ -23,8 +24,8 @@ namespace AtomosZ.UI
 		public bool useCustomFontColor = false;
 		public bool useCustomFontAsset = false;
 		public float fontSize = 18;
-		public Color placeholderFontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 128.0f / 256);
-		public Color fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
+		public Color placeholderFontColor = new Color(.2f, .2f, .2f, .2f);
+		public Color fontColor = Color.black;
 		public TMP_FontAsset fontAsset;
 
 
@@ -77,7 +78,14 @@ namespace AtomosZ.UI
 		[SerializeField] private RectTransform textAreaRect;
 		[SerializeField] private Image image;
 
-		public string referenceName { get { return inputFieldEx.referenceName; } }
+
+
+		public string referenceName
+		{
+			get { return inputFieldEx.referenceName; }
+			set { inputFieldEx.referenceName = value; }
+		}
+
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -87,6 +95,31 @@ namespace AtomosZ.UI
 					_designObject = GetComponent<UIDesignObject>();
 				return _designObject;
 			}
+		}
+
+		public IUIBehavior GetControl(string controlRefName)
+		{
+			if (referenceName == controlRefName)
+				return this;
+			return null;
+		}
+
+		public void SetPlaceholderText(string newText)
+		{
+			placeholderLabel.text = newText;
+		}
+
+		public void SetText(string newText)
+		{
+			inputFieldTMP.text = newText;
+		}
+
+		public void SetTextAlignment(HorizontalAlignmentOptions horzAlignment, VerticalAlignmentOptions vertAlignment)
+		{
+			textLabel.verticalAlignment = vertAlignment;
+			placeholderLabel.verticalAlignment = vertAlignment;
+			textLabel.horizontalAlignment = horzAlignment;
+			placeholderLabel.horizontalAlignment = horzAlignment;
 		}
 
 		public TMP_FontAsset fontAsset
@@ -143,8 +176,7 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			if (string.IsNullOrEmpty(inputFieldEx.referenceName))
-				inputFieldEx.referenceName = transform.name;
+			this.SetNameToReferenceName(gameObject);
 
 			inputFieldTMP.fontAsset = fontAsset;
 			inputFieldTMP.pointSize = fontSize;
@@ -154,7 +186,8 @@ namespace AtomosZ.UI
 			placeholderLabel.ForceMeshUpdate();
 
 			textLabel.color = fontColor;
-			inputFieldTMP.text = inputFieldEx.defaultText;
+			if (string.IsNullOrEmpty(inputFieldTMP.text))
+				inputFieldTMP.text = inputFieldEx.defaultText;
 
 			image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, inputFieldEx.fieldDimensions.x);
 			image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inputFieldEx.fieldDimensions.y);

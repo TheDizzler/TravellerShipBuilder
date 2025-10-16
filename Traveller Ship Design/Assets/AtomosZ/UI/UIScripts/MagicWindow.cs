@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Unity.VisualScripting;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -8,9 +9,28 @@ namespace AtomosZ.UI
 {
 	public class MagicWindow : MonoBehaviour, IUIBehavior
 	{
+		public enum WindowStyle
+		{
+			/// <summary>
+			/// No title bar. Modal. Not movable. Disappears when focus lost.
+			/// </summary>
+			ContextMenu,
+			/// <summary>
+			/// A tabbed title bar that can be multi or single tabbed. Modal or non-modal. Probably not movable? Optional Close control.
+			/// </summary>
+			Tabbed,
+			/// <summary>
+			/// A single title bar. Modal or non-modal. Movable optional. Minimize, Maximize (maybe?), and Close controls optional.
+			/// </summary>
+			TitleBar,
+		}
+		public WindowStyle windowStyle;
+
+		[SerializeField]
+		public CustomDictionary<WindowStyle, UITabControlScriptableObject> styleDatas;
 
 		[SerializeField] private string _referenceName;
-		public string referenceName { get { return _referenceName; } }
+		public string referenceName { get { return _referenceName; } set { _referenceName = value; } }
 
 		public UIDesignObject _designObject;
 
@@ -24,10 +44,22 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public UITabControl tabControl;
-		public UIPanel panel { get { return tabControl.SelectedPanel(); } }
+		public UITabControl rootTabControl;
+		public UIPanel panel
+		{
+			get
+			{
+				if (rootTabControl == null)
+				{
+					Debug.Log("rootTabControl is null and this is fucked");
+					rootTabControl = GetComponentInChildren<UITabControl>();
+				}
 
-		//public ;
+				return rootTabControl.SelectedPanel();
+			}
+		}
+
+
 		[SerializeField] public UIExpandingLabelScriptableObject textScriptObj;
 		[SerializeField] public UIExpandingLabelScriptableObject dropdownScriptObj;
 		[SerializeField] public UICheckBoxScriptableObject checkBoxScriptObj;
@@ -38,23 +70,35 @@ namespace AtomosZ.UI
 		[SerializeField] public UIImageViewScriptableObject imageViewScriptObj;
 		[SerializeField] public UIImageViewPanelScriptableObject imageViewPanelScriptObj;
 
-#if DEBUG
+#if UNITY_EDITOR
 		[SerializeField] public UIControlType currentType;
 		public List<UIControl> controlList = new();
 
-		[Conditional("DEBUG")]
+		[Conditional("UNITY_EDITOR")]
 		public void ClearControlsEditor()
 		{
-			tabControl.ClearControlsEditor();
+			rootTabControl.ClearControlsEditor();
 			GetMinDimensions();
 		}
 
-		[System.Diagnostics.Conditional("DEBUG")]
+		[System.Diagnostics.Conditional("UNITY_EDITOR")]
 		public void RecordPrefabInstances()
 		{
-			tabControl.RecordPrefabInstances();
+			rootTabControl.RecordPrefabInstances();
+		}
+
+		[System.Diagnostics.Conditional("UNITY_EDITOR")]
+		public void CreateRootTabControl()
+		{
+			rootTabControl = Instantiate(UIPrefabProvider.GetUIPrefab(
+				UIPrefabProvider.UIPrefabType.TabControl), this.transform).GetComponent<UITabControl>();
+			rootTabControl.referenceName = "rootTabControl";
+			rootTabControl.tabPanels[0].Value.tabLabel.referenceName = "panel_00";
+			rootTabControl.tabPanels[0].Key.referenceName = "tab_00";
+			rootTabControl.tabControlEx = new TabControlEx(GetStyleData(windowStyle));
 		}
 #endif
+
 
 		void Start()
 		{
@@ -78,8 +122,58 @@ namespace AtomosZ.UI
 			if (imageViewPanelScriptObj == null)
 				imageViewPanelScriptObj = uiProvider.imageViewPanelScriptObj;
 
+			FindStyleData();
+
 		}
 
+		private void FindStyleData()
+		{
+			UIPrefabProvider uiProvider = UIPrefabProvider.instance;
+
+			if (uiProvider == null)
+				return;
+
+			if (!styleDatas.TryGetValue(WindowStyle.Tabbed, out var tabbedSO))
+			{
+				tabbedSO = uiProvider.tabbedWindowScriptObj;
+				styleDatas.Add(WindowStyle.Tabbed, tabbedSO);
+			}
+			else if (tabbedSO == null)
+			{
+				tabbedSO = uiProvider.tabbedWindowScriptObj;
+				styleDatas[WindowStyle.Tabbed] = tabbedSO;
+			}
+
+			if (!styleDatas.TryGetValue(WindowStyle.TitleBar, out var titleBarSO))
+			{
+				titleBarSO = uiProvider.titleBarWindowScriptObj;
+				styleDatas.Add(WindowStyle.TitleBar, titleBarSO);
+			}
+			else if (titleBarSO == null)
+			{
+				titleBarSO = uiProvider.titleBarWindowScriptObj;
+				styleDatas[WindowStyle.TitleBar] = titleBarSO;
+			}
+
+			if (!styleDatas.TryGetValue(WindowStyle.ContextMenu, out var contextMenuSO))
+			{
+				contextMenuSO = uiProvider.contextMenuWindowScriptObj;
+				styleDatas.Add(WindowStyle.ContextMenu, contextMenuSO);
+			}
+			else if (contextMenuSO == null)
+			{
+				contextMenuSO = uiProvider.contextMenuWindowScriptObj;
+				styleDatas[WindowStyle.ContextMenu] = contextMenuSO;
+			}
+		}
+
+		private UITabControlScriptableObject GetStyleData(WindowStyle windowStyle)
+		{
+			if (!styleDatas.TryGetValue(windowStyle, out var styleSO)
+				|| styleSO == null)
+				FindStyleData();
+			return styleDatas[windowStyle];
+		}
 
 		public void RemoveControl(UIControl uiControl)
 		{
@@ -87,14 +181,17 @@ namespace AtomosZ.UI
 			panel.RemoveControl(uiData);
 		}
 
+		public IUIBehavior GetControl(string referenceName)
+		{
+			return panel.GetControl(referenceName);
+		}
 
-
-		public ControlLookupDictionary GetControls()
+		public List<UIDesignObject> GetControls()
 		{
 			return panel.GetControls();
 		}
 
-		public ControlLookupDictionary GetControlsFromTransform()
+		public List<UIDesignObject> GetControlsFromTransform()
 		{
 			if (panel != null)
 				return panel.GetControlsFromTransform();
@@ -102,9 +199,25 @@ namespace AtomosZ.UI
 			return null;
 		}
 
+
+		public void ChangeWindowStyle(WindowStyle windowStyle)
+		{
+			var styleData = GetStyleData(windowStyle);
+			if (styleData == null)
+				return;
+			var newStyleData = new TabControlEx(styleData);
+			rootTabControl.UpdateBackingData(newStyleData);
+#if UNITY_EDITOR
+			rootTabControl.UpdateBackingData(newStyleData); // tabs do not properly update unless this is called again
+			RecordPrefabInstances(); // probably necessary?
+#endif
+		}
+
+
+
 		public Vector2 GetMinDimensions()
 		{
-			var minDim = panel.GetMinDimensions();
+			var minDim = rootTabControl.GetMinDimensions();
 			return minDim;
 		}
 
@@ -146,6 +259,11 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public TabPanel AddTab(string tabText, UIPanelScriptableObject overridePanelData = null)
+		{
+			var tabPanel = rootTabControl.AddTab(tabText, overridePanelData);
+			return tabPanel;
+		}
 
 		public void ResetToLastPosition()
 		{

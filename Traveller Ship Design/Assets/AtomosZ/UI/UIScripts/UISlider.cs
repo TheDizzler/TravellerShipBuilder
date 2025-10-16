@@ -18,6 +18,8 @@ namespace AtomosZ.UI
 		public string referenceName;
 
 		public UISliderScriptableObject scriptableObj;
+
+		public bool isEnabled = true;
 		public bool fillParentHorizontal = true;
 		public Vector2 minDimensions = new Vector2(126, 64);
 
@@ -66,7 +68,7 @@ namespace AtomosZ.UI
 	public class UISlider : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private SliderEx sliderEx;
-		public string referenceName { get { return sliderEx.referenceName; } }
+		public string referenceName { get { return sliderEx.referenceName; } set { sliderEx.referenceName = value; }}
 
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -77,6 +79,25 @@ namespace AtomosZ.UI
 					_designObject = GetComponent<UIDesignObject>();
 				return _designObject;
 			}
+		}
+
+		public float max
+		{
+			get { return sliderEx.maxValue; }
+			set { sliderEx.maxValue = value; }
+		}
+
+		public float min
+		{
+			get { return sliderEx.minValue; }
+			set { sliderEx.minValue = value; }
+		}
+
+		public IUIBehavior GetControl(string controlRefName)
+		{
+			if (referenceName == controlRefName)
+				return this;
+			return null;
 		}
 
 		public float GetValue()
@@ -99,12 +120,19 @@ namespace AtomosZ.UI
 			sliderEx = (SliderEx)backingData;
 			UpdateBackingData();
 		}
+		private static bool isInPrefabStage()
+		{
+#if UNITY_EDITOR
+			var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+			return stage != null;
+#else
+    return false;
+#endif
+		}
 
 		public void UpdateBackingData()
 		{
-			if (string.IsNullOrEmpty(sliderEx.referenceName))
-				sliderEx.referenceName = transform.name;
-			//name = sliderEx.referenceName;
+			this.SetNameToReferenceName(gameObject);
 
 			var layout = GetComponent<LayoutElement>();
 			if (sliderEx.fillParentHorizontal)
@@ -126,7 +154,7 @@ namespace AtomosZ.UI
 			//var sliderDim = slider.GetMinDimensions();
 			//if (sliderDim.x < sliderEx.minDimensions.x)
 			//	sliderDim.x = sliderEx.minDimensions.x;
-			
+
 		}
 
 		public Vector2 GetMinDimensions()

@@ -12,6 +12,7 @@ namespace AtomosZ.UI
 		[Tooltip("Default: 36")]
 		public float fontSize = 36;
 		public Color fontColor = Color.white;
+		public Color disabledColor = new Color(0xA1 / 255, 0xA1 / 255, 0xA1 / 255);
 		public TMP_FontAsset fontAsset;
 	}
 }

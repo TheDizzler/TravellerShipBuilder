@@ -208,19 +208,19 @@ namespace AtomosZ.UI
 
 		private void ClearLabels()
 		{
-#if DEBUG
-			var labels = GetComponentsInChildren<UIExpandingLabel>();
-			foreach (var label in labels)
-			{
-				if (label.name.Contains("Max") || label.name.Contains("Min"))
-					continue;
-				unitLabels.Remove(label);
-				if (!Application.isPlaying)
-					DestroyImmediate(label.gameObject);
-				else
-					Destroy(label.gameObject);
-			}
-#endif
+//#if DEBUG
+//			var labels = GetComponentsInChildren<UIExpandingLabel>();
+//			foreach (var label in labels)
+//			{
+//				if (label.name.Contains("Max") || label.name.Contains("Min"))
+//					continue;
+//				unitLabels.Remove(label);
+//				if (!Application.isPlaying)
+//					DestroyImmediate(label.gameObject);
+//				else
+//					Destroy(label.gameObject);
+//			}
+//#endif
 			foreach (var label in unitLabels)
 			{
 				if (label == null)

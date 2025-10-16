@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -72,7 +70,7 @@ namespace AtomosZ.UI
 		[SerializeField] private UIExpandingLabel label;
 		[SerializeField] private Image image;
 
-		public string referenceName { get { return buttonEx.referenceName; } }
+		public string referenceName { get { return buttonEx.referenceName; } set { buttonEx.referenceName = value; } }
 
 		public UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -83,6 +81,13 @@ namespace AtomosZ.UI
 					_designObject = GetComponent<UIDesignObject>();
 				return _designObject;
 			}
+		}
+
+		public IUIBehavior GetControl(string controlRefName)
+		{
+			if (referenceName == controlRefName)
+				return this;
+			return label.GetControl(controlRefName);
 		}
 
 		public LabelEx labelEx
@@ -124,9 +129,8 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			if (string.IsNullOrEmpty(labelEx.referenceName))
-				labelEx.referenceName = transform.name;
-			
+			this.SetNameToReferenceName(gameObject);
+
 			if (sprite != null)
 				image.sprite = sprite;
 
@@ -137,7 +141,7 @@ namespace AtomosZ.UI
 				layout.flexibleWidth = 0;
 
 			TextMeshProUGUI textLabel = label.GetComponent<TextMeshProUGUI>();
-			var labelHorzMargins = + textLabel.margin.x + textLabel.margin.z;
+			var labelHorzMargins = +textLabel.margin.x + textLabel.margin.z;
 			layout.minWidth = labelEx.minLabelDimensions.x + labelHorzMargins;
 			label.UpdateBackingData(labelEx);
 			var labelDim = label.GetMinDimensions();

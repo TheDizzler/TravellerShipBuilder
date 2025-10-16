@@ -137,7 +137,7 @@ namespace AtomosZ.UI
 		/// <summary>
 		/// DynamicPanel should not need a reference name.
 		/// </summary>
-		public string referenceName { get { return null; } }
+		public string referenceName { get ; set; }
 
 		[HideInInspector]
 		public UIDesignObject modalClickBlocker;
@@ -537,20 +537,21 @@ namespace AtomosZ.UI
 			}
 		}
 
+		
 		/// <summary>
 		/// Searchs all tab for the first instance of controlRefName.
 		/// @TODO(Tristan): prevent same ref name being used on any tab.
 		/// </summary>
 		/// <param name="controlRefName"></param>
 		/// <returns></returns>
-		public UIDesignObject GetControl(string controlRefName)
+		public IUIBehavior GetControl(string controlRefName)
 		{
 			var allControls = new List<UIDesignObject>();
 			foreach (var tab in tabs)
 			{
 				var control = tab.GetControl(controlRefName);
 				if (control != null)
-					return control;
+					return control.GetComponent<IUIBehavior>();
 			}
 
 			return null;

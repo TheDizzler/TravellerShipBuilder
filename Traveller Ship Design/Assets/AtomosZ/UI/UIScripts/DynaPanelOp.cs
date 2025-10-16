@@ -39,6 +39,8 @@ namespace AtomosZ.UI
 					return ((LabelEx)dataEx).referenceName;
 				case UIControlType.Panel:
 					return ((PanelEx)dataEx).referenceName;
+				//case UIControlType.Spinner:
+				//	return ((SpinnerEx)dataEx).referenceName;
 				//case UIControlType.TabControl:
 				//	return ((TabControlEx)dataEx).referenceName;
 
@@ -61,6 +63,7 @@ namespace AtomosZ.UI
 		Dropdown,
 		TabControl,
 		Panel,
+		Spinner,
 	}
 
 #if DEBUG

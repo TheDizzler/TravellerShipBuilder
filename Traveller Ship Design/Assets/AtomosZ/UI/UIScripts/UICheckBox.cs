@@ -62,7 +62,7 @@ namespace AtomosZ.UI
 		public UIExpandingLabel textLabel;
 		public Toggle toggle;
 
-		public string referenceName { get { return checkBoxEx.referenceName; } }
+		public string referenceName { get { return checkBoxEx.referenceName; }  set { checkBoxEx.referenceName = value; }}
 
 		private UIDesignObject _designObject;
 
@@ -74,6 +74,13 @@ namespace AtomosZ.UI
 					_designObject = GetComponent<UIDesignObject>();
 				return _designObject;
 			}
+		}
+
+		public IUIBehavior GetControl(string controlRefName)
+		{
+			if (referenceName == controlRefName)
+				return this;
+			return null;
 		}
 
 		private Sprite boxSprite
@@ -122,8 +129,7 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			if (string.IsNullOrEmpty(checkBoxEx.referenceName))
-				checkBoxEx.referenceName = transform.name;
+			this.SetNameToReferenceName(gameObject);
 
 			toggle.isOn = checkBoxEx.isOnByDefault;
 			toggle.onValueChanged.RemoveAllListeners();

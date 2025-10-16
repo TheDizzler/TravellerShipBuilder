@@ -9,8 +9,8 @@ using static AtomosZ.UI.UIPrefabProvider;
 
 namespace AtomosZ.UI
 {
-	[Serializable]
-	public class ControlLookupDictionary : CustomDictionary<string, UIDesignObject> { }
+	//[Serializable]
+	//public class ControlLookupDictionary : CustomDictionary<string, UIDesignObject> { }
 
 	[Serializable]
 	public class PanelEx : IUIDataEx
@@ -50,7 +50,7 @@ namespace AtomosZ.UI
 	public class UIPanel : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private PanelEx panelEx;
-		public string referenceName { get { return panelEx.referenceName; } }
+		public string referenceName { get { return panelEx.referenceName; }  set { panelEx.referenceName = value; }}
 		public UIDesignObject _designObject;
 
 		public UIDesignObject designObject
@@ -139,8 +139,12 @@ namespace AtomosZ.UI
 			}
 		}
 
+		
+		[Tooltip("The tab associated with this panel (if context menu, this tab will be inactive).")]
+		public UIExpandingLabel tabLabel;
 		public IUIBehavior parentPanel;
-		[SerializeField] public ControlLookupDictionary uiControls;
+		//[SerializeField] public ControlLookupDictionary uiControls;
+		[SerializeField] public List<UIDesignObject> uiControls;
 
 		public RectTransform rect;
 
@@ -193,11 +197,11 @@ namespace AtomosZ.UI
 			//GetControlsFromTransform();
 			foreach (var child in uiControls)
 			{
-				if (!child.Value.gameObject.activeSelf)
+				if (!child.gameObject.activeSelf)
 					continue;
 
 				++activeChildren;
-				var childMinDim = child.Value.GetMinDimensions();
+				var childMinDim = child.GetMinDimensions();
 				minDim.y += childMinDim.y;
 				if (minDim.x < childMinDim.x)
 					minDim.x = childMinDim.x; // this might require a recalculation of any text children
@@ -219,35 +223,43 @@ namespace AtomosZ.UI
 		{
 			foreach (var child in uiControls)
 			{
-				child.Value.gameObject.SetActive(showControls);
+				child.gameObject.SetActive(showControls);
 			}
 		}
 
 
-		public ControlLookupDictionary GetControls()
+		public List<UIDesignObject> GetControls()
 		{
 			return uiControls;
 		}
 
-		public ControlLookupDictionary GetControlsFromTransform()
+		public List<UIDesignObject> GetControlsFromTransform()
 		{
 			uiControls.Clear();
 			foreach (Transform child in transform)
 			{
 				var uiObject = child.GetComponent<UIDesignObject>();
-				uiControls.Add(uiObject.referenceName, uiObject);
+				uiControls.Add(uiObject);
 			}
 
 			return uiControls;
 		}
 
-		public UIDesignObject GetControl(string controlRefName)
+		public IUIBehavior GetControl(string controlRefName)
 		{
-			if (!uiControls.TryGetValue(controlRefName, out var obj))
-				return null;
-			return obj;
+			if (referenceName == controlRefName)
+				return this;
+			foreach (var control in uiControls)
+			{
+				var ctrl = control.GetUIBehavior().GetControl(controlRefName);
+				if (ctrl != null)
+					return ctrl;
+			}
+
+			return null;
 		}
 
+		
 
 		public IUIBehavior AddUIControl(IUIDataEx uiDataEx)
 		{
@@ -271,6 +283,8 @@ namespace AtomosZ.UI
 					return AddSlider((SliderEx)uiDataEx);
 				case UIControlType.Text:
 					return AddText((LabelEx)uiDataEx);
+				case UIControlType.Spinner:
+					return AddSpinner((SpinnerEx)uiDataEx);
 
 				default:
 					Debug.LogException(new Exception($"Panel Control type {uiDataEx.dataType} not yet implemented."));
@@ -278,14 +292,38 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public UITabControl AddTabControl()
+		{
+			var prefabType = UIPrefabType.TabControl;
+			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
+			var tabControl = uiDO.GetComponent<UITabControl>();
+
+			AddControl(prefabType, uiDO);
+		
+			return tabControl;
+		}
+
+		private UISpinner AddSpinner(SpinnerEx dataEx)
+		{
+			var prefabType = UIPrefabType.Spinner;
+			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
+			var uiSpinner = uiDO.GetComponent<UISpinner>();
+
+			AddControl(prefabType, uiDO);
+			uiSpinner.UpdateBackingData(dataEx);
+			
+			return uiSpinner;
+		}
+
 		private UIButton AddButton(ButtonEx dataEx)
 		{
 			var prefabType = UIPrefabType.Button;
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
 			var uiButton = uiDO.GetComponent<UIButton>();
-			uiButton.UpdateBackingData(dataEx);
+
 			AddControl(prefabType, uiDO);
-			dataEx.referenceName = uiDO.name;
+			uiButton.UpdateBackingData(dataEx);
+			
 			return uiButton;
 		}
 
@@ -303,7 +341,6 @@ namespace AtomosZ.UI
 				var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ButtonPanel), transform);
 				buttonPanel = uiDO.GetComponent<UIButtonPanel>();
 				AddControl(UIPrefabType.ButtonPanel, uiDO);
-				dataEx.referenceName = uiDO.name;
 			}
 
 			buttonPanel.UpdateBackingData(dataEx);
@@ -327,9 +364,10 @@ namespace AtomosZ.UI
 			var prefabType = UIPrefabType.Dropdown;
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
 			var uiControl = uiDO.GetComponent<UIDropdown>();
-			uiControl.UpdateBackingData(dataEx);
+
 			AddControl(prefabType, uiDO);
-			dataEx.referenceName = uiDO.name;
+			uiControl.UpdateBackingData(dataEx);
+
 			return uiControl;
 		}
 
@@ -337,9 +375,10 @@ namespace AtomosZ.UI
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ImageViewPanel), transform);
 			var imagePanel = uiDO.GetComponent<UIImageViewPanel>();
-			imagePanel.UpdateBackingData(dataEx);
+
 			AddControl(UIPrefabType.ImageViewPanel, uiDO);
-			dataEx.referenceName = uiDO.name;
+			imagePanel.UpdateBackingData(dataEx);
+						
 			return imagePanel;
 		}
 
@@ -347,9 +386,10 @@ namespace AtomosZ.UI
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ImageView), transform);
 			var image = uiDO.GetComponent<UIImageView>();
-			image.UpdateBackingData(dataEx);
+
 			AddControl(UIPrefabType.ImageView, uiDO);
-			dataEx.referenceName = uiDO.name;
+			image.UpdateBackingData(dataEx);
+			
 			return image;
 		}
 
@@ -357,9 +397,10 @@ namespace AtomosZ.UI
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.Slider), transform);
 			var slider = uiDO.GetComponent<UISlider>();
-			slider.UpdateBackingData(dataEx);
+
 			AddControl(UIPrefabType.Slider, uiDO);
-			dataEx.referenceName = uiDO.name;
+			slider.UpdateBackingData(dataEx);
+			
 			return slider;
 		}
 
@@ -367,9 +408,10 @@ namespace AtomosZ.UI
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.CheckBox), transform);
 			var checkBox = uiDO.GetComponent<UICheckBox>();
-			checkBox.UpdateBackingData(dataEx);
+
 			AddControl(UIPrefabType.CheckBox, uiDO);
-			dataEx.referenceName = uiDO.name;
+			checkBox.UpdateBackingData(dataEx);
+
 			return checkBox;
 		}
 
@@ -378,11 +420,13 @@ namespace AtomosZ.UI
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.InputField), transform);
 			var inputRect = uiDO.GetComponent<RectTransform>();
 			var inputField = uiDO.GetComponent<UIExpandingInputField>();
+
+			AddControl(UIPrefabType.InputField, uiDO);
 			inputField.UpdateBackingData(dataEx);
+
 			var inputTMP = uiDO.GetComponent<TMP_InputField>();
 			inputTMP.onSubmit.AddListener(SubmitText);
-			AddControl(UIPrefabType.InputField, uiDO);
-			dataEx.referenceName = uiDO.name;
+			
 			return inputField;
 		}
 
@@ -396,9 +440,10 @@ namespace AtomosZ.UI
 
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ExpandingText), transform);
 			var label = uiDO.GetComponent<UIExpandingLabel>();
-			label.UpdateBackingData(dataEx);
+
 			AddControl(UIPrefabType.ExpandingText, uiDO);
-			dataEx.referenceName = uiDO.name;
+			label.UpdateBackingData(dataEx);
+			
 			return label;
 		}
 
@@ -409,25 +454,29 @@ namespace AtomosZ.UI
 			{
 				int count = 0;
 				var controlName = $"{prefabType}_{count.ToString("00")}";
-				while (!uiControls.TryAdd(controlName, uiDO))
+				while (GetControl(controlName) != null)
 				{
 					++count;
 					controlName = $"{prefabType}_{count.ToString("00")}";
 				}
+
 				uiDO.name = controlName;
+				
 			}
 			else
 			{
 				int count = 0;
 				var uiDOName = uiDO.name.Replace("(Clone)", "");
 				var controlName = uiDOName;
-				while (!uiControls.TryAdd(controlName, uiDO))
+				while (GetControl(controlName) != null)
 				{
 					++count;
 					controlName = $"{uiDOName}_{count.ToString("00")}";
 				}
 				uiDO.name = controlName;
 			}
+
+			uiControls.Add(uiDO);
 		}
 
 
@@ -448,28 +497,34 @@ namespace AtomosZ.UI
 
 
 
-		public void RemoveControl(KeyValuePair<string, UIDesignObject> control)
+		public void RemoveControl(UIDesignObject control)
 		{
 			uiControls.Remove(control);
 #if DEBUG
+			if (control == null || control.gameObject == null)
+			{
+				Debug.LogException(new Exception("UI control did not delete themselves properly!"));
+				return;
+			}
+
 			if (Application.isEditor && !Application.isPlaying)
-				DestroyImmediate(control.Value.gameObject);
+				DestroyImmediate(control.gameObject);
 			else
-				Destroy(control.Value.gameObject);
+				Destroy(control.gameObject);
 
 			RecordPrefabInstances();
 #else
-			Destroy(control.Value.gameObject);
+			Destroy(control.gameObject);
 #endif
 		}
 
 		public void RemoveControl(IUIDataEx data)
 		{
-			foreach (var cntrl in uiControls.Values)
+			foreach (var cntrl in uiControls)
 			{
 				if (cntrl.GetBackingData() == data)
 				{
-					uiControls.Remove(cntrl.name);
+					uiControls.Remove(cntrl);
 #if DEBUG
 					if (Application.isEditor && !Application.isPlaying)
 						DestroyImmediate(cntrl.gameObject);
@@ -485,28 +540,11 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public void RemoveControl(UIDesignObject uiDO)
-		{
-			uiControls.Remove(uiDO.name);
-#if DEBUG
-			if (uiDO == null || uiDO.gameObject == null)
-			{
-				Debug.LogException(new Exception("UI controls not delete themselves properly!"));
-				return;
-			}
-			if (Application.isEditor && !Application.isPlaying)
-				DestroyImmediate(uiDO.gameObject);
-			else
-				Destroy(uiDO.gameObject);
-#else
-			Destroy(uiDO.gameObject);
-#endif
-		}
 
 		public void ClearControls()
 		{
 			foreach (var control in uiControls)
-				Destroy(control.Value.gameObject);
+				Destroy(control.gameObject);
 			uiControls.Clear();
 		}
 
@@ -514,7 +552,7 @@ namespace AtomosZ.UI
 		public void ClearControlsEditor()
 		{
 			foreach (var control in uiControls)
-				DestroyImmediate(control.Value.gameObject);
+				DestroyImmediate(control.gameObject);
 
 			if (transform.childCount > 0)
 			{
