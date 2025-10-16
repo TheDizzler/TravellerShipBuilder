@@ -5,8 +5,10 @@ using UnityEngine;
 
 namespace AtomosZ
 {
+	public class CustomDictionary { }
+
 	[Serializable]
-	public class CustomDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+	public class CustomDictionary<TKey, TValue> : CustomDictionary, IDictionary<TKey, TValue>
 	{
 		/// <summary>
 		/// Changing this to hashset would speed up searches for large lists.
