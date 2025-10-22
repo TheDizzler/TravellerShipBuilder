@@ -127,6 +127,20 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 				dict.Add(index, value);
 			}
 		}
+
+		public T Last()
+		{
+			if (indices.Count == 0)
+				return default;
+
+			uint highest = 0;
+			foreach (uint i in indices)
+			{
+				highest = Math.Max(i, highest);
+			}
+
+			return dict[highest];
+		}
 	}
 
 	public class TechTableRow

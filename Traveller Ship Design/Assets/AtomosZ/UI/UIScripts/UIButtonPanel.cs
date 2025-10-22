@@ -218,7 +218,7 @@ namespace AtomosZ.UI
 		}
 
 
-
+		[Obsolete("TODO: Replace with MagicWindow")]
 		public void SetResultListeners(DynamicPanel parent)
 		{
 			okButton.GetComponent<Button>().onClick.RemoveAllListeners();
@@ -231,6 +231,10 @@ namespace AtomosZ.UI
 			noButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultNo);
 		}
 
+		public void SetResultListeners(MagicWindow magicWindow)
+		{
+			Debug.LogWarning("Magic Window not set up for button panel!");
+		}
 
 		public IUIDataEx GetBackingData()
 		{

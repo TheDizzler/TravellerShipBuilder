@@ -501,6 +501,7 @@ MonoBehaviour:
   _alignmentOptions: 514
   _horizontalAlignmentOptions: 2
   _verticalAlignmentOptions: 512
+  _interactable: 1
 --- !u!114 &4757135074788766894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -946,7 +947,7 @@ MonoBehaviour:
   m_RichText: 1
   m_GlobalFontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_OnFocusSelectAll: 1
-  m_ResetOnDeActivation: 1
+  m_ResetOnDeActivation: 0
   m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0

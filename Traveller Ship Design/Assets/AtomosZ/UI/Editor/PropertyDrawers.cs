@@ -722,8 +722,6 @@ namespace AtomosZ.UI.EditorZ
 
 			this.SetProperty(property, "referenceName", position, ref drawerHeight, new GUIContent("Label Reference Name"));
 
-			this.SetProperty(property, "text", position, ref drawerHeight);
-
 			var minDimOverrideProp = property.FindPropertyRelative("minLabelDimensions");
 			var maxDimOverrideProp = property.FindPropertyRelative("maxLabelDimensions");
 
@@ -786,11 +784,11 @@ namespace AtomosZ.UI.EditorZ
 			{
 				this.SetProperty(property, "labelEx", position, ref drawerHeight);
 			}
-			else
-			{
-				var text = buttonSO.labelEx.text;
-				buttonSO.labelEx.text = this.CreateTextField("Button Text", text, position, ref drawerHeight);
-			}
+			//else
+			//{
+			//	var text = buttonSO.labelEx.text;
+			//	buttonSO.labelEx.text = this.CreateTextField("Button Text", text, position, ref drawerHeight);
+			//}
 
 			this.SetProperty(property, "fillParentHorizontal", position, ref drawerHeight);
 

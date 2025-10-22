@@ -45,10 +45,20 @@ namespace AtomosZ.UI
 
 		private void SearchForDesignObject()
 		{
-#if UNITY_EDITOR
+			//#if UNITY_EDITOR
 			if (gameObject.layer != 5)
-				Debug.LogError($"{gameObject.name} Layer is NOT set to UI!");
-#endif
+			{
+				var trans = transform.parent;
+				string name = "";
+				while (trans != null)
+				{
+					name = name.Insert(0, trans.name + ":");
+					trans = trans.parent;
+				}
+
+				Debug.LogError($"{name}:{gameObject.name} Layer is NOT set to UI!");
+			}
+			//#endif
 
 			var components = GetComponents<MonoBehaviour>();
 			foreach (var comp in components)

@@ -16,7 +16,7 @@ namespace AtomosZ.UI
 	public class DropdownEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Dropdown; } }
-		public string referenceName;
+		public string referenceName = "dropdown";
 
 		public bool fillParentHorizontal = true;
 		public Vector2 minDimensions = new Vector2(256, 64);
@@ -51,7 +51,7 @@ namespace AtomosZ.UI
 		[Tooltip("Ordinal of default selection. -1 == always select last option, 0 == always first option.")]
 		public int defaultSelection = 0;
 		public bool isMultiSelect = false;
-		public UnityEvent<int> onValueChangedAction = null;
+		public UnityEvent<UIDropdown, int> onValueChangedAction = null;
 
 
 		public DropdownEx(UIExpandingLabelScriptableObject textScriptObj, List<TMP_Dropdown.OptionData> options)
@@ -135,6 +135,16 @@ namespace AtomosZ.UI
 		}
 
 
+		public int SelectedIndex
+		{
+			get { return dropdown.value; }
+			set
+			{
+				dropdown.value = value;
+				dropdownEx.defaultSelection = value;
+			}
+		}
+
 
 		public void OnEnable()
 		{
@@ -181,7 +191,7 @@ namespace AtomosZ.UI
 			{
 				dropdown.onValueChanged.AddListener(delegate
 					{
-						dropdownEx.onValueChangedAction.Invoke(dropdown.value);
+						dropdownEx.onValueChangedAction.Invoke(this, dropdown.value);
 					});
 			}
 

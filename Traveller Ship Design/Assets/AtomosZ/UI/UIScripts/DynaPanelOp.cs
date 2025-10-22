@@ -38,6 +38,7 @@ namespace AtomosZ.UI
 				case UIControlType.Text:
 					return ((LabelEx)dataEx).referenceName;
 				case UIControlType.Panel:
+				case UIControlType.HorizontalPanel:
 					return ((PanelEx)dataEx).referenceName;
 				//case UIControlType.Spinner:
 				//	return ((SpinnerEx)dataEx).referenceName;
@@ -63,6 +64,7 @@ namespace AtomosZ.UI
 		Dropdown,
 		TabControl,
 		Panel,
+		HorizontalPanel,
 		Spinner,
 	}
 
@@ -115,6 +117,7 @@ namespace AtomosZ.UI
 	/// This Monobehavior self-destructs at Start(). 
 	/// </summary>
 	[ExecuteAlways]
+	[Obsolete("Replaced with MagicWindow")]
 	public class DynaPanelOp : MonoBehaviour
 	{
 		public DynamicPanel dynaPan;

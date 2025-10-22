@@ -9,9 +9,6 @@ using static AtomosZ.UI.UIPrefabProvider;
 
 namespace AtomosZ.UI
 {
-	//[Serializable]
-	//public class ControlLookupDictionary : CustomDictionary<string, UIDesignObject> { }
-
 	[Serializable]
 	public class PanelEx : IUIDataEx
 	{
@@ -50,7 +47,7 @@ namespace AtomosZ.UI
 	public class UIPanel : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private PanelEx panelEx;
-		public string referenceName { get { return panelEx.referenceName; }  set { panelEx.referenceName = value; }}
+		public string referenceName { get { return panelEx.referenceName; } set { panelEx.referenceName = value; } }
 		public UIDesignObject _designObject;
 
 		public UIDesignObject designObject
@@ -121,6 +118,29 @@ namespace AtomosZ.UI
 			}
 		}
 
+		[SerializeField] private bool _borderless;
+		public bool borderless
+		{
+			get { return _borderless; }
+			set
+			{
+				_borderless = value;
+				GetComponent<Image>().enabled = !value;
+				var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
+				if (_borderless)
+				{
+					panelEx.useCustomLayoutPadding = true;
+					panelEx.layoutPadding = new RectOffset(0, 0, 0, 0);
+					layout.padding = layoutPadding;
+				}
+				else
+				{
+					panelEx.useCustomLayoutPadding = false;
+					layout.padding = layoutPadding;
+				}
+			}
+		}
+
 		public Vector2 minDimensions
 		{
 			get
@@ -139,7 +159,7 @@ namespace AtomosZ.UI
 			}
 		}
 
-		
+
 		[Tooltip("The tab associated with this panel (if context menu, this tab will be inactive).")]
 		public UIExpandingLabel tabLabel;
 		public IUIBehavior parentPanel;
@@ -153,9 +173,14 @@ namespace AtomosZ.UI
 		public void RecordPrefabInstances()
 		{
 			PrefabUtility.RecordPrefabInstancePropertyModifications(this);
-			PrefabUtility.RecordPrefabInstancePropertyModifications(GetComponent<VerticalLayoutGroup>());
+			PrefabUtility.RecordPrefabInstancePropertyModifications(GetComponent<HorizontalOrVerticalLayoutGroup>());
 		}
 
+
+		public bool IsHorizontal()
+		{
+			return GetComponent<HorizontalLayoutGroup>() != null;
+		}
 
 		public IUIDataEx GetBackingData()
 		{
@@ -173,52 +198,94 @@ namespace AtomosZ.UI
 			if (sprite != null)
 				GetComponent<Image>().sprite = sprite;
 
-			var layout = GetComponent<VerticalLayoutGroup>();
+			var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
 			layout.padding = layoutPadding;
 			layout.spacing = layoutSpacing;
-			RecalculateDimensions();
 		}
 
 		public void RecalculateDimensions()
 		{
-			var minDims = GetMinDimensions();
-			if (rect == null)
-				rect = GetComponent<RectTransform>();
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDims.y);
+			UpdateBackingData();
 		}
+
 
 		public Vector2 GetMinDimensions()
 		{
+			UpdateBackingData();
 			var minDim = Vector2.zero;
-			var layout = GetComponent<VerticalLayoutGroup>();
-			minDim.x = 0;
-			minDim.y = layout.padding.top + layout.padding.bottom;
-			var activeChildren = 0;
-			//GetControlsFromTransform();
-			foreach (var child in uiControls)
+			var vertLayout = GetComponent<VerticalLayoutGroup>();
+			if (vertLayout != null)
 			{
-				if (!child.gameObject.activeSelf)
-					continue;
+				minDim.x = 0;
+				minDim.y = vertLayout.padding.top + vertLayout.padding.bottom;
 
-				++activeChildren;
-				var childMinDim = child.GetMinDimensions();
-				minDim.y += childMinDim.y;
-				if (minDim.x < childMinDim.x)
-					minDim.x = childMinDim.x; // this might require a recalculation of any text children
+				var activeChildren = 0;
+				foreach (var child in uiControls)
+				{
+#if UNITY_EDITOR
+					if (child == null || child.gameObject == null)
+					{
+						GetControlsFromTransform();
+						return GetMinDimensions();
+					}
+#endif
+
+					if (!child.gameObject.activeSelf)
+						continue;
+
+					++activeChildren;
+					var childMinDim = child.GetMinDimensions();
+					minDim.y += childMinDim.y;
+					if (minDim.x < childMinDim.x)
+						minDim.x = childMinDim.x;
+				}
+
+				minDim.y += vertLayout.spacing * (activeChildren - 1);
+				minDim.x += vertLayout.padding.left + vertLayout.padding.right;
 			}
+			else
+			{
+				var horzLayout = GetComponent<HorizontalLayoutGroup>();
+				if (horzLayout == null)
+					Debug.LogException(new Exception("No layout group found on panel"));
 
-			minDim.y += layout.spacing * (activeChildren - 1);
-			minDim.x += layout.padding.left + layout.padding.right;
-			//Debug.Log(minDim);
+				minDim.x = horzLayout.padding.left + horzLayout.padding.right;
+				minDim.y = 0;
+
+				var activeChildren = 0;
+				foreach (var child in uiControls)
+				{
+					if (!child.gameObject.activeSelf)
+						continue;
+
+					++activeChildren;
+					var childMinDim = child.GetMinDimensions();
+					minDim.x += childMinDim.x;
+					if (minDim.y < childMinDim.y)
+						minDim.y = childMinDim.y;
+				}
+
+
+				minDim.x += horzLayout.spacing * (activeChildren - 1);
+				minDim.y += horzLayout.padding.top + horzLayout.padding.bottom;
+			}
 
 			if (minDim.x < minDimensions.x)
 				minDim.x = minDimensions.x;
 			if (minDim.y < minDimensions.y)
 				minDim.y = minDimensions.y;
+
+			if (rect == null)
+				rect = GetComponent<RectTransform>();
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDim.y);
+
 			return minDim;
 		}
 
-
+		/// <summary>
+		/// This will not show controls on sub-panel.
+		/// </summary>
+		/// <param name="showControls"></param>
 		public void ShowControls(bool showControls)
 		{
 			foreach (var child in uiControls)
@@ -259,7 +326,7 @@ namespace AtomosZ.UI
 			return null;
 		}
 
-		
+
 
 		public IUIBehavior AddUIControl(IUIDataEx uiDataEx)
 		{
@@ -292,6 +359,22 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public UIPanel AddHorizontalPanel(UIPanelScriptableObject horizontalPanelScriptObj)
+		{
+			var prefabType = UIPrefabType.HorizontalPanel;
+			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
+			var panel = uiDO.GetComponent<UIPanel>();
+			if (horizontalPanelScriptObj != null)
+			{
+				panel.panelEx.scriptableObj = horizontalPanelScriptObj;
+				panel.RecalculateDimensions();
+			}
+
+			AddControl(prefabType, uiDO);
+
+			return panel;
+		}
+
 		public UITabControl AddTabControl()
 		{
 			var prefabType = UIPrefabType.TabControl;
@@ -299,7 +382,7 @@ namespace AtomosZ.UI
 			var tabControl = uiDO.GetComponent<UITabControl>();
 
 			AddControl(prefabType, uiDO);
-		
+
 			return tabControl;
 		}
 
@@ -311,7 +394,7 @@ namespace AtomosZ.UI
 
 			AddControl(prefabType, uiDO);
 			uiSpinner.UpdateBackingData(dataEx);
-			
+
 			return uiSpinner;
 		}
 
@@ -323,7 +406,7 @@ namespace AtomosZ.UI
 
 			AddControl(prefabType, uiDO);
 			uiButton.UpdateBackingData(dataEx);
-			
+
 			return uiButton;
 		}
 
@@ -334,7 +417,6 @@ namespace AtomosZ.UI
 		/// <returns></returns>
 		private UIButtonPanel AddButtonPanel(ButtonPanelEx dataEx)
 		{
-			//throw new Exception("AddButtonPanel not yet implemented");
 			UIButtonPanel buttonPanel = GetComponentInChildren<UIButtonPanel>();
 			if (buttonPanel == null)
 			{
@@ -345,9 +427,22 @@ namespace AtomosZ.UI
 
 			buttonPanel.UpdateBackingData(dataEx);
 
-			var parentPanel = GetComponentInParent<DynamicPanel>();
-			if (parentPanel != null)
-				buttonPanel.SetResultListeners(parentPanel);
+			var magicWindow = GetComponentInParent<MagicWindow>();
+
+			if (magicWindow == null)
+			{
+				var dynamicPanel = GetComponentInParent<DynamicPanel>();
+				if (dynamicPanel != null)
+				{
+					Debug.LogWarning("Time to upgrade away from DYnamicPanel");
+					buttonPanel.SetResultListeners(dynamicPanel);
+				}
+			}
+			else
+			{
+				buttonPanel.SetResultListeners(magicWindow);
+			}
+
 			return buttonPanel;
 		}
 
@@ -378,7 +473,7 @@ namespace AtomosZ.UI
 
 			AddControl(UIPrefabType.ImageViewPanel, uiDO);
 			imagePanel.UpdateBackingData(dataEx);
-						
+
 			return imagePanel;
 		}
 
@@ -389,7 +484,7 @@ namespace AtomosZ.UI
 
 			AddControl(UIPrefabType.ImageView, uiDO);
 			image.UpdateBackingData(dataEx);
-			
+
 			return image;
 		}
 
@@ -400,7 +495,7 @@ namespace AtomosZ.UI
 
 			AddControl(UIPrefabType.Slider, uiDO);
 			slider.UpdateBackingData(dataEx);
-			
+
 			return slider;
 		}
 
@@ -426,24 +521,18 @@ namespace AtomosZ.UI
 
 			var inputTMP = uiDO.GetComponent<TMP_InputField>();
 			inputTMP.onSubmit.AddListener(SubmitText);
-			
+
 			return inputField;
 		}
 
 		private UIExpandingLabel AddText(LabelEx dataEx)
 		{
-			if (string.IsNullOrEmpty(dataEx.text))
-			{
-				Debug.LogException(new Exception("Text may not be empty"));
-				return null;
-			}
-
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ExpandingText), transform);
 			var label = uiDO.GetComponent<UIExpandingLabel>();
 
 			AddControl(UIPrefabType.ExpandingText, uiDO);
 			label.UpdateBackingData(dataEx);
-			
+
 			return label;
 		}
 
@@ -461,7 +550,7 @@ namespace AtomosZ.UI
 				}
 
 				uiDO.name = controlName;
-				
+
 			}
 			else
 			{
@@ -549,10 +638,15 @@ namespace AtomosZ.UI
 		}
 
 		[System.Diagnostics.Conditional("UNITY_EDITOR")]
-		public void ClearControlsEditor()
+		public void ClearControls_EditorOnly()
 		{
 			foreach (var control in uiControls)
-				DestroyImmediate(control.gameObject);
+			{
+				if (Application.isPlaying)
+					Destroy(control.gameObject);
+				else
+					DestroyImmediate(control.gameObject);
+			}
 
 			if (transform.childCount > 0)
 			{
@@ -576,7 +670,7 @@ namespace AtomosZ.UI
 		/// <param name="clickActions"></param>
 		public void SetContextMenuActions(List<DesignAction> clickActions)
 		{
-			var layout = GetComponent<VerticalLayoutGroup>();
+			var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
 			layout.spacing = 12;
 			layout.padding = new RectOffset(layout.padding.left, layout.padding.right, layout.padding.top, 0);
 			ClearControls();

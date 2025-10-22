@@ -238,8 +238,9 @@ namespace AtomosZ.UI
 				labelEx = viewDataEx.labelEx.Clone(),
 			};
 
-			imageEx.labelEx.text = caption;
+			
 			var imageView = AddImage(imageEx);
+			imageView.text = caption;
 			imageView.GetComponent<Button>().onClick.AddListener(value);
 			return imageView;
 		}

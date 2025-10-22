@@ -91,7 +91,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -203,6 +203,8 @@ MonoBehaviour:
     maxLabelDimensions: {x: 500, y: 64}
   textLabel: {fileID: 7298350520420406968}
   image: {fileID: 2426340941609388716}
+  _fontStyles: 0
+  _alignmentOptions: 513
   _designObject: {fileID: 0}
 --- !u!114 &2781322499687730756
 MonoBehaviour:

@@ -27,13 +27,12 @@ namespace AtomosZ.UI
 		public WindowStyle windowStyle;
 
 		[SerializeField]
-		public CustomDictionary<WindowStyle, UITabControlScriptableObject> styleDatas;
+		public CustomDictionary<WindowStyle, UITabControlScriptableObject> windowStyleDatas;
 
 		[SerializeField] private string _referenceName;
 		public string referenceName { get { return _referenceName; } set { _referenceName = value; } }
 
 		public UIDesignObject _designObject;
-
 		public UIDesignObject designObject
 		{
 			get
@@ -60,6 +59,8 @@ namespace AtomosZ.UI
 		}
 
 
+		[SerializeField] public UIPanelScriptableObject panelScriptObj;
+		[SerializeField] public UIPanelScriptableObject horizontalPanelScriptObj;
 		[SerializeField] public UIExpandingLabelScriptableObject textScriptObj;
 		[SerializeField] public UIExpandingLabelScriptableObject dropdownScriptObj;
 		[SerializeField] public UICheckBoxScriptableObject checkBoxScriptObj;
@@ -73,13 +74,6 @@ namespace AtomosZ.UI
 #if UNITY_EDITOR
 		[SerializeField] public UIControlType currentType;
 		public List<UIControl> controlList = new();
-
-		[Conditional("UNITY_EDITOR")]
-		public void ClearControlsEditor()
-		{
-			rootTabControl.ClearControlsEditor();
-			GetMinDimensions();
-		}
 
 		[System.Diagnostics.Conditional("UNITY_EDITOR")]
 		public void RecordPrefabInstances()
@@ -99,10 +93,20 @@ namespace AtomosZ.UI
 		}
 #endif
 
+		public void ClearControls()
+		{
+			rootTabControl.ClearControls();
+			GetMinDimensions();
+		}
+
 
 		void Start()
 		{
 			UIPrefabProvider uiProvider = GetComponentInParent<UIPrefabProvider>();
+			if (panelScriptObj == null)
+				panelScriptObj = uiProvider.panelScriptObj;
+			if (horizontalPanelScriptObj == null)
+				horizontalPanelScriptObj = uiProvider.horizontalPanelScriptObj;
 			if (textScriptObj == null)
 				textScriptObj = uiProvider.textScriptObj;
 			if (dropdownScriptObj == null)
@@ -133,46 +137,46 @@ namespace AtomosZ.UI
 			if (uiProvider == null)
 				return;
 
-			if (!styleDatas.TryGetValue(WindowStyle.Tabbed, out var tabbedSO))
+			if (!windowStyleDatas.TryGetValue(WindowStyle.Tabbed, out var tabbedSO))
 			{
 				tabbedSO = uiProvider.tabbedWindowScriptObj;
-				styleDatas.Add(WindowStyle.Tabbed, tabbedSO);
+				windowStyleDatas.Add(WindowStyle.Tabbed, tabbedSO);
 			}
 			else if (tabbedSO == null)
 			{
 				tabbedSO = uiProvider.tabbedWindowScriptObj;
-				styleDatas[WindowStyle.Tabbed] = tabbedSO;
+				windowStyleDatas[WindowStyle.Tabbed] = tabbedSO;
 			}
 
-			if (!styleDatas.TryGetValue(WindowStyle.TitleBar, out var titleBarSO))
+			if (!windowStyleDatas.TryGetValue(WindowStyle.TitleBar, out var titleBarSO))
 			{
 				titleBarSO = uiProvider.titleBarWindowScriptObj;
-				styleDatas.Add(WindowStyle.TitleBar, titleBarSO);
+				windowStyleDatas.Add(WindowStyle.TitleBar, titleBarSO);
 			}
 			else if (titleBarSO == null)
 			{
 				titleBarSO = uiProvider.titleBarWindowScriptObj;
-				styleDatas[WindowStyle.TitleBar] = titleBarSO;
+				windowStyleDatas[WindowStyle.TitleBar] = titleBarSO;
 			}
 
-			if (!styleDatas.TryGetValue(WindowStyle.ContextMenu, out var contextMenuSO))
+			if (!windowStyleDatas.TryGetValue(WindowStyle.ContextMenu, out var contextMenuSO))
 			{
 				contextMenuSO = uiProvider.contextMenuWindowScriptObj;
-				styleDatas.Add(WindowStyle.ContextMenu, contextMenuSO);
+				windowStyleDatas.Add(WindowStyle.ContextMenu, contextMenuSO);
 			}
 			else if (contextMenuSO == null)
 			{
 				contextMenuSO = uiProvider.contextMenuWindowScriptObj;
-				styleDatas[WindowStyle.ContextMenu] = contextMenuSO;
+				windowStyleDatas[WindowStyle.ContextMenu] = contextMenuSO;
 			}
 		}
 
 		private UITabControlScriptableObject GetStyleData(WindowStyle windowStyle)
 		{
-			if (!styleDatas.TryGetValue(windowStyle, out var styleSO)
+			if (!windowStyleDatas.TryGetValue(windowStyle, out var styleSO)
 				|| styleSO == null)
 				FindStyleData();
-			return styleDatas[windowStyle];
+			return windowStyleDatas[windowStyle];
 		}
 
 		public void RemoveControl(UIControl uiControl)
@@ -199,7 +203,6 @@ namespace AtomosZ.UI
 			return null;
 		}
 
-
 		public void ChangeWindowStyle(WindowStyle windowStyle)
 		{
 			var styleData = GetStyleData(windowStyle);
@@ -215,6 +218,16 @@ namespace AtomosZ.UI
 
 
 
+		public void Refresh()
+		{
+			GetMinDimensions();
+		}
+
+		public void RecalculateDimensions()
+		{
+			GetMinDimensions();
+		}
+
 		public Vector2 GetMinDimensions()
 		{
 			var minDim = rootTabControl.GetMinDimensions();
@@ -222,9 +235,9 @@ namespace AtomosZ.UI
 		}
 
 
-		public IUIBehavior AddUIControl()
+		public IUIBehavior AddUIControl(UIControlType ctrlType)
 		{
-			switch (currentType)
+			switch (ctrlType)
 			{
 				case UIControlType.Text:
 					return panel.AddUIControl(new LabelEx(textScriptObj));
@@ -252,6 +265,9 @@ namespace AtomosZ.UI
 
 				case UIControlType.ImagePanel:
 					return panel.AddUIControl(new ImageViewDataEx(imageViewPanelScriptObj));
+
+				case UIControlType.HorizontalPanel:
+					return panel.AddHorizontalPanel(horizontalPanelScriptObj);
 
 				default:
 					Debug.LogException(new Exception($"{currentType} not yet implemented"));

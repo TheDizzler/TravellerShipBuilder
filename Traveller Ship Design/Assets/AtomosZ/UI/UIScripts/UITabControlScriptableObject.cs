@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using static AtomosZ.UI.UIExpandingLabel;
 
@@ -16,6 +17,7 @@ namespace AtomosZ.UI
 		public Color titleBarFontColor = new Color(1, 1, 1, 1);
 		public Vector4 titleTextMargin;
 		public Vector2 titleBarMinSize;
+		[Tooltip("Offset from bottom of tab to top of panel.")]
 		public float titleBarVerticalOffset;
 		[Tooltip("Used for and WindowStyle.TitleBar & WindowStyle.Tabbed")]
 		public Color selectedTabColor = new Color(1, 1, 1, 1);
@@ -24,7 +26,7 @@ namespace AtomosZ.UI
 		[Tooltip("@TODO(Tristan): this")]
 		public Color disabledTabColor = new Color(1, 1, 1, 1);
 
-		public Alignment tabTextAlignment = Alignment.Center;
+		public TextAlignmentOptions tabTextAlignment = TextAlignmentOptions.Center;
 
 		[Tooltip("Offset applied to distance between tabs")]
 		public float tabHorizontaloffset = -36;

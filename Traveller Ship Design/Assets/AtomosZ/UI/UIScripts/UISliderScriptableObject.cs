@@ -14,8 +14,8 @@ namespace AtomosZ.UI
 	public class UISliderScriptableObject : ScriptableObject
 	{
 		public bool showHandle = true;
-		//public Sprite handleSprite;
-		//public Vector2 handleOffset = new Vector2(16, 16);
+		public Sprite handleSprite;
+		public Vector2 handleOffset = new Vector2(16, 16);
 
 		public bool showUnits = true;
 		public float unitSpan = 1;

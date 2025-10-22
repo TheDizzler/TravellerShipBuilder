@@ -27,7 +27,7 @@ namespace AtomosZ.UI
 			scriptableObject = scriptObj;
 			if (scriptableObject == null)
 			{
-				labelEx = new LabelEx("Caption #00")
+				labelEx = new LabelEx()
 				{
 					fontColor = Color.black,
 					fontSize = 36,
@@ -39,10 +39,10 @@ namespace AtomosZ.UI
 	public class UIImageView : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private Image image;
-		[SerializeField] private UIExpandingLabel caption;
+		[SerializeField] private UIExpandingLabel captionLabel;
 		[SerializeField] private ImageEx imageEx;
 
-		public string referenceName { get { return imageEx.referenceName; }  set { imageEx.referenceName = value; }}
+		public string referenceName { get { return imageEx.referenceName; } set { imageEx.referenceName = value; } }
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -54,11 +54,24 @@ namespace AtomosZ.UI
 			}
 		}
 
+
+		[SerializeField] private string _text = "Caption #00";
+		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
+		public string text
+		{
+			get { return _text; }
+			set
+			{
+				_text = value;
+				captionLabel.text = value;
+			}
+		}
+
 		public IUIBehavior GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
-			return caption.GetControl(controlRefName);
+			return captionLabel.GetControl(controlRefName);
 		}
 
 
@@ -110,17 +123,17 @@ namespace AtomosZ.UI
 
 			if (imageEx.showCaption)
 			{
-				caption.gameObject.SetActive(true);
-				caption.UpdateBackingData(imageEx.labelEx);
+				captionLabel.gameObject.SetActive(true);
+				captionLabel.UpdateBackingData(imageEx.labelEx);
 
 				var layout = GetComponent<VerticalLayoutGroup>();
-				var textSize = caption.GetMinDimensions();
+				var textSize = captionLabel.GetMinDimensions();
 				height += textSize.y;
 				height += layout.spacing;
 			}
 			else
 			{
-				caption.gameObject.SetActive(false);
+				captionLabel.gameObject.SetActive(false);
 			}
 
 			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);

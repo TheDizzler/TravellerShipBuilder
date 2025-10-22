@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1594349136182468118}
   - component: {fileID: 2231522213260681428}
   - component: {fileID: 3017160539403459397}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: panel_00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -338,7 +338,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4625527026130050934}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Panels
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -813,8 +813,10 @@ MonoBehaviour:
   _referenceName: tabControl
   _designObject: {fileID: 974002178803776813}
   tabPanels:
-    keys: []
-    values: []
+    keys:
+    - {fileID: 8308577845399787212}
+    values:
+    - {fileID: 2365697001357611878}
   tabControlEx:
     scriptableObj: {fileID: 11400000, guid: 0027f5f71500d714f8d2ed0bfb2b42d4, type: 2}
   selectedTabIndex: 0

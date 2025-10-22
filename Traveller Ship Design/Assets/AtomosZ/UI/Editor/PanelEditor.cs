@@ -3,11 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
-using UnityEditor.UI;
 using UnityEngine;
-
-using static AtomosZ.UI.DynamicPanel;
-using static AtomosZ.UI.UISpinner;
 
 namespace AtomosZ.UI.EditorZ
 {
@@ -16,28 +12,32 @@ namespace AtomosZ.UI.EditorZ
 	{
 		private MagicWindow magicWindow;
 		private RectTransform rect;
-		private Vector2 lastSize;
-		private SerializedProperty currentType;
-		private SerializedProperty controlList;
+		//private Vector2 lastSize;
+		//private SerializedProperty currentType;
+		//private SerializedProperty controlList;
 		private Dictionary<UIControlType, SerializedProperty> scriptableObjects;
 		private TabControlEditor tabEditor;
 		private UIPanelEditor panelEditor;
 		private MagicWindow.WindowStyle prevWindowStyle;
 		private Dictionary<UITabControlScriptableObject, UITabControlScriptableObjectEditor> tabScriptObjEditors = new();
+		private bool isTabControlScriptObjFoldout;
 		private bool isScriptObjFoldout;
 		private bool isTitleBarFoldout;
+		private Editor tabLabelEditor;
 
 		void OnEnable()
 		{
 			magicWindow = (MagicWindow)target;
 			rect = magicWindow.GetComponent<RectTransform>();
 
-			lastSize = rect.sizeDelta;
-			currentType = serializedObject.FindProperty("currentType");
-			controlList = serializedObject.FindProperty("controlList");
+			//lastSize = rect.sizeDelta;
+			//currentType = serializedObject.FindProperty("currentType");
+			//controlList = serializedObject.FindProperty("controlList");
 
 			scriptableObjects = new Dictionary<UIControlType, SerializedProperty>
 			{
+				[UIControlType.Panel] = serializedObject.FindProperty("panelScriptObj"),
+				[UIControlType.HorizontalPanel] = serializedObject.FindProperty("horizontalPanelScriptObj"),
 				[UIControlType.Text] = serializedObject.FindProperty("textScriptObj"),
 				[UIControlType.InputField] = serializedObject.FindProperty("inputFieldScriptObj"),
 				[UIControlType.Dropdown] = serializedObject.FindProperty("dropdownScriptObj"),
@@ -72,7 +72,15 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUILayout.PropertyField(rootTabProp);
 			GUI.enabled = true;
 
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("styleDatas"));
+			if (isScriptObjFoldout = EditorGUILayout.Foldout(isScriptObjFoldout, "ScriptObjects", true))
+			{
+				foreach (var scriptObj in scriptableObjects)
+				{
+					EditorGUILayout.PropertyField(scriptObj.Value);
+				}
+			}
+
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("windowStyleDatas"));
 
 			EditorGUILayout.PropertyField(serializedObject.FindProperty("windowStyle"));
 			if (magicWindow.windowStyle != prevWindowStyle)
@@ -110,10 +118,12 @@ namespace AtomosZ.UI.EditorZ
 					{
 						++EditorGUI.indentLevel;
 
-						var tabSO = new SerializedObject(magicWindow.rootTabControl.tabPanels[0].Key);
-						var tabLabelExProp = tabSO.FindProperty("labelEx");
-						EditorGUILayout.PropertyField(tabLabelExProp);
-						tabSO.ApplyModifiedProperties();
+						Editor.CreateCachedEditor(magicWindow.rootTabControl.tabPanels[0].Key, typeof(UILabelEditor), ref tabLabelEditor);
+						tabLabelEditor.OnInspectorGUI();
+						//var tabSO = new SerializedObject(magicWindow.rootTabControl.tabPanels[0].Key);
+						//var tabLabelExProp = tabSO.FindProperty("labelEx");
+						//EditorGUILayout.PropertyField(tabLabelExProp);
+						//tabSO.ApplyModifiedProperties();
 
 						--EditorGUI.indentLevel;
 					}
@@ -132,7 +142,7 @@ namespace AtomosZ.UI.EditorZ
 						tabScriptObjEditors.Add(magicWindow.rootTabControl.tabControlEx.scriptableObj, tabDataEditor);
 					}
 
-					if (isScriptObjFoldout = EditorGUILayout.Foldout(isScriptObjFoldout, "Tabcontrol scriptable object", true))
+					if (isTabControlScriptObjFoldout = EditorGUILayout.Foldout(isTabControlScriptObjFoldout, "Tabcontrol scriptable object", true))
 					{
 						GUI.enabled = false;
 						++EditorGUI.indentLevel;
@@ -391,6 +401,8 @@ namespace AtomosZ.UI.EditorZ
 
 		private Dictionary<string, TabControlEditor> tabControlEditors = new();
 		private Dictionary<string, UISpinnerEditor> spinnerEditors = new();
+		private Editor sliderEditor;
+		private Editor panelEditor;
 
 		private UIControlType currentType;
 		private Dictionary<UIControlType, string> propertyName = new()
@@ -442,9 +454,11 @@ namespace AtomosZ.UI.EditorZ
 			}
 
 			var panelExProp = serializedObject.FindProperty("panelEx");
-
-
 			EditorGUILayout.PropertyField(panelExProp);
+
+			var borderlessProp = serializedObject.FindProperty("_borderless");
+			EditorGUILayout.PropertyField(borderlessProp);
+
 			//EditorGUILayout.PropertyField(serializedObject.FindProperty("minDimensions"));
 			currentType = (UIControlType)EditorGUILayout.EnumPopup("UI Control Type to add", currentType);
 
@@ -454,7 +468,7 @@ namespace AtomosZ.UI.EditorZ
 				switch (currentType)
 				{
 					case UIControlType.Text:
-						uiBehave = panel.AddUIControl(new LabelEx("Label Text"));
+						uiBehave = panel.AddUIControl(new LabelEx());
 						break;
 
 					case UIControlType.Button:
@@ -496,6 +510,10 @@ namespace AtomosZ.UI.EditorZ
 
 					case UIControlType.Spinner:
 						uiBehave = panel.AddUIControl(new SpinnerEx());
+						break;
+
+					case UIControlType.HorizontalPanel:
+						uiBehave = panel.AddHorizontalPanel(null);
 						break;
 
 					//case UIControlType.:
@@ -621,6 +639,15 @@ namespace AtomosZ.UI.EditorZ
 						}
 						break;
 
+						case UIControlType.Panel:
+						case UIControlType.HorizontalPanel:
+						{
+							var uiCtrl = (UIPanel)uiControl;
+							uiSO = new SerializedObject(uiCtrl);
+							referenceName = uiCtrl.referenceName;
+						}
+						break;
+
 						default:
 							Debug.Log($"{data.dataType} not yet implemented");
 							continue;
@@ -669,6 +696,21 @@ namespace AtomosZ.UI.EditorZ
 							}
 							break;
 
+							case UIControlType.Slider:
+							{
+								Editor.CreateCachedEditor((UISlider)uiControl, typeof(UISliderEditor), ref sliderEditor);
+								sliderEditor.OnInspectorGUI();
+							}
+							break;
+
+							case UIControlType.Panel:
+							case UIControlType.HorizontalPanel:
+							{
+								Editor.CreateCachedEditor((UIPanel)uiControl, typeof(UIPanelEditor), ref panelEditor);
+								panelEditor.OnInspectorGUI();
+							}
+							break;
+
 							default:
 							{
 								EditorGUILayout.PropertyField(uiSO.FindProperty(propertyName[data.dataType]));
@@ -693,10 +735,11 @@ namespace AtomosZ.UI.EditorZ
 				--EditorGUI.indentLevel;
 			}
 
-			bool changed = serializedObject.ApplyModifiedProperties();
+			serializedObject.ApplyModifiedProperties();
 
 			if (EditorGUI.EndChangeCheck())
 			{
+				panel.borderless = borderlessProp.boolValue;
 				panel.RecalculateDimensions();
 				lastSize = rect.sizeDelta;
 			}
@@ -822,13 +865,13 @@ namespace AtomosZ.UI.EditorZ
 				{
 					var rect = EditorGUILayout.BeginHorizontal();
 					var newSprite = (Sprite)EditorGUILayout.ObjectField(image.Key.sprite, typeof(Sprite), false);
-					var newText = EditorGUILayout.TextField(image.Key.labelEx.text);
+					var newText = EditorGUILayout.TextField(image.Value.text);
 					EditorGUILayout.EndHorizontal();
 
-					if (newSprite != image.Key.sprite || newText != image.Key.labelEx.text)
+					if (newSprite != image.Key.sprite || newText != image.Value.text)
 					{
 						image.Key.sprite = newSprite;
-						image.Key.labelEx.text = newText;
+						image.Value.text = newText;
 						image.Value.UpdateBackingData();
 					}
 
@@ -870,9 +913,6 @@ namespace AtomosZ.UI.EditorZ
 	public class UICheckBoxEditor : UIEditor<UICheckBox> { }
 
 
-	[CustomEditor(typeof(UIButton))]
-	public class UIButtonEditor : UIEditor<UIButton> { }
-
 	[CustomEditor(typeof(UIExpandingInputField))]
 	public class UIExpandingInputFieldEditor : UIEditor<UIExpandingInputField> { }
 
@@ -880,10 +920,51 @@ namespace AtomosZ.UI.EditorZ
 	public class ImageViewEditor : UIEditor<UIImageView> { }
 
 
-	[CustomEditor(typeof(UISlider))]
-	public class SliderCustomEditor : UIEditor<UISlider>
+
+	[CustomEditor(typeof(UIButton))]
+	public class UIButtonEditor : Editor
 	{
-		private UISlider slider;
+		private UIButton button;
+		private bool isButtonExFoldout;
+		private Editor labelEditor;
+
+		private void OnEnable()
+		{
+			button = (UIButton)target;
+		}
+
+
+		public override void OnInspectorGUI()
+		{
+			EditorGUI.BeginChangeCheck();
+
+			var txt = button.text; // this is required to keep changes to text in the actual label.
+			var textProp = serializedObject.FindProperty("_text");
+			EditorGUILayout.PropertyField(textProp);
+
+			if (isButtonExFoldout = EditorGUILayout.Foldout(isButtonExFoldout, "ButtonEx", true))
+			{
+				++EditorGUI.indentLevel;
+				EditorGUILayout.PropertyField(serializedObject.FindProperty("buttonEx"));
+				--EditorGUI.indentLevel;
+			}
+
+			Editor.CreateCachedEditor(button.label, typeof(UILabelEditor), ref labelEditor);
+			labelEditor.OnInspectorGUI();
+
+			serializedObject.ApplyModifiedProperties();
+			if (EditorGUI.EndChangeCheck())
+			{
+				button.text = textProp.stringValue;
+			}
+		}
+	}
+
+
+	[CustomEditor(typeof(UISlider))]
+	public class UISliderEditor : Editor
+	{
+		public UISlider slider;
 		private RectTransform rect;
 		private Vector2 lastSize;
 
@@ -895,6 +976,111 @@ namespace AtomosZ.UI.EditorZ
 
 			if (slider.transform.parent != null)
 				slider.UpdateBackingData();
+		}
+
+
+		public override void OnInspectorGUI()
+		{
+			EditorGUI.BeginChangeCheck();
+
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("_referenceName"));
+			var interactableProp = serializedObject.FindProperty("_interactable");
+			EditorGUILayout.PropertyField(interactableProp);
+
+			var wholeNumbersProp = serializedObject.FindProperty("_wholeNumbers");
+			var minValueProp = serializedObject.FindProperty("_minValue");
+			var maxValueProp = serializedObject.FindProperty("_maxValue");
+			var valueProp = serializedObject.FindProperty("_value");
+			var oldValue = valueProp.floatValue;
+			EditorGUILayout.PropertyField(wholeNumbersProp);
+			EditorGUILayout.PropertyField(minValueProp);
+			EditorGUILayout.PropertyField(maxValueProp);
+			var newValue = EditorGUILayout.FloatField("Value", valueProp.floatValue);
+			//EditorGUILayout.PropertyField(valueProp);
+
+			var showUnitsProp = serializedObject.FindProperty("_showUnits");
+			var fontSizeProp = serializedObject.FindProperty("_fontSize");
+			var fontColorProp = serializedObject.FindProperty("_fontColor");
+			var unitOffsetProp = serializedObject.FindProperty("_unitVerticalOffset");
+			var unitSpanProp = serializedObject.FindProperty("_unitSpan");
+
+			EditorGUILayout.PropertyField(showUnitsProp);
+			if (showUnitsProp.boolValue)
+			{
+				EditorGUILayout.PropertyField(unitSpanProp);
+				EditorGUILayout.PropertyField(fontSizeProp);
+				EditorGUILayout.PropertyField(fontColorProp);
+				EditorGUILayout.PropertyField(unitOffsetProp);
+			}
+
+			var showHandleProp = serializedObject.FindProperty("_showHandle");
+			var handleSpriteProp = serializedObject.FindProperty("_handleSprite");
+			var handleOffsetProp = serializedObject.FindProperty("_handleOffset");
+
+			EditorGUILayout.PropertyField(showHandleProp);
+			if (showHandleProp.boolValue)
+			{
+				EditorGUILayout.PropertyField(handleSpriteProp);
+				if (handleSpriteProp != null)
+					EditorGUILayout.PropertyField(handleOffsetProp);
+			}
+
+			var fillHorzProp = serializedObject.FindProperty("_fillParentHorizontal");
+			EditorGUILayout.PropertyField(fillHorzProp);
+
+
+			var minDimenProp = serializedObject.FindProperty("_minDimensions");
+			EditorGUILayout.PropertyField(minDimenProp);
+
+
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("onValueChanged"));
+			//GUI.enabled = false;
+			//EditorGUILayout.PropertyField(serializedObject.FindProperty("size"));
+			//GUI.enabled = true;
+
+			serializedObject.ApplyModifiedProperties();
+
+			if (EditorGUI.EndChangeCheck())
+			{
+				slider.interactable = interactableProp.boolValue;
+
+				slider.minDimensions = minDimenProp.vector2Value;
+				slider.fillParentHorizontal = fillHorzProp.boolValue;
+
+				if (slider.showUnits)
+				{
+					slider.wholeNumbers = wholeNumbersProp.boolValue;
+					slider.fontSize = fontSizeProp.floatValue;
+					slider.fontColor = fontColorProp.colorValue;
+					if (slider.wholeNumbers)
+						slider.unitSpan = Mathf.RoundToInt(unitSpanProp.floatValue);
+					else
+						slider.unitSpan = unitSpanProp.floatValue;
+					slider.unitVerticalOffset = unitOffsetProp.floatValue;
+				}
+
+				slider.minValue = minValueProp.floatValue;
+				slider.maxValue = maxValueProp.floatValue;
+				if (oldValue != newValue)
+				{
+					slider.value = newValue;
+					valueProp.floatValue = newValue;
+				}
+
+				slider.showUnits = showUnitsProp.boolValue;
+
+
+				slider.showHandle = showHandleProp.boolValue;
+				if (slider.showHandle)
+				{
+					slider.handleOffset = handleOffsetProp.vector2Value;
+					slider.handleSprite = (Sprite)handleSpriteProp.objectReferenceValue;
+				}
+
+				slider.Refresh(slider.gameObject);
+			}
+
+
 		}
 
 
@@ -980,23 +1166,6 @@ namespace AtomosZ.UI.EditorZ
 		}
 	}
 
-
-	public class UIEditor<T> : Editor where T : MonoBehaviour, IUIBehavior
-	{
-		public override void OnInspectorGUI()
-		{
-			EditorGUI.BeginChangeCheck();
-			base.OnInspectorGUI();
-
-			if (EditorGUI.EndChangeCheck())
-			{
-				T buttonPanel = (T)target;
-				buttonPanel.UpdateBackingData();
-			}
-		}
-	}
-
-
 	[CustomEditor(typeof(UISpinner))]
 	public class UISpinnerEditor : Editor
 	{
@@ -1021,12 +1190,15 @@ namespace AtomosZ.UI.EditorZ
 						EditorGUILayout.PropertyField(serializedObject.FindProperty("placeholderText"));
 			*/
 
+			var activateProp = serializedObject.FindProperty("_interactable");
+			EditorGUILayout.PropertyField(activateProp);
+
 			var alignmentProp = serializedObject.FindProperty("_alignmentOptions");
 			EditorGUILayout.PropertyField(alignmentProp);
 
 			//var horzAlignmentProp = serializedObject.FindProperty("_horizontalAlignmentOptions");
 			//EditorGUILayout.PropertyField(horzAlignmentProp);
-			
+
 			//var vertAlignmentProp = serializedObject.FindProperty("_verticalAlignmentOptions");
 			//EditorGUILayout.PropertyField(vertAlignmentProp);
 
@@ -1045,15 +1217,13 @@ namespace AtomosZ.UI.EditorZ
 			var minDimenProp = serializedObject.FindProperty("_minDimen");
 			EditorGUILayout.PropertyField(minDimenProp);
 
-
 			serializedObject.ApplyModifiedProperties();
-
 			if (EditorGUI.EndChangeCheck())
 			{
+				spinner.interactable = activateProp.boolValue;
 				spinner.minInputFieldDimensions = minDimenProp.vector2Value;
 				spinner.alignmentOptions = (TextAlignmentOptions)alignmentProp.enumValueFlag;
-				//spinner.verticalAlignmentOptions = (VerticalAlignmentOptions)vertAlignmentProp.enumValueFlag;
-				//spinner.horizontalAlignmentOptions = (HorizontalAlignmentOptions)horzAlignmentProp.enumValueFlag;
+
 				spinner.minValue = minValueProp.intValue;
 				spinner.maxValue = maxValueProp.intValue;
 				spinner.value = valueProp.intValue;
@@ -1097,28 +1267,67 @@ namespace AtomosZ.UI.EditorZ
 		{
 			EditorGUI.BeginChangeCheck();
 
-			GUILayout.Space(10);
+			var textProp = serializedObject.FindProperty("_text");
+			EditorGUILayout.PropertyField(textProp);
+
+			var fontStylesProp = serializedObject.FindProperty("_fontStyles");
+			EditorGUILayout.PropertyField(fontStylesProp);
+
+			var alignmentProp = serializedObject.FindProperty("_alignmentOptions");
+			EditorGUILayout.PropertyField(alignmentProp);
+
+			var marginProp = serializedObject.FindProperty("_margin");
+			EditorGUILayout.PropertyField(marginProp);
+
+			EditorGUILayout.PropertyField(textLabel);
+			EditorGUILayout.PropertyField(image);
+			if (isLabelExFoldout = EditorGUILayout.Foldout(isLabelExFoldout, "Label Data", true))
 			{
-				EditorGUILayout.PropertyField(textLabel);
-				EditorGUILayout.PropertyField(image);
-				if (isLabelExFoldout = EditorGUILayout.Foldout(isLabelExFoldout, "Label Data", true))
-				{
-					++EditorGUI.indentLevel;
-					EditorGUILayout.PropertyField(labelExProp);
-					--EditorGUI.indentLevel;
-				}
+				++EditorGUI.indentLevel;
+				EditorGUILayout.PropertyField(labelExProp);
+				--EditorGUI.indentLevel;
 			}
+
 
 			serializedObject.ApplyModifiedProperties();
 
 			if (EditorGUI.EndChangeCheck())
 			{
+				label.text = textProp.stringValue;
+				label.fontStyles = (FontStyles)fontStylesProp.enumValueFlag;
+				label.alignmentOptions = (TextAlignmentOptions)alignmentProp.enumValueFlag;
+				label.margin = marginProp.vector4Value;
 				label.Refresh(label.gameObject);
 			}
 		}
 	}
 
 
+
+	public class UIEditor<T> : Editor where T : MonoBehaviour, IUIBehavior
+	{
+		public override void OnInspectorGUI()
+		{
+			EditorGUI.BeginChangeCheck();
+
+
+			base.OnInspectorGUI();
+
+			var interactableProp = serializedObject.FindProperty("_interactable");
+			if (interactableProp != null)
+				EditorGUILayout.PropertyField(interactableProp);
+
+			serializedObject.ApplyModifiedProperties();
+			if (EditorGUI.EndChangeCheck())
+			{
+				if (interactableProp != null)
+					((UICheckBox)target).interactable = interactableProp.boolValue;
+
+				T buttonPanel = (T)target;
+				buttonPanel.UpdateBackingData();
+			}
+		}
+	}
 
 
 	/// <summary>
@@ -1247,12 +1456,12 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUILayout.PropertyField(titleText);
 			switch (dynaPan.titleType)
 			{
-				case TitleLabelStyle.Bar:
+				case UI.DynamicPanel.TitleLabelStyle.Bar:
 					EditorGUILayout.PropertyField(centerTitleText);
 					break;
 
-				case TitleLabelStyle.SquareTab:
-				case TitleLabelStyle.BladedTab:
+				case UI.DynamicPanel.TitleLabelStyle.SquareTab:
+				case UI.DynamicPanel.TitleLabelStyle.BladedTab:
 				{
 					EditorGUILayout.PropertyField(tabs);
 					EditorGUILayout.PropertyField(selectedTabIndex);

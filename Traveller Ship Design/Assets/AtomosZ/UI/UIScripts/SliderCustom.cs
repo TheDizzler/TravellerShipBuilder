@@ -5,90 +5,97 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 namespace AtomosZ.UI
 {
 	public class SliderCustom : MonoBehaviour
 	{
+		[SerializeField] private UISlider slider;
+
 		[SerializeField] private Image emptyStartCap;
-		[SerializeField] private RectTransform emptyBar; // not used?
 		[SerializeField] private Image emptyEndCap;
 		[SerializeField] private Image fillStartCap;
-		[SerializeField] private RectTransform fillBarArea;
-		[SerializeField] private RectTransform fillBar;
 		[SerializeField] private Image fillEndCap;
+		[SerializeField] private Image handleImage;
+
+		[SerializeField] private RectTransform fillAreaRect;
+		[SerializeField] private RectTransform fillBarAreaRect;
+		[SerializeField] private RectTransform fillBarRect;
+
 		[SerializeField] private RectTransform handle;
 		[SerializeField] private RectTransform handlePanel;
 		[SerializeField] private RectTransform handleSlideArea;
-		[SerializeField] private RectTransform baseRect;
+		//[SerializeField] private RectTransform baseRect;
 		[SerializeField] private RectTransform units;
 		[SerializeField] private RectTransform panelRect;
 		[SerializeField] private RectTransform bgRect;
+
 		[SerializeField] private UIExpandingLabel sliderUnitPrefab;
 		[SerializeField] private UIExpandingLabel minUnit;
 		[SerializeField] private UIExpandingLabel maxUnit;
 
 		[SerializeField] private List<UIExpandingLabel> unitLabels;
-		private SliderEx sliderEx;
 
-		private bool showHandle
-		{
-			get
-			{
-				if (sliderEx.useCustomShowHandle || sliderEx.scriptableObj == null)
-					return sliderEx.showHandle;
-				return sliderEx.scriptableObj.showHandle;
-			}
-		}
 
-		public bool showUnits
+		public Sprite handleSprite
 		{
-			get
+			get { return handleImage.sprite; }
+			set
 			{
-				if (sliderEx.useCustomShowUnits || sliderEx.scriptableObj == null)
-					return sliderEx.showUnits;
-				return sliderEx.scriptableObj.showUnits;
-			}
-		}
-
-		public float unitSpan
-		{
-			get
-			{
-				if (sliderEx.useCustomUnitSpan || sliderEx.scriptableObj == null)
-					return sliderEx.unitSpan;
-				return sliderEx.scriptableObj.unitSpan;
-			}
-		}
-
-		public LabelEx labelEx
-		{
-			get
-			{
-				if (sliderEx.scriptableObj == null)
+				if (value == null)
 				{
-					return sliderEx.labelEx;
+					handleSlideArea.gameObject.SetActive(false);
 				}
-
-				return sliderEx.scriptableObj.labelEx;
+				else
+				{
+					handleImage.sprite = value;
+				}
 			}
 		}
 
 
+		public void ShowHandle(bool show)
+		{
+			handleSlideArea.gameObject.SetActive(show);
+			UpdateSlider(null);
+		}
 
+
+		public void ShowUnits(bool show)
+		{
+			units.gameObject.SetActive(show);
+			Resize();
+		}
+
+		public void SetFontSize(float newFontSize)
+		{
+			minUnit.fontSize = newFontSize;
+			maxUnit.fontSize = newFontSize;
+			foreach (var unit in unitLabels)
+				unit.fontSize = newFontSize;
+
+			Resize();
+		}
+
+		public void SetFontColor(Color newColor)
+		{
+			minUnit.SetColor(newColor);
+			maxUnit.SetColor(newColor);
+			foreach (var unit in unitLabels)
+				unit.SetColor(newColor);
+		}
+
+		private float handleHorzOverhang;
 		public void UpdateSlider(SliderEx sliderEx)
 		{
-			this.sliderEx = sliderEx;
-
-			handleSlideArea.gameObject.SetActive(showHandle);
-			if (showHandle)
+			handleHorzOverhang = 0;
+			if (slider.showHandle)
 			{
 				// calculate the handle overhang
 				Vector2 largest = Vector2.zero;
-				foreach (var child in fillBarArea.GetComponentsInChildren<RectTransform>())
+				foreach (var child in fillBarAreaRect.GetComponentsInChildren<RectTransform>())
 				{
-					if (!child.gameObject.activeSelf)
+					if (!child.gameObject.activeSelf || child == panelRect)
 						continue;
 					largest.x = Mathf.Max(child.rect.size.x, largest.x);
 					largest.y = Mathf.Max(child.rect.size.y, largest.y);
@@ -96,31 +103,88 @@ namespace AtomosZ.UI
 
 				Vector2 halfHandleSize = handle.rect.size / 2; // this will report the wrong height immediately after becoming active :(
 				var vertOverhang = halfHandleSize.y - largest.y / 2;
+				handleHorzOverhang = halfHandleSize.x - slider.handleOffset.x;
 
-				var horzOverhang = halfHandleSize.x - sliderEx.handleOffset.x;
+				Vector2 handleOverhang = new Vector2(/*Math.Max(0, horzOverhang)*/0, Math.Max(0, vertOverhang));
+				bgRect.anchoredPosition = handleOverhang;
+				fillAreaRect.anchoredPosition = handleOverhang;
+				handlePanel.anchoredPosition = handleOverhang;
 
-				Vector2 handleOverhang = new Vector2(Math.Max(0, horzOverhang), Math.Max(0, vertOverhang));
-				panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, baseRect.rect.width - handleOverhang.x * 2);
-				panelRect.anchoredPosition = new Vector2(panelRect.anchoredPosition.x, handleOverhang.y + 4);
-
-				handlePanel.offsetMin = new Vector2(sliderEx.handleOffset.x, -sliderEx.handleOffset.y);
-				handlePanel.offsetMax = new Vector2(-sliderEx.handleOffset.x, handleSlideArea.offsetMax.y);
-
-				fillBar.offsetMin = new Vector2(sliderEx.handleOffset.x, fillBar.offsetMin.y);
-				fillBar.offsetMax = new Vector2(-sliderEx.handleOffset.x, fillBar.offsetMax.y);
+				fillBarRect.offsetMin = new Vector2(slider.handleOffset.x, fillBarRect.offsetMin.y);
+				fillBarRect.offsetMax = new Vector2(-slider.handleOffset.x, fillBarRect.offsetMax.y);
 			}
 			else
 			{
-				panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, baseRect.rect.width);
-				panelRect.anchoredPosition = new Vector2(panelRect.anchoredPosition.x, 4);
-				handlePanel.offsetMin = new Vector2(sliderEx.handleOffset.x, 0);
-				handlePanel.offsetMax = new Vector2(-sliderEx.handleOffset.x, 0);
-				//handlePanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, panelRect.sizeDelta.x);
-				//handlePanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, panelRect.sizeDelta.y);
+				bgRect.anchoredPosition = Vector2.zero;
+				fillAreaRect.anchoredPosition = Vector2.zero;
+				handlePanel.anchoredPosition = Vector2.zero;
 			}
 
+			SetValueFill();
 
-			var percent = Mathf.InverseLerp(sliderEx.minValue, sliderEx.maxValue, sliderEx.value);
+
+			if (slider.showUnits)   // @TODO(Tristan): stop this from updating everytime anything on the slider is changed
+			{                       // but also need a way to flag that text needs to be refreshed
+				CreateUnitLabels();
+			}
+			else
+			{
+				units.gameObject.SetActive(false);
+				ClearLabels();
+			}
+
+			Resize();
+		}
+
+		private float showHandleUnitOffset = 42.0f;
+		private float hideHandleUnitOffset = 32.0f;
+		internal void CreateUnitLabels()
+		{
+			units.gameObject.SetActive(true);
+			units.anchoredPosition = new Vector2(units.anchoredPosition.x, slider.unitVerticalOffset);
+			if (slider.showHandle)
+				units.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, showHandleUnitOffset);
+			else
+				units.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, hideHandleUnitOffset);
+
+			float nextUnit = slider.minValue;
+
+
+			var labelData = (LabelEx)minUnit.GetBackingData();
+			var clone = (LabelEx)labelData.Clone();
+			minUnit.text = nextUnit.ToString();
+			minUnit.UpdateBackingData(clone);
+
+			clone = (LabelEx)labelData.Clone();
+			clone.fontSize = slider.fontSize;
+			maxUnit.text = slider.maxValue.ToString();
+			maxUnit.UpdateBackingData(clone);
+
+			ClearLabels();
+
+			float unitDiff = slider.unitSpan;
+			if (unitDiff > 0)
+			{
+				float range = (slider.maxValue - slider.minValue);
+				float distDiff = Mathf.Lerp(0, units.rect.width, unitDiff / range);
+				float nextPos = 0;
+				while ((nextUnit += unitDiff) < slider.maxValue)
+				{
+					nextPos += distDiff;
+					clone = (LabelEx)labelData.Clone();
+					
+					var newLabel = Instantiate(sliderUnitPrefab, units.transform, false);
+					newLabel.GetComponent<RectTransform>().anchoredPosition = new Vector2(nextPos, 0);
+					newLabel.text = nextUnit.ToString();
+					newLabel.UpdateBackingData(clone);
+					unitLabels.Add(newLabel);
+				}
+			}
+		}
+
+		internal void SetValueFill()
+		{
+			var percent = Mathf.InverseLerp(slider.minValue, slider.maxValue, slider.value);
 			var fillBarSize = Mathf.Lerp(0, handleSlideArea.rect.width, percent);
 
 			if (percent != 1)
@@ -138,89 +202,115 @@ namespace AtomosZ.UI
 				fillEndCap.enabled = true;
 			}
 
-			fillBar.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, fillBarSize);
+			fillBarRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, fillBarSize);
 
-			if (showHandle)
+
+			if (slider.showHandle)
 			{
 				var handlePos = Mathf.Lerp(0, handleSlideArea.rect.width, percent);
 				handle.localPosition = new Vector2((-handleSlideArea.rect.width / 2) + handlePos, handle.localPosition.y);
 			}
+		}
 
-			if (showUnits)     // @TODO(Tristan): stop this from updating everytime anything on the slider is changed
-			{                  // but also need a way to flag that text needs to be refreshed
-				units.gameObject.SetActive(true);
-				units.anchoredPosition = new Vector2(units.anchoredPosition.x, sliderEx.unitVerticalOffset);
-				if (showHandle)
-				{
-					units.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 64.0f);
-					units.localPosition = new Vector2(units.localPosition.x, units.localPosition.y + 4);
 
-				}
-				else
-					units.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 32.0f);
-
-				float nextUnit = sliderEx.minValue;
-
-				var labelData = labelEx;
-				var clone = (LabelEx)labelData.Clone();
-				clone.text = nextUnit.ToString();
-				minUnit.UpdateBackingData(clone);
-
-				clone = (LabelEx)labelData.Clone();
-				clone.text = sliderEx.maxValue.ToString();
-				maxUnit.UpdateBackingData(clone);
-
-				ClearLabels();
-
-				float unitDiff = unitSpan;
-				if (unitDiff > 0)
-				{
-					float range = (sliderEx.maxValue - sliderEx.minValue);
-					float distDiff = Mathf.Lerp(0, units.rect.width, unitDiff / (range));
-					float nextPos = 0;
-					while ((nextUnit += unitDiff) < sliderEx.maxValue)
-					{
-						nextPos += distDiff;
-						clone = (LabelEx)labelData.Clone();
-						clone.text = nextUnit.ToString();
-
-						var newLabel = Instantiate(sliderUnitPrefab, units.transform, false);
-						newLabel.GetComponent<RectTransform>().anchoredPosition = new Vector2(nextPos, 0);
-						newLabel.UpdateBackingData(clone);
-						unitLabels.Add(newLabel);
-					}
-				}
-			}
-			else
-			{
-				units.gameObject.SetActive(false);
-				ClearLabels();
-			}
-
-			var boundingBox = GetLargestBoundingBox();
-			if (boundingBox.height < sliderEx.minDimensions.y)
-				boundingBox.height = sliderEx.minDimensions.y;
-			baseRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, boundingBox.height);
+		private void Resize()
+		{
+			var sizeData = GetHeightAndLeftUnitOverhang(slider.showHandle, slider.showUnits);
+			if (sizeData.y < slider.minDimensions.y)
+				sizeData.y = slider.minDimensions.y;
+			panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, sizeData.y);
 			//if (boundingBox.width > baseRect.rect.width) // this creates an infinite growth
-			//	baseRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, boundingBox.width);
+			//panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, boundingBox.width);
+			slider.size.x = Math.Min(sizeData.x, handleHorzOverhang);
+			slider.size.y = sizeData.y;
+
+			//var mainPos = slider.GetComponent<RectTransform>().anchoredPosition;
+			//mainPos.x += slider.size.x;
+			//mainPos.y += panelRect.rect.height;
+			//panelRect.anchoredPosition = mainPos;
+
+			panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,
+				slider.GetComponent<RectTransform>().rect.width + slider.size.x);
+		}
+
+
+		/// <summary>
+		/// x: overhang of leftmost digit.
+		/// y: total height of control.
+		/// </summary>
+		/// <param name="showHandle"></param>
+		/// <param name="showUnits"></param>
+		/// <returns></returns>
+		private Vector2 GetHeightAndLeftUnitOverhang(bool showHandle, bool showUnits)
+		{
+			//var panelDims = new Rect(panelRect.position.x, panelRect.position.y, panelRect.rect.width, panelRect.rect.height);
+
+			//float minPosX = float.MaxValue;
+			float minPosY = float.MaxValue;
+			float maxPosY = float.MinValue;
+
+			float overhang = 0;
+			if (showUnits)
+			{
+				var minUnitRect = minUnit.GetComponent<RectTransform>();
+				var maxUnitRect = maxUnit.GetComponent<RectTransform>();
+
+				var unitsAdjust = (units.anchoredPosition.y + units.rect.height - units.rect.y);
+				if (showHandle)
+					unitsAdjust += showHandleUnitOffset - hideHandleUnitOffset; // why this works, I have no idea
+				var handleAdjust = (handlePanel.anchoredPosition.y + handlePanel.rect.height + handlePanel.rect.y);
+				var posYFromPanel = unitsAdjust + handleAdjust + minUnitRect.anchoredPosition.y + minUnitRect.rect.y;
+
+				minPosY = Math.Min(minPosY, posYFromPanel);
+				maxPosY = Math.Max(maxPosY, posYFromPanel + minUnitRect.rect.height);
+
+				//minPosY = Math.Min(minPosY, minUnitRect.position.y + minUnitRect.rect.y);
+				//maxPosY = Math.Max(maxPosY, minUnitRect.position.y + minUnitRect.rect.y + minUnitRect.rect.height);
+
+
+				//var minUnitPos = minUnitRect.position.x + minUnitRect.rect.x;
+
+				//var fillAreaLeftMost = fillAreaRect.position.x + fillAreaRect.rect.x;
+				//overhang = Math.Min(0, minUnitPos - fillAreaLeftMost);
+			}
+
+			if (showHandle)
+			{
+				var handleAdjust = (handlePanel.anchoredPosition.y + handlePanel.rect.height + handlePanel.rect.y);
+				var handleSlideAdjust = handleSlideArea.anchoredPosition.y + handleSlideArea.rect.height + handleSlideArea.rect.y;
+				var posYFromPanel = handleAdjust + handleSlideAdjust + handle.anchoredPosition.y + handle.rect.y;
+
+				//var minHandlPos = handle.position.y + handle.rect.y;
+				//var maxHandlPos = handle.position.y + handle.rect.y + handle.rect.height;
+				//minPosY = Math.Min(minPosY, minHandlPos);
+				//maxPosY = Math.Max(maxPosY, maxHandlPos);
+				minPosY = Math.Min(minPosY, posYFromPanel);
+				maxPosY = Math.Max(maxPosY, posYFromPanel + handle.rect.height);
+			}
+
+			//minPosY = Math.Min(minPosY, fillAreaRect.position.y + fillAreaRect.rect.y);
+			//maxPosY = Math.Max(maxPosY, fillAreaRect.position.y + fillAreaRect.rect.y + fillAreaRect.rect.height);
+
+			var fillAreaAdjust = fillAreaRect.anchoredPosition.y + fillAreaRect.rect.y;
+			var fillAreaMax = fillAreaAdjust + fillAreaRect.rect.height;
+			minPosY = Math.Min(minPosY, fillAreaAdjust);
+			maxPosY = Math.Max(maxPosY, fillAreaMax);
+
+			float height = maxPosY - minPosY;
+
+			return new Vector2(overhang, height);
+			//return new Rect(minPosX, minPosY, 0, height);
+		}
+
+		public Vector2 GetMinDimensions()
+		{
+			Resize();
+			return slider.size;
 		}
 
 
 		private void ClearLabels()
 		{
-//#if DEBUG
-//			var labels = GetComponentsInChildren<UIExpandingLabel>();
-//			foreach (var label in labels)
-//			{
-//				if (label.name.Contains("Max") || label.name.Contains("Min"))
-//					continue;
-//				unitLabels.Remove(label);
-//				if (!Application.isPlaying)
-//					DestroyImmediate(label.gameObject);
-//				else
-//					Destroy(label.gameObject);
-//			}
-//#endif
 			foreach (var label in unitLabels)
 			{
 				if (label == null)
@@ -236,49 +326,6 @@ namespace AtomosZ.UI
 			}
 
 			unitLabels.Clear();
-		}
-
-		private Rect GetLargestBoundingBox()
-		{
-			//var panelDims = new Rect(panelRect.position.x, panelRect.position.y, panelRect.rect.width, panelRect.rect.height);
-
-			float minPosX = float.MaxValue;
-			float minPosY = float.MaxValue;
-			float maxHeight = 0;
-			float maxWidth = 0;
-			if (showUnits)
-			{
-				var minUnitRect = minUnit.GetComponent<RectTransform>();
-				var maxUnitRect = maxUnit.GetComponent<RectTransform>();
-
-				minPosX = Math.Min(minPosX, minUnitRect.rect.x);
-				minPosY = Math.Min(minPosY, minUnitRect.position.y);
-
-				float xDiff = Math.Abs(minUnitRect.position.x) + Math.Abs(maxUnitRect.position.x + maxUnitRect.rect.width);
-				maxWidth = Math.Max(maxWidth, xDiff);
-				maxHeight = Math.Max(maxHeight, units.rect.height + minUnitRect.rect.height);
-			}
-
-			if (showHandle)
-			{
-				maxHeight = Math.Max(maxHeight, handle.rect.height);
-			}
-
-			minPosX = Math.Min(minPosX, bgRect.position.x);
-			minPosY = Math.Min(minPosY, bgRect.position.y);
-			maxWidth = Math.Max(maxWidth, bgRect.rect.width);
-			maxHeight = Math.Max(maxHeight, bgRect.rect.height);
-			minPosX = Math.Min(minPosX, fillBar.position.x);
-			minPosY = Math.Min(minPosY, fillBar.position.y);
-			maxWidth = Math.Max(maxWidth, fillBar.rect.width);
-			maxHeight = Math.Max(maxHeight, fillBar.rect.height);
-
-			return new Rect(minPosX, minPosY, maxWidth, maxHeight);
-		}
-
-		public Vector2 GetMinDimensions()
-		{
-			return baseRect.sizeDelta;
 		}
 	}
 }

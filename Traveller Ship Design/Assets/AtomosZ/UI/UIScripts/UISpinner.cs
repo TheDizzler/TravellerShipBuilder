@@ -106,13 +106,6 @@ namespace AtomosZ.UI
 			}
 		}
 
-		//public enum AlignmentOptions
-		//{
-		//	// HorizontalAlignmentOptions
-		//	Left = 0x1, Center = 0x2, Right = 0x4, Justified = 0x8, Flush = 0x10, Geometry_Horz = 0x20,
-		//	// VerticalAlignmentOptions
-		//	Top = 0x100, Middle = 0x200, Bottom = 0x400, Baseline = 0x800, Geometry_vert = 0x1000, Capline = 0x2000,
-		//}
 
 		[SerializeField] private TextAlignmentOptions _alignmentOptions;
 		public TextAlignmentOptions alignmentOptions
@@ -124,38 +117,28 @@ namespace AtomosZ.UI
 				var vert = (VerticalAlignmentOptions)(value
 					& (TextAlignmentOptions)(VerticalAlignmentOptions.Baseline | VerticalAlignmentOptions.Bottom
 					| VerticalAlignmentOptions.Capline | VerticalAlignmentOptions.Geometry
-					 | VerticalAlignmentOptions.Middle | VerticalAlignmentOptions.Top));
+					| VerticalAlignmentOptions.Middle | VerticalAlignmentOptions.Top));
 
 				text.verticalAlignment = vert;
 				placeholderText.verticalAlignment = vert;
 
 				var horz = (HorizontalAlignmentOptions)(value ^ (TextAlignmentOptions)vert);
 				text.horizontalAlignment = horz;
-				placeholderText.horizontalAlignment = _horizontalAlignmentOptions;
+				placeholderText.horizontalAlignment = horz;
 			}
 		}
 
-		[SerializeField] private HorizontalAlignmentOptions _horizontalAlignmentOptions;
-		public HorizontalAlignmentOptions horizontalAlignmentOptions
-		{
-			get { return _horizontalAlignmentOptions; }
-			set
-			{
-				_horizontalAlignmentOptions = value;
-				text.horizontalAlignment = _horizontalAlignmentOptions;
-				placeholderText.horizontalAlignment = _horizontalAlignmentOptions;
-			}
-		}
 
-		[SerializeField] private VerticalAlignmentOptions _verticalAlignmentOptions;
-		public VerticalAlignmentOptions verticalAlignmentOptions
+		[SerializeField] private bool _interactable = true;
+		public bool interactable
 		{
-			get { return _verticalAlignmentOptions; }
+			get { return _interactable; }
 			set
 			{
-				_verticalAlignmentOptions = value;
-				text.verticalAlignment = _verticalAlignmentOptions;
-				placeholderText.verticalAlignment = _verticalAlignmentOptions;
+				_interactable = value;
+				leftButton.interactable = value;
+				rightButton.interactable = value;
+				inputField.interactable = value;
 			}
 		}
 

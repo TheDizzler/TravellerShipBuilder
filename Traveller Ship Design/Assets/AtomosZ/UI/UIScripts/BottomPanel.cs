@@ -14,6 +14,7 @@ using static AtomosZ.UI.UIPrefabProvider;
 
 namespace AtomosZ.UI
 {
+	[Obsolete("Replaced with MagicWindow")]
 	public class BottomPanel : MonoBehaviour
 	{
 		public enum DialogResult
@@ -252,11 +253,11 @@ namespace AtomosZ.UI
 
 		private UIExpandingLabel AddText(LabelEx dataEx)
 		{
-			if (string.IsNullOrEmpty(dataEx.text))
-			{
-				Debug.LogException(new Exception("Text may not be empty"));
-				return null;
-			}
+			//if (string.IsNullOrEmpty(dataEx.text))
+			//{
+			//	Debug.LogException(new Exception("Text may not be empty"));
+			//	return null;
+			//}
 
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ExpandingText), transform);
 			var label = uiDO.GetComponent<UIExpandingLabel>();
@@ -418,7 +419,7 @@ namespace AtomosZ.UI
 			var button = menuControl.GetComponent<Button>();
 			button.onClick.AddListener(clickAction.action);
 			button.interactable = clickAction.enabled;
-			menuControl.GetComponentInChildren<UIExpandingLabel>().SetText(clickAction.buttonText, false);
+			menuControl.GetComponentInChildren<UIExpandingLabel>().text = clickAction.buttonText;
 
 			AddControl(UIPrefabType.MenuControlButton, menuControl);
 		}

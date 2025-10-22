@@ -21,6 +21,7 @@ using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
+	[Obsolete("Replaced with MagicWindow")]
 	public class DynamicPanel : MonoBehaviour, IUIBehavior
 	{
 		public enum TitleLabelStyle
@@ -671,7 +672,9 @@ namespace AtomosZ.UI
 		/// <param name="text"></param>
 		public UIExpandingLabel AddText_NoData(string text)
 		{
-			return (UIExpandingLabel)AddUIControl(new LabelEx(text));
+			var label= (UIExpandingLabel)AddUIControl(new LabelEx());
+			label.text = text;
+			return label;
 		}
 
 		/// <summary>
@@ -680,13 +683,16 @@ namespace AtomosZ.UI
 		/// <param name="text"></param>
 		public UIExpandingLabel AddText_NoData(string text, float fontSize, Color fontColor, Vector2 minLabelDimensions, Vector2 maxLabelDimensions)
 		{
-			return (UIExpandingLabel)AddUIControl(new LabelEx(text)
+			var label = (UIExpandingLabel)AddUIControl(new LabelEx()
 			{
 				fontSize = fontSize,
 				fontColor = fontColor,
 				minLabelDimensions = minLabelDimensions,
 				maxLabelDimensions = maxLabelDimensions,
 			});
+
+			label.text = text;
+			return label;
 		}
 
 

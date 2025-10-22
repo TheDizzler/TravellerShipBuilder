@@ -171,20 +171,26 @@ namespace AtomosZ.UI
 		}
 
 
-		[Conditional("DEBUG")]
-		public void ClearControlsEditor()
+		public void ClearControls()
 		{
 			for (int i = tabPanels.Count - 1; i > 1; ++i)
 			{
 				RemoveTab(i);
 			}
 
-			tabPanels.First().Value.ClearControlsEditor();
+#if DEBUG
+			if (Application.isPlaying)
+				tabPanels.First().Value.ClearControls();
+			else
+				tabPanels.First().Value.ClearControls_EditorOnly();
+#else
+			tabPanels.First().Value.ClearControls();
+#endif
 
 			GetMinDimensions();
 		}
 
-		[System.Diagnostics.Conditional("UNITY_EDITOR")]
+		[Conditional("UNITY_EDITOR")]
 		public void RecordPrefabInstances()
 		{
 			PrefabUtility.RecordPrefabInstancePropertyModifications(this);
@@ -202,7 +208,8 @@ namespace AtomosZ.UI
 			var panels = panelsTransform.GetComponentsInChildren<UIPanel>(true);
 			foreach (UIPanel child in panels)
 			{
-				tabPanels.Add(child.tabLabel, child);
+				if (child.tabLabel != null)
+					tabPanels.Add(child.tabLabel, child);
 			}
 
 			if (tabPanels.Count == 0)
@@ -254,7 +261,7 @@ namespace AtomosZ.UI
 				tabText = "TabItem_" + (tabPanels.Count - 1).ToString("00");
 			}
 
-			tabLabel.SetText(tabText, false);
+			tabLabel.text = tabText;
 
 #if !DEBUG
 			Refresh();
@@ -376,6 +383,7 @@ namespace AtomosZ.UI
 				case WindowStyle.ContextMenu:
 				{
 					ToggleMultitab_DEBUG(false);
+
 				}
 				break;
 			}
@@ -393,10 +401,10 @@ namespace AtomosZ.UI
 			tabLabel.transform.SetParent(transform);
 
 			if (tabLabel.text.StartsWith("TabItem_"))
-				tabLabel.SetText("Title", false);
+				tabLabel.text = "Title";
 
 			tabLabel.SetColor(tabControlEx.scriptableObj.titleBarFontColor);
-			tabLabel.SetTextAlignment(tabControlEx.scriptableObj.tabTextAlignment);
+			tabLabel.alignmentOptions = tabControlEx.scriptableObj.tabTextAlignment;
 
 			tabLabel.UpdateBackingData();
 			//var tabRect = tab.GetComponent<RectTransform>();
@@ -438,7 +446,7 @@ namespace AtomosZ.UI
 		{
 			if (tabPanels[0].Key.text.StartsWith("Title"))
 			{
-				tabPanels[0].Key.SetText("TabItem_00", false);
+				tabPanels[0].Key.text = "TabItem_00";
 			}
 
 			var rect = GetComponent<RectTransform>();
@@ -448,7 +456,7 @@ namespace AtomosZ.UI
 			foreach (var tabPanel in tabPanels)
 			{
 				var tabLabel = tabPanel.Key;
-				tabLabel.UpdateBackingData();
+
 				var panel = tabPanel.Value;
 				var tabRect = tabLabel.GetComponent<RectTransform>();
 				tabRect.localPosition = new Vector3(nextXPos, 0, 0);
@@ -498,6 +506,17 @@ namespace AtomosZ.UI
 					sprite = tabSprite;
 				if (sprite != null)
 					tabLabel.GetComponent<Image>().sprite = sprite;
+
+				tabLabel.alignmentOptions = tabControlEx.scriptableObj.tabTextAlignment;
+				tabLabel.SetColor(tabControlEx.scriptableObj.titleBarFontColor);
+				tabLabel.margin = tabControlEx.scriptableObj.titleTextMargin;
+
+
+				var labelMinSize = tabControlEx.scriptableObj.titleBarMinSize;
+				labelMinSize.x -= tabControlEx.scriptableObj.titleTextMargin.x + tabControlEx.scriptableObj.titleTextMargin.z;
+				labelMinSize.y -= tabControlEx.scriptableObj.titleTextMargin.y + tabControlEx.scriptableObj.titleTextMargin.w;
+				tabLabel.minLabelDimensions = labelMinSize;
+				tabLabel.UpdateBackingData();
 				++i;
 			}
 

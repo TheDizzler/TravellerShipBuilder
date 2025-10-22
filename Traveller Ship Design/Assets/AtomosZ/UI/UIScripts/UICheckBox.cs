@@ -15,7 +15,7 @@ namespace AtomosZ.UI
 	public class CheckBoxEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.CheckBox; } }
-		public string referenceName;
+		public string referenceName = "checkbox";
 
 		public UICheckBoxScriptableObject scriptableObj;
 
@@ -43,7 +43,7 @@ namespace AtomosZ.UI
 			{
 				useCustomCheckImage = true;
 				useCustomBoxImage = true;
-				labelEx = new LabelEx("Checkbox")
+				labelEx = new LabelEx()
 				{
 					fontSize = 14,
 					fontColor = Color.black,
@@ -62,10 +62,9 @@ namespace AtomosZ.UI
 		public UIExpandingLabel textLabel;
 		public Toggle toggle;
 
-		public string referenceName { get { return checkBoxEx.referenceName; }  set { checkBoxEx.referenceName = value; }}
+		public string referenceName { get { return checkBoxEx.referenceName; } set { checkBoxEx.referenceName = value; } }
 
 		private UIDesignObject _designObject;
-
 		public UIDesignObject designObject
 		{
 			get
@@ -81,6 +80,39 @@ namespace AtomosZ.UI
 			if (referenceName == controlRefName)
 				return this;
 			return null;
+		}
+
+		[SerializeField] private bool _interactable = true;
+		public bool interactable
+		{
+			get { return _interactable; }
+			set
+			{
+				_interactable = value;
+				if (value)
+				{
+					boxImage.color = toggle.colors.normalColor;
+					checkImage.color = toggle.colors.normalColor;
+				}
+				else
+				{
+					boxImage.color = toggle.colors.disabledColor;
+					checkImage.color = toggle.colors.disabledColor;
+				}
+			}
+		}
+
+
+		[SerializeField] private string _text = "CheckBox";
+		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
+		public string text
+		{
+			get { return _text; }
+			set
+			{
+				_text = value;
+				textLabel.text = value;
+			}
 		}
 
 		private Sprite boxSprite

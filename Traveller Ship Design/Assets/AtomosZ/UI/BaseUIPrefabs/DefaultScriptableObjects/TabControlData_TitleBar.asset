@@ -23,6 +23,6 @@ MonoBehaviour:
   selectedTabColor: {r: 1, g: 1, b: 1, a: 1}
   deselectedTabColor: {r: 0, g: 0, b: 0, a: 0}
   disabledTabColor: {r: 1, g: 1, b: 1, a: 1}
-  tabTextAlignment: 1
+  tabTextAlignment: 514
   tabHorizontaloffset: -36
   panelWidthAdjust: 16

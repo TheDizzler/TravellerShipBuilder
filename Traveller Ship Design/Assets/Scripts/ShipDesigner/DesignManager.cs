@@ -38,11 +38,13 @@ public class DesignManager : MonoBehaviour
 		return instance.prefabs[prefabType];
 	}
 
+	[Obsolete("Replace with MagicWindow")]
 	public static DynamicPanel GetDynamicPanel()
 	{
 		return instance._GetDynamicPanel();
 	}
 
+	[Obsolete("Replace with MagicWindow")]
 	private DynamicPanel _GetDynamicPanel()
 	{
 		var panelUIObject = Instantiate(GetUIPrefab(UIPrefabType.DynamicPanel));
@@ -199,15 +201,16 @@ public class DesignManager : MonoBehaviour
 	{
 		var panel = GetDynamicPanel();
 		panel.designObject.isModal = true;
-		panel.AddText(new LabelEx("Panel " + panelCount++));
+		var label = panel.AddText(new LabelEx());
+		label.text = "Panel " + panelCount++;
 
 		var button = (UIButton)panel.AddUIControl(UIControlType.Button);
 		var buttonEx = (ButtonEx)button.GetBackingData();
-		buttonEx.labelEx.text = "Modal Panel"; // this will probably break. I need to decide how to handle 
+		button.text = "Modal Panel";
 		buttonEx.AddListener(MakeModalPanel);
 		button = (UIButton)panel.AddUIControl(UIControlType.Button);
 		buttonEx = (ButtonEx)button.GetBackingData();
-		buttonEx.labelEx.text = "Non Modal Panel";
+		button.text = "Non Modal Panel";
 		buttonEx.AddListener(MakeNonModalPanel);
 		panel.SetTitle("Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
 		panel.Show(Vector2.zero);
@@ -216,14 +219,15 @@ public class DesignManager : MonoBehaviour
 	public void MakeNonModalPanel()
 	{
 		var panel = DesignManager.GetDynamicPanel();
-		panel.AddText(new LabelEx("Panel " + panelCount++));
+		var label = panel.AddText(new LabelEx());
+		label.text = "Panel " + panelCount++;
 		var button = (UIButton)panel.AddUIControl(UIControlType.Button);
 		var buttonEx = (ButtonEx)button.GetBackingData();
-		buttonEx.labelEx.text = "Modal Panel"; // this will probably break. I need to decide how to handle 
+		button.text = "Modal Panel";
 		buttonEx.AddListener(MakeModalPanel);
 		button = (UIButton)panel.AddUIControl(UIControlType.Button);
 		buttonEx = (ButtonEx)button.GetBackingData();
-		buttonEx.labelEx.text = "Non Modal Panel";
+		button.text= "Non Modal Panel";
 		buttonEx.AddListener(MakeNonModalPanel);
 		panel.SetTitle("Non Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
 		panel.Show(Vector2.zero);

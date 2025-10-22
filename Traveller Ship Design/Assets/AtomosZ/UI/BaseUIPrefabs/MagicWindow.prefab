@@ -181,16 +181,17 @@ MonoBehaviour:
     backgroundSprite: {fileID: 0}
     minDimensions: {x: 96, y: 64}
     layoutPadding:
-      m_Left: 32
-      m_Right: 32
-      m_Top: 16
-      m_Bottom: 16
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
     layoutSpacing: 8
     useCustomBackgroundSprite: 0
     useCustomMinDimensions: 0
     useCustomLayoutPadding: 0
     useCustomLayoutSpacing: 0
   _designObject: {fileID: 5671732405208023505}
+  _borderless: 0
   tabLabel: {fileID: 866116331851304288}
   uiControls: []
   rect: {fileID: 406007581663478937}
@@ -347,6 +348,9 @@ MonoBehaviour:
   textLabel: {fileID: 316443157973386318}
   image: {fileID: 7857994618479000486}
   _designObject: {fileID: 0}
+  _fontStyles: 0
+  _alignmentOptions: 0
+  _margin: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &3406277117128883355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -527,24 +531,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MagicWindow
   windowStyle: 2
-  styleDatas:
+  windowStyleDatas:
     keys: 010000000200000000000000
     values:
-    - {fileID: 11400000, guid: 0027f5f71500d714f8d2ed0bfb2b42d4, type: 2}
-    - {fileID: 11400000, guid: 790f7b4bb9b710b49911cc030f5756f2, type: 2}
     - {fileID: 11400000, guid: 6ad28b677fe12a3458672ec0448d5ca0, type: 2}
+    - {fileID: 11400000, guid: 790f7b4bb9b710b49911cc030f5756f2, type: 2}
+    - {fileID: 11400000, guid: 0027f5f71500d714f8d2ed0bfb2b42d4, type: 2}
   _referenceName: magicWindow_00
   _designObject: {fileID: 4508516794867129895}
   rootTabControl: {fileID: 4400289810483429264}
-  textScriptObj: {fileID: 0}
-  dropdownScriptObj: {fileID: 0}
-  checkBoxScriptObj: {fileID: 0}
-  inputFieldScriptObj: {fileID: 0}
-  sliderScriptObj: {fileID: 0}
-  buttonScriptObj: {fileID: 0}
-  buttonPanelScriptObj: {fileID: 0}
-  imageViewScriptObj: {fileID: 0}
-  imageViewPanelScriptObj: {fileID: 0}
+  panelScriptObj: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
+  horizontalPanelScriptObj: {fileID: 11400000, guid: ce1eba15204d2244a8afb65cdc2be026, type: 2}
+  textScriptObj: {fileID: 11400000, guid: 602ee890f7215c84e86858806d8cd97f, type: 2}
+  dropdownScriptObj: {fileID: 11400000, guid: a22e1f16cdb147547b5d6c8222d55958, type: 2}
+  checkBoxScriptObj: {fileID: 11400000, guid: b07b814d0d2387741a590f0e97184b34, type: 2}
+  inputFieldScriptObj: {fileID: 11400000, guid: 9ca31f4b689e8ea44acd3ffbc1c18147, type: 2}
+  sliderScriptObj: {fileID: 11400000, guid: 8181c99cb6437ea458a02fe691635b77, type: 2}
+  buttonScriptObj: {fileID: 11400000, guid: a308899491cf25a459f2ecb401b6aa67, type: 2}
+  buttonPanelScriptObj: {fileID: 11400000, guid: 56557aa7b7c6fad48b93d20458c100fb, type: 2}
+  imageViewScriptObj: {fileID: 11400000, guid: 04ca78633c910a242b8446e33520c341, type: 2}
+  imageViewPanelScriptObj: {fileID: 11400000, guid: 6d8a33448b05f544fa7af08d9f8976bd, type: 2}
   currentType: 0
   controlList:
   - controlType: 0
@@ -712,6 +718,9 @@ MonoBehaviour:
   textLabel: {fileID: 2465104500499876174}
   image: {fileID: 322611813024690506}
   _designObject: {fileID: 0}
+  _fontStyles: 0
+  _alignmentOptions: 514
+  _margin: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &2054770131664959358
 MonoBehaviour:
   m_ObjectHideFlags: 0

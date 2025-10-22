@@ -10,7 +10,7 @@ namespace AtomosZ.UI
 	public class ButtonEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Button; } }
-		public string referenceName;
+		public string referenceName = "button";
 
 		public UnityEvent action = null;
 		public bool fillParentHorizontal = false;
@@ -31,7 +31,7 @@ namespace AtomosZ.UI
 			scriptableObj = scriptObj;
 			if (scriptableObj == null || scriptableObj.labelEx == null)
 			{
-				labelEx = new LabelEx("Button Text")
+				labelEx = new LabelEx()
 				{
 					fontColor = Color.black,
 					fontSize = 36,
@@ -44,9 +44,9 @@ namespace AtomosZ.UI
 		/// </summary>
 		/// <param name="buttonText"></param>
 		/// <param name="fontSize"></param>
-		public ButtonEx(string buttonText, float fontSize = 36)
+		public ButtonEx(float fontSize = 36)
 		{
-			labelEx = new LabelEx(buttonText)
+			labelEx = new LabelEx()
 			{
 				fontColor = Color.black,
 				fontSize = fontSize,
@@ -67,7 +67,7 @@ namespace AtomosZ.UI
 	public class UIButton : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private ButtonEx buttonEx;
-		[SerializeField] private UIExpandingLabel label;
+		[SerializeField] public UIExpandingLabel label;
 		[SerializeField] private Image image;
 
 		public string referenceName { get { return buttonEx.referenceName; } set { buttonEx.referenceName = value; } }
@@ -100,6 +100,21 @@ namespace AtomosZ.UI
 				}
 
 				return buttonEx.scriptableObj.labelEx;
+			}
+		}
+
+		[SerializeField] private string _text = "Button Text";
+		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
+		public string text
+		{
+			get
+			{
+				_text = label.text;
+				return _text;
+			}
+			set
+			{
+				label.text = _text = value;
 			}
 		}
 

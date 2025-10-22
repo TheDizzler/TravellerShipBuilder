@@ -6,7 +6,7 @@ using AtomosZ.UI;
 using TMPro;
 
 using UnityEngine;
-using UnityEngine.UI;
+
 
 namespace AtomosZ.MG2eTraveller.Vehicle
 {
@@ -14,7 +14,14 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 	{
 		[SerializeField] private UIInput uiInput;
 		[SerializeField] private MagicWindow designWindow;
+		[SerializeField] private MagicWindow dataSheetWindow;
+		[SerializeField] private MagicWindow techTableWindow;
 
+		[SerializeField] public UIExpandingLabelScriptableObject techTableScriptObj;
+		[SerializeField] public UIExpandingLabelScriptableObject dataSheetLabelScriptObj;
+		[SerializeField] public UIPanelScriptableObject horizontalPanelData;
+
+		//private Chassis chassis;
 
 		public static void SetChassisOptions(DropdownEx dropdown)
 		{
@@ -42,21 +49,13 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			return list;
 		}
 
-		public void OnChassisChanged(int selectionIndex)
+		public void OnChassisChanged(UIDropdown dropdown, int selectionIndex)
 		{
-			var chassisDropdownCtrl = designWindow.GetControl("chassis_dropdown");
-			if (chassisDropdownCtrl == null)
-			{
-				Debug.LogError("chassis_dropdown is missing");
-				return;
-			}
-
-			var chassisDropdown = ((UIDropdown)chassisDropdownCtrl).GetComponent<TMP_Dropdown>();
+			var chassisDropdown = dropdown.GetComponent<TMP_Dropdown>();
 			chassisDropdown.RefreshShownValue();
 
-			bool recalc = false;
-			if (Application.isPlaying)
-				recalc = true;
+			HackFix();
+
 			var uiDO = designWindow.GetControl("msg_textLabel");
 			if (uiDO == null)
 			{
@@ -66,28 +65,152 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 
 			var label = (UIExpandingLabel)uiDO;
 
-			if (!VehicleComponents.chassisList.TryGetValue((ChassisType)selectionIndex, out Chassis chassis))
+			if (!VehicleComponents.chassisList.TryGetValue((ChassisType)selectionIndex, out var chassis))
 			{
-				label.SetText($"{(ChassisType)selectionIndex} has not yet been implemented", recalc);
+				label.text = $"{(ChassisType)selectionIndex} has not yet been implemented";
 				label.SetColor(Color.red);
 				return;
 			}
 
 			label.SetColor(Color.white);
-			label.SetText($"{chassis.name}", recalc);
+			label.text = $"{chassis.name}";
 
-			var slider = (UISlider)designWindow.GetControl("techLevel_slider");
+			var spacesSpinner = (UISpinner)designWindow.GetControl("spaces_spinner");
+			spacesSpinner.minValue = (int)chassis.minSpace;
+			spacesSpinner.maxValue = (int)chassis.maxSpace;
 
-			if (slider == null)
+			var tlSlider = (UISlider)designWindow.GetControl("techLevel_slider");
+
+			if (tlSlider == null)
 			{
 				Debug.LogError("techLevel_slider is missing");
 				return;
 			}
 
-			slider.min = chassis.techLevel;
-			slider.max = 16;
+			tlSlider.interactable = true;
+			tlSlider.minValue = chassis.techLevel;
+			tlSlider.maxValue = 16;
 
 			//var tabPanel = designWindow.AddTab();
+		}
+
+
+		public void OnTechLevelChanged(UISlider slider, float tl)
+		{
+			var tlLabel = (UIExpandingLabel)dataSheetWindow.GetControl("techLevel_label");
+			tlLabel.text = tl + "";
+
+			techTableWindow.ClearControls();
+
+			var labelWidth = 100;
+			var panel = (UIPanel)techTableWindow.AddUIControl(UIControlType.HorizontalPanel);
+
+			var label = ((UIExpandingLabel)panel.AddUIControl(new LabelEx(techTableScriptObj)));
+			label.fontStyles = FontStyles.Bold;
+			((LabelEx)label.GetBackingData()).minLabelDimensions.x = labelWidth;
+			label.text = "TL";
+
+			label = ((UIExpandingLabel)panel.AddUIControl(new LabelEx(techTableScriptObj)));
+			label.fontStyles = FontStyles.Bold;
+			((LabelEx)label.GetBackingData()).minLabelDimensions.x = labelWidth;
+			label.text = "SPEED";
+
+			label = ((UIExpandingLabel)panel.AddUIControl(new LabelEx(techTableScriptObj)));
+			label.fontStyles = FontStyles.Bold;
+			label.alignmentOptions = TextAlignmentOptions.TopRight;
+			((LabelEx)label.GetBackingData()).minLabelDimensions.x = labelWidth;
+			label.text = "RANGE";
+
+			var chassisDropdownCtrl = (UIDropdown)designWindow.GetControl("chassis_dropdown");
+
+			if (!VehicleComponents.chassisList.TryGetValue((ChassisType)chassisDropdownCtrl.SelectedIndex, out var chassis))
+			{
+				label.text = $"{(ChassisType)chassisDropdownCtrl.SelectedIndex} has not yet been implemented";
+				label.SetColor(Color.red);
+				return;
+			}
+
+			foreach (var row in chassis.techTable.indices)
+			{
+				panel = (UIPanel)techTableWindow.AddUIControl(UIControlType.HorizontalPanel);
+
+				var techRow = chassis.techTable[row];
+				label = ((UIExpandingLabel)panel.AddUIControl(new LabelEx(techTableScriptObj)));
+				((LabelEx)label.GetBackingData()).minLabelDimensions.x = labelWidth;
+				var minLevel = techRow.techLevel;
+				var maxLevel = minLevel;
+
+				if (techRow == chassis.techTable.Last())
+				{
+					label.text = minLevel + "+";
+				}
+				else
+				{
+					while (chassis.techTable[maxLevel + 1] == techRow)
+						++maxLevel;
+
+					if (minLevel == maxLevel)
+						label.text = minLevel.ToString();
+					else
+						label.text = minLevel + "-" + maxLevel;
+				}
+
+				label = ((UIExpandingLabel)panel.AddUIControl(new LabelEx(techTableScriptObj)));
+				((LabelEx)label.GetBackingData()).minLabelDimensions.x = labelWidth;
+				label.text = techRow.speed.ToString().Replace('_', ' ');
+
+				label = ((UIExpandingLabel)panel.AddUIControl(new LabelEx(techTableScriptObj)));
+				((LabelEx)label.GetBackingData()).minLabelDimensions.x = labelWidth;
+				label.alignmentOptions = TextAlignmentOptions.TopRight;
+				label.text = techRow.range + "";
+			}
+
+			var skillLabel = (UIExpandingLabel)dataSheetWindow.GetControl("skill_label");
+			skillLabel.text = chassis.skill.ToString().Replace('_', ' ');
+
+			var agiLabel = (UIExpandingLabel)dataSheetWindow.GetControl("agility_label");
+			agiLabel.text = chassis.agility.ToString("+#;-#");
+
+
+			var spacesLabel = (UIExpandingLabel)dataSheetWindow.GetControl("spaces_label");
+			var spacesSpinner = (UISpinner)designWindow.GetControl("spaces_spinner");
+			agiLabel.text = spacesSpinner.value.ToString();
+
+
+			var techTableRow = chassis.techTable[(uint)tl];
+			var speedLabel = (UIExpandingLabel)dataSheetWindow.GetControl("speed_label");
+			speedLabel.text = techTableRow.speed.ToString();
+
+			var rangeLabel = (UIExpandingLabel)dataSheetWindow.GetControl("range_label");
+			rangeLabel.text = techTableRow.range.ToString();
+
+			techTableWindow.Refresh();
+		}
+
+		void HackFix()
+		{
+			var ctrls = dataSheetWindow.GetComponentsInChildren<UIExpandingLabel>();
+			foreach (var ctrl in ctrls)
+			{
+				var bd = ((LabelEx)ctrl.GetBackingData());
+				bd.scriptableObj = dataSheetLabelScriptObj;
+				bd.useCustomFontAsset = bd.useCustomFontColor = bd.useCustomFontSize = false;
+				ctrl.minLabelDimensions = new Vector2(120, 10);
+				ctrl.alignmentOptions = TextAlignmentOptions.Left;
+			}
+
+			var panels = dataSheetWindow.GetComponentsInChildren<UIPanel>();
+			foreach (var panel in panels)
+			{
+				if (!panel.IsHorizontal())
+					continue;
+				
+				var bd = ((PanelEx)panel.GetBackingData());
+				bd.scriptableObj = horizontalPanelData;
+				bd.useCustomMinDimensions = false;
+			}
+
+			dataSheetWindow.Refresh();
 		}
 	}
 }

@@ -106,13 +106,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputFieldEx:
+    referenceName: 
+    scriptableObj: {fileID: 0}
+    useCustomFontSize: 0
+    useCustomPlaceholderFontColor: 0
+    useCustomFontColor: 0
+    useCustomFontAsset: 0
+    fontSize: 18
+    placeholderFontColor: {r: 0, g: 0, b: 0, a: 0}
+    fontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 1}
+    fontAsset: {fileID: 0}
     placeholderText: placeholder text
     defaultText: 
     fieldDimensions: {x: 275, y: 1}
-    fontSize: 18
-    placeHolderFontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 0.5}
-    fontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 1}
-    fontAsset: {fileID: 0}
   placeholderLabel: {fileID: 2593393334513619801}
   textLabel: {fileID: 2683306587188580281}
   inputFieldTMP: {fileID: 8896555636307659968}
@@ -378,7 +384,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -515,7 +521,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 2
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

@@ -37,12 +37,16 @@ namespace AtomosZ.UI
 			Dropdown,
 			TabControl,
 			Spinner,
+			HorizontalPanel,
 			/// <summary>
 			/// this is not a base UI prefab.
 			/// </summary>
 			//GeomorphDisplayPanel,
 		}
 
+
+		[SerializeField] public UIPanelScriptableObject panelScriptObj;
+		[SerializeField] public UIPanelScriptableObject horizontalPanelScriptObj;
 		[SerializeField] public UIExpandingLabelScriptableObject textScriptObj;
 		[SerializeField] public UIExpandingLabelScriptableObject dropdownScriptObj;
 		[SerializeField] public UICheckBoxScriptableObject checkBoxScriptObj;
@@ -64,7 +68,7 @@ namespace AtomosZ.UI
 
 		[SerializeField] private TMP_FontAsset defaultFont;
 		[SerializeField] private Canvas uiCanvas;
-		
+
 
 		public static UIDesignObject GetPrefab(UIPrefabType prefabType)
 		{
@@ -85,140 +89,140 @@ namespace AtomosZ.UI
 			return instance.defaultFont;
 		}
 
-//		public static DynamicPanel GetDynamicPanel()
-//		{
-//			return instance._GetDynamicPanel();
-//		}
+		//		public static DynamicPanel GetDynamicPanel()
+		//		{
+		//			return instance._GetDynamicPanel();
+		//		}
 
-//		private DynamicPanel _GetDynamicPanel()
-//		{
-//			var panelUIObject = Instantiate(GetUIPrefab(UIPrefabType.DynamicPanel));
-//			var panelRect = panelUIObject.GetComponent<DynamicPanel>();
-//			//AddToCanvas(panelUIObject.transform);
-//			return panelRect;
-//		}
-
-
-//		private void AddToCanvas(Transform transform)
-//		{
-//			transform.SetParent(uiCanvas.transform, false);
-//		}
+		//		private DynamicPanel _GetDynamicPanel()
+		//		{
+		//			var panelUIObject = Instantiate(GetUIPrefab(UIPrefabType.DynamicPanel));
+		//			var panelRect = panelUIObject.GetComponent<DynamicPanel>();
+		//			//AddToCanvas(panelUIObject.transform);
+		//			return panelRect;
+		//		}
 
 
-//		public static void ShowDialog(DynamicPanel dialog)
-//		{
-//			instance._ShowDialog(dialog);
-//		}
+		//		private void AddToCanvas(Transform transform)
+		//		{
+		//			transform.SetParent(uiCanvas.transform, false);
+		//		}
 
 
-//		private void _ShowDialog(DynamicPanel dialog)
-//		{
-//			if (dialog.designObject.isModal)
-//			{
-//				var blocker = Instantiate(GetUIPrefab(UIPrefabType.ModalClickBlocker));
-//				AddToCanvas(blocker.transform);
-//				dialog.modalClickBlocker = blocker;
-//			}
-
-//			AddToCanvas(dialog.transform);
-//			dialogStack.AddLast(dialog);
-//			ToggleUIMode(true, CursorSpriteMode.UI_Default);
-//		}
+		//		public static void ShowDialog(DynamicPanel dialog)
+		//		{
+		//			instance._ShowDialog(dialog);
+		//		}
 
 
-//		public static void CloseDialog(DynamicPanel panelRect)
-//		{
-//			instance._CloseDialog(panelRect);
-//		}
+		//		private void _ShowDialog(DynamicPanel dialog)
+		//		{
+		//			if (dialog.designObject.isModal)
+		//			{
+		//				var blocker = Instantiate(GetUIPrefab(UIPrefabType.ModalClickBlocker));
+		//				AddToCanvas(blocker.transform);
+		//				dialog.modalClickBlocker = blocker;
+		//			}
 
-//		/// <summary>
-//		/// Currently destroys all dialogs that get closed.
-//		/// Change this too object pool?
-//		/// </summary>
-//		/// <param name="dialogRect"></param>
-//		private void _CloseDialog(DynamicPanel panelRect)
-//		{
-//			if (!dialogStack.Contains(panelRect))
-//			{
-//				Debug.LogError("Panel isn't in stack???");
-//			}
-
-//			dialogStack.Remove(panelRect);
-//			if (panelRect.modalClickBlocker != null)
-//			{
-//				Destroy(panelRect.modalClickBlocker.gameObject);
-//			}
-
-//			Destroy(panelRect.gameObject);
-//			// turn off UI mode, so next update will check for another panelRect in the stack.
-//			// this will prevent any wierd click throughs
-//			ToggleUIMode(false, CursorSpriteMode.Default);
-//		}
-
-//		public static void ShowErrorDialog(string errorMsg, string titleText = null)
-//		{
-//			Debug.LogError(titleText + "\n" + errorMsg);
-
-//			var panelRect = GetDynamicPanel();
-//			panelRect.showCloseButton = true;
-//			panelRect.SetTitle(titleText, DynamicPanel.TitleLabelStyle.Bar);
-//			panelRect.AddText_NoData(errorMsg);
-//			panelRect.Show(Vector2.zero);
-//		}
+		//			AddToCanvas(dialog.transform);
+		//			dialogStack.AddLast(dialog);
+		//			ToggleUIMode(true, CursorSpriteMode.UI_Default);
+		//		}
 
 
+		//		public static void CloseDialog(DynamicPanel panelRect)
+		//		{
+		//			instance._CloseDialog(panelRect);
+		//		}
 
-//#if UNITY_EDITOR
-//		public void Test()
-//		{
-//			MakeModalPanel();
-//		}
+		//		/// <summary>
+		//		/// Currently destroys all dialogs that get closed.
+		//		/// Change this too object pool?
+		//		/// </summary>
+		//		/// <param name="dialogRect"></param>
+		//		private void _CloseDialog(DynamicPanel panelRect)
+		//		{
+		//			if (!dialogStack.Contains(panelRect))
+		//			{
+		//				Debug.LogError("Panel isn't in stack???");
+		//			}
 
-//		int panelCount = 1;
-//		public void MakeModalPanel()
-//		{
-//			var panelRect = GetDynamicPanel();
-//			panelRect.designObject.isModal = true;
-//			panelRect.AddText(new LabelEx("Panel " + panelCount++));
-//			var button = new ButtonEx
-//			{
-//				labelEx = new LabelEx("Modal Panel"),
-//				action = new UnityEngine.Events.UnityEvent(),
-//			};
-//			button.action.AddListener(MakeModalPanel);
-//			panelRect.AddButton(button);
-//			button = new ButtonEx
-//			{
-//				labelEx = new LabelEx("Non Modal Panel"),
-//				action = new UnityEngine.Events.UnityEvent(),
-//			};
-//			button.action.AddListener(MakeNonModalPanel);
-//			panelRect.AddButton(button);
-//			panelRect.SetTitle("Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
-//			panelRect.Show(Vector2.zero);
-//		}
+		//			dialogStack.Remove(panelRect);
+		//			if (panelRect.modalClickBlocker != null)
+		//			{
+		//				Destroy(panelRect.modalClickBlocker.gameObject);
+		//			}
 
-//		public void MakeNonModalPanel()
-//		{
-//			var panelRect = GetDynamicPanel();
-//			panelRect.AddText(new LabelEx("Panel " + panelCount++));
-//			var button = new ButtonEx
-//			{
-//				labelEx = new LabelEx("Modal Panel"),
-//				action = new UnityEngine.Events.UnityEvent(),
-//			};
-//			button.action.AddListener(MakeModalPanel);
-//			panelRect.AddButton(button);
-//			button = new ButtonEx
-//			{
-//				labelEx = new LabelEx("Non Modal Panel"),
-//				action = new UnityEngine.Events.UnityEvent(),
-//			};
-//			button.action.AddListener(MakeNonModalPanel);
-//			panelRect.AddButton(button);
-//			panelRect.SetTitle("Non Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
-//			panelRect.Show(Vector2.zero);
-//		}
-//#endif
+		//			Destroy(panelRect.gameObject);
+		//			// turn off UI mode, so next update will check for another panelRect in the stack.
+		//			// this will prevent any wierd click throughs
+		//			ToggleUIMode(false, CursorSpriteMode.Default);
+		//		}
+
+		//		public static void ShowErrorDialog(string errorMsg, string titleText = null)
+		//		{
+		//			Debug.LogError(titleText + "\n" + errorMsg);
+
+		//			var panelRect = GetDynamicPanel();
+		//			panelRect.showCloseButton = true;
+		//			panelRect.SetTitle(titleText, DynamicPanel.TitleLabelStyle.Bar);
+		//			panelRect.AddText_NoData(errorMsg);
+		//			panelRect.Show(Vector2.zero);
+		//		}
+
+
+
+		//#if UNITY_EDITOR
+		//		public void Test()
+		//		{
+		//			MakeModalPanel();
+		//		}
+
+		//		int panelCount = 1;
+		//		public void MakeModalPanel()
+		//		{
+		//			var panelRect = GetDynamicPanel();
+		//			panelRect.designObject.isModal = true;
+		//			panelRect.AddText(new LabelEx("Panel " + panelCount++));
+		//			var button = new ButtonEx
+		//			{
+		//				labelEx = new LabelEx("Modal Panel"),
+		//				action = new UnityEngine.Events.UnityEvent(),
+		//			};
+		//			button.action.AddListener(MakeModalPanel);
+		//			panelRect.AddButton(button);
+		//			button = new ButtonEx
+		//			{
+		//				labelEx = new LabelEx("Non Modal Panel"),
+		//				action = new UnityEngine.Events.UnityEvent(),
+		//			};
+		//			button.action.AddListener(MakeNonModalPanel);
+		//			panelRect.AddButton(button);
+		//			panelRect.SetTitle("Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
+		//			panelRect.Show(Vector2.zero);
+		//		}
+
+		//		public void MakeNonModalPanel()
+		//		{
+		//			var panelRect = GetDynamicPanel();
+		//			panelRect.AddText(new LabelEx("Panel " + panelCount++));
+		//			var button = new ButtonEx
+		//			{
+		//				labelEx = new LabelEx("Modal Panel"),
+		//				action = new UnityEngine.Events.UnityEvent(),
+		//			};
+		//			button.action.AddListener(MakeModalPanel);
+		//			panelRect.AddButton(button);
+		//			button = new ButtonEx
+		//			{
+		//				labelEx = new LabelEx("Non Modal Panel"),
+		//				action = new UnityEngine.Events.UnityEvent(),
+		//			};
+		//			button.action.AddListener(MakeNonModalPanel);
+		//			panelRect.AddButton(button);
+		//			panelRect.SetTitle("Non Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
+		//			panelRect.Show(Vector2.zero);
+		//		}
+		//#endif
 	}
 }

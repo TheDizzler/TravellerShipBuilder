@@ -205,7 +205,8 @@ public class Room : MonoBehaviour, IDesignBehavior
 			}
 			else
 			{
-				panel.AddText(new LabelEx("Room saved"));
+				var label = panel.AddText(new LabelEx());
+				label.text = "Room saved";
 				panel.AddButtonPanel(new ButtonPanelEx(UIButtonPanel.DialogButton.OK));
 			}
 		}
