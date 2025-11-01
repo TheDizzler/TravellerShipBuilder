@@ -77,20 +77,72 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 		/// Armoured Fighting Vehicle
 		/// </summary>
 		AFV,
+
+		Gas_Envelope,
+	}
+
+	public enum OptionModType
+	{
+		/// <summary>
+		/// int.
+		/// </summary>
+		MinTechLevel,
+		/// <summary>
+		/// Skill class.
+		/// </summary>
+		Skill,
+		/// <summary>
+		/// int.
+		/// </summary>
+		Agility,
+		/// <summary>
+		/// int with low byte being the min figure and the high byte the max.
+		/// A 0 for the high byte means there is no max.
+		/// </summary>
+		Spaces,
+		/// <summary>
+		/// int added to the chassis cost per space.
+		/// </summary>
+		CostPerSpace,
+		/// <summary>
+		/// Adjustment for the chassis shipping tons/space.
+		/// </summary>
+		Shipping,
+		/// <summary>
+		/// int, adjusts speed band of speed column on tech table
+		/// </summary>
+		SpeedBandAdjust,
+		/// <summary>
+		/// This would include Supercavitating drive.
+		/// </summary>
+		NewTechTable,
+		/// <summary>
+		/// For every 100% increase in cost per space, adjust armour, safe and crush depth byt 100%.
+		/// </summary>
+		IncreasedDive,
+		/// <summary>
+		/// List&lt;Trait>
+		/// </summary>
+		Traits,
+		/// <summary>
+		/// This allows sub choices in a mod.
+		/// Example usage:<br/>
+		/// <c>modValues.Add(OptionModType.MultiMod, new Dictionary&lt;OptionModType, object>());</c>
+		/// </summary>
+		MultiMod,
+	}
+
+	public class MultiMod
+	{
+		public string altOptionName;
+		public Dictionary<OptionModType, object> altOptionModdedValues;
 	}
 
 	public class Option
 	{
 		public string name;
-		public uint techLevel;
-		public int spaceConsumption;
-		public Skill skill;
-		public int agility;
-		public uint minSpaces;
-		public uint maxSpaces;
-		public uint costPerSpace;
-		public int speedBandAdjust;
-		public List<Trait> traits;
+		public string description;
+		public Dictionary<OptionModType, object> optionModValues;
 	}
 
 	public enum Speed
@@ -149,6 +201,19 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 		public Speed speed;
 		public uint range;
 
+		/// <summary>
+		/// Submersible only.
+		/// </summary>
+		public int safeDepth = -1;
+		/// <summary>
+		/// Submersible only.
+		/// </summary>
+		public int crushDepth = -1;
+		/// <summary>
+		/// Submersible only.
+		/// </summary>
+		public int lifeSupport = -1;
+
 		public TechTableRow(uint techLevel, Speed speed, uint range)
 		{
 			this.techLevel = techLevel;
@@ -197,79 +262,117 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 					new Option
 					{
 						name = "Open Frame",
-						agility = 1,
-						minSpaces = 1,
-						maxSpaces = 3,
-						costPerSpace = 750,
-						speedBandAdjust = 1,
-						traits = new List<Trait>
+						description = "An open frame vehicle is a Light Ground Vehicle that"
+							+ " the rider mounts rather than climbs inside. They often"
+							+ "have just two or three wheels to make a motorcycle or trike."
+							+ " The following changes are made to the Light Ground Vehicle chassis.",
+						optionModValues = new Dictionary<OptionModType, object>
 						{
-							Trait.Open_Vehicle,
-						}
+							[OptionModType.Agility] = 1,
+							[OptionModType.Spaces] = 1 | (3 << 8),
+							[OptionModType.CostPerSpace] = 750,
+							[OptionModType.SpeedBandAdjust] = 1,
+							[OptionModType.Traits] = new List<Trait>
+							{
+								Trait.Open_Vehicle,
+							},
+						},
+
 					},
 					new Option
 					{
 						name = "Monowheel",
-						techLevel = 9,
-						agility =2,
-						minSpaces = 1,
-						maxSpaces = 3,
-						costPerSpace = 2500,
-						speedBandAdjust = 1,
-						traits = new List<Trait>
+						description = "A development of the motorcycle, this vehicle uses"
+							+   "complex gyroscopic systems to balance itself on a single wheel."
+							+   " The following changes are made to the Light Ground Vehicle chassis.",
+						optionModValues = new Dictionary<OptionModType, object>
 						{
-							Trait.Open_Vehicle,
+							[OptionModType.MinTechLevel] = 9,
+							[OptionModType.Agility] = 2,
+							[OptionModType.Spaces] = 1 | (3 << 8),
+							[OptionModType.CostPerSpace] = 2500,
+							[OptionModType.SpeedBandAdjust] = 1,
+							[OptionModType.Traits] = new List<Trait>
+							{
+								Trait.Open_Vehicle,
+							},
+						},
+
+					},
+					new Option
+					{
+						name = "Rail Rider",
+						description = "A Light Ground Vehicle can be designed to run on a"
+							+ " rail network, either in addition to its normal travel or instead of."
+							+ "This consumes no Spaces unless the vehicle"
+							+ " is designed to run off rails as well, in which case it consumes 1 Space.",
+						optionModValues = new Dictionary<OptionModType, object>
+						{
+							[OptionModType.Agility] = -2,
+							[OptionModType.CostPerSpace] = 400,
+							[OptionModType.SpeedBandAdjust] = 1,
+							[OptionModType.MultiMod] = new MultiMod
+							{
+								altOptionName = "Wheeled",
+								altOptionModdedValues = new Dictionary<OptionModType, object>
+								{
+									[OptionModType.Spaces] = 1,
+								},
+							}
 						},
 					},
 					new Option
 					{
-						name = "Rail Rider (No Wheels)",
-						agility = -2,
-						costPerSpace = 400,
-						speedBandAdjust = 1,
-					},
-					new Option
-					{
-						name = "Rail Rider (Plus Wheels)*",
-						// special: -2 agi on rails only
-						//agility = -2,
-						costPerSpace = 400,
-						// special: speed band +1 when on rails
-						// speedBandAdjust = 1,
-						 spaceConsumption = 1,
-					},
-					new Option
-					{
-						name = "Rough Terrain (Off Road)",
-						costPerSpace = 100,
-						traits = new List<Trait>
+						name = "Rough Terrain",
+						description = "A {chassisName} can have its suspension and"
+							+" drive systems modified, or extra wheels added to"
+							+ " enable it to handle rough terrain. This grants it either"
+							+ " the Off-Roader trait and increases the Cost per Space"
+							+ " by Cr{cost1}, or the ATV trait and increases the Cost per Space by Cr{cost2}.",
+						optionModValues = new Dictionary<OptionModType, object>
 						{
-							Trait.Off_Roader,
-						},
-					},
-					new Option
-					{
-						name = "Rough Terrain (ATV)",
-						costPerSpace = 250,
-						traits = new List<Trait>
-						{
-							Trait.ATV,
+							[OptionModType.CostPerSpace] = 100,
+							[OptionModType.Traits] = new List<Trait>
+							{
+								Trait.Off_Roader,
+							},
+							[OptionModType.MultiMod] = new MultiMod
+							{
+								altOptionName = "ATV",
+								altOptionModdedValues = new Dictionary<OptionModType, object>
+								{
+									[OptionModType.CostPerSpace] = 250,
+									[OptionModType.Traits]  = new List<Trait>
+									{
+										Trait.ATV,
+									},
+								},
+
+							},
 						},
 					},
 					new Option
 					{
 						name = "Tracks",
-						techLevel = 5,
-						skill = Skill.Drive_Track,
-						costPerSpace = 750,
-						speedBandAdjust = -1,
-						traits = new List<Trait>
+						description = "A {chassisName} can be built with tracks instead"
+							+ " of wheels, specialising it to handle difficult terrain at"
+							+ " the expense of performance on roads. The following"
+							+ " changes are made to the {chassisName} chassis.",
+						optionModValues = new Dictionary<OptionModType, object>
 						{
-							Trait.Tracked,
-						}
+							[OptionModType.MinTechLevel]= 5,
+							[OptionModType.Skill] = Skill.Drive_Track,
+							[OptionModType.CostPerSpace] = 750,
+							[OptionModType.SpeedBandAdjust] = -1,
+							[OptionModType.Traits] = new List<Trait>
+							{
+								Trait.Tracked,
+							}
+						},
 					}
 				},
 			},
+			/*
 			[ChassisType.Heavy_Ground] = new Chassis
 			{
 				name = "Heavy Ground Vehicle",
@@ -296,8 +399,8 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 					{
 						name = "Armoured Fighting Vehicle",
 						techLevel = 5,
-						costPerSpace = 3000,
-						speedBandAdjust = -1,
+						["costPerSpace"] = 3000,
+						["speedBandAdjust"] = -1,
 						traits = new List<Trait>
 						{
 							Trait.AFV,
@@ -307,24 +410,24 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 					new Option
 					{
 						name = "Rail Rider (No Wheels)",
-						agility = -2,
-						costPerSpace = 1000,
-						speedBandAdjust = 1,
+						["agility"] = -2,
+						["costPerSpace"] = 1000,
+						["speedBandAdjust"] = 1,
 					},
 					new Option
 					{
 						name = "Rail Rider (Plus Wheels)*",
 						// special: -2 agi on rails only
-						//agility = -2,
-						costPerSpace = 1000,
+						//["agility"] = -2,
+						["costPerSpace"] = 1000,
 						// special: speed band +1 when on rails
-						// speedBandAdjust = 1,
+						// ["speedBandAdjust"] = 1,
 						 spaceConsumption = 1,
 					},
 					new Option
 					{
 						name = "Rough Terrain (Off Road)",
-						costPerSpace = 500,
+						["costPerSpace"] = 500,
 						traits = new List<Trait>
 						{
 							Trait.Off_Roader,
@@ -333,7 +436,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 					new Option
 					{
 						name = "Rough Terrain (ATV)",
-						costPerSpace = 1000,
+						["costPerSpace"] = 1000,
 						traits = new List<Trait>
 						{
 							Trait.ATV,
@@ -342,11 +445,15 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 					new Option
 					{
 						name = "Tracks*",
+						description = "A {chassisName} can be built with tracks instead"
+							+ " of wheels, specialising it to handle difficult terrain at"
+							+ " the expense of performance on roads. The following"
+							+ " changes are made to the {chassisName} chassis.",
 						techLevel = 5,
 						skill = Skill.Drive_Track,
-						costPerSpace = 2000,
+						["costPerSpace"] = 2000,
 						// Special: speed band adjust only if NOT AFV
-						// speedBandAdjust = -1,
+						// ["speedBandAdjust"] = -1,
 						traits = new List<Trait>
 						{
 							Trait.Tracked,
@@ -358,8 +465,8 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 						// special: while tunnelling, moves 10m/h * Tech level
 						techLevel = 7,
 						skill = Skill.Drive_Mole,
-						costPerSpace = 25000,
-						speedBandAdjust = -1,
+						["costPerSpace"] = 25000,
+						["speedBandAdjust"] = -1,
 					},
 				}
 			},
@@ -388,11 +495,11 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 					new Option
 					{
 						name = "Open Frame",
-						agility = 1,
-						minSpaces = 1,
-						maxSpaces = 3,
-						costPerSpace = 10000,
-						speedBandAdjust = 1,
+						["agility"] = 1,
+						["minSpaces"] = 1,
+						["maxSpaces"] = 3,
+						["costPerSpace"] = 10000,
+						["speedBandAdjust"] = 1,
 						traits = new List<Trait>
 						{
 							Trait.Open_Vehicle,
@@ -401,9 +508,9 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 					new Option
 					{
 						name = "Streamlined",
-						agility = 1,
-						costPerSpace = 30000,
-						speedBandAdjust = 1,
+						["agility"] = 1,
+						["costPerSpace"] = 30000,
+						["speedBandAdjust"] = 1,
 					}
 				}
 			},
@@ -432,8 +539,8 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 					new Option
 					{
 						name = "Armoured Fighting Vehicle",
-						costPerSpace = 100000,
-						speedBandAdjust = -1,
+						["costPerSpace"] = 100000,
+						["speedBandAdjust"] = -1,
 						traits = new List<Trait>
 						{
 							Trait.AFV,
@@ -442,11 +549,11 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 					new Option
 					{
 						name = "Streamlined",
-						costPerSpace = 50000,
-						speedBandAdjust = 1,
+						["costPerSpace"] = 50000,
+						["speedBandAdjust"] = 1,
 					}
 				}
-			},
+			},*/
 		};
 	}
 }
