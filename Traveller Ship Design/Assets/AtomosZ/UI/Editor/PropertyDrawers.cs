@@ -158,52 +158,8 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
 
-			this.SetProperty(property, "referenceName", position, ref drawerHeight);
 			this.SetProperty(property, "fillParentHorizontal", position, ref drawerHeight);
 			this.SetProperty(property, "minDimensions", position, ref drawerHeight);
-
-			var setOptionsProp = property.FindPropertyRelative("SetOptions");
-			this.SetProperty(setOptionsProp, position, ref drawerHeight);
-
-			var optionsProp = property.FindPropertyRelative("options");
-			this.SetProperty(optionsProp, position, ref drawerHeight);
-
-
-
-			var isMultiSelectProp = property.FindPropertyRelative("isMultiSelect");
-			this.SetProperty(isMultiSelectProp, position, ref drawerHeight);
-
-			var defaultProp = property.FindPropertyRelative("defaultSelection");
-			if (isMultiSelectProp.boolValue)
-			{
-				var selected = defaultProp.intValue;
-				var newSelection = 0;
-				int bit = 1;
-				this.CreateLabel("Default Selections", position, ref drawerHeight);
-				++EditorGUI.indentLevel;
-				for (int i = 0; i < optionsProp.arraySize; ++i)
-				{
-					var option = optionsProp.GetArrayElementAtIndex(i);
-					var text = option.displayName;
-					var toggleRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-					if (EditorGUI.Toggle(toggleRect, text, (selected & bit) == bit))
-						newSelection |= bit;
-					bit <<= 1;
-					drawerHeight += toggleRect.height + EditorGUIUtility.standardVerticalSpacing;
-				}
-				--EditorGUI.indentLevel;
-
-				defaultProp.intValue = newSelection;
-			}
-			else
-			{
-				var selected = defaultProp.intValue;
-				var intRect = new Rect(position.x, position.y + drawerHeight, position.width, EditorGUIUtility.singleLineHeight);
-				defaultProp.intValue = EditorGUI.IntSlider(intRect, selected, 0, optionsProp.arraySize - 1);
-				drawerHeight += intRect.height + EditorGUIUtility.standardVerticalSpacing;
-			}
-
-			this.SetProperty(property, "onValueChangedAction", position, ref drawerHeight);
 
 
 			isExpanded = this.CreateFoldout("Overridable values", isExpanded, position, ref drawerHeight);
@@ -579,22 +535,6 @@ namespace AtomosZ.UI.EditorZ
 		}
 	}
 
-	[CustomPropertyDrawer(typeof(CheckBoxEx))]
-	public class CheckBoxExDrawer : DrawerEx
-	{
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-		{
-			EditorGUI.BeginProperty(position, label, property);
-			drawerHeight = 0;
-
-			this.SetProperty(property, "referenceName", position, ref drawerHeight);
-
-			this.SetProperty(property, "isOnByDefault", position, ref drawerHeight);
-			this.SetProperty(property, "labelEx", position, ref drawerHeight);
-
-			EditorGUI.EndProperty();
-		}
-	}
 
 	[CustomPropertyDrawer(typeof(PanelEx))]
 	public class PanelExDrawer : DrawerEx
@@ -605,8 +545,6 @@ namespace AtomosZ.UI.EditorZ
 		{
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
-
-			this.SetProperty(property, "referenceName", position, ref drawerHeight, new GUIContent("Panel Reference Name"));
 
 			isExpanded = this.CreateFoldout("Overridable values", isExpanded, position, ref drawerHeight);
 			if (isExpanded)
@@ -662,7 +600,7 @@ namespace AtomosZ.UI.EditorZ
 			{
 				this.CreateLabel("Text Parameters", position, ref drawerHeight);
 				++EditorGUI.indentLevel;
-			
+
 				this.SetProperty(inputSOProp, position, ref drawerHeight);
 
 				var customFontSizeProp = property.FindPropertyRelative("fontSize");
@@ -720,46 +658,34 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.BeginProperty(position, label, property);
 			drawerHeight = 0;
 
-			this.SetProperty(property, "referenceName", position, ref drawerHeight, new GUIContent("Label Reference Name"));
+			++EditorGUI.indentLevel;
+			var textSOProp = property.FindPropertyRelative("scriptableObj");
+			this.SetProperty(textSOProp, position, ref drawerHeight);
 
-			var minDimOverrideProp = property.FindPropertyRelative("minLabelDimensions");
-			var maxDimOverrideProp = property.FindPropertyRelative("maxLabelDimensions");
+			var customFontSizeProp = property.FindPropertyRelative("fontSize");
+			var customFontColorProp = property.FindPropertyRelative("fontColor");
+			var customFontAssetProp = property.FindPropertyRelative("fontAsset");
 
-			this.CreateLabel("minDimOverrideProp", position, ref drawerHeight);
-			this.SetProperty(minDimOverrideProp, position, ref drawerHeight);
-
-			this.CreateLabel("maxDimOverrideProp", position, ref drawerHeight);
-			this.SetProperty(maxDimOverrideProp, position, ref drawerHeight);
-
+			var textSo = (UIExpandingLabelScriptableObject)textSOProp.boxedValue;
+			if (textSo != null)
 			{
-				++EditorGUI.indentLevel;
-				var textSOProp = property.FindPropertyRelative("scriptableObj");
-				this.SetProperty(textSOProp, position, ref drawerHeight);
+				var isCustomFontSizeProp = property.FindPropertyRelative("useCustomFontSize");
+				this.SetOverridableProperty(isCustomFontSizeProp, customFontSizeProp, textSo.fontSize, position, ref drawerHeight);
 
-				var customFontSizeProp = property.FindPropertyRelative("fontSize");
-				var customFontColorProp = property.FindPropertyRelative("fontColor");
-				var customFontAssetProp = property.FindPropertyRelative("fontAsset");
+				var isCustomFontColorProp = property.FindPropertyRelative("useCustomFontColor");
+				this.SetOverridableProperty(isCustomFontColorProp, customFontColorProp, textSo.fontColor, position, ref drawerHeight);
 
-				var textSo = (UIExpandingLabelScriptableObject)textSOProp.boxedValue;
-				if (textSo != null)
-				{
-					var isCustomFontSizeProp = property.FindPropertyRelative("useCustomFontSize");
-					this.SetOverridableProperty(isCustomFontSizeProp, customFontSizeProp, textSo.fontSize, position, ref drawerHeight);
-
-					var isCustomFontColorProp = property.FindPropertyRelative("useCustomFontColor");
-					this.SetOverridableProperty(isCustomFontColorProp, customFontColorProp, textSo.fontColor, position, ref drawerHeight);
-
-					var isCustomFontAssetProp = property.FindPropertyRelative("useCustomFontAsset");
-					this.SetOverridableProperty(isCustomFontAssetProp, customFontAssetProp, textSo.fontAsset, position, ref drawerHeight);
-				}
-				else
-				{
-					this.SetProperty(customFontSizeProp, position, ref drawerHeight);
-					this.SetProperty(customFontColorProp, position, ref drawerHeight);
-					this.SetProperty(customFontAssetProp, position, ref drawerHeight);
-				}
-				--EditorGUI.indentLevel;
+				var isCustomFontAssetProp = property.FindPropertyRelative("useCustomFontAsset");
+				this.SetOverridableProperty(isCustomFontAssetProp, customFontAssetProp, textSo.fontAsset, position, ref drawerHeight);
 			}
+			else
+			{
+				this.SetProperty(customFontSizeProp, position, ref drawerHeight);
+				this.SetProperty(customFontColorProp, position, ref drawerHeight);
+				this.SetProperty(customFontAssetProp, position, ref drawerHeight);
+			}
+			--EditorGUI.indentLevel;
+
 
 			EditorGUI.EndProperty();
 		}

@@ -15,7 +15,7 @@ namespace AtomosZ.UI
 	public class InputFieldEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.InputField; } }
-		public string referenceName;
+
 		public UIExpandingInputFieldScriptableObject scriptableObj;
 
 
@@ -67,6 +67,7 @@ namespace AtomosZ.UI
 		}
 	}
 
+	[ExecuteAlways]
 	public class UIExpandingInputField : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private InputFieldEx inputFieldEx;
@@ -79,11 +80,15 @@ namespace AtomosZ.UI
 		[SerializeField] private Image image;
 
 
-
+		[SerializeField] private string _referenceName = "inputField";
 		public string referenceName
 		{
-			get { return inputFieldEx.referenceName; }
-			set { inputFieldEx.referenceName = value; }
+			get { return _referenceName; }
+			set
+			{
+				_referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
 		}
 
 		private UIDesignObject _designObject;
@@ -97,12 +102,15 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public bool isDirty { get; set; } = true;
+
 		public IUIBehavior GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
 			return null;
 		}
+
 
 		public void SetPlaceholderText(string newText)
 		{
@@ -162,6 +170,12 @@ namespace AtomosZ.UI
 			}
 		}
 
+		void OnEnable()
+		{
+			this.SetDirty();
+		}
+
+
 		public IUIDataEx GetBackingData()
 		{
 			return inputFieldEx;
@@ -173,10 +187,15 @@ namespace AtomosZ.UI
 			UpdateBackingData();
 		}
 
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
+		}
 
 		public void UpdateBackingData()
 		{
-			this.SetNameToReferenceName(gameObject);
+			this.SetGameObjectNameToReferenceName(gameObject);
 
 			inputFieldTMP.fontAsset = fontAsset;
 			inputFieldTMP.pointSize = fontSize;
@@ -203,12 +222,15 @@ namespace AtomosZ.UI
 
 			labelHeight += Mathf.Abs(textAreaRect.offsetMin.y) + Mathf.Abs(textAreaRect.offsetMax.y);
 			image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, labelHeight);
+
+			isDirty = false;
 		}
 
 
 		public Vector2 GetMinDimensions()
 		{
-			UpdateBackingData();
+			if (isDirty)
+				UpdateBackingData();
 			return image.rectTransform.sizeDelta;
 		}
 

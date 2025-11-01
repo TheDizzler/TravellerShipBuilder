@@ -43,7 +43,7 @@ namespace AtomosZ.UI
 			Notched_TopLeft,
 			Notched_TopRight,
 		}
-
+		public bool isDirty { get; set; }
 
 		[UDictionary.Split(50, 50)]
 		[SerializeField] private UDictionary<TitleLabelStyle, Sprite> titleSprites;
@@ -138,7 +138,7 @@ namespace AtomosZ.UI
 		/// <summary>
 		/// DynamicPanel should not need a reference name.
 		/// </summary>
-		public string referenceName { get ; set; }
+		public string referenceName { get; set; }
 
 		[HideInInspector]
 		public UIDesignObject modalClickBlocker;
@@ -165,7 +165,6 @@ namespace AtomosZ.UI
 
 		private UIDesignObject _designObject;
 		private bool isMinimized = false;
-		private bool isDirty = false;
 
 		public UIDesignObject designObject
 		{
@@ -538,7 +537,7 @@ namespace AtomosZ.UI
 			}
 		}
 
-		
+
 		/// <summary>
 		/// Searchs all tab for the first instance of controlRefName.
 		/// @TODO(Tristan): prevent same ref name being used on any tab.
@@ -672,7 +671,7 @@ namespace AtomosZ.UI
 		/// <param name="text"></param>
 		public UIExpandingLabel AddText_NoData(string text)
 		{
-			var label= (UIExpandingLabel)AddUIControl(new LabelEx());
+			var label = (UIExpandingLabel)AddUIControl(new LabelEx());
 			label.text = text;
 			return label;
 		}
@@ -687,10 +686,10 @@ namespace AtomosZ.UI
 			{
 				fontSize = fontSize,
 				fontColor = fontColor,
-				minLabelDimensions = minLabelDimensions,
-				maxLabelDimensions = maxLabelDimensions,
 			});
 
+			label.minLabelDimensions = minLabelDimensions;
+			label.maxLabelDimensions = maxLabelDimensions;
 			label.text = text;
 			return label;
 		}

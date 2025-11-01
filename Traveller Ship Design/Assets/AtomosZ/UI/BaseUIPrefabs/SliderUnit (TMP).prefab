@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7124551369287100554}
   - component: {fileID: 8144733222131200461}
   - component: {fileID: 7646363213820406160}
+  - component: {fileID: 7785134331615288435}
   - component: {fileID: 3829187710266693670}
   m_Layer: 5
   m_Name: SliderUnit (TMP)
@@ -51,15 +52,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   labelEx:
-    text: 0
-    minLabelDimensions: {x: 8, y: 8}
-    maxLabelDimensions: {x: 128, y: 8}
+    scriptableObj: {fileID: 0}
+    useCustomFontSize: 1
+    useCustomFontColor: 1
+    useCustomFontAsset: 1
     fontSize: 18
     fontColor: {r: 0, g: 0, b: 0, a: 1}
     fontAsset: {fileID: 0}
   textLabel: {fileID: 7646363213820406160}
   image: {fileID: 0}
-  _designObject: {fileID: 0}
+  _designObject: {fileID: 7785134331615288435}
+  _referenceName: unit
+  _text: 0
+  _fontStyles: 0
+  _alignmentOptions: 258
+  _margin: {x: 0, y: 0, z: 0, w: 0}
+  _minLabelDimensions: {x: 8, y: 10}
+  _maxLabelDimensions: {x: 128, y: 256}
 --- !u!114 &7646363213820406160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,7 +124,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 1024
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -123,9 +132,9 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -151,6 +160,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7785134331615288435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022562231297575193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
+  hoverCursorMode: 9
+  moveCursorMode: 9
+  isHoverable: 0
+  isMoveable: 0
+  isModal: 0
+  isSelectable: 0
+  hasCustomDimensions: 1
+  hasUpdatableBackingData: 0
+  tooltip: []
 --- !u!222 &3829187710266693670
 CanvasRenderer:
   m_ObjectHideFlags: 0

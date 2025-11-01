@@ -6,11 +6,12 @@ using UnityEngine;
 namespace AtomosZ.UI
 {
 	/// <summary>
-	/// A simple class to block any clicks from being registered when a modal dialog boxImage is open.
+	/// A simple class to block any clicks from being registered when a modal dialog box is open.
 	/// </summary>
 	public class ModalClickBlocker : MonoBehaviour, IUIBehavior
 	{
 		public UIDesignObject designObject { get; }
+		public bool isDirty { get; set; }
 		/// <summary>
 		/// ModalClickBlocker should not need a reference name.
 		/// </summary>

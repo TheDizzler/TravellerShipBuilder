@@ -66,7 +66,7 @@ namespace AtomosZ.UI
 			return minDim;
 		}
 
-		
+
 		public void ShowControls(bool showControls)
 		{
 			foreach (var child in uiControls)
@@ -162,7 +162,7 @@ namespace AtomosZ.UI
 			var uiButton = uiDO.GetComponent<UIButton>();
 			uiButton.UpdateBackingData(dataEx);
 			AddControl(prefabType, uiDO);
-			dataEx.referenceName = uiDO.name;
+			uiButton.referenceName = uiDO.name;
 			return uiButton;
 		}
 
@@ -179,7 +179,7 @@ namespace AtomosZ.UI
 				var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ButtonPanel), transform);
 				buttonPanel = uiDO.GetComponent<UIButtonPanel>();
 				AddControl(UIPrefabType.ButtonPanel, uiDO);
-				dataEx.referenceName = uiDO.name;
+				buttonPanel.referenceName = uiDO.name;
 			}
 
 			buttonPanel.UpdateBackingData(dataEx);
@@ -194,7 +194,7 @@ namespace AtomosZ.UI
 			var uiControl = uiDO.GetComponent<UIDropdown>();
 			uiControl.UpdateBackingData(dataEx);
 			AddControl(prefabType, uiDO);
-			dataEx.referenceName = uiDO.name;
+			uiControl.referenceName = uiDO.name;
 			return uiControl;
 		}
 
@@ -224,7 +224,7 @@ namespace AtomosZ.UI
 			var slider = uiDO.GetComponent<UISlider>();
 			slider.UpdateBackingData(dataEx);
 			AddControl(UIPrefabType.Slider, uiDO);
-			dataEx.referenceName = uiDO.name;
+			slider.referenceName = uiDO.name;
 			return slider;
 		}
 
@@ -234,7 +234,7 @@ namespace AtomosZ.UI
 			var checkBox = uiDO.GetComponent<UICheckBox>();
 			checkBox.UpdateBackingData(dataEx);
 			AddControl(UIPrefabType.CheckBox, uiDO);
-			dataEx.referenceName = uiDO.name;
+			checkBox.referenceName = uiDO.name;
 			return checkBox;
 		}
 
@@ -247,23 +247,17 @@ namespace AtomosZ.UI
 			var inputTMP = uiDO.GetComponent<TMP_InputField>();
 			inputTMP.onSubmit.AddListener(SubmitText);
 			AddControl(UIPrefabType.InputField, uiDO);
-			dataEx.referenceName = uiDO.name;
+			inputField.referenceName = uiDO.name;
 			return inputField;
 		}
 
 		private UIExpandingLabel AddText(LabelEx dataEx)
 		{
-			//if (string.IsNullOrEmpty(dataEx.text))
-			//{
-			//	Debug.LogException(new Exception("Text may not be empty"));
-			//	return null;
-			//}
-
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ExpandingText), transform);
 			var label = uiDO.GetComponent<UIExpandingLabel>();
 			label.UpdateBackingData(dataEx);
 			AddControl(UIPrefabType.ExpandingText, uiDO);
-			dataEx.referenceName = uiDO.name;
+			label.referenceName = uiDO.name;
 			return label;
 		}
 

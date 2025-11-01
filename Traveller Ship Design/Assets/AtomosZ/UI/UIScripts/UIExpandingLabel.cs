@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-
+using System.Data.Common;
 using TMPro;
 
 using UnityEngine;
@@ -13,13 +13,6 @@ namespace AtomosZ.UI
 	public class LabelEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Text; } }
-		/// <summary>
-		/// This is the name we use to modify this UIControl.
-		/// </summary>
-		public string referenceName;
-
-		//[Tooltip("IMPORTANT(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
-		//public string text = "Text Label";
 
 		public UIExpandingLabelScriptableObject scriptableObj;
 
@@ -31,9 +24,7 @@ namespace AtomosZ.UI
 		[SerializeField] public Color fontColor = Color.white;
 		[SerializeField] public TMP_FontAsset fontAsset;
 
-		[SerializeField] public Vector2 minLabelDimensions = new Vector2(64, 10);
-		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
-		[SerializeField] public Vector2 maxLabelDimensions = new Vector2(1025, 256);
+
 
 
 		public LabelEx(/*string text*/)
@@ -69,6 +60,7 @@ namespace AtomosZ.UI
 
 	}
 
+	[ExecuteAlways]
 	public class UIExpandingLabel : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private LabelEx labelEx;
@@ -87,11 +79,17 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public bool isDirty { get; set; } = true;
 
+		[SerializeField] private string _referenceName;
 		public string referenceName
 		{
-			get { return labelEx.referenceName; }
-			set { labelEx.referenceName = value; }
+			get { return _referenceName; }
+			set
+			{
+				_referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
 		}
 
 		[SerializeField] private string _text = "Text Label";
@@ -99,16 +97,14 @@ namespace AtomosZ.UI
 		public string text
 		{
 			get { return _text = textLabel.text; }
-			set { textLabel.text = _text = value; }
+			set
+			{
+				if (text == value)
+					return;
+				textLabel.text = _text = value;
+				this.SetDirty();
+			}
 		}
-
-		//public void SetText(string text, bool recalculateDimensions)
-		//{
-		//	//labelEx.text = text;
-		//	if (!recalculateDimensions)
-		//		return;
-		//	this.Refresh(gameObject);
-		//}
 
 
 		public Color color
@@ -126,47 +122,7 @@ namespace AtomosZ.UI
 			labelEx.fontColor = newColor;
 			textLabel.color = newColor;
 			labelEx.useCustomFontColor = true;
-		}
-
-		[SerializeField] private FontStyles _fontStyles;
-		public FontStyles fontStyles
-		{
-			get { return _fontStyles; }
-			set
-			{
-				_fontStyles = value;
-				textLabel.fontStyle = value;
-			}
-		}
-
-		[SerializeField] private TextAlignmentOptions _alignmentOptions;
-		public TextAlignmentOptions alignmentOptions
-		{
-			get { return _alignmentOptions; }
-			set
-			{
-				_alignmentOptions = value;
-				var vert = (VerticalAlignmentOptions)(value
-					& (TextAlignmentOptions)(VerticalAlignmentOptions.Baseline | VerticalAlignmentOptions.Bottom
-					| VerticalAlignmentOptions.Capline | VerticalAlignmentOptions.Geometry
-					| VerticalAlignmentOptions.Middle | VerticalAlignmentOptions.Top));
-
-				textLabel.verticalAlignment = vert;
-
-				var horz = (HorizontalAlignmentOptions)(value ^ (TextAlignmentOptions)vert);
-				textLabel.horizontalAlignment = horz;
-			}
-		}
-
-		[SerializeField] private Vector4 _margin;
-		public Vector4 margin
-		{
-			get { return _margin; }
-			set
-			{
-				_margin = value;
-				textLabel.margin = _margin;
-			}
+			this.SetDirty();
 		}
 
 		public float fontSize
@@ -181,7 +137,7 @@ namespace AtomosZ.UI
 			{
 				labelEx.fontSize = value;
 				labelEx.useCustomFontSize = true;
-				UpdateBackingData();
+				this.SetDirty();
 			}
 		}
 
@@ -195,26 +151,131 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public Vector2 maxLabelDimensions
+		[SerializeField] private FontStyles _fontStyles;
+		public FontStyles fontStyles
 		{
-			get { return labelEx.maxLabelDimensions; }
-			set { labelEx.maxLabelDimensions = value; }
-		}
-		public Vector2 minLabelDimensions
-		{
-			get { return labelEx.minLabelDimensions; }
-			set { labelEx.minLabelDimensions = value; }
+			get { return _fontStyles = textLabel.fontStyle; }
+			set
+			{
+				if (fontStyles == value)
+					return;
+				_fontStyles = value;
+				textLabel.fontStyle = value;
+				this.SetDirty();
+			}
 		}
 
+		[SerializeField] private TextAlignmentOptions _alignmentOptions;
+		public TextAlignmentOptions alignmentOptions
+		{
+			get { return _alignmentOptions = (TextAlignmentOptions)((int)textLabel.verticalAlignment | (int)textLabel.horizontalAlignment); }
+			set
+			{
+				if (alignmentOptions == value)
+					return;
+				_alignmentOptions = value;
+				var vert = (VerticalAlignmentOptions)(value
+					& (TextAlignmentOptions)(VerticalAlignmentOptions.Baseline | VerticalAlignmentOptions.Bottom
+					| VerticalAlignmentOptions.Capline | VerticalAlignmentOptions.Geometry
+					| VerticalAlignmentOptions.Middle | VerticalAlignmentOptions.Top));
+
+				textLabel.verticalAlignment = vert;
+
+				var horz = (HorizontalAlignmentOptions)(value ^ (TextAlignmentOptions)vert);
+				textLabel.horizontalAlignment = horz;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private Vector4 _margin;
+		public Vector4 margin
+		{
+			get { return _margin = textLabel.margin; }
+			set
+			{
+				if (margin == value)
+					return;
+				_margin = value;
+				textLabel.margin = _margin;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private Vector2 _minLabelDimensions = new Vector2(64, 10);
+		public Vector2 minLabelDimensions
+		{
+			get { return _minLabelDimensions; }
+			set
+			{
+				_minLabelDimensions = value;
+				this.SetDirty();
+			}
+		}
+
+
+		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
+		[SerializeField] private Vector2 _maxLabelDimensions = new Vector2(1025, 256);
+		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
+		public Vector2 maxLabelDimensions
+		{
+			get { return _maxLabelDimensions; }
+			set
+			{
+				_maxLabelDimensions = value;
+				this.SetDirty();
+			}
+		}
+
+
 		/// <summary>
+		/// This may modify the min and max lable dimensions to accomodate the new width.
 		/// Force the size of the label.
 		/// Used on tab/titlebar.
 		/// </summary>
 		/// <param name="newWidth"></param>
-		public void SetSize(float newWidth)
+		public void SetWidth(float newWidth)
 		{
+			var labelDims = minLabelDimensions;
+			if (labelDims.x > newWidth)
+			{
+				labelDims.x = newWidth;
+				minLabelDimensions = labelDims;
+			}
+
+			labelDims = maxLabelDimensions;
+			if (labelDims.x < newWidth)
+			{
+				labelDims.x = newWidth;
+				minLabelDimensions = labelDims;
+			}
+
 			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
 			textLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+			// need to this.SetDirty();?
+		}
+
+		/// <summary>
+		/// This may modify the min and max dimensions to accomodate the new height.
+		/// </summary>
+		/// <param name="newHeight"></param>
+		public void SetHeight(float newHeight)
+		{
+			var newDims = minLabelDimensions;
+			if (newDims.y > newHeight)
+			{
+				newDims.y = newHeight;
+				minLabelDimensions = newDims;
+			}
+
+			newDims = maxLabelDimensions;
+			if (newDims.y < newHeight)
+			{
+				newDims.y = newHeight;
+				minLabelDimensions = newDims;
+			}
+
+			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
+			textLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
 		}
 
 		public IUIBehavior GetControl(string controlRefName)
@@ -222,6 +283,11 @@ namespace AtomosZ.UI
 			if (referenceName == controlRefName)
 				return this;
 			return null;
+		}
+
+		void OnEnable()
+		{
+			this.SetDirty();
 		}
 
 		public IUIDataEx GetBackingData()
@@ -234,16 +300,20 @@ namespace AtomosZ.UI
 		public void UpdateBackingData(IUIDataEx dataEx)
 		{
 			labelEx = (LabelEx)dataEx;
-			UpdateBackingData();
+			this.SetDirty();
 		}
 
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
+		}
 
 
 		public void UpdateBackingData()
 		{
-			this.SetNameToReferenceName(gameObject);
+			this.SetGameObjectNameToReferenceName(gameObject);
 
-			//textLabel.text = labelEx.text;
 			textLabel.color = color;
 			textLabel.font = fontAsset;
 			textLabel.fontSize = fontSize;
@@ -251,7 +321,7 @@ namespace AtomosZ.UI
 			textLabel.ForceMeshUpdate(false, true);
 
 			var prefTextSize = textLabel.GetPreferredValues(text);
-			var singleLineTextHeight = prefTextSize.y; // this is the height of a single line
+			var singleLineTextHeight = prefTextSize.y; // this is the height of a single line, assuming no linefeed
 			var singleLineTextWidth = prefTextSize.x; // this is the width if the text was on a single line
 
 			var prefTextWidth = textLabel.preferredWidth;
@@ -269,12 +339,19 @@ namespace AtomosZ.UI
 			else if (newWidth < minLabelDimensions.x)
 				newWidth = minLabelDimensions.x;
 
+			var prefTextHeight = textLabel.preferredHeight;
 			var textLabelRect = textLabel.rectTransform;
 			textLabelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
 			textLabel.ForceMeshUpdate(false, true);
+			var bounds = textLabel.bounds;
+			var textBounds = textLabel.textBounds;
 
-			var prefForcedWidth = textLabel.GetPreferredValues(textLabelRect.sizeDelta.x - (textLabel.margin.x + textLabel.margin.z), 0);
-			var newHeight = prefForcedWidth.y;
+			var newHeight = textLabel.preferredHeight;
+			newHeight = Mathf.Min(newHeight, prefTextHeight); // is this right?
+
+			//var prefForcedSize = textLabel.GetPreferredValues(textLabelRect.sizeDelta.x - (textLabel.margin.x + textLabel.margin.z), 0);
+			//var newHeight = prefForcedSize.y;
+			//var newHeight = prefTextHeight;
 			if (newHeight < minLabelDimensions.y)
 				newHeight = minLabelDimensions.y;
 			textLabelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
@@ -288,13 +365,17 @@ namespace AtomosZ.UI
 				image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, imageLabelSize.x);
 				image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, imageLabelSize.y);
 			}
+
+			isDirty = false;
 		}
 
 
 
 		public Vector2 GetMinDimensions()
 		{
-			UpdateBackingData();
+			if (isDirty)
+				UpdateBackingData();
+
 			if (image == null)
 			{
 				var size = textLabel.rectTransform.sizeDelta;

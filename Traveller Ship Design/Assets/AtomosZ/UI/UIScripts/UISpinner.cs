@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 
@@ -10,6 +11,7 @@ namespace AtomosZ.UI
 		public UIControlType dataType { get { return UIControlType.Spinner; } }
 	}
 
+	[ExecuteAlways]
 	public class UISpinner : MonoBehaviour, IUIBehavior
 	{
 		/// <summary>
@@ -28,8 +30,18 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public bool isDirty { get; set; } = true;
+
 		[SerializeField] private string _referenceName;
-		public string referenceName { get { return _referenceName; } set { _referenceName = value; } }
+		public string referenceName
+		{
+			get { return _referenceName; }
+			set
+			{
+				_referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
 
 		[SerializeField] public RectTransform baseRect;
 		[SerializeField] public Button leftButton;
@@ -45,6 +57,7 @@ namespace AtomosZ.UI
 			set
 			{
 				_minDimen = value;
+				this.SetDirty();
 			}
 		}
 
@@ -86,12 +99,19 @@ namespace AtomosZ.UI
 			get { return _value; }
 			set
 			{
+				var oldValue = _value;
 				_value = value;
 				if (_value > maxValue)
 					_value = maxValue;
 				else if (_value < minValue)
 					_value = minValue;
 				inputField.text = _value.ToString();
+				if (_value != oldValue)
+				{
+					this.SetDirty();
+					if (onValueChanged != null)
+						onValueChanged.Invoke(this, _value);
+				}
 			}
 		}
 
@@ -103,8 +123,10 @@ namespace AtomosZ.UI
 			{
 				_fontSize = value;
 				inputField.pointSize = value;
+				this.SetDirty();
 			}
 		}
+
 
 
 		[SerializeField] private TextAlignmentOptions _alignmentOptions;
@@ -125,6 +147,7 @@ namespace AtomosZ.UI
 				var horz = (HorizontalAlignmentOptions)(value ^ (TextAlignmentOptions)vert);
 				text.horizontalAlignment = horz;
 				placeholderText.horizontalAlignment = horz;
+				this.SetDirty();
 			}
 		}
 
@@ -141,6 +164,8 @@ namespace AtomosZ.UI
 				inputField.interactable = value;
 			}
 		}
+
+		public UnityEvent<UISpinner, int> onValueChanged = null;
 
 		public void OnRightButtonClick()
 		{
@@ -165,6 +190,11 @@ namespace AtomosZ.UI
 			return value;
 		}
 
+		void OnEnable()
+		{
+			this.SetDirty();
+		}
+
 
 
 		public void SetTextAlignment(HorizontalAlignmentOptions horzAlignment,
@@ -174,6 +204,7 @@ namespace AtomosZ.UI
 			placeholderText.verticalAlignment = vertAlignment;
 			text.horizontalAlignment = horzAlignment;
 			placeholderText.horizontalAlignment = horzAlignment;
+			this.SetDirty();
 		}
 
 		public IUIDataEx GetBackingData()
@@ -192,9 +223,15 @@ namespace AtomosZ.UI
 			UpdateBackingData();
 		}
 
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
+		}
+
 		public void UpdateBackingData()
 		{
-			this.SetNameToReferenceName(gameObject);
+			this.SetGameObjectNameToReferenceName(gameObject);
 
 			// calculate min dimension for input field give max&min
 			text.ForceMeshUpdate(false, true);
@@ -229,12 +266,15 @@ namespace AtomosZ.UI
 			var rect = GetComponent<RectTransform>();
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, totalDimens.x);
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, totalDimens.y);
+
+			isDirty = false;
 		}
 
 
 		public Vector2 GetMinDimensions()
 		{
-			UpdateBackingData();
+			if (isDirty)
+				UpdateBackingData();
 			return baseRect.sizeDelta;
 		}
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using TMPro;
@@ -22,6 +23,7 @@ namespace AtomosZ.UI
 
 		public enum UIPrefabType
 		{
+			[Obsolete("Replaced by MagicWindow")]
 			DynamicPanel,
 			Button,
 			MenuControlButton,
@@ -38,6 +40,8 @@ namespace AtomosZ.UI
 			TabControl,
 			Spinner,
 			HorizontalPanel,
+			[Tooltip("AKA a vertical panel")]
+			Panel,
 			/// <summary>
 			/// this is not a base UI prefab.
 			/// </summary>

@@ -10,7 +10,6 @@ namespace AtomosZ.UI
 	public class ButtonEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Button; } }
-		public string referenceName = "button";
 
 		public UnityEvent action = null;
 		public bool fillParentHorizontal = false;
@@ -64,13 +63,23 @@ namespace AtomosZ.UI
 		}
 	}
 
+	[ExecuteAlways]
 	public class UIButton : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private ButtonEx buttonEx;
 		[SerializeField] public UIExpandingLabel label;
 		[SerializeField] private Image image;
 
-		public string referenceName { get { return buttonEx.referenceName; } set { buttonEx.referenceName = value; } }
+		[SerializeField] private string _referenceName = "button";
+		public string referenceName
+		{
+			get { return _referenceName; }
+			set
+			{
+				_referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
 
 		public UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -82,6 +91,8 @@ namespace AtomosZ.UI
 				return _designObject;
 			}
 		}
+
+		public bool isDirty { get; set; } = true;
 
 		public IUIBehavior GetControl(string controlRefName)
 		{
@@ -114,60 +125,11 @@ namespace AtomosZ.UI
 			}
 			set
 			{
+				if (_text == value)
+					return;
+
 				label.text = _text = value;
-			}
-		}
-
-		public Sprite sprite
-		{
-			get
-			{
-				if (buttonEx.useCustomSprite || buttonEx.scriptableObj == null)
-				{
-					return buttonEx.sprite;
-				}
-
-				return buttonEx.scriptableObj.sprite;
-			}
-		}
-
-		public IUIDataEx GetBackingData()
-		{
-			return buttonEx;
-		}
-
-		public void UpdateBackingData(IUIDataEx backingData)
-		{
-			buttonEx = (ButtonEx)backingData;
-			UpdateBackingData();
-		}
-
-		public void UpdateBackingData()
-		{
-			this.SetNameToReferenceName(gameObject);
-
-			if (sprite != null)
-				image.sprite = sprite;
-
-			var layout = GetComponent<LayoutElement>();
-			if (buttonEx.fillParentHorizontal)
-				layout.flexibleWidth = 1;
-			else
-				layout.flexibleWidth = 0;
-
-			TextMeshProUGUI textLabel = label.GetComponent<TextMeshProUGUI>();
-			var labelHorzMargins = +textLabel.margin.x + textLabel.margin.z;
-			layout.minWidth = labelEx.minLabelDimensions.x + labelHorzMargins;
-			label.UpdateBackingData(labelEx);
-			var labelDim = label.GetMinDimensions();
-			layout.preferredWidth = labelDim.x + labelHorzMargins;
-
-
-			var button = GetComponent<Button>();
-			button.onClick.RemoveAllListeners();
-			if (buttonEx.action != null)
-			{
-				button.onClick.AddListener(() => buttonEx.action.Invoke());
+				this.SetDirty();
 			}
 		}
 
@@ -189,9 +151,78 @@ namespace AtomosZ.UI
 			buttonEx.action.AddListener(() => action.Invoke());
 		}
 
+
+		public Sprite sprite
+		{
+			get
+			{
+				if (buttonEx.useCustomSprite || buttonEx.scriptableObj == null)
+				{
+					return buttonEx.sprite;
+				}
+
+				return buttonEx.scriptableObj.sprite;
+			}
+		}
+
+		void OnEnable()
+		{
+			this.SetDirty();
+		}
+
+		public IUIDataEx GetBackingData()
+		{
+			return buttonEx;
+		}
+
+		public void UpdateBackingData(IUIDataEx backingData)
+		{
+			buttonEx = (ButtonEx)backingData;
+			UpdateBackingData();
+		}
+
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
+		}
+
+		public void UpdateBackingData()
+		{
+			this.SetGameObjectNameToReferenceName(gameObject);
+
+			if (sprite != null)
+				image.sprite = sprite;
+
+			var layout = GetComponent<LayoutElement>();
+			if (buttonEx.fillParentHorizontal)
+				layout.flexibleWidth = 1;
+			else
+				layout.flexibleWidth = 0;
+
+			TextMeshProUGUI textLabel = label.GetComponent<TextMeshProUGUI>();
+			var labelHorzMargins = textLabel.margin.x + textLabel.margin.z;
+			layout.minWidth = label.minLabelDimensions.x + labelHorzMargins;
+			label.UpdateBackingData(labelEx);
+			var labelDim = label.GetMinDimensions();
+			layout.preferredWidth = labelDim.x + labelHorzMargins;
+
+
+			var button = GetComponent<Button>();
+			button.onClick.RemoveAllListeners();
+			if (buttonEx.action != null)
+			{
+				button.onClick.AddListener(() => buttonEx.action.Invoke());
+			}
+
+			isDirty = false;
+		}
+
+
 		public Vector2 GetMinDimensions()
 		{
-			UpdateBackingData();
+			if (isDirty)
+				UpdateBackingData();
 			return label.GetMinDimensions();
 		}
 

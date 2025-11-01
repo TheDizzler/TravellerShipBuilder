@@ -16,7 +16,6 @@ namespace AtomosZ.UI
 	public class ButtonPanelEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.ButtonPanel; } }
-		public string referenceName;
 
 		public UIButtonPanelScriptableObject scriptableObj;
 
@@ -69,7 +68,7 @@ namespace AtomosZ.UI
 		}
 	}
 
-
+	[ExecuteAlways]
 	public class UIButtonPanel : MonoBehaviour, IUIBehavior
 	{
 		public enum DialogButton
@@ -95,9 +94,19 @@ namespace AtomosZ.UI
 		};
 
 		[SerializeField] private ButtonPanelEx buttonPanelEx;
-		public string referenceName { get { return buttonPanelEx.referenceName; } set { buttonPanelEx.referenceName = value; } }
 
-		
+		[SerializeField] private string _referenceName = "buttonPanel";
+		public string referenceName
+		{
+			get { return _referenceName; }
+			set
+			{
+				_referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
+
+
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -109,6 +118,7 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public bool isDirty { get; set; } = true;
 		public ButtonEx okButtonData
 		{
 			get
@@ -236,6 +246,17 @@ namespace AtomosZ.UI
 			Debug.LogWarning("Magic Window not set up for button panel!");
 		}
 
+		void OnEnable()
+		{
+			this.SetDirty();
+		}
+
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
+		}
+
 		public IUIDataEx GetBackingData()
 		{
 			return buttonPanelEx;
@@ -250,7 +271,7 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			this.SetNameToReferenceName(gameObject);
+			this.SetGameObjectNameToReferenceName(gameObject);
 
 			okButton.SetActive(false);
 			yesButton.SetActive(false);
@@ -300,6 +321,8 @@ namespace AtomosZ.UI
 				//}
 				//break;
 			}
+
+			isDirty = false;
 		}
 
 		private void SetButton(ButtonEx buttonData, GameObject button)
@@ -317,7 +340,8 @@ namespace AtomosZ.UI
 
 		public Vector2 GetMinDimensions()
 		{
-			UpdateBackingData();
+			if (isDirty)
+				UpdateBackingData();
 			return new Vector2(minButtonWidth[buttonPanelEx.buttons], GetComponent<RectTransform>().sizeDelta.y);
 		}
 

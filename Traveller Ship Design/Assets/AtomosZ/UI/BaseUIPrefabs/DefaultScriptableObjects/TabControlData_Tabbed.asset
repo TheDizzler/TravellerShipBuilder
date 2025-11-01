@@ -18,12 +18,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c4a42705b25ff254c94ec28ac9d51f9d, type: 3}
   - {fileID: 21300000, guid: f8e5776b190af3940a75d95f2c70eda2, type: 3}
   titleBarFontColor: {r: 1, g: 0, b: 0, a: 1}
-  titleTextMargin: {x: 12, y: 8, z: 46, w: 12}
-  titleBarMinSize: {x: 0, y: 0}
-  titleBarVerticalOffset: 0
+  titleTextMargin: {x: 12, y: 8, z: 46, w: 16}
+  titleBarMinSize: {x: 64, y: 64}
+  titleBarVerticalOffset: -4
   selectedTabColor: {r: 1, g: 1, b: 1, a: 1}
   deselectedTabColor: {r: 0.70440245, g: 0.70440245, b: 0.70440245, a: 1}
   disabledTabColor: {r: 1, g: 1, b: 1, a: 1}
   tabTextAlignment: 514
-  tabHorizontaloffset: 36
-  panelWidthAdjust: 16
+  tabHorizontaloffset: -36
+  panelWidthAdjust: 48

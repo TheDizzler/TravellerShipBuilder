@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
+using FontStyles = TMPro.FontStyles;
 
 namespace AtomosZ.UI
 {
@@ -15,7 +16,6 @@ namespace AtomosZ.UI
 	public class CheckBoxEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.CheckBox; } }
-		public string referenceName = "checkbox";
 
 		public UICheckBoxScriptableObject scriptableObj;
 
@@ -25,7 +25,7 @@ namespace AtomosZ.UI
 		public Sprite boxSprite;
 
 
-		public bool isOnByDefault = false;
+		//public bool isOnByDefault = false;
 		public LabelEx labelEx;
 
 		//[Tooltip("Default: 14.")]
@@ -33,7 +33,7 @@ namespace AtomosZ.UI
 		//[Tooltip("Default: Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1).")]
 		//public Color fontColor = Color.black;
 
-		public UnityEvent<bool> action = null;
+		//public UnityEvent<bool> action = null;
 
 
 		public CheckBoxEx(UICheckBoxScriptableObject scriptObj)
@@ -52,6 +52,7 @@ namespace AtomosZ.UI
 		}
 	}
 
+	[ExecuteAlways]
 	public class UICheckBox : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private CheckBoxEx checkBoxEx;
@@ -62,7 +63,16 @@ namespace AtomosZ.UI
 		public UIExpandingLabel textLabel;
 		public Toggle toggle;
 
-		public string referenceName { get { return checkBoxEx.referenceName; } set { checkBoxEx.referenceName = value; } }
+		[SerializeField] private string _referenceName = "checkbox";
+		public string referenceName
+		{
+			get { return _referenceName; }
+			set
+			{
+				_referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
 
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -74,6 +84,9 @@ namespace AtomosZ.UI
 				return _designObject;
 			}
 		}
+
+
+		public bool isDirty { get; set; } = true;
 
 		public IUIBehavior GetControl(string controlRefName)
 		{
@@ -110,9 +123,92 @@ namespace AtomosZ.UI
 			get { return _text; }
 			set
 			{
-				_text = value;
-				textLabel.text = value;
+				_text = textLabel.text = value;
+				// textLabel will set this to dirty if needed.
 			}
+		}
+
+		[SerializeField] private FontStyles _fontStyles;
+		public FontStyles fontStyles
+		{
+			get { return _fontStyles = textLabel.fontStyles; }
+			set
+			{
+				_fontStyles = textLabel.fontStyles = value;
+				// textLabel will set this to dirty if needed.
+			}
+		}
+
+		[SerializeField] private TextAlignmentOptions _alignmentOptions;
+		public TextAlignmentOptions alignmentOptions
+		{
+			get { return _alignmentOptions = textLabel.alignmentOptions; }
+			set
+			{
+				_alignmentOptions = textLabel.alignmentOptions = value;
+				// textLabel will set this to dirty if needed.
+			}
+		}
+
+
+		[SerializeField] private Vector4 _margin;
+		public Vector4 margin
+		{
+			get { return _margin = textLabel.margin; }
+			set
+			{
+				_margin = textLabel.margin = value;
+				// textLabel will set this to dirty if needed.
+			}
+		}
+
+
+		[SerializeField] private Vector2 _minLabelDimensions = new Vector2(64, 10);
+		public Vector2 minLabelDimensions
+		{
+			get { return _minLabelDimensions = textLabel.minLabelDimensions; }
+			set
+			{
+				_minLabelDimensions = textLabel.minLabelDimensions = value;
+				// textLabel will set this to dirty if needed.
+			}
+		}
+
+
+		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
+		[SerializeField] private Vector2 _maxLabelDimensions = new Vector2(1025, 256);
+		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
+		public Vector2 maxLabelDimensions
+		{
+			get { return _maxLabelDimensions = textLabel.maxLabelDimensions; }
+			set
+			{
+				_maxLabelDimensions = textLabel.maxLabelDimensions = value;
+				// textLabel will set this to dirty if needed.
+			}
+		}
+
+		public UnityEvent<UICheckBox, bool> onCheckChangedEvent;
+
+		public void AddListener(UnityAction<UICheckBox, bool> onChangedEvent)
+		{
+			onCheckChangedEvent.AddListener(onChangedEvent);
+			
+		}
+
+		
+		private void OnToggled(bool isToggled)
+		{
+			if (onCheckChangedEvent != null)
+				onCheckChangedEvent.Invoke(this, toggle.isOn);
+		}
+
+		void OnEnable()
+		{
+			toggle.onValueChanged.RemoveAllListeners();
+			toggle.onValueChanged.AddListener(OnToggled);
+
+			this.SetDirty();
 		}
 
 		private Sprite boxSprite
@@ -153,6 +249,12 @@ namespace AtomosZ.UI
 			return checkBoxEx;
 		}
 
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
+		}
+
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
 			checkBoxEx = (CheckBoxEx)backingData;
@@ -161,11 +263,11 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			this.SetNameToReferenceName(gameObject);
+			this.SetGameObjectNameToReferenceName(gameObject);
 
-			toggle.isOn = checkBoxEx.isOnByDefault;
-			toggle.onValueChanged.RemoveAllListeners();
-			toggle.onValueChanged.AddListener(OnToggled);
+			//toggle.isOn = checkBoxEx.isOnByDefault;
+			//toggle.onValueChanged.RemoveAllListeners();
+			//toggle.onValueChanged.AddListener(OnToggled);
 
 			var sprite = boxSprite;
 			if (sprite != null)
@@ -189,14 +291,18 @@ namespace AtomosZ.UI
 			var rect = GetComponent<RectTransform>();
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, minDim.x);
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDim.y);
+
+			isDirty = false;
 		}
 
-		private void OnToggled(bool isToggled)
+
+		public Vector2 GetMinDimensions()
 		{
-			checkBoxEx.isOnByDefault = toggle.isOn;
-			if (checkBoxEx.action != null)
-				checkBoxEx.action.Invoke(toggle.isOn);
+			if (isDirty)
+				UpdateBackingData();
+			return GetComponent<RectTransform>().sizeDelta;
 		}
+
 
 		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
 		{
@@ -208,18 +314,6 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public Vector2 GetMinDimensions()
-		{
-			UpdateBackingData();
-			//var minDim = textLabel.GetMinDimensions();
-			//var layout = GetComponent<HorizontalLayoutGroup>();
-			//var space = layout.spacing;
-			//var imageDim = backgroundRect.sizeDelta;
-			//minDim.x += imageDim.x + space;
-			//if (minDim.y < imageDim.y)
-			//	minDim.y = imageDim.y;
-			return GetComponent<RectTransform>().sizeDelta;
-		}
 
 		public void ResetToLastPosition()
 		{

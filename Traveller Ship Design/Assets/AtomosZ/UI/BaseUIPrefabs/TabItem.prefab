@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 177.95, y: 62.41}
+  m_SizeDelta: {x: 500, y: 108.82}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &7298350520420406968
 MonoBehaviour:
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Tab_00
+  m_text: This got prefabed without permission
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_sharedMaterial: {fileID: -5212590573181050906, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
@@ -122,7 +122,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 12, y: 8, z: 46, w: 12}
+  m_margin: {x: 12, y: 8, z: 46, w: 16}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 6865870055718975944}
   - component: {fileID: 2781322499687730756}
   - component: {fileID: 5345713545006296892}
+  - component: {fileID: 229116233281735944}
   - component: {fileID: 2426340941609388716}
   - component: {fileID: 3126946103031920126}
   m_Layer: 5
@@ -175,7 +176,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 177.95, y: 62.41}
+  m_SizeDelta: {x: 500, y: 108.82}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6865870055718975944
 MonoBehaviour:
@@ -191,7 +192,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabel
   labelEx:
     referenceName: tabItem
-    text: Tab_00
     scriptableObj: {fileID: 11400000, guid: 9de4f32db1b568e42b38b4e65d5682d2, type: 2}
     useCustomFontSize: 0
     useCustomFontColor: 0
@@ -203,9 +203,11 @@ MonoBehaviour:
     maxLabelDimensions: {x: 500, y: 64}
   textLabel: {fileID: 7298350520420406968}
   image: {fileID: 2426340941609388716}
+  _designObject: {fileID: 0}
+  _text: This got prefabed without permission
   _fontStyles: 0
   _alignmentOptions: 513
-  _designObject: {fileID: 0}
+  _margin: {x: 12, y: 8, z: 46, w: 16}
 --- !u!114 &2781322499687730756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,6 +299,27 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &229116233281735944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7330561272148096184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
+  hoverCursorMode: 9
+  moveCursorMode: 9
+  isHoverable: 0
+  isMoveable: 0
+  isModal: 0
+  isSelectable: 0
+  hasCustomDimensions: 1
+  hasUpdatableBackingData: 0
+  tooltip: []
 --- !u!114 &2426340941609388716
 MonoBehaviour:
   m_ObjectHideFlags: 0

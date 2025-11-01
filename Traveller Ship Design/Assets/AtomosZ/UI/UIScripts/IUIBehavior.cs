@@ -29,7 +29,8 @@ namespace AtomosZ.UI
 		/// </code>
 		/// </summary>
 		public UIDesignObject designObject { get; }
-		public string referenceName { get; set;}
+		public string referenceName { get; set; }
+		public bool isDirty { get; set; }
 
 		public IUIBehavior GetControl(string controlRefName);
 
@@ -62,32 +63,32 @@ namespace AtomosZ.UI
 	public static class IUIBehaviorExtensions
 	{
 		/// <summary>
-		/// Makes a call to the parent that changes have been made.
-		/// If no parent is found, start recalculating up from here using the standard GetMinDimensions() method.
+		/// Recurse up object tree flagging all parents that this object is dirty.
 		/// </summary>
-		/// <param name="uiBehavior"></param>
-		/// <param name="thisObject">that GameObject of this IUIBehavior</param>
-		public static void Refresh(this IUIBehavior uiBehavior, GameObject thisObject)
+		/// <param name="uIBehavior"></param>
+		public static void SetDirty(this IUIBehavior uIBehavior)
 		{
-			if (thisObject.transform.parent != null)
+			if (uIBehavior.isDirty)
+				return; // by contract, if this is already true then all parents should already have been notified
+			uIBehavior.isDirty = true;
+			if (uIBehavior.designObject == null)
+				Debug.LogException(new Exception($"Why is {uIBehavior.referenceName}'s design object null?"));
+			if (uIBehavior.designObject.transform.parent != null)
 			{
-				var parentIUI = thisObject.transform.parent.GetComponentInParent<IUIBehavior>();
-				if (parentIUI != null)
-				{
-					if (parentIUI.designObject == null)
-					{
-						Debug.LogException(new Exception("parent is null???"));
-						uiBehavior.GetMinDimensions();
-					}
-					Refresh(parentIUI, parentIUI.designObject.gameObject);
+				var parent = uIBehavior.designObject.transform.parent.GetComponentInParent<IUIBehavior>();
+				if (parent == null)
+				{	// assume this is the root and start to refresh (only in edit mode?)
+					uIBehavior.GetMinDimensions();
 					return;
 				}
-			}
 
-			uiBehavior.GetMinDimensions();
+				if (parent.designObject == null)
+					Debug.LogException(new Exception($"{parent.referenceName} is null???"));
+				parent.SetDirty();
+			}
 		}
 
-		internal static void SetNameToReferenceName(this IUIBehavior uiBehavior, GameObject gameObject)
+		internal static void SetGameObjectNameToReferenceName(this IUIBehavior uiBehavior, GameObject gameObject)
 		{
 			if (string.IsNullOrEmpty(uiBehavior.referenceName))
 				uiBehavior.referenceName = gameObject.name;

@@ -6,6 +6,7 @@ using UnityEngine;
 namespace AtomosZ.UI
 {
 	/// <summary>
+	/// Let's deprecate this!
 	/// Make sure your implementing class has [Serializable] !
 	/// </summary>
 	public interface IUIDataEx
@@ -20,26 +21,34 @@ namespace AtomosZ.UI
 			switch (dataEx.dataType)
 			{
 				case UIControlType.Button:
-					return ((ButtonEx)dataEx).referenceName;
+					Debug.LogException(new Exception("this is deperacted anyway"));
+					return null;
 				case UIControlType.ButtonPanel:
-					return ((ButtonPanelEx)dataEx).referenceName;
+					Debug.LogException(new Exception("this is deperacted anyway"));
+					return null;
 				case UIControlType.CheckBox:
-					return ((CheckBoxEx)dataEx).referenceName;
+					Debug.LogException(new Exception("this is deperacted anyway"));
+					return null;
 				case UIControlType.Dropdown:
-					return ((DropdownEx)dataEx).referenceName;
+					Debug.LogException(new Exception("this is deprecated anyway"));
+					return null;
 				case UIControlType.Image:
 					return ((ImageEx)dataEx).referenceName;
 				case UIControlType.ImagePanel:
 					return ((ImageViewDataEx)dataEx).referenceName;
 				case UIControlType.InputField:
-					return ((InputFieldEx)dataEx).referenceName;
+					Debug.LogException(new Exception("this is deperacted anyway"));
+					return null;
 				case UIControlType.Slider:
-					return ((SliderEx)dataEx).referenceName;
+					Debug.LogException(new Exception("this is deperacted anyway"));
+					return null;
 				case UIControlType.Text:
-					return ((LabelEx)dataEx).referenceName;
+					Debug.LogException(new Exception("this is deperacted anyway"));
+					return null;
 				case UIControlType.Panel:
 				case UIControlType.HorizontalPanel:
-					return ((PanelEx)dataEx).referenceName;
+					Debug.LogException(new Exception("this is deperacted anyway"));
+					return null;
 				//case UIControlType.Spinner:
 				//	return ((SpinnerEx)dataEx).referenceName;
 				//case UIControlType.TabControl:
@@ -167,7 +176,7 @@ namespace AtomosZ.UI
 					return dynaPan.AddUIControl(new CheckBoxEx(checkBoxScriptObj));
 
 				case UIControlType.Slider:
-					return dynaPan.AddUIControl(new SliderEx(sliderScriptObj));
+					return dynaPan.AddUIControl(new SliderEx());
 
 				case UIControlType.Button:
 					return dynaPan.AddUIControl(new ButtonEx(buttonScriptObj));

@@ -7,6 +7,7 @@ using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
+	[ExecuteAlways]
 	public class MagicWindow : MonoBehaviour, IUIBehavior
 	{
 		public enum WindowStyle
@@ -16,7 +17,7 @@ namespace AtomosZ.UI
 			/// </summary>
 			ContextMenu,
 			/// <summary>
-			/// A tabbed title bar that can be multi or single tabbed. Modal or non-modal. Probably not movable? Optional Close control.
+			/// A tabbed title bar that can be multi or single tabbed. Modal or non-modal. Probably not movable? Optional Close control per tab.
 			/// </summary>
 			Tabbed,
 			/// <summary>
@@ -42,6 +43,10 @@ namespace AtomosZ.UI
 				return _designObject;
 			}
 		}
+
+		public bool isDirty { get; set; }
+
+		public UIExpandingLabel titlebar { get { return rootTabControl.tabPanels[0].Key; } }
 
 		public UITabControl rootTabControl;
 		public UIPanel panel
@@ -96,7 +101,7 @@ namespace AtomosZ.UI
 		public void ClearControls()
 		{
 			rootTabControl.ClearControls();
-			GetMinDimensions();
+			this.SetDirty();
 		}
 
 
@@ -187,7 +192,7 @@ namespace AtomosZ.UI
 
 		public IUIBehavior GetControl(string referenceName)
 		{
-			return panel.GetControl(referenceName);
+			return rootTabControl.GetControl(referenceName);
 		}
 
 		public List<UIDesignObject> GetControls()
@@ -216,6 +221,11 @@ namespace AtomosZ.UI
 #endif
 		}
 
+		void Update()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+		}
 
 
 		public void Refresh()
@@ -230,13 +240,14 @@ namespace AtomosZ.UI
 
 		public Vector2 GetMinDimensions()
 		{
-			var minDim = rootTabControl.GetMinDimensions();
-			return minDim;
+			isDirty = false;
+			return rootTabControl.GetMinDimensions();
 		}
 
 
 		public IUIBehavior AddUIControl(UIControlType ctrlType)
 		{
+			isDirty = true;
 			switch (ctrlType)
 			{
 				case UIControlType.Text:
@@ -252,7 +263,7 @@ namespace AtomosZ.UI
 					return panel.AddUIControl(new CheckBoxEx(checkBoxScriptObj));
 
 				case UIControlType.Slider:
-					return panel.AddUIControl(new SliderEx(sliderScriptObj));
+					return panel.AddUIControl(new SliderEx());
 
 				case UIControlType.Button:
 					return panel.AddUIControl(new ButtonEx(buttonScriptObj));

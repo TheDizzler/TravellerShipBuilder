@@ -36,13 +36,23 @@ namespace AtomosZ.UI
 		}
 	}
 
+	[ExecuteAlways]
 	public class UIImageView : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private Image image;
 		[SerializeField] private UIExpandingLabel captionLabel;
 		[SerializeField] private ImageEx imageEx;
 
-		public string referenceName { get { return imageEx.referenceName; } set { imageEx.referenceName = value; } }
+		public string referenceName
+		{
+			get { return imageEx.referenceName; }
+			set
+			{
+				imageEx.referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
+
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -54,6 +64,8 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public bool isDirty { get; set; } = true;
+
 
 		[SerializeField] private string _text = "Caption #00";
 		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
@@ -62,8 +74,11 @@ namespace AtomosZ.UI
 			get { return _text; }
 			set
 			{
-				_text = value;
-				captionLabel.text = value;
+				if (_text == text)
+					return;
+
+				_text = captionLabel.text = value;
+				this.SetDirty();
 			}
 		}
 
@@ -79,6 +94,7 @@ namespace AtomosZ.UI
 		{
 			imageEx.size = imageSize;
 			imageEx.forceSize = true;
+			this.SetDirty();
 		}
 
 		public IUIDataEx GetBackingData()
@@ -97,9 +113,15 @@ namespace AtomosZ.UI
 			UpdateBackingData();
 		}
 
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
+		}
+
 		public void UpdateBackingData()
 		{
-			this.SetNameToReferenceName(gameObject);
+			this.SetGameObjectNameToReferenceName(gameObject);
 
 			gameObject.SetActive(imageEx.isVisible);
 			if (!imageEx.isVisible)
@@ -137,25 +159,14 @@ namespace AtomosZ.UI
 			}
 
 			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+
+			isDirty = false;
 		}
 
 		public Vector2 GetMinDimensions()
 		{
-			UpdateBackingData();
-
-			//var size = GetComponent<RectTransform>().sizeDelta;
-			//size.y += image.rectTransform.sizeDelta.y;
-
-			//var layout = GetComponent<VerticalLayoutGroup>();
-			//if (imageEx.showCaption)
-			//{
-			//	var textSize = caption.GetMinDimensions();
-			//	size.y += textSize.y;
-			//	size.y += layout.spacing;
-			//}
-
-			//return size;
-
+			if (isDirty)
+				UpdateBackingData();
 			return GetComponent<RectTransform>().sizeDelta;
 		}
 

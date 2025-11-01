@@ -50,23 +50,9 @@ namespace AtomosZ.UI
 			scriptableObj = scriptObj;
 			labelEx = new LabelEx(scriptableObj.labelData);
 		}
-
-		//public void ResetToDefaults()
-		//{
-		//	imageSize = new Vector2(256, 256);
-		//	useAllAvailableHeight = false;
-		//	maxPanelSize = new Vector2(512, 512);
-		//	labelEx = new LabelEx
-		//	{
-		//		//fontColor = Color.black,
-		//		//fontSize = 36,
-		//		//maxLabelDimensions = new Vector2(125, 125),
-		//		text = "Image #00",
-		//	};
-		//}
 	}
 
-
+	[ExecuteAlways]
 	public class UIImageViewPanel : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private ImageViewDataEx viewDataEx;
@@ -75,7 +61,16 @@ namespace AtomosZ.UI
 
 		[SerializeField] public Dictionary<ImageEx, UIImageView> images = new();
 
-		public string referenceName { get { return viewDataEx.referenceName; } set { viewDataEx.referenceName = value; }}
+		public string referenceName
+		{
+			get { return viewDataEx.referenceName; }
+			set
+			{
+				viewDataEx.referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
+
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -87,6 +82,8 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public bool isDirty { get; set; } = true;
+
 		void OnEnable()
 		{
 			var imageViews = GetComponentsInChildren<UIImageView>();
@@ -95,6 +92,8 @@ namespace AtomosZ.UI
 			{
 				images.Add((ImageEx)imageView.GetBackingData(), imageView);
 			}
+
+			this.SetDirty();
 		}
 
 		public IUIBehavior GetControl(string controlRefName)
@@ -123,9 +122,15 @@ namespace AtomosZ.UI
 			UpdateBackingData();
 		}
 
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
+		}
+
 		public void UpdateBackingData()
 		{
-			this.SetNameToReferenceName(gameObject);
+			this.SetGameObjectNameToReferenceName(gameObject);
 
 			var rect = GetComponent<RectTransform>();
 			var panelSize = rect.sizeDelta;
@@ -167,22 +172,14 @@ namespace AtomosZ.UI
 				//image.Key.labelEx.minLabelDimensions = viewData.labelEx.minLabelDimensions;
 				image.Value.UpdateBackingData();
 			}
+
+			isDirty = false;
 		}
 
 		public Vector2 GetMinDimensions()
 		{
-			UpdateBackingData();
-			//var baseRect = GetComponent<RectTransform>();
-			//var panelSize = baseRect.sizeDelta;
-
-			//var minSize = gridLayout.cellSize;
-			//minSize.x += gridLayout.padding.right + gridLayout.padding.left;
-			//minSize.y += gridLayout.padding.top + gridLayout.padding.bottom;
-
-			//var newWidth = Mathf.Max(panelSize.x, minSize.x);
-			//var newHeight = Mathf.Max(panelSize.y, minSize.y);
-
-			//return new Vector2(newWidth, newHeight);
+			if (isDirty)
+				UpdateBackingData();
 			return GetComponent<RectTransform>().sizeDelta;
 		}
 
@@ -238,7 +235,7 @@ namespace AtomosZ.UI
 				labelEx = viewDataEx.labelEx.Clone(),
 			};
 
-			
+
 			var imageView = AddImage(imageEx);
 			imageView.text = caption;
 			imageView.GetComponent<Button>().onClick.AddListener(value);

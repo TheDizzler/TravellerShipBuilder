@@ -16,7 +16,6 @@ namespace AtomosZ.UI
 	public class DropdownEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Dropdown; } }
-		public string referenceName = "dropdown";
 
 		public bool fillParentHorizontal = true;
 		public Vector2 minDimensions = new Vector2(256, 64);
@@ -33,38 +32,7 @@ namespace AtomosZ.UI
 		public Color fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
 		[Tooltip("Default: null")]
 		public TMP_FontAsset fontAsset = null;
-		public List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>
-		{
-			new TMP_Dropdown.OptionData{ text = "Option 1" },
-			new TMP_Dropdown.OptionData{ text = "Option 2" },
-			new TMP_Dropdown.OptionData{ text = "Option 3" },
-			new TMP_Dropdown.OptionData{ text = "Option 4" },
-		};
 
-		/// <summary>
-		/// A delegate to auto-populate the options list.<br/>
-		/// NOTE: any changes to the list will be erased when the control refreshes unless the listeners are removed from this.
-		/// </summary>
-		public UnityEvent<DropdownEx> SetOptions = null;
-
-
-		[Tooltip("Ordinal of default selection. -1 == always select last option, 0 == always first option.")]
-		public int defaultSelection = 0;
-		public bool isMultiSelect = false;
-		public UnityEvent<UIDropdown, int> onValueChangedAction = null;
-
-
-		public DropdownEx(UIExpandingLabelScriptableObject textScriptObj, List<TMP_Dropdown.OptionData> options)
-		{
-			this.options = options;
-		}
-
-		public DropdownEx(UIExpandingLabelScriptableObject textScriptObj, List<string> stringOptions)
-		{
-			this.options.Clear();
-			foreach (var opt in stringOptions)
-				options.Add(new TMP_Dropdown.OptionData { text = opt });
-		}
 
 		public DropdownEx(UIExpandingLabelScriptableObject textScriptObj)
 		{
@@ -79,13 +47,25 @@ namespace AtomosZ.UI
 		}
 	}
 
-
+	[ExecuteAlways]
 	public class UIDropdown : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private TMP_Dropdown dropdown;
 		[SerializeField] private DropdownEx dropdownEx;
-		public string referenceName { get { return dropdownEx.referenceName; } set { dropdownEx.referenceName = value; } }
 
+		[SerializeField] private string _referenceName = "dropdown";
+		public string referenceName
+		{
+			get { return _referenceName; }
+			set
+			{
+				_referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
+
+
+		public bool isDirty { get; set; } = true;
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -102,6 +82,84 @@ namespace AtomosZ.UI
 			if (referenceName == controlRefName)
 				return this;
 			return null;
+		}
+
+		public UnityEvent<UIDropdown, int> onValueChangedAction = null;
+
+		[SerializeField] private int _value;
+		public int value
+		{
+			get { return _value; }
+			set
+			{
+				var oldValue = _value;
+				dropdown.value = _value = value;
+				if (oldValue != value)
+				{
+					this.SetDirty();
+					if (onValueChangedAction != null)
+						onValueChangedAction.Invoke(this, value);
+				}
+			}
+		}
+
+		[SerializeField] private bool _isMultiSelect = false;
+		public bool isMultiSelect
+		{
+			get { return _isMultiSelect; }
+			set
+			{
+				dropdown.MultiSelect = _isMultiSelect = value;
+				// do we need to clamp a multiselect value to a single select value?
+			}
+		}
+
+		[SerializeField]
+		private List<TMP_Dropdown.OptionData> _options;
+
+		public List<TMP_Dropdown.OptionData> options
+		{
+			get { return _options = dropdown.options; }
+			set
+			{
+				_options = dropdown.options = value;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private UnityEvent<UIDropdown> _optionsDelegate = null;
+
+		[Tooltip("A delegate to auto-populate the options list.")]
+		public UnityEvent<UIDropdown> optionsDelegate
+		{
+			get { return _optionsDelegate; }
+			set
+			{
+				_optionsDelegate = value;
+				if (optionsDelegate != null)
+					_optionsDelegate.Invoke(this);
+			}
+		}
+
+		[Conditional("UNITY_EDITOR")]
+		public void UpdateOptionsDelegate()
+		{
+			optionsDelegate = _optionsDelegate;
+		}
+
+		public void AddOption(TMP_Dropdown.OptionData option)
+		{
+			dropdown.AddOptions(new List<TMP_Dropdown.OptionData> { option });
+		}
+
+		public void AddOptions(List<TMP_Dropdown.OptionData> options)
+		{
+			dropdown.AddOptions(options);
+		}
+
+		public void ClearOption()
+		{
+			dropdown.ClearOptions();
 		}
 
 		public TMP_FontAsset fontAsset
@@ -135,20 +193,25 @@ namespace AtomosZ.UI
 		}
 
 
-		public int SelectedIndex
+		public int SelectedIndex()
 		{
-			get { return dropdown.value; }
-			set
-			{
-				dropdown.value = value;
-				dropdownEx.defaultSelection = value;
-			}
+			return value;
+		}
+
+		public string SelectedValue()
+		{
+			return _options[value].text;
 		}
 
 
 		public void OnEnable()
 		{
-			UpdateBackingData(dropdownEx);
+			if (optionsDelegate != null)
+				optionsDelegate.Invoke(this);
+			else
+				dropdown.ClearOptions();
+
+			this.SetDirty();
 		}
 
 		public UIDesignObject Select()
@@ -163,6 +226,12 @@ namespace AtomosZ.UI
 		}
 
 
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
+		}
+
 		public IUIDataEx GetBackingData()
 		{
 			return dropdownEx;
@@ -176,24 +245,7 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			this.SetNameToReferenceName(gameObject);
-
-			dropdown.ClearOptions();
-			if (dropdownEx.SetOptions != null)
-				dropdownEx.SetOptions.Invoke(dropdownEx);
-			dropdown.AddOptions(dropdownEx.options);
-
-			dropdown.MultiSelect = dropdownEx.isMultiSelect;
-			dropdown.value = dropdownEx.defaultSelection;
-
-			dropdown.onValueChanged.RemoveAllListeners();
-			if (dropdownEx.onValueChangedAction != null)
-			{
-				dropdown.onValueChanged.AddListener(delegate
-					{
-						dropdownEx.onValueChangedAction.Invoke(this, dropdown.value);
-					});
-			}
+			this.SetGameObjectNameToReferenceName(gameObject);
 
 			dropdown.captionText.font = fontAsset;
 			dropdown.captionText.fontSize = fontSize;
@@ -207,58 +259,16 @@ namespace AtomosZ.UI
 
 			layout.minWidth = dropdownEx.minDimensions.x;
 			layout.minHeight = dropdownEx.minDimensions.y;
-		}
 
-		/// <summary>
-		/// Adds action to the listener and the backingdata.
-		/// </summary>
-		/// <param name="action"></param>
-		public void AddListener(UnityEvent<int> action)
-		{
-			dropdownEx.onValueChangedAction.AddListener(delegate
-			{ action.Invoke(dropdown.value); });
-		}
-
-		/// <summary>
-		/// Adds action to the listener and the backingdata.
-		/// </summary>
-		/// <param name="action"></param>
-		public void AddListener(Action<int> action)
-		{
-			dropdownEx.onValueChangedAction.AddListener(delegate
-			{ action.Invoke(dropdown.value); });
-		}
-
-		[Conditional("DEBUG")]
-		private void TestDebug(int num)
-		{
-			string selected = "";
-			if (dropdownEx.isMultiSelect)
-			{
-				if (num == 0)
-					selected = "Nothing";
-				else
-				{
-					int bit = 0x1;
-					for (int i = 0; i < dropdownEx.options.Count; ++i)
-					{
-						if ((num & bit) == bit)
-							selected += " • Option " + i;
-						bit <<= 1;
-					}
-				}
-			}
-			else
-				selected = "Option " + num;
-			Debug.Log("Selected: " + selected);
+			isDirty = false;
 		}
 
 
 		public Vector2 GetMinDimensions()
 		{
-			UpdateBackingData();
-			var rect = GetComponent<RectTransform>();
-			var sDelta = rect.sizeDelta;
+			if (isDirty)
+				UpdateBackingData();
+			var sDelta = GetComponent<RectTransform>().sizeDelta;
 			return sDelta;
 		}
 

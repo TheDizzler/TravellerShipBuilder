@@ -129,7 +129,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkBoxEx:
-    referenceName: UICheckBox
     scriptableObj: {fileID: 0}
     useCustomCheckImage: 0
     useCustomBoxImage: 0
@@ -137,8 +136,6 @@ MonoBehaviour:
     boxSprite: {fileID: 0}
     isOnByDefault: 1
     labelEx:
-      referenceName: UIExpandingText (TMP)
-      text: CheckBox
       scriptableObj: {fileID: 11400000, guid: a595bfb26efa22540b8467a90b4b5f0f, type: 2}
       useCustomFontSize: 0
       useCustomFontColor: 0
@@ -146,8 +143,6 @@ MonoBehaviour:
       fontSize: 34
       fontColor: {r: 1, g: 0, b: 0, a: 1}
       fontAsset: {fileID: 0}
-      minLabelDimensions: {x: 64, y: 32}
-      maxLabelDimensions: {x: 220, y: 1}
     action:
       m_PersistentCalls:
         m_Calls: []
@@ -156,7 +151,14 @@ MonoBehaviour:
   checkImage: {fileID: 4927640585714093458}
   textLabel: {fileID: 7618200045658159183}
   toggle: {fileID: 4613445078176205474}
+  _referenceName: checkbox
   _interactable: 1
+  _text: CheckBox
+  _fontStyles: 0
+  _alignmentOptions: 513
+  _margin: {x: 0, y: 0, z: 0, w: 0}
+  _minLabelDimensions: {x: 64, y: 10}
+  _maxLabelDimensions: {x: 1025, y: 256}
 --- !u!114 &-1038418384538945441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -396,6 +398,10 @@ PrefabInstance:
       propertyPath: m_fontColor32.rgba
       value: 4278190080
       objectReference: {fileID: 0}
+    - target: {fileID: 46845985781952030, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 778371616326191649, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -477,12 +483,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+      propertyPath: _text
+      value: CheckBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: labelEx.text
       value: CheckBox
       objectReference: {fileID: 0}
     - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+      propertyPath: _designObject
+      value: 
+      objectReference: {fileID: 1777081956676660134}
+    - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: labelEx.fontSize
       value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+      propertyPath: _alignmentOptions
+      value: 513
       objectReference: {fileID: 0}
     - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: labelEx.fontColor.b
@@ -537,6 +555,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+--- !u!114 &1777081956676660134 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6170590193817473966, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+  m_PrefabInstance: {fileID: 5551567839041173512}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5171950230800085545 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 778371616326191649, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}

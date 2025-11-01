@@ -13,10 +13,6 @@ namespace AtomosZ.UI
 	public class PanelEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Panel; } }
-		/// <summary>
-		/// This is the name we use to modify this UIControl.
-		/// </summary>
-		public string referenceName;
 
 		public UIPanelScriptableObject scriptableObj;
 
@@ -44,12 +40,22 @@ namespace AtomosZ.UI
 		}
 	}
 
+	[ExecuteAlways]
 	public class UIPanel : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private PanelEx panelEx;
-		public string referenceName { get { return panelEx.referenceName; } set { panelEx.referenceName = value; } }
-		public UIDesignObject _designObject;
+		[SerializeField] private string _referenceName;
+		public string referenceName
+		{
+			get { return _referenceName; }
+			set
+			{
+				_referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
 
+		public UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
 			get
@@ -59,6 +65,8 @@ namespace AtomosZ.UI
 				return _designObject;
 			}
 		}
+
+		public bool isDirty { get; set; }
 
 		public Sprite sprite
 		{
@@ -163,7 +171,6 @@ namespace AtomosZ.UI
 		[Tooltip("The tab associated with this panel (if context menu, this tab will be inactive).")]
 		public UIExpandingLabel tabLabel;
 		public IUIBehavior parentPanel;
-		//[SerializeField] public ControlLookupDictionary uiControls;
 		[SerializeField] public List<UIDesignObject> uiControls;
 
 		public RectTransform rect;
@@ -176,6 +183,11 @@ namespace AtomosZ.UI
 			PrefabUtility.RecordPrefabInstancePropertyModifications(GetComponent<HorizontalOrVerticalLayoutGroup>());
 		}
 
+		void Awake()
+		{
+			if (transform.parent != null)
+				this.SetDirty();
+		}
 
 		public bool IsHorizontal()
 		{
@@ -201,6 +213,13 @@ namespace AtomosZ.UI
 			var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
 			layout.padding = layoutPadding;
 			layout.spacing = layoutSpacing;
+			isDirty = false;
+		}
+
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
 		}
 
 		public void RecalculateDimensions()
@@ -211,7 +230,8 @@ namespace AtomosZ.UI
 
 		public Vector2 GetMinDimensions()
 		{
-			UpdateBackingData();
+			if (isDirty)
+				UpdateBackingData();
 			var minDim = Vector2.zero;
 			var vertLayout = GetComponent<VerticalLayoutGroup>();
 			if (vertLayout != null)
@@ -330,6 +350,7 @@ namespace AtomosZ.UI
 
 		public IUIBehavior AddUIControl(IUIDataEx uiDataEx)
 		{
+			this.SetDirty();
 			switch (uiDataEx.dataType)
 			{
 				case UIControlType.Button:
@@ -359,6 +380,22 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public UIPanel AddPanel(UIPanelScriptableObject verticalPanelScriptObj)
+		{
+			var prefabType = UIPrefabType.Panel;
+			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
+			var panel = uiDO.GetComponent<UIPanel>();
+			if (verticalPanelScriptObj != null)
+			{
+				panel.panelEx.scriptableObj = verticalPanelScriptObj;
+				panel.RecalculateDimensions();
+			}
+
+			SetReferenceNameAndAddControl(prefabType, uiDO);
+
+			return panel;
+		}
+
 		public UIPanel AddHorizontalPanel(UIPanelScriptableObject horizontalPanelScriptObj)
 		{
 			var prefabType = UIPrefabType.HorizontalPanel;
@@ -370,7 +407,7 @@ namespace AtomosZ.UI
 				panel.RecalculateDimensions();
 			}
 
-			AddControl(prefabType, uiDO);
+			SetReferenceNameAndAddControl(prefabType, uiDO);
 
 			return panel;
 		}
@@ -381,7 +418,7 @@ namespace AtomosZ.UI
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
 			var tabControl = uiDO.GetComponent<UITabControl>();
 
-			AddControl(prefabType, uiDO);
+			SetReferenceNameAndAddControl(prefabType, uiDO);
 
 			return tabControl;
 		}
@@ -392,7 +429,7 @@ namespace AtomosZ.UI
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
 			var uiSpinner = uiDO.GetComponent<UISpinner>();
 
-			AddControl(prefabType, uiDO);
+			SetReferenceNameAndAddControl(prefabType, uiDO);
 			uiSpinner.UpdateBackingData(dataEx);
 
 			return uiSpinner;
@@ -404,7 +441,7 @@ namespace AtomosZ.UI
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
 			var uiButton = uiDO.GetComponent<UIButton>();
 
-			AddControl(prefabType, uiDO);
+			SetReferenceNameAndAddControl(prefabType, uiDO);
 			uiButton.UpdateBackingData(dataEx);
 
 			return uiButton;
@@ -422,7 +459,7 @@ namespace AtomosZ.UI
 			{
 				var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ButtonPanel), transform);
 				buttonPanel = uiDO.GetComponent<UIButtonPanel>();
-				AddControl(UIPrefabType.ButtonPanel, uiDO);
+				SetReferenceNameAndAddControl(UIPrefabType.ButtonPanel, uiDO);
 			}
 
 			buttonPanel.UpdateBackingData(dataEx);
@@ -434,7 +471,7 @@ namespace AtomosZ.UI
 				var dynamicPanel = GetComponentInParent<DynamicPanel>();
 				if (dynamicPanel != null)
 				{
-					Debug.LogWarning("Time to upgrade away from DYnamicPanel");
+					Debug.LogWarning("Time to upgrade away from DynamicPanel");
 					buttonPanel.SetResultListeners(dynamicPanel);
 				}
 			}
@@ -446,13 +483,6 @@ namespace AtomosZ.UI
 			return buttonPanel;
 		}
 
-		private void SubmitText(string currentText)
-		{
-			//throw new Exception("AddButtonPanel not yet implemented");
-			var parentPanel = GetComponentInParent<DynamicPanel>();
-			if (parentPanel != null)
-				parentPanel.SetDialogResultOK();
-		}
 
 		private UIDropdown AddDropdown(DropdownEx dataEx)
 		{
@@ -460,7 +490,7 @@ namespace AtomosZ.UI
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
 			var uiControl = uiDO.GetComponent<UIDropdown>();
 
-			AddControl(prefabType, uiDO);
+			SetReferenceNameAndAddControl(prefabType, uiDO);
 			uiControl.UpdateBackingData(dataEx);
 
 			return uiControl;
@@ -471,7 +501,7 @@ namespace AtomosZ.UI
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ImageViewPanel), transform);
 			var imagePanel = uiDO.GetComponent<UIImageViewPanel>();
 
-			AddControl(UIPrefabType.ImageViewPanel, uiDO);
+			SetReferenceNameAndAddControl(UIPrefabType.ImageViewPanel, uiDO);
 			imagePanel.UpdateBackingData(dataEx);
 
 			return imagePanel;
@@ -482,7 +512,7 @@ namespace AtomosZ.UI
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ImageView), transform);
 			var image = uiDO.GetComponent<UIImageView>();
 
-			AddControl(UIPrefabType.ImageView, uiDO);
+			SetReferenceNameAndAddControl(UIPrefabType.ImageView, uiDO);
 			image.UpdateBackingData(dataEx);
 
 			return image;
@@ -493,7 +523,7 @@ namespace AtomosZ.UI
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.Slider), transform);
 			var slider = uiDO.GetComponent<UISlider>();
 
-			AddControl(UIPrefabType.Slider, uiDO);
+			SetReferenceNameAndAddControl(UIPrefabType.Slider, uiDO);
 			slider.UpdateBackingData(dataEx);
 
 			return slider;
@@ -504,7 +534,7 @@ namespace AtomosZ.UI
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.CheckBox), transform);
 			var checkBox = uiDO.GetComponent<UICheckBox>();
 
-			AddControl(UIPrefabType.CheckBox, uiDO);
+			SetReferenceNameAndAddControl(UIPrefabType.CheckBox, uiDO);
 			checkBox.UpdateBackingData(dataEx);
 
 			return checkBox;
@@ -516,7 +546,7 @@ namespace AtomosZ.UI
 			var inputRect = uiDO.GetComponent<RectTransform>();
 			var inputField = uiDO.GetComponent<UIExpandingInputField>();
 
-			AddControl(UIPrefabType.InputField, uiDO);
+			SetReferenceNameAndAddControl(UIPrefabType.InputField, uiDO);
 			inputField.UpdateBackingData(dataEx);
 
 			var inputTMP = uiDO.GetComponent<TMP_InputField>();
@@ -529,42 +559,38 @@ namespace AtomosZ.UI
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ExpandingText), transform);
 			var label = uiDO.GetComponent<UIExpandingLabel>();
-
-			AddControl(UIPrefabType.ExpandingText, uiDO);
+			label.referenceName = null;
+			SetReferenceNameAndAddControl(UIPrefabType.ExpandingText, uiDO);
+			label.alignmentOptions = label.alignmentOptions;
 			label.UpdateBackingData(dataEx);
 
 			return label;
 		}
 
-
-		private void AddControl(UIPrefabType prefabType, UIDesignObject uiDO)
+		public void AddCustomControl(IUIBehavior uiBehavior)
 		{
-			if (string.IsNullOrEmpty(uiDO.name))
-			{
-				int count = 0;
-				var controlName = $"{prefabType}_{count.ToString("00")}";
-				while (GetControl(controlName) != null)
-				{
-					++count;
-					controlName = $"{prefabType}_{count.ToString("00")}";
-				}
+			this.SetDirty();
+			uiControls.Add(uiBehavior.designObject);
+		}
 
-				uiDO.name = controlName;
+		/// <summary>
+		/// @TODO(Tristan): Have this check control names in parent(s) well.
+		/// </summary>
+		/// <param name="prefabType"></param>
+		/// <param name="uiDO"></param>
+		private void SetReferenceNameAndAddControl(UIPrefabType prefabType, UIDesignObject uiDO)
+		{
+			this.SetDirty();
 
-			}
-			else
+			int count = 0;
+			var controlName = $"{referenceName}_{prefabType}_{count.ToString("00")}";
+			while (GetControl(controlName) != null)
 			{
-				int count = 0;
-				var uiDOName = uiDO.name.Replace("(Clone)", "");
-				var controlName = uiDOName;
-				while (GetControl(controlName) != null)
-				{
-					++count;
-					controlName = $"{uiDOName}_{count.ToString("00")}";
-				}
-				uiDO.name = controlName;
+				++count;
+				controlName = $"{referenceName}_{prefabType}_{count.ToString("00")}";
 			}
 
+			uiDO.GetUIBehavior().referenceName = controlName;
 			uiControls.Add(uiDO);
 		}
 
@@ -576,9 +602,21 @@ namespace AtomosZ.UI
 		/// </summary>
 		public void SetToParentSize()
 		{
-			var parentPanel = GetComponentInParent<DynamicPanel>();
-			if (parentPanel != null)
-				parentPanel.Refresh();
+			var magicWindow = GetComponentInParent<MagicWindow>();
+			if (magicWindow != null)
+			{
+				magicWindow.Refresh();
+			}
+			else
+			{
+				var parentPanel = GetComponentInParent<DynamicPanel>();
+				if (parentPanel != null)
+				{
+					Debug.LogWarning("Time to upgrade away from DynamicPanel");
+					parentPanel.Refresh();
+				}
+			}
+
 			var rect = GetComponent<RectTransform>();
 			rect.sizeDelta = new Vector2(0, rect.sizeDelta.y);
 		}
@@ -632,13 +670,19 @@ namespace AtomosZ.UI
 
 		public void ClearControls()
 		{
+#if UNITY_EDITOR
+			ClearControls_EditorOnly();
+#else
 			foreach (var control in uiControls)
 				Destroy(control.gameObject);
 			uiControls.Clear();
+#endif
+
+			this.SetDirty();
 		}
 
 		[System.Diagnostics.Conditional("UNITY_EDITOR")]
-		public void ClearControls_EditorOnly()
+		private void ClearControls_EditorOnly()
 		{
 			foreach (var control in uiControls)
 			{
@@ -694,7 +738,7 @@ namespace AtomosZ.UI
 
 			var divider = Instantiate(UIPrefabProvider.GetPrefab(UIPrefabType.MenuDivider), transform);
 
-			AddControl(UIPrefabType.MenuDivider, divider);
+			SetReferenceNameAndAddControl(UIPrefabType.MenuDivider, divider);
 		}
 
 		private void AddMenuControl(DesignAction clickAction)
@@ -708,6 +752,16 @@ namespace AtomosZ.UI
 			//	menuControl.GetComponentInChildren<UIExpandingLabel>().SetText(clickAction.buttonText, false);
 
 			//	AddControl(UIPrefabType.MenuControlButton, menuControl);
+		}
+
+
+
+		private void SubmitText(string currentText)
+		{
+			//throw new Exception("AddButtonPanel not yet implemented");
+			var parentPanel = GetComponentInParent<DynamicPanel>();
+			if (parentPanel != null)
+				parentPanel.SetDialogResultOK();
 		}
 
 		public void SetHover(bool isHover)

@@ -25,6 +25,7 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public bool isDirty { get; set; }
 		/// <summary>
 		/// DragPanel does not require a reference name.
 		/// </summary>

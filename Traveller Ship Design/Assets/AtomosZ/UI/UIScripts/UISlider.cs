@@ -12,61 +12,22 @@ namespace AtomosZ.UI
 	public class SliderEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Slider; } }
-		public string referenceName;
-
-		//public UISliderScriptableObject scriptableObj;
-
-		//public bool isEnabled = true;
-		//public bool fillParentHorizontal = true;
-		//public Vector2 minDimensions = new Vector2(126, 64);
-
-		////public bool useCustomShowHandle = false;
-		////public bool useCustomHandleSprite = false;
-		////public bool useCustomHandleOffset = false;
-		//public bool useCustomShowUnits = false;
-		//public bool useCustomUnitSpan = false;
-		////public bool useCustomUnitVerticalOffset = false;
-
-		////public bool showHandle = true;
-		////public Sprite handleSprite;
-		////public Vector2 handleOffset = new Vector2(16, 16);
-
-		//public bool showUnits = true;
-		//public float unitSpan = 1;
-		//public int unitVerticalOffset = 0;
-
-
-		//public float minValue = 0;
-		//public float maxValue = 4;
-		//public float value = 0;
-		//public bool wholeNumbers = true;
-
-		//public LabelEx labelEx;
-
-		public SliderEx(UISliderScriptableObject sliderSO)
-		{
-			//scriptableObj = sliderSO;
-			//	if (sliderSO == null)
-			//	{
-			//		//useCustomShowHandle = true;
-			//		useCustomShowUnits = true;
-			//		useCustomUnitSpan = true;
-			//		labelEx = new LabelEx("")
-			//		{
-			//			referenceName = "_slider_labelEx",
-			//			fontColor = Color.black,
-			//			fontSize = 18,
-			//			minLabelDimensions = new Vector2(8, 8),
-			//		};
-			//	}
-		}
 	}
 
+	[ExecuteAlways]
 	public class UISlider : MonoBehaviour, IUIBehavior
 	{
 		[SerializeField] private SliderEx sliderEx;
 		[SerializeField] private string _referenceName;
-		public string referenceName { get { return _referenceName; } set { _referenceName = value; } }
+		public string referenceName
+		{
+			get { return _referenceName; }
+			set
+			{
+				_referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
 
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -77,6 +38,13 @@ namespace AtomosZ.UI
 					_designObject = GetComponent<UIDesignObject>();
 				return _designObject;
 			}
+		}
+
+		public bool isDirty { get; set; } = true;
+
+		private SliderCustom slider
+		{
+			get { return GetComponent<SliderCustom>(); }
 		}
 
 		[SerializeField] private bool _interactable = true;
@@ -93,7 +61,6 @@ namespace AtomosZ.UI
 						image.color = Color.white;
 					else
 						image.color = new Color(.6f, .6f, .6f);
-
 				}
 			}
 		}
@@ -128,6 +95,8 @@ namespace AtomosZ.UI
 					unitSpan = Mathf.RoundToInt(_unitSpan);
 					this.value = Mathf.RoundToInt(_value);
 				}
+
+				this.SetDirty();
 			}
 		}
 
@@ -146,6 +115,10 @@ namespace AtomosZ.UI
 					_minValue = value;
 
 				this.value = _value;
+				if (showUnits)
+					slider.CreateUnitLabels();
+
+				this.SetDirty();
 			}
 		}
 
@@ -163,6 +136,10 @@ namespace AtomosZ.UI
 					_maxValue = value;
 
 				this.value = this.value;
+				if (showUnits)
+					slider.CreateUnitLabels();
+
+				this.SetDirty();
 			}
 		}
 
@@ -172,7 +149,7 @@ namespace AtomosZ.UI
 			get { return _value; }
 			set
 			{
-				float oldValue = _value; // this doesn't work when changing the value from the editor. This is good, I guess?
+				float oldValue = _value;
 				if (_wholeNumbers)
 					value = Mathf.RoundToInt(value);
 				_value = value;
@@ -181,8 +158,6 @@ namespace AtomosZ.UI
 				else if (_value < minValue)
 					_value = minValue;
 				slider.SetValueFill();
-				if (showUnits)
-					slider.CreateUnitLabels();
 
 				if (onValueChanged != null && oldValue != _value)
 					onValueChanged.Invoke(this, _value);
@@ -197,6 +172,7 @@ namespace AtomosZ.UI
 			{
 				_fontSize = value;
 				slider.SetFontSize(value);
+				this.SetDirty();
 			}
 		}
 
@@ -215,7 +191,11 @@ namespace AtomosZ.UI
 		public float unitVerticalOffset
 		{
 			get { return _unitVerticalOffset; }
-			set { _unitVerticalOffset = value; }
+			set
+			{
+				_unitVerticalOffset = value;
+				this.SetDirty();
+			}
 		}
 
 		[Min(0)]
@@ -246,7 +226,10 @@ namespace AtomosZ.UI
 				if (_unitSpan == value)
 					return;
 				_unitSpan = value;
+
 				slider.CreateUnitLabels();
+
+				this.SetDirty();
 			}
 		}
 
@@ -254,7 +237,11 @@ namespace AtomosZ.UI
 		public LabelEx labelEx
 		{
 			get { return _labelEx; }
-			set { _labelEx = value; }
+			set
+			{
+				_labelEx = value;
+				this.SetDirty();
+			}
 		}
 
 
@@ -266,6 +253,7 @@ namespace AtomosZ.UI
 			{
 				_showHandle = value;
 				slider.ShowHandle(value);
+				this.SetDirty();
 			}
 		}
 
@@ -281,6 +269,7 @@ namespace AtomosZ.UI
 			{
 				_handleSprite = value;
 				var slider = GetComponent<SliderCustom>().handleSprite = value;
+				this.SetDirty();
 			}
 		}
 
@@ -288,14 +277,13 @@ namespace AtomosZ.UI
 		public Vector2 handleOffset
 		{
 			get { return _handleOffset; }
-			set { _handleOffset = value; }
+			set
+			{
+				_handleOffset = value;
+				this.SetDirty();
+			}
 		}
 
-
-		private SliderCustom slider
-		{
-			get { return GetComponent<SliderCustom>(); }
-		}
 
 		[SerializeField] private Vector2 _minDimensions = new Vector2(128, 32);
 		public Vector2 minDimensions
@@ -307,6 +295,7 @@ namespace AtomosZ.UI
 				var layout = GetComponent<LayoutElement>();
 				layout.minWidth = minDimensions.x;
 				layout.minHeight = minDimensions.y;
+				this.SetDirty();
 			}
 		}
 
@@ -314,7 +303,11 @@ namespace AtomosZ.UI
 		public Vector2 maxDimensions
 		{
 			get { return _maxDimensions; }
-			set { _maxDimensions = value; }
+			set
+			{
+				_maxDimensions = value;
+				this.SetDirty();
+			}
 		}
 
 
@@ -330,6 +323,7 @@ namespace AtomosZ.UI
 					layout.flexibleWidth = 1;
 				else
 					layout.flexibleWidth = 0;
+				this.SetDirty();
 			}
 		}
 
@@ -367,6 +361,7 @@ namespace AtomosZ.UI
 			sliderEx = (SliderEx)backingData;
 			UpdateBackingData();
 		}
+
 		private static bool isInPrefabStage()
 		{
 #if UNITY_EDITOR
@@ -377,9 +372,15 @@ namespace AtomosZ.UI
 #endif
 		}
 
+		void Update()
+		{
+			if (isDirty)
+				UpdateBackingData();
+		}
+
 		public void UpdateBackingData()
 		{
-			this.SetNameToReferenceName(gameObject);
+			this.SetGameObjectNameToReferenceName(gameObject);
 
 			Canvas.ForceUpdateCanvases();
 			var slider = GetComponent<SliderCustom>();
@@ -391,12 +392,14 @@ namespace AtomosZ.UI
 #endif
 
 			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
+
+			isDirty = false;
 		}
 
 		public Vector2 GetMinDimensions()
 		{
-			UpdateBackingData();
-			//return GetComponent<SliderCustom>().GetMinDimensions();
+			if (isDirty)
+				UpdateBackingData();
 			return GetComponent<RectTransform>().sizeDelta;
 		}
 

@@ -216,9 +216,7 @@ public class Room : MonoBehaviour, IDesignBehavior
 			panel.AddText_NoData($"Room with same name already exists. Overwrite or save as alternate?");
 			var checkBox = (UICheckBox)panel.AddUIControl(UIControlType.CheckBox);
 			var checkBoxData = (CheckBoxEx)checkBox.GetBackingData();
-			checkBoxData.isOnByDefault = false;
-			checkBoxData.action = new UnityEngine.Events.UnityEvent<bool>();
-			checkBoxData.action.AddListener(OnOverwriteToggled);
+			checkBox.AddListener(OnOverwriteToggled);
 
 			int altNum = 0;
 			string altName;
@@ -268,7 +266,7 @@ public class Room : MonoBehaviour, IDesignBehavior
 		}
 	}
 
-	private void OnOverwriteToggled(bool isOn)
+	private void OnOverwriteToggled(UICheckBox checkbox, bool isOn)
 	{
 		inputField.interactable = !isOn;
 	}
