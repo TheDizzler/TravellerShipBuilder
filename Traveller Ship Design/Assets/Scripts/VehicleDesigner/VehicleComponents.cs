@@ -142,7 +142,20 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 	{
 		public string name;
 		public string description;
+
+
+		/// <summary>
+		/// public uint techLevel;
+		///public int spaceConsumption;
+		///public Skill skill;
+		///public int agility;
+		///public uint minSpaces;
+		///public uint maxSpaces;
+		///public uint costPerSpace;
+		///public int speedBandAdjust; 
+		/// </summary>
 		public Dictionary<OptionModType, object> optionModValues;
+		//public List<Trait> traits;
 	}
 
 	public enum Speed

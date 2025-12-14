@@ -56,27 +56,33 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			var chassisDropdown = dropdown.GetComponent<TMP_Dropdown>();
 			chassisDropdown.RefreshShownValue();
 
-			var uiDO = designWindow.GetControl("msg_textLabel");
-			if (uiDO == null)
+			var msgLabel = (UIExpandingLabel)designWindow.GetControl("msg_textLabel");
+			if (msgLabel == null)
 			{
 				Debug.LogError("msg_textLabel is missing");
 				return;
 			}
 
-			var label = (UIExpandingLabel)uiDO;
+			var spacesSpinner = (UISpinner)designWindow.GetControl("spaces_spinner");
+		
 
-			if (!VehicleComponents.chassisList.TryGetValue((ChassisType)selectionIndex, out var chassis))
+			var chassis = GetSelectedChassis();
+			if (chassis == null)
 			{
-				label.text = $"{(ChassisType)selectionIndex} has not yet been implemented";
-				label.SetColor(Color.red);
+				msgLabel.text = $"{(ChassisType)selectionIndex} has not yet been implemented";
+				msgLabel.color = Color.red;
 				techTableWindow.ClearControls();
+
+				spacesSpinner.interactable = false;
+				designWindow.EnableTab("options_tab", false);
 				return;
 			}
 
-			label.SetColor(Color.white);
-			label.text = $"{chassis.name}";
+			spacesSpinner.interactable = true;
 
-			var spacesSpinner = (UISpinner)designWindow.GetControl("spaces_spinner");
+			msgLabel.color = Color.white;
+			msgLabel.text = $"{chassis.name}";
+
 			spacesSpinner.minValue = (int)chassis.minSpace;
 			spacesSpinner.maxValue = (int)chassis.maxSpace;
 
@@ -99,7 +105,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			tlSlider.minValue = chassis.techLevel;
 			tlSlider.value = orgValue;
 
-			var optionsPanel = designWindow.GetControl("options_panel");
+			var optionsPanel = (UIPanel)designWindow.GetControl("options_panel");
 			if (optionsPanel == null)
 			{
 				var tabPanel = designWindow.AddTab("Options");
@@ -114,7 +120,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 
 		private void UpdateOptionsPanel()
 		{
-			var optionsPanel = (UIPanel) designWindow.GetControl("options_panel");
+			var optionsPanel = (UIPanel)designWindow.GetControl("options_panel");
 			optionsPanel.ClearControls();
 			var chassis = GetSelectedChassis();
 
@@ -128,6 +134,9 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 
 		public void OnTechLevelChanged(UISlider slider, float techLevel)
 		{
+			dataSheetWindow.gameObject.SetActive(true);
+			techTableWindow.gameObject.SetActive(true);
+
 			var tlLabel = (UIExpandingLabel)dataSheetWindow.GetControl("techLevel_label");
 			tlLabel.text = techLevel + "";
 
@@ -160,11 +169,13 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 
 
 			var chassis = GetSelectedChassis();
+			if (chassis == null)
+				return;
 
 			foreach (var row in chassis.techTable.indices)
 			{
 				techRowPanel = (UIPanel)techTableWindow.AddUIControl(UIControlType.HorizontalPanel);
-				techRowPanel.referenceName = "techTable_dataRow_panel_row_"  + row;
+				techRowPanel.referenceName = "techTable_dataRow_panel_row_" + row;
 
 				var techRow = chassis.techTable[row];
 				label = ((UIExpandingLabel)techRowPanel.AddUIControl(new LabelEx(techTableScriptObj)));
@@ -226,9 +237,6 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			var chassisDropdownCtrl = (UIDropdown)designWindow.GetControl("chassis_dropdown");
 			if (!VehicleComponents.chassisList.TryGetValue((ChassisType)chassisDropdownCtrl.SelectedIndex(), out var chassis))
 			{
-				var label = (UIExpandingLabel)designWindow.GetControl("msg_textLabel");
-				label.text = $"{(ChassisType)chassisDropdownCtrl.SelectedIndex()} has not yet been implemented";
-				label.SetColor(Color.red);
 				return null;
 			}
 
@@ -258,8 +266,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			foreach (var ctrl in ctrls)
 			{
 				var bd = ((LabelEx)ctrl.GetBackingData());
-				bd.scriptableObj = dataSheetLabelScriptObj;
-				bd.useCustomFontAsset = bd.useCustomFontColor = bd.useCustomFontSize = false;
+				ctrl.UpdateBackingData(new LabelEx(dataSheetLabelScriptObj));
 				ctrl.minLabelDimensions = new Vector2(120, 10);
 				ctrl.alignmentOptions = TextAlignmentOptions.Left;
 			}
@@ -272,7 +279,6 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 
 				var bd = ((PanelEx)panel.GetBackingData());
 				bd.scriptableObj = horizontalPanelData;
-				bd.useCustomMinDimensions = false;
 			}
 
 			dataSheetWindow.Refresh();
