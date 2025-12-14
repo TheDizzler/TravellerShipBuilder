@@ -10,11 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d98d8afc62ede724eba268b11b46f35e, type: 3}
-  m_Name: CheckBoxTextLabelData
+  m_Name: OptionDataTextLabel
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabelScriptableObject
-  fontSize: 32
-  textMargin: {x: 0, y: 0, z: 0, w: 0}
-  fontColor: {r: 0, g: 0, b: 0, a: 1}
-  disabledColor: {r: 0.408805, g: 0.408805, b: 0.408805, a: 1}
+  fontSize: 18
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  disabledColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
   fontAsset: {fileID: 0}
-  fontStyles: 0

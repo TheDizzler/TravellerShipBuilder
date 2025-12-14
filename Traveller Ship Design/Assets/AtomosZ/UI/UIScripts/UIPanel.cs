@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using static AtomosZ.UI.UIPrefabProvider;
@@ -16,34 +15,18 @@ namespace AtomosZ.UI
 
 		public UIPanelScriptableObject scriptableObj;
 
-		public Sprite backgroundSprite;
-		public Vector2 minDimensions = new Vector2(96, 64);
-		public RectOffset layoutPadding = new RectOffset(32, 32, 16, 16);
-		public float layoutSpacing = 8;
-
-
-		public bool useCustomBackgroundSprite = false;
-		public bool useCustomMinDimensions = false;
-		public bool useCustomLayoutPadding = false;
-		public bool useCustomLayoutSpacing = false;
-
 		public PanelEx(UIPanelScriptableObject scriptObj)
 		{
 			scriptableObj = scriptObj;
-			if (scriptableObj == null)
-			{
-				useCustomBackgroundSprite = true;
-				useCustomMinDimensions = true;
-				useCustomLayoutPadding = true;
-				useCustomLayoutSpacing = true;
-			}
 		}
 	}
 
 	[ExecuteAlways]
 	public class UIPanel : MonoBehaviour, IUIBehavior
 	{
-		[SerializeField] private PanelEx panelEx;
+		public UIControlType dataType { get { return UIControlType.Panel; } }
+
+		[SerializeField] private UIPanelScriptableObject panelData;
 		[SerializeField] private string _referenceName;
 		public string referenceName
 		{
@@ -68,61 +51,56 @@ namespace AtomosZ.UI
 
 		public bool isDirty { get; set; }
 
+		[SerializeField] private Sprite _sprite;
 		public Sprite sprite
 		{
-			get
-			{
-				if (panelEx.scriptableObj == null || panelEx.useCustomBackgroundSprite)
-					return panelEx.backgroundSprite;
-				else
-					return panelEx.scriptableObj.backgroundSprite;
-			}
+			get { return _sprite = GetComponent<Image>().sprite; }
 
 			set
 			{
-				panelEx.backgroundSprite = value;
-				panelEx.useCustomBackgroundSprite = true;
-				UpdateBackingData();
+				if (_sprite == value)
+					return;
+				if (value == null && panelData != null)
+					_sprite = GetComponent<Image>().sprite = panelData.backgroundSprite;
+				else
+					_sprite = GetComponent<Image>().sprite = value;
+				this.SetDirty();
 			}
 		}
 
+		[SerializeField] private RectOffset _layoutPadding;
+		[Tooltip("A value of null will set the padding to the scriptable object values, if it exists.")]
 		public RectOffset layoutPadding
 		{
-			get
-			{
-				if (panelEx.scriptableObj == null || panelEx.useCustomLayoutPadding)
-					return panelEx.layoutPadding;
-				else
-					return new RectOffset(
-						(int)panelEx.scriptableObj.layoutPadding.x,
-						(int)panelEx.scriptableObj.layoutPadding.y,
-						(int)panelEx.scriptableObj.layoutPadding.z,
-						(int)panelEx.scriptableObj.layoutPadding.w);
-			}
-
+			get { return _layoutPadding = GetComponent<HorizontalOrVerticalLayoutGroup>().padding; }
 			set
 			{
-				panelEx.layoutPadding = value;
-				panelEx.useCustomLayoutPadding = true;
-				UpdateBackingData();
+				if (value == null)
+				{
+					if (panelData != null)
+					{
+						var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
+						_layoutPadding = layout.padding = panelData.layoutPadding;
+					}
+				}
+				else
+				{
+					var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
+					_layoutPadding = layout.padding = value;
+				}
+
+				this.SetDirty();
 			}
 		}
 
+		[SerializeField] private float _layoutSpacing;
 		public float layoutSpacing
 		{
-			get
-			{
-				if (panelEx.scriptableObj == null || panelEx.useCustomLayoutPadding)
-					return panelEx.layoutSpacing;
-				else
-					return panelEx.scriptableObj.layoutSpacing;
-			}
-
+			get { return _layoutSpacing = GetComponent<HorizontalOrVerticalLayoutGroup>().spacing; }
 			set
 			{
-				panelEx.layoutSpacing = value;
-				panelEx.useCustomLayoutSpacing = true;
-				UpdateBackingData();
+				_layoutSpacing = GetComponent<HorizontalOrVerticalLayoutGroup>().spacing = value;
+				this.SetDirty();
 			}
 		}
 
@@ -135,35 +113,24 @@ namespace AtomosZ.UI
 				_borderless = value;
 				GetComponent<Image>().enabled = !value;
 				var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
-				if (_borderless)
-				{
-					panelEx.useCustomLayoutPadding = true;
-					panelEx.layoutPadding = new RectOffset(0, 0, 0, 0);
-					layout.padding = layoutPadding;
-				}
-				else
-				{
-					panelEx.useCustomLayoutPadding = false;
-					layout.padding = layoutPadding;
-				}
+				this.SetDirty();
 			}
 		}
 
+		[SerializeField] private Vector2 _minDimensions;
+		[Tooltip("A value of Vector2.zero will reset min dimensions to scriptable object value, if it exists")]
 		public Vector2 minDimensions
 		{
-			get
-			{
-				if (panelEx.scriptableObj == null || panelEx.useCustomMinDimensions)
-					return panelEx.minDimensions;
-				else
-					return panelEx.scriptableObj.minDimensions;
-			}
-
+			get { return _minDimensions; }
 			set
 			{
-				panelEx.minDimensions = value;
-				panelEx.useCustomMinDimensions = true;
-				UpdateBackingData();
+				if (value == Vector2.zero && panelData != null)
+					_minDimensions = panelData.minDimensions;
+
+				else
+					_minDimensions = value;
+
+				this.SetDirty();
 			}
 		}
 
@@ -176,12 +143,12 @@ namespace AtomosZ.UI
 		public RectTransform rect;
 
 
-		[System.Diagnostics.Conditional("DEBUG")]
-		public void RecordPrefabInstances()
-		{
-			PrefabUtility.RecordPrefabInstancePropertyModifications(this);
-			PrefabUtility.RecordPrefabInstancePropertyModifications(GetComponent<HorizontalOrVerticalLayoutGroup>());
-		}
+		//[System.Diagnostics.Conditional("DEBUG")]
+		//public void RecordPrefabInstances()
+		//{
+		//	PrefabUtility.RecordPrefabInstancePropertyModifications(this);
+		//	PrefabUtility.RecordPrefabInstancePropertyModifications(GetComponent<HorizontalOrVerticalLayoutGroup>());
+		//}
 
 		void Awake()
 		{
@@ -196,24 +163,28 @@ namespace AtomosZ.UI
 
 		public IUIDataEx GetBackingData()
 		{
-			return panelEx;
+			return new PanelEx(panelData);
+		}
+
+		public void UpdateBackingData(UIPanelScriptableObject backingData)
+		{
+			panelData = backingData;
+			if (backingData != null)
+			{
+				minDimensions = backingData.minDimensions;
+				layoutPadding = backingData.layoutPadding;
+				layoutSpacing = backingData.layoutSpacing;
+				if (backingData.backgroundSprite != null)
+					sprite = backingData.backgroundSprite;
+			}
+
+			this.SetDirty();
 		}
 
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
-			panelEx = (PanelEx)backingData;
-			UpdateBackingData();
-		}
-
-		public void UpdateBackingData()
-		{
-			if (sprite != null)
-				GetComponent<Image>().sprite = sprite;
-
-			var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
-			layout.padding = layoutPadding;
-			layout.spacing = layoutSpacing;
-			isDirty = false;
+			panelData = ((PanelEx)backingData).scriptableObj;
+			this.SetDirty();
 		}
 
 		void Update()
@@ -222,23 +193,13 @@ namespace AtomosZ.UI
 				UpdateBackingData();
 		}
 
-		public void RecalculateDimensions()
+		private Vector2 preferredChildSize;
+		public void UpdateBackingData()
 		{
-			UpdateBackingData();
-		}
-
-
-		public Vector2 GetMinDimensions()
-		{
-			if (isDirty)
-				UpdateBackingData();
-			var minDim = Vector2.zero;
+			var minDim = new Vector2(layoutPadding.left, layoutPadding.top);
 			var vertLayout = GetComponent<VerticalLayoutGroup>();
 			if (vertLayout != null)
 			{
-				minDim.x = 0;
-				minDim.y = vertLayout.padding.top + vertLayout.padding.bottom;
-
 				var activeChildren = 0;
 				foreach (var child in uiControls)
 				{
@@ -246,7 +207,7 @@ namespace AtomosZ.UI
 					if (child == null || child.gameObject == null)
 					{
 						GetControlsFromTransform();
-						return GetMinDimensions();
+						return;
 					}
 #endif
 
@@ -260,8 +221,21 @@ namespace AtomosZ.UI
 						minDim.x = childMinDim.x;
 				}
 
-				minDim.y += vertLayout.spacing * (activeChildren - 1);
-				minDim.x += vertLayout.padding.left + vertLayout.padding.right;
+				if (preferredChildSize.x != minDim.x)
+				{
+					preferredChildSize = minDim;
+					// resize controls to fit parent if needed
+					foreach (var child in uiControls)
+					{
+						if (!child.gameObject.activeSelf)
+							continue;
+						var behave = child.GetUIBehavior();
+						//behave.SetPreferredWidth(minDim.x);
+					}
+				}
+
+				if (activeChildren > 0)
+					minDim.y += vertLayout.spacing * (activeChildren - 1);
 			}
 			else
 			{
@@ -269,8 +243,7 @@ namespace AtomosZ.UI
 				if (horzLayout == null)
 					Debug.LogException(new Exception("No layout group found on panel"));
 
-				minDim.x = horzLayout.padding.left + horzLayout.padding.right;
-				minDim.y = 0;
+				minDim.x = Mathf.Max(minDim.x, horzLayout.padding.left + horzLayout.padding.right);
 
 				var activeChildren = 0;
 				foreach (var child in uiControls)
@@ -285,21 +258,36 @@ namespace AtomosZ.UI
 						minDim.y = childMinDim.y;
 				}
 
-
-				minDim.x += horzLayout.spacing * (activeChildren - 1);
-				minDim.y += horzLayout.padding.top + horzLayout.padding.bottom;
+				if (activeChildren > 0)
+					minDim.x += horzLayout.spacing * (activeChildren - 1);
 			}
 
-			if (minDim.x < minDimensions.x)
-				minDim.x = minDimensions.x;
-			if (minDim.y < minDimensions.y)
-				minDim.y = minDimensions.y;
+			minDim.x += layoutPadding.right;
+			minDim.y += layoutPadding.bottom;
+			minDim.y = Mathf.Max(minDim.y, minDimensions.y);
 
 			if (rect == null)
 				rect = GetComponent<RectTransform>();
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDim.y);
+			//rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, minDim.x);
 
-			return minDim;
+
+			isDirty = false;
+		}
+
+
+		public void RecalculateDimensions()
+		{
+			UpdateBackingData();
+		}
+
+
+		public Vector2 GetMinDimensions()
+		{
+			if (isDirty)
+				UpdateBackingData();
+
+			return rect.sizeDelta;
 		}
 
 		/// <summary>
@@ -354,23 +342,23 @@ namespace AtomosZ.UI
 			switch (uiDataEx.dataType)
 			{
 				case UIControlType.Button:
-					return AddButton((ButtonEx)uiDataEx);
+					return AddButton(((ButtonEx)uiDataEx).scriptableObj);
 				case UIControlType.ButtonPanel:
-					return AddButtonPanel((ButtonPanelEx)uiDataEx);
+					return AddButtonPanel(((ButtonPanelEx)uiDataEx).scriptableObj);
 				case UIControlType.CheckBox:
-					return AddCheckBox((CheckBoxEx)uiDataEx);
+					return AddCheckBox(((CheckBoxEx)uiDataEx).scriptableObj);
 				case UIControlType.Dropdown:
-					return AddDropdown((DropdownEx)uiDataEx);
+					return AddDropdown(((DropdownEx)uiDataEx).scriptableObj);
 				case UIControlType.Image:
 					return AddImage((ImageEx)uiDataEx);
 				case UIControlType.ImagePanel:
 					return AddImagePanel((ImageViewDataEx)uiDataEx);
 				case UIControlType.InputField:
-					return AddInputField((InputFieldEx)uiDataEx);
+					return AddInputField(((InputFieldEx)uiDataEx).scriptableObj);
 				case UIControlType.Slider:
 					return AddSlider((SliderEx)uiDataEx);
 				case UIControlType.Text:
-					return AddText((LabelEx)uiDataEx);
+					return AddText(((LabelEx)uiDataEx).scriptableObj);
 				case UIControlType.Spinner:
 					return AddSpinner((SpinnerEx)uiDataEx);
 
@@ -380,37 +368,6 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public UIPanel AddPanel(UIPanelScriptableObject verticalPanelScriptObj)
-		{
-			var prefabType = UIPrefabType.Panel;
-			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
-			var panel = uiDO.GetComponent<UIPanel>();
-			if (verticalPanelScriptObj != null)
-			{
-				panel.panelEx.scriptableObj = verticalPanelScriptObj;
-				panel.RecalculateDimensions();
-			}
-
-			SetReferenceNameAndAddControl(prefabType, uiDO);
-
-			return panel;
-		}
-
-		public UIPanel AddHorizontalPanel(UIPanelScriptableObject horizontalPanelScriptObj)
-		{
-			var prefabType = UIPrefabType.HorizontalPanel;
-			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
-			var panel = uiDO.GetComponent<UIPanel>();
-			if (horizontalPanelScriptObj != null)
-			{
-				panel.panelEx.scriptableObj = horizontalPanelScriptObj;
-				panel.RecalculateDimensions();
-			}
-
-			SetReferenceNameAndAddControl(prefabType, uiDO);
-
-			return panel;
-		}
 
 		public UITabControl AddTabControl()
 		{
@@ -419,9 +376,41 @@ namespace AtomosZ.UI
 			var tabControl = uiDO.GetComponent<UITabControl>();
 
 			SetReferenceNameAndAddControl(prefabType, uiDO);
-
 			return tabControl;
 		}
+
+		public UIPanel AddPanel(UIPanelScriptableObject panelData)
+		{
+			var prefabType = UIPrefabType.Panel;
+			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
+			var panel = uiDO.GetComponent<UIPanel>();
+
+			SetReferenceNameAndAddControl(prefabType, uiDO);
+#if UNITY_EDITOR
+			if (panelData == null && transform.parent.name == "Canvas (Environment)")
+				return panel;
+#endif
+			panel.UpdateBackingData(panelData);
+			return panel;
+		}
+
+
+
+		public UIPanel AddHorizontalPanel(UIPanelScriptableObject panelData)
+		{
+			var prefabType = UIPrefabType.HorizontalPanel;
+			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
+			var panel = uiDO.GetComponent<UIPanel>();
+
+			SetReferenceNameAndAddControl(prefabType, uiDO);
+#if UNITY_EDITOR
+			if (panelData == null && transform.parent.name == "Canvas (Environment)")
+				return panel;
+#endif
+			panel.UpdateBackingData(panelData);
+			return panel;
+		}
+
 
 		private UISpinner AddSpinner(SpinnerEx dataEx)
 		{
@@ -430,18 +419,26 @@ namespace AtomosZ.UI
 			var uiSpinner = uiDO.GetComponent<UISpinner>();
 
 			SetReferenceNameAndAddControl(prefabType, uiDO);
+#if UNITY_EDITOR
+			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+				return uiSpinner;
+#endif
 			uiSpinner.UpdateBackingData(dataEx);
 
 			return uiSpinner;
 		}
 
-		private UIButton AddButton(ButtonEx dataEx)
+		private UIButton AddButton(UIButtonScriptableObject dataEx)
 		{
 			var prefabType = UIPrefabType.Button;
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
 			var uiButton = uiDO.GetComponent<UIButton>();
 
 			SetReferenceNameAndAddControl(prefabType, uiDO);
+#if UNITY_EDITOR
+			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+				return uiButton;
+#endif
 			uiButton.UpdateBackingData(dataEx);
 
 			return uiButton;
@@ -452,7 +449,7 @@ namespace AtomosZ.UI
 		/// </summary>
 		/// <param name="dataEx"></param>
 		/// <returns></returns>
-		private UIButtonPanel AddButtonPanel(ButtonPanelEx dataEx)
+		private UIButtonPanel AddButtonPanel(UIButtonPanelScriptableObject dataEx)
 		{
 			UIButtonPanel buttonPanel = GetComponentInChildren<UIButtonPanel>();
 			if (buttonPanel == null)
@@ -462,7 +459,7 @@ namespace AtomosZ.UI
 				SetReferenceNameAndAddControl(UIPrefabType.ButtonPanel, uiDO);
 			}
 
-			buttonPanel.UpdateBackingData(dataEx);
+
 
 			var magicWindow = GetComponentInParent<MagicWindow>();
 
@@ -471,7 +468,7 @@ namespace AtomosZ.UI
 				var dynamicPanel = GetComponentInParent<DynamicPanel>();
 				if (dynamicPanel != null)
 				{
-					Debug.LogWarning("Time to upgrade away from DynamicPanel");
+					Debug.LogError("Time to upgrade away from DynamicPanel");
 					buttonPanel.SetResultListeners(dynamicPanel);
 				}
 			}
@@ -480,20 +477,30 @@ namespace AtomosZ.UI
 				buttonPanel.SetResultListeners(magicWindow);
 			}
 
+#if UNITY_EDITOR
+			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+				return buttonPanel;
+#endif
+
+			buttonPanel.UpdateBackingData(dataEx);
 			return buttonPanel;
 		}
 
 
-		private UIDropdown AddDropdown(DropdownEx dataEx)
+		private UIDropdown AddDropdown(UIDropdownScriptableObject dataEx)
 		{
 			var prefabType = UIPrefabType.Dropdown;
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
-			var uiControl = uiDO.GetComponent<UIDropdown>();
+			var dropdown = uiDO.GetComponent<UIDropdown>();
 
 			SetReferenceNameAndAddControl(prefabType, uiDO);
-			uiControl.UpdateBackingData(dataEx);
+#if UNITY_EDITOR
+			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+				return dropdown;
+#endif
+			dropdown.UpdateBackingData(dataEx);
 
-			return uiControl;
+			return dropdown;
 		}
 
 		private UIImageViewPanel AddImagePanel(ImageViewDataEx dataEx)
@@ -502,6 +509,10 @@ namespace AtomosZ.UI
 			var imagePanel = uiDO.GetComponent<UIImageViewPanel>();
 
 			SetReferenceNameAndAddControl(UIPrefabType.ImageViewPanel, uiDO);
+#if UNITY_EDITOR
+			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+				return imagePanel;
+#endif
 			imagePanel.UpdateBackingData(dataEx);
 
 			return imagePanel;
@@ -513,6 +524,10 @@ namespace AtomosZ.UI
 			var image = uiDO.GetComponent<UIImageView>();
 
 			SetReferenceNameAndAddControl(UIPrefabType.ImageView, uiDO);
+#if UNITY_EDITOR
+			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+				return image;
+#endif
 			image.UpdateBackingData(dataEx);
 
 			return image;
@@ -524,46 +539,61 @@ namespace AtomosZ.UI
 			var slider = uiDO.GetComponent<UISlider>();
 
 			SetReferenceNameAndAddControl(UIPrefabType.Slider, uiDO);
+#if UNITY_EDITOR
+			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+				return slider;
+#endif
 			slider.UpdateBackingData(dataEx);
 
 			return slider;
 		}
 
-		private UICheckBox AddCheckBox(CheckBoxEx dataEx)
+		private UICheckBox AddCheckBox(UICheckBoxScriptableObject dataEx)
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.CheckBox), transform);
 			var checkBox = uiDO.GetComponent<UICheckBox>();
 
 			SetReferenceNameAndAddControl(UIPrefabType.CheckBox, uiDO);
+#if UNITY_EDITOR
+			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+				return checkBox;
+#endif
 			checkBox.UpdateBackingData(dataEx);
 
 			return checkBox;
 		}
 
-		private UIExpandingInputField AddInputField(InputFieldEx dataEx)
+		private UIExpandingInputField AddInputField(UIExpandingInputFieldScriptableObject dataEx)
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.InputField), transform);
 			var inputRect = uiDO.GetComponent<RectTransform>();
 			var inputField = uiDO.GetComponent<UIExpandingInputField>();
 
 			SetReferenceNameAndAddControl(UIPrefabType.InputField, uiDO);
-			inputField.UpdateBackingData(dataEx);
-
 			var inputTMP = uiDO.GetComponent<TMP_InputField>();
 			inputTMP.onSubmit.AddListener(SubmitText);
+
+#if UNITY_EDITOR
+			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+				return inputField;
+#endif
+			inputField.UpdateBackingData(dataEx);
 
 			return inputField;
 		}
 
-		private UIExpandingLabel AddText(LabelEx dataEx)
+		private UIExpandingLabel AddText(UIExpandingLabelScriptableObject dataEx)
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ExpandingText), transform);
 			var label = uiDO.GetComponent<UIExpandingLabel>();
 			label.referenceName = null;
 			SetReferenceNameAndAddControl(UIPrefabType.ExpandingText, uiDO);
 			label.alignmentOptions = label.alignmentOptions;
+#if UNITY_EDITOR
+			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+				return label;
+#endif
 			label.UpdateBackingData(dataEx);
-
 			return label;
 		}
 
@@ -639,7 +669,7 @@ namespace AtomosZ.UI
 			else
 				Destroy(control.gameObject);
 
-			RecordPrefabInstances();
+			this.RecordPrefabInstances();
 #else
 			Destroy(control.gameObject);
 #endif
@@ -658,7 +688,7 @@ namespace AtomosZ.UI
 					else
 						Destroy(cntrl.gameObject);
 
-					RecordPrefabInstances();
+					this.RecordPrefabInstances();
 #else
 					Destroy(cntrl.gameObject);
 #endif

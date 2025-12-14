@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-
+using AtomosZ.MG2eTraveller.Ship;
 using TMPro;
 
 using UnityEditor;
@@ -24,6 +24,7 @@ namespace AtomosZ.UI
 	[Obsolete("Replaced with MagicWindow")]
 	public class DynamicPanel : MonoBehaviour, IUIBehavior
 	{
+		public UIControlType dataType { get; }
 		public enum TitleLabelStyle
 		{
 			SquareTab,
@@ -671,7 +672,7 @@ namespace AtomosZ.UI
 		/// <param name="text"></param>
 		public UIExpandingLabel AddText_NoData(string text)
 		{
-			var label = (UIExpandingLabel)AddUIControl(new LabelEx());
+			var label = (UIExpandingLabel)AddUIControl(new LabelEx(null));
 			label.text = text;
 			return label;
 		}
@@ -682,11 +683,7 @@ namespace AtomosZ.UI
 		/// <param name="text"></param>
 		public UIExpandingLabel AddText_NoData(string text, float fontSize, Color fontColor, Vector2 minLabelDimensions, Vector2 maxLabelDimensions)
 		{
-			var label = (UIExpandingLabel)AddUIControl(new LabelEx()
-			{
-				fontSize = fontSize,
-				fontColor = fontColor,
-			});
+			var label = (UIExpandingLabel)AddUIControl(new LabelEx(null));
 
 			label.minLabelDimensions = minLabelDimensions;
 			label.maxLabelDimensions = maxLabelDimensions;

@@ -7,10 +7,10 @@ namespace AtomosZ.UI
 	/// <summary>
 	/// 
 	/// </summary>
-	[CreateAssetMenu(fileName = "Data", menuName = "AtomosZ/UIScriptableObjects/UIButtonScriptableObject")]
+	[CreateAssetMenu(fileName = "buttonData", menuName = "AtomosZ/UIScriptableObjects/UIButtonScriptableObject")]
 	public class UIButtonScriptableObject : ScriptableObject
 	{
 		public Sprite sprite;
-		public LabelEx labelEx;
+		public UIExpandingLabelScriptableObject labelData;
 	}
 }

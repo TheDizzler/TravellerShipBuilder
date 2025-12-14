@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 127, y: 127.22399}
+  m_SizeDelta: {x: 517.3, y: 42.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1926785884711794685
 MonoBehaviour:
@@ -51,20 +51,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  labelEx:
-    text: Image #0 sadhasdjhgdjhagdjha
-    scriptableObj: {fileID: 0}
-    useCustomFontSize: 1
-    useCustomFontColor: 1
-    useCustomFontAsset: 1
-    fontSize: 36
-    fontColor: {r: 0, g: 0, b: 0, a: 1}
-    fontAsset: {fileID: 0}
-    minLabelDimensions: {x: 64, y: 20}
-    maxLabelDimensions: {x: 127, y: 128}
+  labelData: {fileID: 0}
   textLabel: {fileID: 6038024248657366731}
   image: {fileID: 0}
   _designObject: {fileID: 0}
+  _referenceName: 
+  _interactable: 1
+  _text: Image #0 sadhasdjhgdjhagdjha
+  _color: {r: 0, g: 0, b: 0, a: 0}
+  _disabledColor: {r: 0, g: 0, b: 0, a: 0}
+  _fontSize: 0
+  _fontAsset: {fileID: 0}
+  _fontStyles: 0
+  _alignmentOptions: 0
+  _margin: {x: 0, y: 0, z: 0, w: 0}
+  _minLabelDimensions: {x: 64, y: 10}
+  _maxLabelDimensions: {x: 1025, y: 256}
 --- !u!114 &180760075118986181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,8 +224,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 544}
+  m_AnchoredPosition: {x: 0, y: 566.1819}
+  m_SizeDelta: {x: 0, y: 1088}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2211760538126770280
 MonoBehaviour:
@@ -559,7 +561,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 256, y: 84.815994}
+  m_SizeDelta: {x: 267.66, y: 42.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8892841664991139494
 MonoBehaviour:
@@ -573,20 +575,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  labelEx:
-    text: Caption #0000a
-    scriptableObj: {fileID: 0}
-    useCustomFontSize: 1
-    useCustomFontColor: 1
-    useCustomFontAsset: 1
-    fontSize: 36
-    fontColor: {r: 1, g: 1, b: 1, a: 1}
-    fontAsset: {fileID: 0}
-    minLabelDimensions: {x: 64, y: 1}
-    maxLabelDimensions: {x: 256, y: 256}
+  labelData: {fileID: 0}
   textLabel: {fileID: 1343594084215447911}
   image: {fileID: 0}
   _designObject: {fileID: 0}
+  _referenceName: 
+  _interactable: 1
+  _text: Caption #0000a
+  _color: {r: 0, g: 0, b: 0, a: 0}
+  _disabledColor: {r: 0, g: 0, b: 0, a: 0}
+  _fontSize: 0
+  _fontAsset: {fileID: 0}
+  _fontStyles: 0
+  _alignmentOptions: 0
+  _margin: {x: 0, y: 0, z: 0, w: 0}
+  _minLabelDimensions: {x: 64, y: 10}
+  _maxLabelDimensions: {x: 1025, y: 256}
 --- !u!114 &3172206426742944236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -758,20 +762,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  labelEx:
-    text: Caption #000
-    scriptableObj: {fileID: 0}
-    useCustomFontSize: 1
-    useCustomFontColor: 1
-    useCustomFontAsset: 1
-    fontSize: 36
-    fontColor: {r: 1, g: 1, b: 1, a: 1}
-    fontAsset: {fileID: 0}
-    minLabelDimensions: {x: 64, y: 1}
-    maxLabelDimensions: {x: 256, y: 256}
+  labelData: {fileID: 0}
   textLabel: {fileID: 4573388958218661042}
   image: {fileID: 0}
   _designObject: {fileID: 0}
+  _referenceName: 
+  _interactable: 1
+  _text: Caption #000
+  _color: {r: 0, g: 0, b: 0, a: 0}
+  _disabledColor: {r: 0, g: 0, b: 0, a: 0}
+  _fontSize: 0
+  _fontAsset: {fileID: 0}
+  _fontStyles: 0
+  _alignmentOptions: 0
+  _margin: {x: 0, y: 0, z: 0, w: 0}
+  _minLabelDimensions: {x: 64, y: 10}
+  _maxLabelDimensions: {x: 1025, y: 256}
 --- !u!114 &1626360960631180924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -947,7 +953,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 142771585612377338}
-  caption: {fileID: 2691891575969372635}
+  captionLabel: {fileID: 0}
   imageEx:
     scriptableObject: {fileID: 11400000, guid: 04ca78633c910a242b8446e33520c341, type: 2}
     isVisible: 1
@@ -955,17 +961,8 @@ MonoBehaviour:
     forceSize: 1
     size: {x: 256, y: 256}
     showCaption: 1
-    labelEx:
-      text: Caption #000
-      scriptableObj: {fileID: 0}
-      useCustomFontSize: 1
-      useCustomFontColor: 1
-      useCustomFontAsset: 1
-      fontSize: 36
-      fontColor: {r: 1, g: 1, b: 1, a: 1}
-      fontAsset: {fileID: 0}
-      minLabelDimensions: {x: 64, y: 1}
-      maxLabelDimensions: {x: 256, y: 256}
+  _referenceName: UIImageView(Clone)
+  _text: Caption #00
 --- !u!114 &7936082480325545618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1177,8 +1174,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6880259490554087915}
   m_HandleRect: {fileID: 5363678316652387828}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: -0.040775523
+  m_Size: 0.38168785
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1246,7 +1243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 3283174571325053968}
-  caption: {fileID: 8892841664991139494}
+  captionLabel: {fileID: 0}
   imageEx:
     scriptableObject: {fileID: 11400000, guid: 04ca78633c910a242b8446e33520c341, type: 2}
     isVisible: 1
@@ -1254,17 +1251,8 @@ MonoBehaviour:
     forceSize: 1
     size: {x: 256, y: 256}
     showCaption: 1
-    labelEx:
-      text: Caption #0000a
-      scriptableObj: {fileID: 0}
-      useCustomFontSize: 1
-      useCustomFontColor: 1
-      useCustomFontAsset: 1
-      fontSize: 36
-      fontColor: {r: 1, g: 1, b: 1, a: 1}
-      fontAsset: {fileID: 0}
-      minLabelDimensions: {x: 64, y: 1}
-      maxLabelDimensions: {x: 256, y: 256}
+  _referenceName: UIImageView(Clone)
+  _text: Caption #00
 --- !u!114 &6906400025542304441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1530,7 +1518,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 2665769465899096189}
-  caption: {fileID: 1926785884711794685}
+  captionLabel: {fileID: 0}
   imageEx:
     scriptableObject: {fileID: 0}
     isVisible: 1
@@ -1538,17 +1526,8 @@ MonoBehaviour:
     forceSize: 1
     size: {x: 256, y: 256}
     showCaption: 1
-    labelEx:
-      text: Image #0 sadhasdjhgdjhagdjha
-      scriptableObj: {fileID: 0}
-      useCustomFontSize: 1
-      useCustomFontColor: 1
-      useCustomFontAsset: 1
-      fontSize: 36
-      fontColor: {r: 0, g: 0, b: 0, a: 1}
-      fontAsset: {fileID: 0}
-      minLabelDimensions: {x: 64, y: 20}
-      maxLabelDimensions: {x: 127, y: 128}
+  _referenceName: UIImageView(Clone)
+  _text: Caption #00
 --- !u!114 &475503455182011997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1837,20 +1816,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewDataEx:
+    referenceName: UIImageViewPanel
     scriptableObj: {fileID: 11400000, guid: 6d8a33448b05f544fa7af08d9f8976bd, type: 2}
     useAllAvailableHeight: 0
     showCaptions: 1
     labelEx:
-      text: Caption #000
       scriptableObj: {fileID: 0}
-      useCustomFontSize: 1
-      useCustomFontColor: 1
-      useCustomFontAsset: 1
-      fontSize: 36
-      fontColor: {r: 1, g: 1, b: 1, a: 1}
-      fontAsset: {fileID: 0}
-      minLabelDimensions: {x: 64, y: 1}
-      maxLabelDimensions: {x: 256, y: 256}
   gridLayout: {fileID: 2211760538126770280}
   scrollRect: {fileID: 251507156324363540}
 --- !u!114 &2237528456814338375
@@ -2025,6 +1996,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3714226641704735600, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
+      propertyPath: _referenceName
+      value: UIImageView
+      objectReference: {fileID: 0}
+    - target: {fileID: 3714226641704735600, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
       propertyPath: imageEx.size.x
       value: 256
       objectReference: {fileID: 0}
@@ -2058,11 +2033,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6014222488653119391, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 127
+      value: 205.45
       objectReference: {fileID: 0}
     - target: {fileID: 6014222488653119391, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 84.815994
+      value: 42.41
       objectReference: {fileID: 0}
     - target: {fileID: 6014222488653119391, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
       propertyPath: m_AnchoredPosition.x

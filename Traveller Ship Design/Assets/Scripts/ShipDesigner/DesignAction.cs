@@ -1,32 +1,36 @@
-using UnityEngine;
+using AtomosZ.MG2eTraveller.Ship;
 using UnityEngine.Events;
-using static DesignManager;
+using static AtomosZ.MG2eTraveller.Ship.DesignManager;	// @TODO(Tristan): Should not be referencing DesignManager
 
-public class DesignAction
+
+namespace AtomosZ.UI
 {
-	public UnityAction action = null;
-	public string buttonText;
-	/// <summary>
-	/// If you want the item to be visible but not selectable set to false.
-	/// </summary>
-	public bool enabled = true;
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="newEditMode">EditMode to enable after action completes.</param>
-	public DesignAction(string actionName, EditMode newEditMode)
+	public class DesignAction
 	{
-		buttonText = actionName;
-		action += delegate
+		public UnityAction action = null;
+		public string buttonText;
+		/// <summary>
+		/// If you want the item to be visible but not selectable set to false.
+		/// </summary>
+		public bool enabled = true;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="newEditMode">EditMode to enable after action completes.</param>
+		public DesignAction(string actionName, EditMode newEditMode)
 		{
-			DesignManager.instance.ContextMenuCallback(newEditMode);
-		};
-	}
+			buttonText = actionName;
+			action += delegate
+			{
+				DesignManager.instance.ContextMenuCallback(newEditMode);	// @TODO(Tristan): Should not be referencing DesignManager
+			};
+		}
 
-	public static DesignAction operator +(DesignAction da, UnityAction act)
-	{
-		da.action += act;
-		return da;
+		public static DesignAction operator +(DesignAction da, UnityAction act)
+		{
+			da.action += act;
+			return da;
+		}
 	}
 }

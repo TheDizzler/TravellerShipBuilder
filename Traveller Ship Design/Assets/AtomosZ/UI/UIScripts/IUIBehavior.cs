@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using AtomosZ.UI;
 using UnityEngine;
 
 using static AtomosZ.Keyboard;
@@ -13,6 +13,7 @@ namespace AtomosZ.UI
 	/// </summary>
 	public interface IUIBehavior
 	{
+		public UIControlType dataType { get; }
 		/// <summary>
 		/// Replace this auto-generated property with the following:
 		/// <code>
@@ -57,7 +58,6 @@ namespace AtomosZ.UI
 		public IUIDataEx GetBackingData();
 		public void UpdateBackingData(IUIDataEx backingData);
 		public void UpdateBackingData();
-
 	}
 
 	public static class IUIBehaviorExtensions
@@ -77,8 +77,8 @@ namespace AtomosZ.UI
 			{
 				var parent = uIBehavior.designObject.transform.parent.GetComponentInParent<IUIBehavior>();
 				if (parent == null)
-				{	// assume this is the root and start to refresh (only in edit mode?)
-					uIBehavior.GetMinDimensions();
+				{   // assume this is the root and start to refresh (only in edit mode?)
+					//uIBehavior.GetMinDimensions();
 					return;
 				}
 
@@ -101,6 +101,12 @@ namespace AtomosZ.UI
 			if (gameObject.scene.IsValid()) // this line is probably unnecessary
 				gameObject.name = uiBehavior.referenceName;
 #endif
+		}
+
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void RecordPrefabInstances(this IUIBehavior uiBehavior)
+		{
+			UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(uiBehavior.designObject.gameObject);
 		}
 	}
 }

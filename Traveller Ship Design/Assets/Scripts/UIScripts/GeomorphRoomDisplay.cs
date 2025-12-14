@@ -3,26 +3,29 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class PrefabRoom
+namespace AtomosZ.MG2eTraveller.Ship
 {
-	public string roomName;
-
-}
-
-public class GeomorphRoomDisplay : MonoBehaviour
-{
-	public static string ROOM_SAVE_PATH;
-
-	//[SerializeField] private ImageViewPanel viewPanel;
-	private List<PrefabRoom> roomPrefabs = new List<PrefabRoom>();
-
-	public void Start()
+	public class PrefabRoom
 	{
-		ROOM_SAVE_PATH = Application.persistentDataPath;
-		var roomFiles = Directory.GetFiles(ROOM_SAVE_PATH, $"*{RoomSerializer.roomExt}");
-		foreach (var roomFile in roomFiles)
+		public string roomName;
+
+	}
+
+	public class GeomorphRoomDisplay : MonoBehaviour
+	{
+		public static string ROOM_SAVE_PATH;
+
+		//[SerializeField] private ImageViewPanel viewPanel;
+		private List<PrefabRoom> roomPrefabs = new List<PrefabRoom>();
+
+		public void Start()
 		{
-			Debug.Log(roomFile);
+			ROOM_SAVE_PATH = Application.persistentDataPath;
+			var roomFiles = Directory.GetFiles(ROOM_SAVE_PATH, $"*{RoomSerializer.roomExt}");
+			foreach (var roomFile in roomFiles)
+			{
+				Debug.Log(roomFile);
+			}
 		}
 	}
 }

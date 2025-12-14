@@ -13,16 +13,8 @@ MonoBehaviour:
   m_Name: UISliderData
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UISliderScriptableObject
   showHandle: 1
+  handleSprite: {fileID: 0}
+  handleOffset: {x: 16, y: 16}
   showUnits: 1
   unitSpan: 1
-  labelEx:
-    text: notused
-    scriptableObj: {fileID: 11400000, guid: 61dfff6e0e90d684bacdfda1e1cdce05, type: 2}
-    useCustomFontSize: 0
-    useCustomFontColor: 0
-    useCustomFontAsset: 0
-    fontSize: 18
-    fontColor: {r: 0, g: 0, b: 0, a: 1}
-    fontAsset: {fileID: 0}
-    minLabelDimensions: {x: 8, y: 8}
-    maxLabelDimensions: {x: 64, y: 256}
+  labelData: {fileID: 11400000, guid: 61dfff6e0e90d684bacdfda1e1cdce05, type: 2}

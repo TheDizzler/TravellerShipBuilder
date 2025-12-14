@@ -499,9 +499,10 @@ MonoBehaviour:
   _value: -1
   _fontSize: 34.8
   _alignmentOptions: 514
-  _horizontalAlignmentOptions: 2
-  _verticalAlignmentOptions: 512
   _interactable: 1
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4757135074788766894
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d98d8afc62ede724eba268b11b46f35e, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e67901f71c4f9d4ab8950690f8e91de, type: 3}
   m_Name: UIDropdownData
-  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabelScriptableObject
-  fontSize: 14
-  fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  fontAsset: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDropdownScriptableObject
+  labelData: {fileID: 0}
+  arrowSprite: {fileID: 0}

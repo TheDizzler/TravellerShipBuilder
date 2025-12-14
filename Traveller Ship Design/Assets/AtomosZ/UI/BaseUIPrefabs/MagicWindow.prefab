@@ -74,7 +74,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 166.41, y: 118.41}
+  m_SizeDelta: {x: 166.41, y: 86.41}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4400289810483429264
 MonoBehaviour:
@@ -95,8 +95,7 @@ MonoBehaviour:
     - {fileID: 6361666675946949519}
     values:
     - {fileID: 4966230734555878253}
-  tabControlEx:
-    scriptableObj: {fileID: 11400000, guid: 790f7b4bb9b710b49911cc030f5756f2, type: 2}
+  tabControlData: {fileID: 11400000, guid: 790f7b4bb9b710b49911cc030f5756f2, type: 2}
   selectedTabIndex: 0
   tabItemPrefab: {fileID: 7330561272148096184, guid: 6c6e9b2b017284540a216890c7bf0be3, type: 3}
   panelPrefab: {fileID: 5821347800241209384, guid: 6a46ce684b853da42969c871a2750070, type: 3}
@@ -160,7 +159,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 64}
+  m_SizeDelta: {x: 9.59, y: 32}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6017489490894869436
 MonoBehaviour:
@@ -174,23 +173,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 609c63b92ee8b3e44b9dee1c7b856bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPanel
-  panelEx:
-    referenceName: panel_00
-    scriptableObj: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
-    backgroundSprite: {fileID: 0}
-    minDimensions: {x: 96, y: 64}
-    layoutPadding:
-      m_Left: 0
-      m_Right: 0
-      m_Top: 0
-      m_Bottom: 0
-    layoutSpacing: 8
-    useCustomBackgroundSprite: 0
-    useCustomMinDimensions: 0
-    useCustomLayoutPadding: 0
-    useCustomLayoutSpacing: 0
+  panelData: {fileID: 0}
+  _referenceName: 
   _designObject: {fileID: 5671732405208023505}
+  _sprite: {fileID: 0}
+  _layoutPadding:
+    m_Left: 32
+    m_Right: 32
+    m_Top: 16
+    m_Bottom: 16
+  _layoutSpacing: 0
   _borderless: 0
+  _minDimensions: {x: 0, y: 0}
   tabLabel: {fileID: 0}
   uiControls: []
   rect: {fileID: 406007581663478937}
@@ -453,7 +447,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 64}
+  m_SizeDelta: {x: -102.41, y: 32}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4966230734555878253
 MonoBehaviour:
@@ -467,23 +461,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 609c63b92ee8b3e44b9dee1c7b856bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPanel
-  panelEx:
-    referenceName: panel
-    scriptableObj: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
-    backgroundSprite: {fileID: 0}
-    minDimensions: {x: 96, y: 64}
-    layoutPadding:
-      m_Left: 32
-      m_Right: 32
-      m_Top: 16
-      m_Bottom: 16
-    layoutSpacing: 8
-    useCustomBackgroundSprite: 0
-    useCustomMinDimensions: 0
-    useCustomLayoutPadding: 0
-    useCustomLayoutSpacing: 0
+  panelData: {fileID: 0}
+  _referenceName: 
   _designObject: {fileID: 4744660158183157174}
+  _sprite: {fileID: 0}
+  _layoutPadding:
+    m_Left: 32
+    m_Right: 32
+    m_Top: 16
+    m_Bottom: 16
+  _layoutSpacing: 0
   _borderless: 0
+  _minDimensions: {x: 0, y: 0}
   tabLabel: {fileID: 6361666675946949519}
   uiControls: []
   rect: {fileID: 7316720326687756132}
@@ -635,7 +624,7 @@ MonoBehaviour:
   panelScriptObj: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
   horizontalPanelScriptObj: {fileID: 11400000, guid: ce1eba15204d2244a8afb65cdc2be026, type: 2}
   textScriptObj: {fileID: 11400000, guid: 602ee890f7215c84e86858806d8cd97f, type: 2}
-  dropdownScriptObj: {fileID: 11400000, guid: a22e1f16cdb147547b5d6c8222d55958, type: 2}
+  dropdownScriptObj: {fileID: 0}
   checkBoxScriptObj: {fileID: 11400000, guid: b07b814d0d2387741a590f0e97184b34, type: 2}
   inputFieldScriptObj: {fileID: 11400000, guid: 9ca31f4b689e8ea44acd3ffbc1c18147, type: 2}
   sliderScriptObj: {fileID: 11400000, guid: 8181c99cb6437ea458a02fe691635b77, type: 2}
@@ -675,12 +664,6 @@ MonoBehaviour:
       type: {class: LabelEx, ns: AtomosZ.UI, asm: Assembly-CSharp}
       data:
         scriptableObj: {fileID: 0}
-        useCustomFontSize: 1
-        useCustomFontColor: 1
-        useCustomFontAsset: 1
-        fontSize: 36
-        fontColor: {r: 1, g: 1, b: 1, a: 1}
-        fontAsset: {fileID: 0}
 --- !u!114 &4508516794867129895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -756,23 +739,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabel
-  labelEx:
-    scriptableObj: {fileID: 11400000, guid: 9de4f32db1b568e42b38b4e65d5682d2, type: 2}
-    useCustomFontSize: 0
-    useCustomFontColor: 1
-    useCustomFontAsset: 0
-    fontSize: 129.74
-    fontColor: {r: 0, g: 0, b: 0, a: 1}
-    fontAsset: {fileID: 0}
+  labelData: {fileID: 0}
   textLabel: {fileID: 8816971246287878466}
   image: {fileID: 7202355980860598498}
   _designObject: {fileID: 4198941472097476559}
   _referenceName: titlebar
+  _interactable: 1
   _text: Traveller
+  _color: {r: 0, g: 0, b: 0, a: 1}
+  _disabledColor: {r: 0, g: 0, b: 0, a: 0}
+  _fontSize: 36
+  _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 514
   _margin: {x: 12, y: 8, z: 46, w: 16}
-  _minLabelDimensions: {x: 64, y: 10}
+  _minLabelDimensions: {x: 54.41, y: 10}
   _maxLabelDimensions: {x: 1025, y: 256}
 --- !u!114 &6888745483806320589
 MonoBehaviour:

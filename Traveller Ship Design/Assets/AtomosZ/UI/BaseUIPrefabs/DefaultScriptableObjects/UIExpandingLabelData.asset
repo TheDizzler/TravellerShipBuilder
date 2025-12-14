@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: UIExpandingLabelData
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabelScriptableObject
   fontSize: 34
+  textMargin: {x: 0, y: 0, z: 0, w: 0}
   fontColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
   fontAsset: {fileID: 0}
+  fontStyles: 0

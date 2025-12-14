@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 170.21, y: 42.41}
+  m_SizeDelta: {x: 169.25, y: 40.06}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2644291506069405767
 MonoBehaviour:
@@ -51,21 +51,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  labelEx:
-    scriptableObj: {fileID: 0}
-    useCustomFontSize: 1
-    useCustomFontColor: 1
-    useCustomFontAsset: 1
-    fontSize: 36
-    fontColor: {r: 1, g: 1, b: 1, a: 1}
-    fontAsset: {fileID: 0}
+  labelData: {fileID: 11400000, guid: 602ee890f7215c84e86858806d8cd97f, type: 2}
   textLabel: {fileID: 46845985781952030}
   image: {fileID: 0}
-  _designObject: {fileID: 0}
-  _referenceName: UIExpandingText
-  _text: Label Text
+  _designObject: {fileID: 6170590193817473966}
+  _referenceName: label
+  _interactable: 1
+  _text: Label Text!
+  _color: {r: 1, g: 1, b: 1, a: 1}
+  _disabledColor: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
+  _fontSize: 34
+  _fontAsset: {fileID: 0}
   _fontStyles: 0
-  _alignmentOptions: 0
+  _alignmentOptions: 257
   _margin: {x: 0, y: 0, z: 0, w: 0}
   _minLabelDimensions: {x: 64, y: 10}
   _maxLabelDimensions: {x: 1025, y: 256}
@@ -110,7 +108,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Label Text
+  m_text: Label Text!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_sharedMaterial: {fileID: -5212590573181050906, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
@@ -137,8 +135,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 34
+  m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

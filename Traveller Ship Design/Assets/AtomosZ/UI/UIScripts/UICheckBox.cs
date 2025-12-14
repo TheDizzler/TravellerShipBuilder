@@ -6,7 +6,6 @@ using TMPro;
 
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 using FontStyles = TMPro.FontStyles;
 
@@ -19,43 +18,19 @@ namespace AtomosZ.UI
 
 		public UICheckBoxScriptableObject scriptableObj;
 
-		public bool useCustomCheckImage = false;
-		public bool useCustomBoxImage = false;
-		public Sprite checkSprite;
-		public Sprite boxSprite;
-
-
-		//public bool isOnByDefault = false;
-		public LabelEx labelEx;
-
-		//[Tooltip("Default: 14.")]
-		//public float fontSize = 14;
-		//[Tooltip("Default: Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1).")]
-		//public Color fontColor = Color.black;
-
-		//public UnityEvent<bool> action = null;
-
 
 		public CheckBoxEx(UICheckBoxScriptableObject scriptObj)
 		{
 			this.scriptableObj = scriptObj;
-			if (scriptableObj == null)
-			{
-				useCustomCheckImage = true;
-				useCustomBoxImage = true;
-				labelEx = new LabelEx()
-				{
-					fontSize = 14,
-					fontColor = Color.black,
-				};
-			}
 		}
 	}
 
 	[ExecuteAlways]
 	public class UICheckBox : MonoBehaviour, IUIBehavior
 	{
-		[SerializeField] private CheckBoxEx checkBoxEx;
+		public UIControlType dataType { get { return UIControlType.CheckBox; } }
+
+		[SerializeField] private UICheckBoxScriptableObject checkBoxData;
 		[SerializeField] private RectTransform backgroundRect;
 		[SerializeField] private Image boxImage;
 		[SerializeField] private Image checkImage;
@@ -101,15 +76,14 @@ namespace AtomosZ.UI
 			get { return _interactable; }
 			set
 			{
-				_interactable = value;
+				_interactable = toggle.interactable = value;
+				textLabel.interactable = value;
 				if (value)
 				{
-					boxImage.color = toggle.colors.normalColor;
 					checkImage.color = toggle.colors.normalColor;
 				}
 				else
 				{
-					boxImage.color = toggle.colors.disabledColor;
 					checkImage.color = toggle.colors.disabledColor;
 				}
 			}
@@ -128,26 +102,34 @@ namespace AtomosZ.UI
 			}
 		}
 
+		[SerializeField] private Color _fontColor;
+		[Tooltip("A value of Color.clear will set the font color to the scriptable object value, if it exists.")]
+		public Color fontColor
+		{
+			get { return _fontColor = textLabel.color; }
+			set { _fontColor = textLabel.color = value; }
+		}
+
+		[SerializeField] private Color _disabledFontColor;
+		[Tooltip("A value of Color.clear will set the font color to the scriptable object value, if it exists.")]
+		public Color disabledFontColor
+		{
+			get { return _disabledFontColor = textLabel.disabledColor; }
+			set { _disabledFontColor = textLabel.disabledColor = value; }
+		}
+
 		[SerializeField] private FontStyles _fontStyles;
 		public FontStyles fontStyles
 		{
 			get { return _fontStyles = textLabel.fontStyles; }
-			set
-			{
-				_fontStyles = textLabel.fontStyles = value;
-				// textLabel will set this to dirty if needed.
-			}
+			set { _fontStyles = textLabel.fontStyles = value; }
 		}
 
 		[SerializeField] private TextAlignmentOptions _alignmentOptions;
 		public TextAlignmentOptions alignmentOptions
 		{
 			get { return _alignmentOptions = textLabel.alignmentOptions; }
-			set
-			{
-				_alignmentOptions = textLabel.alignmentOptions = value;
-				// textLabel will set this to dirty if needed.
-			}
+			set { _alignmentOptions = textLabel.alignmentOptions = value; }
 		}
 
 
@@ -193,10 +175,9 @@ namespace AtomosZ.UI
 		public void AddListener(UnityAction<UICheckBox, bool> onChangedEvent)
 		{
 			onCheckChangedEvent.AddListener(onChangedEvent);
-			
 		}
 
-		
+
 		private void OnToggled(bool isToggled)
 		{
 			if (onCheckChangedEvent != null)
@@ -211,42 +192,46 @@ namespace AtomosZ.UI
 			this.SetDirty();
 		}
 
-		private Sprite boxSprite
+		[SerializeField] private Sprite _boxSprite;
+		[Tooltip("A null value will set the sprite to the scriptable object value, if it exists.")]
+		public Sprite boxSprite
 		{
-			get
+			get { return _boxSprite = boxImage.sprite; }
+			set
 			{
-				if (checkBoxEx.useCustomBoxImage || checkBoxEx.scriptableObj == null)
-					return checkBoxEx.boxSprite;
-				return checkBoxEx.scriptableObj.boxSprite;
-			}
-		}
-
-		private Sprite checkSprite
-		{
-			get
-			{
-				if (checkBoxEx.useCustomCheckImage || checkBoxEx.scriptableObj == null)
-					return checkBoxEx.checkSprite;
-				return checkBoxEx.scriptableObj.checkSprite;
-			}
-		}
-
-		public IUIDataEx labelEx
-		{
-			get
-			{
-				if (checkBoxEx.scriptableObj == null)
+				if (value == null)
 				{
-					return checkBoxEx.labelEx;
+					if (checkBoxData != null)
+						value = checkBoxData.boxSprite;
 				}
 
-				return checkBoxEx.scriptableObj.labelEx;
+				_boxSprite = boxImage.sprite = value;
+				this.SetDirty();
 			}
 		}
+
+		[SerializeField] private Sprite _checkSprite;
+		[Tooltip("A null value will set the sprite to the scriptable object value, if it exists.")]
+		public Sprite checkSprite
+		{
+			get { return _checkSprite = checkImage.sprite; }
+			set
+			{
+				if (value == null)
+				{
+					if (checkBoxData != null)
+						value = checkBoxData.checkSprite;
+				}
+
+				_checkSprite = checkImage.sprite = value;
+				this.SetDirty();
+			}
+		}
+
 
 		public IUIDataEx GetBackingData()
 		{
-			return checkBoxEx;
+			return new CheckBoxEx(checkBoxData);
 		}
 
 		void Update()
@@ -255,32 +240,32 @@ namespace AtomosZ.UI
 				UpdateBackingData();
 		}
 
+		public void UpdateBackingData(UICheckBoxScriptableObject backingData)
+		{
+			checkBoxData = backingData;
+			if (backingData != null)
+			{
+				textLabel.UpdateBackingData(backingData.labelData);
+				if (backingData.labelData != null)
+				{
+					fontColor = backingData.labelData.fontColor;
+					disabledFontColor = backingData.labelData.disabledColor;
+					margin = backingData.labelData.textMargin;
+				}
+
+				boxSprite = backingData.boxSprite;
+				checkSprite = backingData.checkSprite;
+				this.SetDirty();
+			}
+		}
+
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
-			checkBoxEx = (CheckBoxEx)backingData;
-			UpdateBackingData();
+			UpdateBackingData(((CheckBoxEx)backingData).scriptableObj);
 		}
 
 		public void UpdateBackingData()
 		{
-			this.SetGameObjectNameToReferenceName(gameObject);
-
-			//toggle.isOn = checkBoxEx.isOnByDefault;
-			//toggle.onValueChanged.RemoveAllListeners();
-			//toggle.onValueChanged.AddListener(OnToggled);
-
-			var sprite = boxSprite;
-			if (sprite != null)
-				boxImage.sprite = sprite;
-			sprite = checkSprite;
-			if (sprite != null)
-				checkImage.sprite = sprite;
-
-			textLabel.UpdateBackingData(labelEx);
-
-
-
-
 			var minDim = textLabel.GetMinDimensions();
 			var layout = GetComponent<HorizontalLayoutGroup>();
 			var space = layout.spacing;

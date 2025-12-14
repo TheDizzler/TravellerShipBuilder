@@ -6,13 +6,16 @@ using UnityEngine;
 
 namespace AtomosZ.UI
 {
-	[CreateAssetMenu(fileName = "Data", menuName = "AtomosZ/UIScriptableObjects/UITextScriptableObject", order = 0)]
+	[CreateAssetMenu(fileName = "labelData", menuName = "AtomosZ/UIScriptableObjects/UITextScriptableObject", order = 0)]
 	public class UIExpandingLabelScriptableObject : ScriptableObject
 	{
 		[Tooltip("Default: 36")]
 		public float fontSize = 36;
+		public Vector4 textMargin = new Vector4(26, 8, 26, 16);
 		public Color fontColor = Color.white;
-		public Color disabledColor = new Color(0xA1 / 255, 0xA1 / 255, 0xA1 / 255);
+		[Tooltip("Color to use when the control this label is part of is non-interactable.")]
+		public Color disabledColor = new Color(.63f, .63f, .63f);
 		public TMP_FontAsset fontAsset;
+		public FontStyles fontStyles;
 	}
 }

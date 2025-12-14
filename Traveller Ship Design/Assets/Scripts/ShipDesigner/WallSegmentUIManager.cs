@@ -2,21 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Abandonded
-/// </summary>
-public class WallSegmentUIManager : MonoBehaviour
+namespace AtomosZ.MG2eTraveller.Ship
 {
-	[SerializeField] private GameObject wallSegmentEndPointA;
-	[SerializeField] private GameObject wallSegmentEndPointB;
-	private Wall wallSegment;
-
-	public void DisplayWallEditUI(Wall wallSegmentToEdit)
+	/// <summary>
+	/// Abandonded
+	/// </summary>
+	public class WallSegmentUIManager : MonoBehaviour
 	{
-		wallSegment = wallSegmentToEdit;
-		//wallSegmentEndPointA.transform.localPosition = wallSegmentToEdit.transform.
+		[SerializeField] private GameObject wallSegmentEndPointA;
+		[SerializeField] private GameObject wallSegmentEndPointB;
+		private Wall wallSegment;
 
-		this.gameObject.SetActive(true);
+		public void DisplayWallEditUI(Wall wallSegmentToEdit)
+		{
+			wallSegment = wallSegmentToEdit;
+			//wallSegmentEndPointA.transform.localPosition = wallSegmentToEdit.transform.
+
+			this.gameObject.SetActive(true);
+		}
+
 	}
-
 }

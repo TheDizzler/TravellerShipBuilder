@@ -7,12 +7,12 @@ namespace AtomosZ.UI
 	/// <summary>
 	/// 
 	/// </summary>
-	[CreateAssetMenu(fileName = "Data", menuName = "AtomosZ/UIScriptableObjects/UIButtonPanelScriptableObject")]
+	[CreateAssetMenu(fileName = "buttonData", menuName = "AtomosZ/UIScriptableObjects/UIButtonPanelScriptableObject")]
 	public class UIButtonPanelScriptableObject : ScriptableObject
 	{
-		public ButtonEx okButton;
-		public ButtonEx cancelButton;
-		public ButtonEx yesButton;
-		public ButtonEx noButton;
+		public UIButtonScriptableObject okButtonData;
+		public UIButtonScriptableObject cancelButtonData;
+		public UIButtonScriptableObject yesButtonData;
+		public UIButtonScriptableObject noButtonData;
 	}
 }

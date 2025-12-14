@@ -10,6 +10,7 @@ namespace AtomosZ.UI
 	/// </summary>
 	public class ModalClickBlocker : MonoBehaviour, IUIBehavior
 	{
+		public UIControlType dataType { get; }
 		public UIDesignObject designObject { get; }
 		public bool isDirty { get; set; }
 		/// <summary>

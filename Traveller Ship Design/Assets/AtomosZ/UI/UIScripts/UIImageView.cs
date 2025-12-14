@@ -9,7 +9,6 @@ namespace AtomosZ.UI
 	public class ImageEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Image; } }
-		public string referenceName;
 
 		public UIImageViewScriptableObject scriptableObject;
 
@@ -19,36 +18,29 @@ namespace AtomosZ.UI
 		public bool forceSize = false;
 		public Vector2 size = new Vector2(256, 256);
 		public bool showCaption = true;
-		public LabelEx labelEx;
 
 
 		public ImageEx(UIImageViewScriptableObject scriptObj)
 		{
 			scriptableObject = scriptObj;
-			if (scriptableObject == null)
-			{
-				labelEx = new LabelEx()
-				{
-					fontColor = Color.black,
-					fontSize = 36,
-				};
-			}
 		}
 	}
 
 	[ExecuteAlways]
 	public class UIImageView : MonoBehaviour, IUIBehavior
 	{
+		public UIControlType dataType { get { return UIControlType.Image; } }
 		[SerializeField] private Image image;
 		[SerializeField] private UIExpandingLabel captionLabel;
 		[SerializeField] private ImageEx imageEx;
 
+		[SerializeField] private string _referenceName;
 		public string referenceName
 		{
-			get { return imageEx.referenceName; }
+			get { return _referenceName; }
 			set
 			{
-				imageEx.referenceName = value;
+				_referenceName= value;
 				this.SetGameObjectNameToReferenceName(gameObject);
 			}
 		}
@@ -105,11 +97,10 @@ namespace AtomosZ.UI
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
 			imageEx = (ImageEx)backingData;
+			UIExpandingLabelScriptableObject data = null;
 			if (imageEx.scriptableObject != null)
-				imageEx.labelEx = imageEx.scriptableObject.labelEx.Clone();
-			else
-				imageEx.labelEx = imageEx.labelEx.Clone();
-
+				data = imageEx.scriptableObject.labelData;
+			captionLabel.UpdateBackingData(new LabelEx(data));
 			UpdateBackingData();
 		}
 
@@ -146,7 +137,7 @@ namespace AtomosZ.UI
 			if (imageEx.showCaption)
 			{
 				captionLabel.gameObject.SetActive(true);
-				captionLabel.UpdateBackingData(imageEx.labelEx);
+				captionLabel.UpdateBackingData();
 
 				var layout = GetComponent<VerticalLayoutGroup>();
 				var textSize = captionLabel.GetMinDimensions();

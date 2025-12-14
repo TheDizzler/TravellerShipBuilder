@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using AtomosZ.MG2eTraveller.Ship;
 using UnityEngine;
 
 namespace AtomosZ.UI
@@ -33,7 +33,8 @@ namespace AtomosZ.UI
 					Debug.LogException(new Exception("this is deprecated anyway"));
 					return null;
 				case UIControlType.Image:
-					return ((ImageEx)dataEx).referenceName;
+					Debug.LogException(new Exception("this is deprecated anyway"));
+					return null;
 				case UIControlType.ImagePanel:
 					return ((ImageViewDataEx)dataEx).referenceName;
 				case UIControlType.InputField:
@@ -135,7 +136,7 @@ namespace AtomosZ.UI
 		[SerializeField] public List<UIControl> uiControls = new();
 
 		[SerializeField] public UIExpandingLabelScriptableObject textScriptObj;
-		[SerializeField] public UIExpandingLabelScriptableObject dropdownScriptObj;
+		[SerializeField] public UIDropdownScriptableObject dropdownScriptObj;
 		[SerializeField] public UICheckBoxScriptableObject checkBoxScriptObj;
 		[SerializeField] public UIExpandingInputFieldScriptableObject inputFieldScriptObj;
 		[SerializeField] public UISliderScriptableObject sliderScriptObj;
@@ -176,7 +177,7 @@ namespace AtomosZ.UI
 					return dynaPan.AddUIControl(new CheckBoxEx(checkBoxScriptObj));
 
 				case UIControlType.Slider:
-					return dynaPan.AddUIControl(new SliderEx());
+					return dynaPan.AddUIControl(new SliderEx(sliderScriptObj));
 
 				case UIControlType.Button:
 					return dynaPan.AddUIControl(new ButtonEx(buttonScriptObj));

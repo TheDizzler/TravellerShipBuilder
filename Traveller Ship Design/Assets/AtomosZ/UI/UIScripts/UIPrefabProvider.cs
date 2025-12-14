@@ -52,7 +52,7 @@ namespace AtomosZ.UI
 		[SerializeField] public UIPanelScriptableObject panelScriptObj;
 		[SerializeField] public UIPanelScriptableObject horizontalPanelScriptObj;
 		[SerializeField] public UIExpandingLabelScriptableObject textScriptObj;
-		[SerializeField] public UIExpandingLabelScriptableObject dropdownScriptObj;
+		[SerializeField] public UIDropdownScriptableObject dropdownScriptObj;
 		[SerializeField] public UICheckBoxScriptableObject checkBoxScriptObj;
 		[SerializeField] public UIExpandingInputFieldScriptableObject inputFieldScriptObj;
 		[SerializeField] public UISliderScriptableObject sliderScriptObj;

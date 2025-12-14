@@ -145,8 +145,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4919152954390439746}
-  - component: {fileID: 2979090514318582164}
   - component: {fileID: 1562520756750204633}
+  - component: {fileID: 2979090514318582164}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -173,14 +173,6 @@ RectTransform:
   m_AnchoredPosition: {x: -7.500061, y: -0.5}
   m_SizeDelta: {x: -35, y: -13}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &2979090514318582164
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1852459431764272052}
-  m_CullTransparentMesh: 1
 --- !u!114 &1562520756750204633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,6 +264,14 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &2979090514318582164
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1852459431764272052}
+  m_CullTransparentMesh: 1
 --- !u!1 &3200417162899992813
 GameObject:
   m_ObjectHideFlags: 0
@@ -464,7 +464,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 30, y: 0}
-  m_SizeDelta: {x: 150, y: 30}
+  m_SizeDelta: {x: 100, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3132597873559246341
 MonoBehaviour:
@@ -479,38 +479,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropdown: {fileID: 351424338598274322}
-  dropdownEx:
-    referenceName: dropdown
-    fillParentHorizontal: 0
-    minDimensions: {x: 256, y: 64}
-    scriptableObj: {fileID: 0}
-    useCustomFontSize: 0
-    useCustomFontColor: 0
-    useCustomFontAsset: 0
-    fontSize: 14
-    fontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 1}
-    fontAsset: {fileID: 0}
-    options:
-    - m_Text: Option 1
-      m_Image: {fileID: 0}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: Option 2
-      m_Image: {fileID: 0}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: Option 3
-      m_Image: {fileID: 0}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: Option 4
-      m_Image: {fileID: 0}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-    SetOptions:
-      m_PersistentCalls:
-        m_Calls: []
-    defaultSelection: 0
-    isMultiSelect: 0
-    onValueChangedAction:
-      m_PersistentCalls:
-        m_Calls: []
+  arrow: {fileID: 7042341699860270575}
+  dropdownData: {fileID: 11400000, guid: 9dc0573a54af75d4e8ecad2090d58a11, type: 2}
+  _referenceName: dropdown
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _minDimensions: {x: 100, y: 10}
+  _arrowSprite: {fileID: 0}
+  _fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
+  _fontSize: 14
+  _fontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 1}
+  _alignmentOptions: 0
+  onValueChangedAction:
+    m_PersistentCalls:
+      m_Calls: []
+  _value: 0
+  _isMultiSelect: 0
+  _options: []
+  _optionsDelegate:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3898854370579401519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -545,8 +533,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
-  m_MinWidth: 256
-  m_MinHeight: 64
+  m_MinWidth: 102.74007
+  m_MinHeight: 10
   m_PreferredWidth: -1
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
@@ -604,7 +592,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -647,7 +635,19 @@ MonoBehaviour:
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3132597873559246341}
+        m_TargetAssemblyTypeName: AtomosZ.UI.UIDropdown, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!222 &8129282478058831701
 CanvasRenderer:

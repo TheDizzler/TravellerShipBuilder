@@ -14,10 +14,7 @@ namespace AtomosZ.UI
 	[ExecuteAlways]
 	public class UISpinner : MonoBehaviour, IUIBehavior
 	{
-		/// <summary>
-		/// Trying to deprecate this.
-		/// </summary>
-		//private SpinnerEx spinnerEx;
+		public UIControlType dataType { get { return UIControlType.Spinner; } }
 
 		public UIDesignObject _designObject;
 		public UIDesignObject designObject
@@ -121,8 +118,7 @@ namespace AtomosZ.UI
 			get { return _fontSize; }
 			set
 			{
-				_fontSize = value;
-				inputField.pointSize = value;
+				_fontSize = inputField.pointSize = value;
 				this.SetDirty();
 			}
 		}
@@ -211,6 +207,7 @@ namespace AtomosZ.UI
 		{
 			return new SpinnerEx();
 		}
+
 
 		/// <summary>
 		/// this is my first attempt and creating controls without the IUIDataEx stuff (please work).

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace AtomosZ.UI
 {
-	[CreateAssetMenu(fileName = "UITabControlData", menuName = "AtomosZ/UIScriptableObjects/UITabControlScriptableObject")]
+	[CreateAssetMenu(fileName = "tabControlData", menuName = "AtomosZ/UIScriptableObjects/UITabControlScriptableObject")]
 	public class UITabControlScriptableObject : ScriptableObject
 	{
 		[Tooltip("The UIPanelScriptableObject that new child panels will inherit.")]
@@ -13,6 +13,7 @@ namespace AtomosZ.UI
 			+ "\n[0]: first tab in control.\n[1]: all other tabs.")]
 		public Sprite[] titleBarSprites;
 
+		public float titleBarFontSize = 36;
 		public Color titleBarFontColor = new Color(1, 1, 1, 1);
 		[Tooltip("Ex: Vector4(12, 8, 46, 16) for edged tabs, Vector4(12, 8, 12, 4) for titlebars.")]
 		public Vector4 titleTextMargin = new Vector4(12, 8, 46, 12);

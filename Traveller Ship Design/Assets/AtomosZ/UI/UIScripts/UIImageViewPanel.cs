@@ -2,14 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-using UnityEditor;
-using UnityEditor.ShaderGraph;
-
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-using static DesignManager;
 
 namespace AtomosZ.UI
 {
@@ -55,6 +51,7 @@ namespace AtomosZ.UI
 	[ExecuteAlways]
 	public class UIImageViewPanel : MonoBehaviour, IUIBehavior
 	{
+		public UIControlType dataType { get { return UIControlType.ImagePanel; } }
 		[SerializeField] private ImageViewDataEx viewDataEx;
 		[SerializeField] public GridLayoutGroup gridLayout;
 		[SerializeField] public ScrollRect scrollRect;
@@ -232,7 +229,6 @@ namespace AtomosZ.UI
 			var imageEx = new ImageEx(viewDataEx.scriptableObj.imageViewData)
 			{
 				sprite = sprite == null ? viewDataEx.scriptableObj.defaultSprite : sprite,
-				labelEx = viewDataEx.labelEx.Clone(),
 			};
 
 
@@ -256,8 +252,6 @@ namespace AtomosZ.UI
 			}
 
 			imageEx.size = viewDataEx.scriptableObj.imageSize;
-			if (imageEx.labelEx == null)
-				imageEx.labelEx = viewDataEx.labelEx;
 			imageEx.forceSize = true;
 			var imageDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabProvider.UIPrefabType.ImageView), gridLayout.transform);
 			var image = imageDO.GetComponent<UIImageView>();

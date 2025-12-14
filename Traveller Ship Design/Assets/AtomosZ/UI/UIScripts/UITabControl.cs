@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using TMPro;
 using UnityEditor;
-using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.UI;
 using static AtomosZ.UI.MagicWindow;
@@ -77,9 +76,6 @@ namespace AtomosZ.UI
 		public TabControlEx(UITabControlScriptableObject scriptObj)
 		{
 			scriptableObj = scriptObj;
-			if (scriptObj == null)
-			{
-			}
 		}
 	}
 
@@ -112,7 +108,7 @@ namespace AtomosZ.UI
 		[SerializeField]
 		public TabLookupDictionary tabPanels;
 
-		public TabControlEx tabControlEx;
+		public UITabControlScriptableObject tabControlData;
 
 		[Min(0)]
 		public int selectedTabIndex;
@@ -145,12 +141,12 @@ namespace AtomosZ.UI
 		{
 			get
 			{
-				if (tabControlEx.scriptableObj == null)
+				if (tabControlData == null)
 				{
 					return null;
 				}
 
-				return tabControlEx.scriptableObj.titleBarSprites[0];
+				return tabControlData.titleBarSprites[0];
 			}
 		}
 
@@ -158,12 +154,12 @@ namespace AtomosZ.UI
 		{
 			get
 			{
-				if (tabControlEx.scriptableObj == null)
+				if (tabControlData == null)
 				{
 					return null;
 				}
 
-				return tabControlEx.scriptableObj.titleBarSprites[1];
+				return tabControlData.titleBarSprites[1];
 			}
 		}
 
@@ -171,12 +167,12 @@ namespace AtomosZ.UI
 		{
 			get
 			{
-				if (tabControlEx.scriptableObj == null)
+				if (tabControlData == null)
 				{
 					return null;
 				}
 
-				return tabControlEx.scriptableObj.titleBarSprites[0];
+				return tabControlData.titleBarSprites[0];
 			}
 		}
 
@@ -234,10 +230,10 @@ namespace AtomosZ.UI
 			PanelEx panelEx = null;
 			if (overridePanelData != null)
 				panelEx = new PanelEx(overridePanelData);
-			else if (tabControlEx.scriptableObj.panelScriptableObj == null)
+			else if (tabControlData.panelScriptableObj == null)
 				panelEx = defaultData;
 			else
-				panelEx = new PanelEx(tabControlEx.scriptableObj.panelScriptableObj);
+				panelEx = new PanelEx(tabControlData.panelScriptableObj);
 
 			var refNum = 0;
 			var panelRefName = "panel_" + refNum.ToString("00");
@@ -321,23 +317,44 @@ namespace AtomosZ.UI
 			selectedTabIndex = tabIndex;
 		}
 
+
+		/// <summary>
+		/// Searches for a tab by tabName and enables or disables it.
+		/// </summary>
+		/// <param name="tabName"></param>
+		/// <param name="enable">False if tab not found.</param>
+		public bool EnableTab(string tabName, bool enable)
+		{
+			foreach (var tabPanel in tabPanels)
+			{
+				if (tabPanel.Value.referenceName == tabName)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		public WindowStyle GetWindowStyle()
 		{
-			if (tabControlEx.scriptableObj == null)
-				UnityEngine.Debug.LogException(new Exception("tabControlEx.scriptableObj may not be null"));
-			return tabControlEx.scriptableObj.windowStyle;
+			if (tabControlData == null)
+				UnityEngine.Debug.LogException(new Exception("tabControlData may not be null"));
+			return tabControlData.windowStyle;
 		}
 
 		public IUIDataEx GetBackingData()
 		{
-			return tabControlEx;
+			return new TabControlEx(tabControlData);
 		}
 
-		[Obsolete("Please let's deprecate this.")]
+		/// <summary>
+		/// "Please let's deprecate this."
+		/// </summary>
+		/// <param name="dataEx"></param>
 		public void UpdateBackingData(IUIDataEx dataEx)
 		{
-			tabControlEx = (TabControlEx)dataEx;
-			//UpdateBackingData();
+			tabControlData = ((TabControlEx)dataEx).scriptableObj;
 			this.SetDirty();
 		}
 
@@ -355,7 +372,7 @@ namespace AtomosZ.UI
 		{
 			if (tabPanels.Count == 0)
 			{
-				UnityEngine.Debug.LogException(new Exception("A TabControl must never have 0 tabs"));
+				Debug.LogException(new Exception("A TabControl must never have 0 tabs"));
 			}
 
 			if (selectedTabIndex < 0)
@@ -363,15 +380,15 @@ namespace AtomosZ.UI
 				selectedTabIndex = 0;
 			}
 
-			if (tabControlEx.scriptableObj == null)
+			if (tabControlData == null)
 				return;
 
-			switch (tabControlEx.scriptableObj.windowStyle)
+			//Debug.LogError("TabControl is updating again");
+			switch (tabControlData.windowStyle)
 			{
 				case WindowStyle.Tabbed:
 				{
 					ToggleMultitab_DEBUG(true);
-
 
 					SetUpTabs();
 				}
@@ -404,7 +421,7 @@ namespace AtomosZ.UI
 			var tabLabel = tabPanel.Key;
 			if (titlebarSprite != null)
 				tabLabel.GetComponent<Image>().sprite = titlebarSprite;
-			tabLabel.GetComponent<Image>().color = tabControlEx.scriptableObj.selectedTabColor;
+			tabLabel.GetComponent<Image>().color = tabControlData.selectedTabColor;
 
 			if (tabLabel.text.StartsWith("TabItem_"))
 			{
@@ -412,8 +429,9 @@ namespace AtomosZ.UI
 				tabLabel.referenceName = "titlebar";
 			}
 
-			tabLabel.SetColor(tabControlEx.scriptableObj.titleBarFontColor);
-			tabLabel.alignmentOptions = tabControlEx.scriptableObj.tabTextAlignment;
+			tabLabel.color = tabControlData.titleBarFontColor;
+			tabLabel.alignmentOptions = tabControlData.tabTextAlignment;
+			tabLabel.fontSize = tabControlData.titleBarFontSize;
 
 			tabLabel.UpdateBackingData();
 			//var tabRect = tab.GetComponent<RectTransform>();
@@ -430,12 +448,12 @@ namespace AtomosZ.UI
 
 
 			var tmp = tabLabel.GetComponentInChildren<TextMeshProUGUI>();
-			tmp.margin = tabControlEx.scriptableObj.titleTextMargin;
+			tmp.margin = tabControlData.titleTextMargin;
 			var bottom = tmp.margin.w;
 			var tabHeight = tabLabel.GetComponent<RectTransform>().sizeDelta.y;
 			var panelOffset = bottom - tabHeight;
 			var newPanelPos = panelsTransform.localPosition;
-			newPanelPos.y = panelOffset + tabControlEx.scriptableObj.titleBarVerticalOffset;
+			newPanelPos.y = panelOffset + tabControlData.titleBarVerticalOffset;
 			panelsTransform.localPosition = newPanelPos;
 
 
@@ -471,12 +489,12 @@ namespace AtomosZ.UI
 				if (i == selectedTabIndex)
 				{
 					tab.transform.SetSiblingIndex(tabPanels.Count);
-					tab.GetComponent<Image>().color = tabControlEx.scriptableObj.selectedTabColor;
+					tab.GetComponent<Image>().color = tabControlData.selectedTabColor;
 				}
 				else
 				{
 					tab.transform.SetSiblingIndex(i);
-					tab.GetComponent<Image>().color = tabControlEx.scriptableObj.deselectedTabColor;
+					tab.GetComponent<Image>().color = tabControlData.deselectedTabColor;
 				}
 
 				Sprite sprite = null;
@@ -488,14 +506,14 @@ namespace AtomosZ.UI
 					tab.GetComponent<Image>().sprite = sprite;
 
 
-				tab.alignmentOptions = tabControlEx.scriptableObj.tabTextAlignment;
-				tab.SetColor(tabControlEx.scriptableObj.titleBarFontColor);
-				tab.margin = tabControlEx.scriptableObj.titleTextMargin;
+				tab.alignmentOptions = tabControlData.tabTextAlignment;
+				tab.color = tabControlData.titleBarFontColor;
+				tab.margin = tabControlData.titleTextMargin;
+				tab.fontSize = tabControlData.titleBarFontSize;
 
-
-				var labelMinSize = tabControlEx.scriptableObj.titleBarMinSize;
-				labelMinSize.x -= tabControlEx.scriptableObj.titleTextMargin.x + tabControlEx.scriptableObj.titleTextMargin.z;
-				labelMinSize.y -= tabControlEx.scriptableObj.titleTextMargin.y + tabControlEx.scriptableObj.titleTextMargin.w;
+				var labelMinSize = tabControlData.titleBarMinSize;
+				labelMinSize.x -= tabControlData.titleTextMargin.x + tabControlData.titleTextMargin.z;
+				labelMinSize.y -= tabControlData.titleTextMargin.y + tabControlData.titleTextMargin.w;
 				tab.minLabelDimensions = labelMinSize;
 
 				largestTabHeight = Mathf.Max(largestTabHeight, tab.GetMinDimensions().y);
@@ -515,7 +533,7 @@ namespace AtomosZ.UI
 				var panel = tabPanel.Value;
 				var tabRect = tab.GetComponent<RectTransform>();
 				tabRect.localPosition = new Vector3(nextXPos, 0, 0);
-				nextXPos += tabRect.sizeDelta.x + tabControlEx.scriptableObj.tabHorizontaloffset;
+				nextXPos += tabRect.sizeDelta.x + tabControlData.tabHorizontaloffset;
 
 				tab.SetHeight(largestTabHeight);
 				if (i == selectedTabIndex)
@@ -538,15 +556,15 @@ namespace AtomosZ.UI
 			}
 
 			// set the position of the panel to align with the tabs
-			var margin = tabControlEx.scriptableObj.titleTextMargin;
+			var margin = tabControlData.titleTextMargin;
 			var bottom = margin.w;
 			var height = largestTabHeight;
 			var panelOffset = bottom - height;
 			var newPanelPos = panelsTransform.localPosition;
-			newPanelPos.y = panelOffset + tabControlEx.scriptableObj.titleBarVerticalOffset;
+			newPanelPos.y = panelOffset + tabControlData.titleBarVerticalOffset;
 			panelsTransform.localPosition = newPanelPos;
 
-			nextXPos += tabControlEx.scriptableObj.panelWidthAdjust;
+			nextXPos += tabControlData.panelWidthAdjust;
 			newPanelWidth = Mathf.Max(newPanelWidth, nextXPos);
 			panelsTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newPanelWidth); // this forces all panels to the same width
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newPanelWidth);           // this sets the width of the TabUIControl for proper sizing in parent layout

@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-using static CustomCursor;
+using AtomosZ.MG2eTraveller.Ship;                       // @TODO(Tristan): this should not be here.
+using static AtomosZ.MG2eTraveller.Ship.CustomCursor;	// @TODO(Tristan): this should not be here.
 
 namespace AtomosZ.UI
 {

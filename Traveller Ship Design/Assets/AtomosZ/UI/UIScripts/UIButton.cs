@@ -10,64 +10,21 @@ namespace AtomosZ.UI
 	public class ButtonEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Button; } }
-
-		public UnityEvent action = null;
-		public bool fillParentHorizontal = false;
-
 		public UIButtonScriptableObject scriptableObj;
 
-		public bool useCustomSprite = false;
-		public Sprite sprite;
-
-		public LabelEx labelEx;
-
-
-		/// <summary>
-		/// To change the TextMeshPro label, manipulate ButtonEx.labelEx.
-		/// </summary>
 		public ButtonEx(UIButtonScriptableObject scriptObj)
 		{
 			scriptableObj = scriptObj;
-			if (scriptableObj == null || scriptableObj.labelEx == null)
-			{
-				labelEx = new LabelEx()
-				{
-					fontColor = Color.black,
-					fontSize = 36,
-				};
-			}
-		}
-
-		/// <summary>
-		/// To change fontColor, manipulate ButtonEx.labelEx.fontColor.
-		/// </summary>
-		/// <param name="buttonText"></param>
-		/// <param name="fontSize"></param>
-		public ButtonEx(float fontSize = 36)
-		{
-			labelEx = new LabelEx()
-			{
-				fontColor = Color.black,
-				fontSize = fontSize,
-			};
-
-			useCustomSprite = true;
-		}
-
-
-		public void AddListener(UnityAction newAction)
-		{
-			if (action == null)
-				action = new UnityEngine.Events.UnityEvent();
-			action.AddListener(newAction);
 		}
 	}
 
 	[ExecuteAlways]
 	public class UIButton : MonoBehaviour, IUIBehavior
 	{
-		[SerializeField] private ButtonEx buttonEx;
-		[SerializeField] public UIExpandingLabel label;
+		public UIControlType dataType { get { return UIControlType.Button; } }
+
+		[SerializeField] private UIButtonScriptableObject buttonData;
+		[SerializeField] public UIExpandingLabel textLabel;
 		[SerializeField] private Image image;
 
 		[SerializeField] private string _referenceName = "button";
@@ -92,93 +49,132 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public bool isDirty { get; set; } = true;
+		public bool isDirty { get; set; }
 
 		public IUIBehavior GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
-			return label.GetControl(controlRefName);
+			return textLabel.GetControl(controlRefName);
 		}
 
-		public LabelEx labelEx
+		[SerializeField] private bool _interactable = true;
+		public bool interactable
 		{
-			get
-			{
-				if (buttonEx.scriptableObj == null)
-				{
-					return buttonEx.labelEx;
-				}
-
-				return buttonEx.scriptableObj.labelEx;
-			}
+			get { return _interactable = textLabel.interactable = GetComponent<Button>().interactable; }
+			set { _interactable = textLabel.interactable = GetComponent<Button>().interactable = value; }
 		}
 
 		[SerializeField] private string _text = "Button Text";
 		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
 		public string text
 		{
-			get
-			{
-				_text = label.text;
-				return _text;
-			}
+			get { return _text = textLabel.text; }
+			set { _text = textLabel.text = value; }
+		}
+
+		[SerializeField] private Color _fontColor;
+		[Tooltip("A value of Color.clear will set the font color to the scriptable object value, if it exists.")]
+		public Color fontColor
+		{
+			get { return _fontColor = textLabel.color; }
+			set { _fontColor = textLabel.color = value; }
+		}
+
+		[SerializeField] private Color _disabledFontColor;
+		[Tooltip("A value of Color.clear will set the font color to the scriptable object value, if it exists.")]
+		public Color disabledFontColor
+		{
+			get { return _disabledFontColor = textLabel.disabledColor; }
+			set { _disabledFontColor = textLabel.disabledColor = value; }
+		}
+
+		[SerializeField] private FontStyles _fontStyles;
+		public FontStyles fontStyles
+		{
+			get { return _fontStyles = textLabel.fontStyles; }
+			set { _fontStyles = textLabel.fontStyles = value; }
+		}
+
+		[SerializeField] private Sprite _sprite;
+		[Tooltip("A value of null will revert the sprite to scriptable object value, if it exists.")]
+		public Sprite sprite
+		{
+			get { return _sprite = image.sprite; }
 			set
 			{
-				if (_text == value)
-					return;
-
-				label.text = _text = value;
+				if (value == null)
+				{
+					if (buttonData != null)
+						image.sprite = buttonData.sprite;
+				}
+				else
+					image.sprite = value;
 				this.SetDirty();
 			}
 		}
 
-		/// <summary>
-		/// Adds action to the listener and the backingdata.
-		/// </summary>
-		/// <param name="action"></param>
-		public void AddListener(UnityEvent action)
+		[SerializeField] private bool _fillParentHorizontal = false;
+		public bool fillParentHorizontal
 		{
-			buttonEx.action.AddListener(() => action.Invoke());
-		}
-
-		/// <summary>
-		/// Adds action to the listener and the backingdata.
-		/// </summary>
-		/// <param name="action"></param>
-		public void AddListener(Action action)
-		{
-			buttonEx.action.AddListener(() => action.Invoke());
-		}
-
-
-		public Sprite sprite
-		{
-			get
+			get { return _fillParentHorizontal; }
+			set
 			{
-				if (buttonEx.useCustomSprite || buttonEx.scriptableObj == null)
-				{
-					return buttonEx.sprite;
-				}
-
-				return buttonEx.scriptableObj.sprite;
+				_fillParentHorizontal = value;
+				this.SetDirty();
 			}
 		}
 
+		public UnityEvent<UIButton> onClickedEvent = null;
+
+
+		/// <summary>
+		/// Adds action to the listener.
+		/// </summary>
+		/// <param name="action"></param>
+		public void AddListener(UnityAction<UIButton> action)
+		{
+			onClickedEvent.AddListener(action);
+		}
+
+
+
 		void OnEnable()
 		{
+			var button = GetComponent<Button>();
+			button.onClick.RemoveAllListeners();
+			button.onClick.AddListener(OnClicked);
+
 			this.SetDirty();
 		}
 
+		private void OnClicked()
+		{
+			if (onClickedEvent != null)
+				onClickedEvent.Invoke(this);
+		}
+
+
 		public IUIDataEx GetBackingData()
 		{
-			return buttonEx;
+			return new ButtonEx(buttonData);
+		}
+
+		public void UpdateBackingData(UIButtonScriptableObject backingData)
+		{
+			buttonData = backingData;
+			if (backingData != null)
+			{
+				textLabel.UpdateBackingData(backingData.labelData);
+				image.sprite = backingData.sprite;
+			}
+
+			this.SetDirty();
 		}
 
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
-			buttonEx = (ButtonEx)backingData;
-			UpdateBackingData();
+			UpdateBackingData(((ButtonEx)backingData).scriptableObj);
 		}
 
 		void Update()
@@ -189,31 +185,16 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			this.SetGameObjectNameToReferenceName(gameObject);
-
-			if (sprite != null)
-				image.sprite = sprite;
-
 			var layout = GetComponent<LayoutElement>();
-			if (buttonEx.fillParentHorizontal)
+			if (fillParentHorizontal)
 				layout.flexibleWidth = 1;
 			else
 				layout.flexibleWidth = 0;
 
-			TextMeshProUGUI textLabel = label.GetComponent<TextMeshProUGUI>();
 			var labelHorzMargins = textLabel.margin.x + textLabel.margin.z;
-			layout.minWidth = label.minLabelDimensions.x + labelHorzMargins;
-			label.UpdateBackingData(labelEx);
-			var labelDim = label.GetMinDimensions();
+			layout.minWidth = this.textLabel.minLabelDimensions.x + labelHorzMargins;
+			var labelDim = this.textLabel.GetMinDimensions();
 			layout.preferredWidth = labelDim.x + labelHorzMargins;
-
-
-			var button = GetComponent<Button>();
-			button.onClick.RemoveAllListeners();
-			if (buttonEx.action != null)
-			{
-				button.onClick.AddListener(() => buttonEx.action.Invoke());
-			}
 
 			isDirty = false;
 		}
@@ -223,7 +204,7 @@ namespace AtomosZ.UI
 		{
 			if (isDirty)
 				UpdateBackingData();
-			return label.GetMinDimensions();
+			return textLabel.GetMinDimensions();
 		}
 
 

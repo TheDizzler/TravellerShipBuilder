@@ -1,12 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-
 using TMPro;
 
 using UnityEngine;
 using UnityEngine.UI;
-using static AtomosZ.UI.UIExpandingLabel;
+
 
 namespace AtomosZ.UI
 {
@@ -19,61 +16,28 @@ namespace AtomosZ.UI
 		public UIExpandingInputFieldScriptableObject scriptableObj;
 
 
-		public bool useCustomFontSize = false;
-		public bool useCustomPlaceholderFontColor = false;
-		public bool useCustomFontColor = false;
-		public bool useCustomFontAsset = false;
-		public float fontSize = 18;
-		public Color placeholderFontColor = new Color(.2f, .2f, .2f, .2f);
-		public Color fontColor = Color.black;
-		public TMP_FontAsset fontAsset;
-
-
-		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
-		public string placeholderText = "Placeholder text";
-		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
-		public string defaultText = "";
-
-		public Vector2 fieldDimensions = new Vector2(275, 44);
-
-
 		public InputFieldEx(UIExpandingInputFieldScriptableObject scriptObj)
 		{
 			scriptableObj = scriptObj;
-			if (scriptableObj == null)
-			{
-				useCustomFontSize = true;
-				useCustomPlaceholderFontColor = true;
-				useCustomFontColor = true;
-				useCustomFontAsset = true;
-			}
-
-		}
-
-		public InputFieldEx(UIExpandingInputFieldScriptableObject scriptObj, string placeholderText, string defaultText = "")
-		{
-			this.placeholderText = placeholderText;
-			this.defaultText = defaultText;
-		}
-
-		public InputFieldEx(string placeholderText, string defaultText)
-		{
-			this.placeholderText = placeholderText;
-			this.defaultText = defaultText;
-			useCustomFontSize = true;
-			useCustomPlaceholderFontColor = true;
-			useCustomFontColor = true;
-			useCustomFontAsset = true;
 		}
 	}
 
+	/// <summary>
+	/// @NOTE(Tristan): The built-in TMP Input Field is shit. It will not respect manual resizing and the single/multiline handling
+	/// is buggy at best. Like the Slider, a new one from scratch will need to be created if it is to be useful at all.
+	/// For now a ContentSizeFitter seems to be doing the trick, despite the warning.<br/>
+	/// @TODO(Tristan): Text still gets screwy when the max dimensions are exceeded.
+	/// Should create scrollbar.
+	/// </summary>
 	[ExecuteAlways]
 	public class UIExpandingInputField : MonoBehaviour, IUIBehavior
 	{
-		[SerializeField] private InputFieldEx inputFieldEx;
+		public UIControlType dataType { get { return UIControlType.InputField; } }
+
+		[SerializeField] private UIExpandingInputFieldScriptableObject inputFieldData;
 
 		[SerializeField] private TextMeshProUGUI placeholderLabel;
-		[SerializeField] private TextMeshProUGUI textLabel;
+		[SerializeField] private UIExpandingLabel textLabel;
 
 		[SerializeField] private TMP_InputField inputFieldTMP;
 		[SerializeField] private RectTransform textAreaRect;
@@ -102,7 +66,210 @@ namespace AtomosZ.UI
 			}
 		}
 
+		[SerializeField] private TMP_FontAsset _fontAsset;
+		[Tooltip("A null value will set the font to the scriptable object value, if it exists, or the default game font.")]
+		public TMP_FontAsset fontAsset
+		{
+			get { return _fontAsset = inputFieldTMP.fontAsset; }
+			set
+			{
+				if (value == null)
+				{
+					if (inputFieldData != null)
+						value = inputFieldData.fontAsset;
+				}
+
+				if (value == _fontAsset)
+					return;
+
+				_fontAsset = inputFieldTMP.fontAsset = value;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private float _fontSize;
+		[Tooltip("A value of <= 0 will set the fontSize to the scriptable object value, if it exists")]
+		public float fontSize
+		{
+			get { return _fontSize = inputFieldTMP.pointSize; }
+			set
+			{
+				if (value < 1)
+				{
+					if (inputFieldData == null)
+						value = 1;
+					else
+						value = inputFieldData.fontSize;
+				}
+
+				if (value == fontSize)
+					return;
+
+				_fontSize = inputFieldTMP.pointSize = value;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private Color _placeholderFontColor;
+		[Tooltip("A value of Color.clear will set the font color to the scriptable object value, if it exists.")]
+		public Color placeholderFontColor
+		{
+			get { return _placeholderFontColor = placeholderLabel.color; }
+			set
+			{
+				if (value == Color.clear)
+				{
+					if (inputFieldData != null)
+						_placeholderFontColor = placeholderLabel.color = inputFieldData.placeholderFontColor;
+				}
+				else
+					_placeholderFontColor = placeholderLabel.color = value;
+			}
+		}
+
+
+		[SerializeField] private Color _fontColor;
+		[Tooltip("A value of Color.clear will set the font color to the scriptable object value, if it exists.")]
+		public Color fontColor
+		{
+			get { return _fontColor = textLabel.color; }
+			set
+			{
+				if (value == Color.clear)
+				{
+					if (inputFieldData != null)
+						_fontColor = textLabel.color = inputFieldData.fontColor;
+				}
+				else
+					_fontColor = textLabel.color = value;
+			}
+		}
+
+		[SerializeField] private TextAlignmentOptions _alignmentOptions;
+		public TextAlignmentOptions alignmentOptions
+		{
+			get
+			{
+				var val = _alignmentOptions = (TextAlignmentOptions)((int)placeholderLabel.verticalAlignment | (int)placeholderLabel.horizontalAlignment);
+				if (val == 0)
+				{
+					textLabel.alignmentOptions = (TextAlignmentOptions)((int)VerticalAlignmentOptions.Top | (int)HorizontalAlignmentOptions.Left);
+					placeholderLabel.verticalAlignment = VerticalAlignmentOptions.Top;
+					placeholderLabel.horizontalAlignment = HorizontalAlignmentOptions.Left;
+					alignmentOptions = _alignmentOptions = TextAlignmentOptions.TopLeft;
+				}
+
+				return val;
+			}
+			set
+			{
+				if (alignmentOptions == value)
+					return;
+				_alignmentOptions = value;
+				textLabel.alignmentOptions = value;
+				var vert = (VerticalAlignmentOptions)(value
+					& (TextAlignmentOptions)(VerticalAlignmentOptions.Baseline | VerticalAlignmentOptions.Bottom
+					| VerticalAlignmentOptions.Capline | VerticalAlignmentOptions.Geometry
+					| VerticalAlignmentOptions.Middle | VerticalAlignmentOptions.Top));
+				placeholderLabel.verticalAlignment = vert;
+
+				var horz = (HorizontalAlignmentOptions)(value ^ (TextAlignmentOptions)vert);
+				placeholderLabel.horizontalAlignment = horz;
+			}
+		}
+
+		[SerializeField] private bool _fillParentHorizontal = false;
+		public bool fillParentHorizontal
+		{
+			get { return _fillParentHorizontal; }
+			set
+			{
+				_fillParentHorizontal = value;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private Vector2 _minDimensions = new Vector2(64, 10);
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions; }
+			set
+			{
+				if (value.x > maxDimensions.x)
+					value.x = maxDimensions.x;
+				if (value.y > maxDimensions.y)
+					value.y = maxDimensions.y;
+				if (value.x < 5)
+					value.x = 5;
+				if (value.y < 5)
+					value.y = 5;
+				_minDimensions = value;
+				this.SetDirty();
+			}
+		}
+
+
+		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
+		[SerializeField] private Vector2 _maxDimensions = new Vector2(1025, 256);
+		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
+		public Vector2 maxDimensions
+		{
+			get { return _maxDimensions; }
+			set
+			{
+				if (value.x < minDimensions.x)
+					value.x = minDimensions.x;
+				if (value.y < minDimensions.y)
+					value.y = minDimensions.y;
+				if (value.x < 5)
+					value.x = 5;
+				if (value.y < 5)
+					value.y = 5;
+				_maxDimensions = value;
+				value.x -= verticalTextAreaOffsets;
+				textLabel.maxLabelDimensions = value;
+				this.SetDirty();
+			}
+		}
+
+
+		[SerializeField] private string _text;
+		public string text
+		{
+			get { return _text = inputFieldTMP.text; }
+			set
+			{
+				if (inputFieldTMP.text == value)
+					return;
+				_text = textLabel.text = inputFieldTMP.text = value;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private string _placeholderText;
+		public string placeholderText
+		{
+			get { return _placeholderText = placeholderLabel.text; }
+			set
+			{
+				if (placeholderLabel.text == value)
+					return;
+				_placeholderText = placeholderLabel.text = value;
+				this.SetDirty();
+			}
+		}
+
 		public bool isDirty { get; set; } = true;
+
+		public float horizontalTextAreaOffsets
+		{
+			get { return Mathf.Abs(textAreaRect.offsetMin.x) + Mathf.Abs(textAreaRect.offsetMax.x); }
+		}
+
+		public float verticalTextAreaOffsets
+		{
+			get { return Mathf.Abs(textAreaRect.offsetMin.y) + Mathf.Abs(textAreaRect.offsetMax.y); }
+		}
 
 		public IUIBehavior GetControl(string controlRefName)
 		{
@@ -112,9 +279,9 @@ namespace AtomosZ.UI
 		}
 
 
-		public void SetPlaceholderText(string newText)
+		public void SetPlaceholderText(string placeholderText)
 		{
-			placeholderLabel.text = newText;
+			placeholderLabel.text = placeholderText;
 		}
 
 		public void SetText(string newText)
@@ -122,69 +289,42 @@ namespace AtomosZ.UI
 			inputFieldTMP.text = newText;
 		}
 
-		public void SetTextAlignment(HorizontalAlignmentOptions horzAlignment, VerticalAlignmentOptions vertAlignment)
+		public void SetText(string newText, string placeholderText)
 		{
-			textLabel.verticalAlignment = vertAlignment;
-			placeholderLabel.verticalAlignment = vertAlignment;
-			textLabel.horizontalAlignment = horzAlignment;
-			placeholderLabel.horizontalAlignment = horzAlignment;
+			inputFieldTMP.text = newText;
+			placeholderLabel.text = placeholderText;
 		}
 
-		public TMP_FontAsset fontAsset
-		{
-			get
-			{
-				if (inputFieldEx.useCustomFontAsset || inputFieldEx.scriptableObj == null)
-					return inputFieldEx.fontAsset;
-				return inputFieldEx.scriptableObj.fontAsset;
-			}
-		}
-
-		public float fontSize
-		{
-			get
-			{
-				if (inputFieldEx.useCustomFontSize || inputFieldEx.scriptableObj == null)
-					return inputFieldEx.fontSize;
-				return inputFieldEx.scriptableObj.fontSize;
-			}
-		}
-
-		public Color placeholderFontColor
-		{
-			get
-			{
-				if (inputFieldEx.useCustomPlaceholderFontColor || inputFieldEx.scriptableObj == null)
-					return inputFieldEx.placeholderFontColor;
-				return inputFieldEx.scriptableObj.placeholderFontColor;
-			}
-		}
-
-		public Color fontColor
-		{
-			get
-			{
-				if (inputFieldEx.useCustomFontColor || inputFieldEx.scriptableObj == null)
-					return inputFieldEx.fontColor;
-				return inputFieldEx.scriptableObj.fontColor;
-			}
-		}
 
 		void OnEnable()
 		{
 			this.SetDirty();
+			if (textLabel == null)
+				textLabel = GetComponentInChildren<UIExpandingLabel>();
 		}
 
 
 		public IUIDataEx GetBackingData()
 		{
-			return inputFieldEx;
+			return new InputFieldEx(inputFieldData);
+		}
+
+		public void UpdateBackingData(UIExpandingInputFieldScriptableObject backingData)
+		{
+			inputFieldData = backingData;
+			if (backingData != null)
+			{
+				fontAsset = backingData.fontAsset;
+				fontColor = backingData.fontColor;
+				placeholderFontColor = backingData.placeholderFontColor;
+				fontSize = backingData.fontSize;
+				this.SetDirty();
+			}
 		}
 
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
-			inputFieldEx = (InputFieldEx)backingData;
-			UpdateBackingData();
+			UpdateBackingData(((InputFieldEx)backingData).scriptableObj);
 		}
 
 		void Update()
@@ -195,33 +335,42 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			this.SetGameObjectNameToReferenceName(gameObject);
-
-			inputFieldTMP.fontAsset = fontAsset;
-			inputFieldTMP.pointSize = fontSize;
-			placeholderLabel.color = placeholderFontColor;
-			placeholderLabel.text = inputFieldEx.placeholderText;
-
 			placeholderLabel.ForceMeshUpdate();
+			textLabel.UpdateBackingData();
 
-			textLabel.color = fontColor;
-			if (string.IsNullOrEmpty(inputFieldTMP.text))
-				inputFieldTMP.text = inputFieldEx.defaultText;
-
-			image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, inputFieldEx.fieldDimensions.x);
-			image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inputFieldEx.fieldDimensions.y);
-
+			var rect = GetComponent<RectTransform>();
+			var layoutElement = GetComponent<LayoutElement>();
+			if (fillParentHorizontal)
+			{
+				layoutElement.flexibleWidth = 1;
+			}
+			else
+			{
+				layoutElement.flexibleWidth = 0;
+			}
 
 			var prefTextSize = placeholderLabel.GetPreferredValues("Text to measure font height");
-			var textHeight = prefTextSize.y; // this should be the preferred height of a single line, right?
+			var textHeight = prefTextSize.y + verticalTextAreaOffsets; // this should be the preferred height of a single line, right?
 
-			if (textHeight < inputFieldEx.fieldDimensions.y)
-				textHeight = inputFieldEx.fieldDimensions.y;
+			var fieldDimensions = minDimensions;
+			fieldDimensions.x = Mathf.Max(fieldDimensions.x, textHeight);
+			fieldDimensions.y = Mathf.Max(fieldDimensions.y, textHeight);
 
-			var labelHeight = textHeight;
+			var labelSize = textLabel.GetComponent<RectTransform>().rect;
+			//var label = textLabel.GetComponent<TextMeshProUGUI>();
+			//var prefSize = label.GetPreferredValues();
+			labelSize.width += horizontalTextAreaOffsets;
+			labelSize.height += verticalTextAreaOffsets;
 
-			labelHeight += Mathf.Abs(textAreaRect.offsetMin.y) + Mathf.Abs(textAreaRect.offsetMax.y);
-			image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, labelHeight);
+			fieldDimensions.x = Mathf.Max(fieldDimensions.x, labelSize.width);
+			fieldDimensions.y = Mathf.Max(fieldDimensions.y, labelSize.height);
+
+			var maxWidth = Mathf.Min(fieldDimensions.x, maxDimensions.x);
+			layoutElement.minWidth = maxWidth;
+			layoutElement.minHeight = fieldDimensions.y;
+
+			//rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, maxWidth);
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, fieldDimensions.y);
 
 			isDirty = false;
 		}
@@ -231,7 +380,8 @@ namespace AtomosZ.UI
 		{
 			if (isDirty)
 				UpdateBackingData();
-			return image.rectTransform.sizeDelta;
+			var rect = GetComponent<RectTransform>();
+			return rect.sizeDelta;
 		}
 
 		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)

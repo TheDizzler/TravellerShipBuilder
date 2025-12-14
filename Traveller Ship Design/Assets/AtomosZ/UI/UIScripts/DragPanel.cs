@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-
+using AtomosZ.MG2eTraveller.Ship;	// @TODO(Tristan): Ship design stuff should not be referenced by UI tools
 using UnityEngine;
 
 using static AtomosZ.Keyboard;
@@ -10,6 +10,8 @@ namespace AtomosZ.UI
 {
 	public class DragPanel : MonoBehaviour, IUIBehavior
 	{
+		public UIControlType dataType { get; }
+
 		[SerializeField] private DynamicPanel panel;
 		[SerializeField] private RectTransform panelRect;
 		private Vector2 startDragPos;
@@ -26,10 +28,8 @@ namespace AtomosZ.UI
 		}
 
 		public bool isDirty { get; set; }
-		/// <summary>
-		/// DragPanel does not require a reference name.
-		/// </summary>
 		public string referenceName { get; set; }
+		
 
 		public IUIBehavior GetControl(string controlRefName)
 		{

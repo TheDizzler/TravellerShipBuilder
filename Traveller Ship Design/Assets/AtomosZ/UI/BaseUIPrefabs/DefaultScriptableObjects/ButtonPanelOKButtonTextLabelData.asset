@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: ButtonPanelOKButtonTextLabelData
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabelScriptableObject
   fontSize: 24
+  textMargin: {x: 32, y: 4, z: 16, w: 4}
   fontColor: {r: 0, g: 0.6981132, b: 0.023564357, a: 1}
   disabledColor: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
   fontAsset: {fileID: 0}
+  fontStyles: 0

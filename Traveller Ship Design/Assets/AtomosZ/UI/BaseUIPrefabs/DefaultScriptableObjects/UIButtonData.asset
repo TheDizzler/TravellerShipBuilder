@@ -13,14 +13,4 @@ MonoBehaviour:
   m_Name: UIButtonData
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIButtonScriptableObject
   sprite: {fileID: 21300000, guid: ae46f276474e7d444b6a815d7fda1cdc, type: 3}
-  labelEx:
-    text: Button Text
-    scriptableObj: {fileID: 11400000, guid: 0411457bc1c393a4bbbe7c7779619bfd, type: 2}
-    useCustomFontSize: 0
-    useCustomFontColor: 0
-    useCustomFontAsset: 0
-    fontSize: 25.98
-    fontColor: {r: 0.3079107, g: 0.6603774, b: 0.21389571, a: 1}
-    fontAsset: {fileID: 11400000, guid: d317d9d1d23b98c479b3f3a4da6de00f, type: 2}
-    minLabelDimensions: {x: 64, y: 1}
-    maxLabelDimensions: {x: 1025, y: 256}
+  labelData: {fileID: 11400000, guid: 0411457bc1c393a4bbbe7c7779619bfd, type: 2}

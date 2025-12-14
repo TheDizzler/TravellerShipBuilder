@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: ButtonPanelCancelButtonTextLabelData
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabelScriptableObject
   fontSize: 24
+  textMargin: {x: 16, y: 4, z: 16, w: 4}
   fontColor: {r: 1, g: 0, b: 0, a: 1}
   disabledColor: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
   fontAsset: {fileID: 0}
+  fontStyles: 0

@@ -7,8 +7,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-using static AtomosZ.UI.UIButtonPanel;
-
 
 namespace AtomosZ.UI
 {
@@ -19,64 +17,90 @@ namespace AtomosZ.UI
 
 		public UIButtonPanelScriptableObject scriptableObj;
 
-		public DialogButton buttons = DialogButton.OK;
-
-		public bool useCustomOKButton = false;
-		public bool useCustomCancelButton = false;
-		public bool useCustomYesButton = false;
-		public bool useCustomNoButton = false;
-		public ButtonEx okButton;
-		public ButtonEx cancelButton;
-		public ButtonEx yesButton;
-		public ButtonEx noButton;
-
 		public ButtonPanelEx(UIButtonPanelScriptableObject scriptObj)
 		{
 			scriptableObj = scriptObj;
-			if (scriptObj == null)
-			{
-				NoSOSetup();
-			}
-		}
-
-
-		public ButtonPanelEx(DialogButton buttonType)
-		{
-			buttons = buttonType;
-
-			NoSOSetup();
-		}
-
-
-		private void NoSOSetup()
-		{
-			useCustomOKButton = true;
-			okButton.labelEx.fontSize = 24;
-			okButton.labelEx.fontColor = Color.white;
-
-			useCustomCancelButton = true;
-			cancelButton.labelEx.fontSize = 24;
-			cancelButton.labelEx.fontColor = Color.white;
-
-			useCustomYesButton = true;
-			yesButton.labelEx.fontSize = 24;
-			yesButton.labelEx.fontColor = Color.white;
-
-			useCustomNoButton = true;
-			noButton.labelEx.fontSize = 24;
-			noButton.labelEx.fontColor = Color.white;
 		}
 	}
 
 	[ExecuteAlways]
 	public class UIButtonPanel : MonoBehaviour, IUIBehavior
 	{
+		public UIControlType dataType { get { return UIControlType.ButtonPanel; } }
+
+		[SerializeField] private UIButton okButton;
+		[SerializeField] private UIButton yesButton;
+		[SerializeField] private UIButton noButton;
+		[SerializeField] private UIButton cancelButton;
+
 		public enum DialogButton
 		{
 			OK = 0x1,
 			OKCancel = 0x2,
 			YesNoCancel = 0x3,
 			YesNo = 0x4,
+		}
+
+		[SerializeField] private DialogButton _buttons = DialogButton.OK;
+		public DialogButton buttons
+		{
+			get { return _buttons; }
+			set
+			{
+				_buttons = value;
+
+				okButton.gameObject.SetActive(false);
+				yesButton.gameObject.SetActive(false);
+				noButton.gameObject.SetActive(false);
+				cancelButton.gameObject.SetActive(false);
+
+
+				SetButton(buttonPanelData.okButtonData, okButton);
+				SetButton(buttonPanelData.cancelButtonData, cancelButton);
+				SetButton(buttonPanelData.yesButtonData, yesButton);
+				SetButton(buttonPanelData.noButtonData, noButton);
+
+
+				switch (value)
+				{
+					case DialogButton.OK:
+					{
+						okButton.gameObject.SetActive(true);
+					}
+					break;
+
+					case DialogButton.OKCancel:
+					{
+						okButton.gameObject.SetActive(true);
+						cancelButton.gameObject.SetActive(true);
+					}
+					break;
+
+					case DialogButton.YesNoCancel:
+					{
+						yesButton.gameObject.SetActive(true);
+						noButton.gameObject.SetActive(true);
+						cancelButton.gameObject.SetActive(true);
+					}
+					break;
+
+					case DialogButton.YesNo:
+					{
+						yesButton.gameObject.SetActive(true);
+						noButton.gameObject.SetActive(true);
+					}
+					break;
+				}
+
+				this.SetDirty();
+			}
+		}
+
+		private void SetButton(UIButtonScriptableObject buttonData, UIButton button)
+		{
+			if (buttonData == null)
+				return;
+			button.UpdateBackingData(buttonData);
 		}
 
 		/// <summary>
@@ -93,7 +117,7 @@ namespace AtomosZ.UI
 			[DialogButton.YesNo] = 300,
 		};
 
-		[SerializeField] private ButtonPanelEx buttonPanelEx;
+		[SerializeField] private UIButtonPanelScriptableObject buttonPanelData;
 
 		[SerializeField] private string _referenceName = "buttonPanel";
 		public string referenceName
@@ -118,100 +142,9 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public bool isDirty { get; set; } = true;
-		public ButtonEx okButtonData
-		{
-			get
-			{
-				if (buttonPanelEx.useCustomOKButton || buttonPanelEx.scriptableObj == null)
-				{
-					return buttonPanelEx.okButton;
-				}
+		public bool isDirty { get; set; }
 
-				return buttonPanelEx.scriptableObj.okButton;
-			}
-		}
-
-		public ButtonEx cancelButtonData
-		{
-			get
-			{
-				if (buttonPanelEx.useCustomCancelButton || buttonPanelEx.scriptableObj == null)
-				{
-					return buttonPanelEx.cancelButton;
-				}
-
-				return buttonPanelEx.scriptableObj.cancelButton;
-			}
-		}
-
-		public ButtonEx yesButtonData
-		{
-			get
-			{
-				if (buttonPanelEx.useCustomYesButton || buttonPanelEx.scriptableObj == null)
-				{
-					return buttonPanelEx.yesButton;
-				}
-
-				return buttonPanelEx.scriptableObj.yesButton;
-			}
-		}
-
-		public ButtonEx noButtonData
-		{
-			get
-			{
-				if (buttonPanelEx.useCustomNoButton || buttonPanelEx.scriptableObj == null)
-				{
-					return buttonPanelEx.noButton;
-				}
-
-				return buttonPanelEx.scriptableObj.noButton;
-			}
-		}
-
-
-		public Sprite ButtonSpriteAsset(ButtonEx buttonEx)
-		{
-			if (buttonEx.useCustomSprite || buttonEx.scriptableObj == null)
-				return buttonEx.sprite;
-			return buttonEx.scriptableObj.sprite;
-		}
-
-		public TMP_FontAsset ButtonFontAsset(ButtonEx buttonEx)
-		{
-			if (buttonEx.scriptableObj == null)
-				return buttonEx.labelEx.fontAsset;
-			if (buttonEx.scriptableObj.labelEx.useCustomFontAsset || buttonEx.scriptableObj.labelEx.scriptableObj == null)
-				return buttonEx.scriptableObj.labelEx.fontAsset;
-			return buttonEx.scriptableObj.labelEx.scriptableObj.fontAsset;
-		}
-
-		public Color ButtonFontColor(ButtonEx buttonEx)
-		{
-			if (buttonEx.scriptableObj == null)
-				return buttonEx.labelEx.fontColor;
-			if (buttonEx.scriptableObj.labelEx.useCustomFontColor || buttonEx.scriptableObj.labelEx.scriptableObj == null)
-				return buttonEx.scriptableObj.labelEx.fontColor;
-			return buttonEx.scriptableObj.labelEx.scriptableObj.fontColor;
-		}
-
-		public float ButtonFontSize(ButtonEx buttonEx)
-		{
-			if (buttonEx.scriptableObj == null)
-				return buttonEx.labelEx.fontSize;
-			if (buttonEx.scriptableObj.labelEx.useCustomFontSize || buttonEx.scriptableObj.labelEx.scriptableObj == null)
-				return buttonEx.scriptableObj.labelEx.fontSize;
-			return buttonEx.scriptableObj.labelEx.scriptableObj.fontSize;
-		}
-
-
-		[SerializeField] private GameObject okButton;
-		[SerializeField] private GameObject yesButton;
-		[SerializeField] private GameObject noButton;
-		[SerializeField] private GameObject cancelButton;
-
+		
 		public IUIBehavior GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
@@ -251,98 +184,84 @@ namespace AtomosZ.UI
 			this.SetDirty();
 		}
 
+
+		public IUIDataEx GetBackingData()
+		{
+			return new ButtonPanelEx(buttonPanelData);
+		}
+
+		public void UpdateBackingData(UIButtonPanelScriptableObject backingData)
+		{
+			buttonPanelData = backingData;
+			if (backingData != null)
+			{
+				okButton.UpdateBackingData(backingData.okButtonData);
+				yesButton.UpdateBackingData(backingData.yesButtonData);
+				noButton.UpdateBackingData(backingData.noButtonData);
+				cancelButton.UpdateBackingData(backingData.cancelButtonData);
+			}
+
+			this.SetDirty();
+		}
+
+		public void UpdateBackingData(IUIDataEx backingData)
+		{
+			UpdateBackingData(((ButtonPanelEx)backingData).scriptableObj);
+		}
+
+
 		void Update()
 		{
 			if (isDirty)
 				UpdateBackingData();
 		}
 
-		public IUIDataEx GetBackingData()
-		{
-			return buttonPanelEx;
-		}
-
-		public void UpdateBackingData(IUIDataEx backingData)
-		{
-			buttonPanelEx = (ButtonPanelEx)backingData;
-			UpdateBackingData();
-		}
-
-
 		public void UpdateBackingData()
 		{
-			this.SetGameObjectNameToReferenceName(gameObject);
+			var horzLayout = GetComponent<HorizontalLayoutGroup>();
+			if (horzLayout == null)
+				Debug.LogException(new Exception("No layout group found on panel"));
 
-			okButton.SetActive(false);
-			yesButton.SetActive(false);
-			noButton.SetActive(false);
-			cancelButton.SetActive(false);
+			Vector2 minDim = new Vector2(minButtonWidth[_buttons], 10);
+			minDim.x = horzLayout.padding.left + horzLayout.padding.right;
+			minDim.y = 0;
 
-
-			SetButton(okButtonData, okButton);
-			SetButton(cancelButtonData, cancelButton);
-			SetButton(yesButtonData, yesButton);
-			SetButton(noButtonData, noButton);
-
-
-			switch (buttonPanelEx.buttons)
+			var activeChildren = 0;
+			var uiControls = new UIButton[]
 			{
-				case DialogButton.OK:
-				{
-					okButton.SetActive(true);
-				}
-				break;
+				okButton, yesButton, noButton, cancelButton
+			};
 
-				case DialogButton.OKCancel:
-				{
-					okButton.SetActive(true);
-					cancelButton.SetActive(true);
-				}
-				break;
+			foreach (var child in uiControls)
+			{
+				if (!child.gameObject.activeSelf)
+					continue;
 
-				case DialogButton.YesNoCancel:
-				{
-					yesButton.SetActive(true);
-					noButton.SetActive(true);
-					cancelButton.SetActive(true);
-				}
-				break;
-
-				case DialogButton.YesNo:
-				{
-					yesButton.SetActive(true);
-					noButton.SetActive(true);
-				}
-				break;
-
-				//case DialogButton.None:
-				//{
-				//	Debug.LogException(new System.Exception("Invalid state call"));
-				//}
-				//break;
+				++activeChildren;
+				var childMinDim = child.GetMinDimensions();
+				minDim.x += childMinDim.x;
+				if (minDim.y < childMinDim.y)
+					minDim.y = childMinDim.y;
 			}
+
+
+			minDim.x += horzLayout.spacing * (activeChildren - 1);
+			minDim.y += horzLayout.padding.top + horzLayout.padding.bottom;
+
+			var rect = GetComponent<RectTransform>();
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDim.y);
 
 			isDirty = false;
 		}
 
-		private void SetButton(ButtonEx buttonData, GameObject button)
-		{
-			if (buttonData == null)
-				return;
-			var sprite = ButtonSpriteAsset(buttonData);
-			if (sprite != null)
-				button.GetComponent<Image>().sprite = sprite;
-			var tmp = button.GetComponentInChildren<TextMeshProUGUI>();
-			tmp.font = ButtonFontAsset(buttonData);
-			tmp.color = ButtonFontColor(buttonData);
-			tmp.fontSize = ButtonFontSize(buttonData);
-		}
+
 
 		public Vector2 GetMinDimensions()
 		{
 			if (isDirty)
 				UpdateBackingData();
-			return new Vector2(minButtonWidth[buttonPanelEx.buttons], GetComponent<RectTransform>().sizeDelta.y);
+
+			return GetComponent<RectTransform>().sizeDelta;
 		}
 
 

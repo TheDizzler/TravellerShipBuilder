@@ -12,14 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3384742d6ad069543b8a51d840e694a1, type: 3}
   m_Name: UIImageViewData
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIImageViewScriptableObject
-  labelEx:
-    text: Caption #XX
-    scriptableObj: {fileID: 0}
-    useCustomFontSize: 0
-    useCustomFontColor: 0
-    useCustomFontAsset: 0
-    fontSize: 36
-    fontColor: {r: 1, g: 1, b: 1, a: 1}
-    fontAsset: {fileID: 0}
-    minLabelDimensions: {x: 64, y: 64}
-    maxLabelDimensions: {x: 125, y: 125}
+  labelData: {fileID: 11400000, guid: 452293887a8c2c14cb3962fd59ed503c, type: 2}

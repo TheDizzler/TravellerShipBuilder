@@ -11,7 +11,8 @@ namespace AtomosZ
 	public class CustomDictionary<TKey, TValue> : CustomDictionary, IDictionary<TKey, TValue>
 	{
 		/// <summary>
-		/// Changing this to hashset would speed up searches for large lists.
+		/// Changing this to hashset would speed up searches for large lists,
+		/// but would make searching by index slow.
 		/// </summary>
 		public List<TKey> keys = new();
 		public List<TValue> values = new();
@@ -29,8 +30,9 @@ namespace AtomosZ
 			{
 				var index = keys.IndexOf(key);
 				if (index == -1)
-					return;
-				values[index] = value;
+					Add(key, value);
+				else
+					values[index] = value;
 				DEBUG_CheckIntegrity();
 			}
 		}
@@ -115,6 +117,16 @@ namespace AtomosZ
 			DEBUG_CheckIntegrity();
 		}
 
+		/// <summary>
+		/// Adds the keys to the dictionary with an initial default value.
+		/// </summary>
+		/// <param name="keys"></param>
+		/// <param name="initValue"></param>
+		public void AddRange(IEnumerable<TKey> keys, TValue initValue)
+		{
+			foreach (var key in keys)
+				Add(key, initValue);
+		}
 
 		public bool Remove(TKey key)
 		{

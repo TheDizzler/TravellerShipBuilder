@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using AtomosZ.MG2eTraveller.Ship;
 using TMPro;
 
 using UnityEditor;
@@ -110,7 +110,10 @@ namespace AtomosZ.UI
 				if (data == null)
 					continue;
 				if (data.dataType == UIControlType.ButtonPanel)
-					buttons = ((ButtonPanelEx)data).buttons;
+				{
+					buttons = ((UIButtonPanel)control.Value.GetUIBehavior()).buttons;
+					break;
+				}
 			}
 
 			return buttons;
@@ -214,7 +217,7 @@ namespace AtomosZ.UI
 			var image = uiDO.GetComponent<UIImageView>();
 			image.UpdateBackingData(dataEx);
 			AddControl(UIPrefabType.ImageView, uiDO);
-			dataEx.referenceName = uiDO.name;
+			image.referenceName = uiDO.name;
 			return image;
 		}
 

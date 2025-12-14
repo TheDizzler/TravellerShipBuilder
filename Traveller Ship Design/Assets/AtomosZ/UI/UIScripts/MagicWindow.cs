@@ -10,6 +10,7 @@ namespace AtomosZ.UI
 	[ExecuteAlways]
 	public class MagicWindow : MonoBehaviour, IUIBehavior
 	{
+		public UIControlType dataType { get; }
 		public enum WindowStyle
 		{
 			/// <summary>
@@ -67,7 +68,7 @@ namespace AtomosZ.UI
 		[SerializeField] public UIPanelScriptableObject panelScriptObj;
 		[SerializeField] public UIPanelScriptableObject horizontalPanelScriptObj;
 		[SerializeField] public UIExpandingLabelScriptableObject textScriptObj;
-		[SerializeField] public UIExpandingLabelScriptableObject dropdownScriptObj;
+		[SerializeField] public UIDropdownScriptableObject dropdownScriptObj;
 		[SerializeField] public UICheckBoxScriptableObject checkBoxScriptObj;
 		[SerializeField] public UIExpandingInputFieldScriptableObject inputFieldScriptObj;
 		[SerializeField] public UISliderScriptableObject sliderScriptObj;
@@ -80,13 +81,13 @@ namespace AtomosZ.UI
 		[SerializeField] public UIControlType currentType;
 		public List<UIControl> controlList = new();
 
-		[System.Diagnostics.Conditional("UNITY_EDITOR")]
+		[Conditional("UNITY_EDITOR")]
 		public void RecordPrefabInstances()
 		{
 			rootTabControl.RecordPrefabInstances();
 		}
 
-		[System.Diagnostics.Conditional("UNITY_EDITOR")]
+		[Conditional("UNITY_EDITOR")]
 		public void CreateRootTabControl()
 		{
 			rootTabControl = Instantiate(UIPrefabProvider.GetUIPrefab(
@@ -94,7 +95,7 @@ namespace AtomosZ.UI
 			rootTabControl.referenceName = "rootTabControl";
 			rootTabControl.tabPanels[0].Value.tabLabel.referenceName = "panel_00";
 			rootTabControl.tabPanels[0].Key.referenceName = "tab_00";
-			rootTabControl.tabControlEx = new TabControlEx(GetStyleData(windowStyle));
+			rootTabControl.UpdateBackingData(new TabControlEx(GetStyleData(windowStyle)));
 		}
 #endif
 
@@ -195,6 +196,11 @@ namespace AtomosZ.UI
 			return rootTabControl.GetControl(referenceName);
 		}
 
+		public bool EnableTab(string tabName, bool enable)
+		{
+			return rootTabControl.EnableTab(tabName, enable);
+		}
+
 		public List<UIDesignObject> GetControls()
 		{
 			return panel.GetControls();
@@ -263,7 +269,7 @@ namespace AtomosZ.UI
 					return panel.AddUIControl(new CheckBoxEx(checkBoxScriptObj));
 
 				case UIControlType.Slider:
-					return panel.AddUIControl(new SliderEx());
+					return panel.AddUIControl(new SliderEx(sliderScriptObj));
 
 				case UIControlType.Button:
 					return panel.AddUIControl(new ButtonEx(buttonScriptObj));

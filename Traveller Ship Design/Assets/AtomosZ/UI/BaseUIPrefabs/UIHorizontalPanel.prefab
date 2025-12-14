@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 64}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5821347800241209384
 MonoBehaviour:
@@ -52,23 +52,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 609c63b92ee8b3e44b9dee1c7b856bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPanel
-  panelEx:
-    referenceName: horizontalPanel
-    scriptableObj: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
-    backgroundSprite: {fileID: 0}
-    minDimensions: {x: 96, y: 64}
-    layoutPadding:
-      m_Left: 0
-      m_Right: 0
-      m_Top: 0
-      m_Bottom: 0
-    layoutSpacing: 8
-    useCustomBackgroundSprite: 0
-    useCustomMinDimensions: 0
-    useCustomLayoutPadding: 1
-    useCustomLayoutSpacing: 0
+  panelData: {fileID: 11400000, guid: ce1eba15204d2244a8afb65cdc2be026, type: 2}
+  _referenceName: horizontalPanel
   _designObject: {fileID: 1551854222198439915}
+  _sprite: {fileID: 0}
+  _layoutPadding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  _layoutSpacing: 0
   _borderless: 1
+  _minDimensions: {x: 0, y: 0}
   tabLabel: {fileID: 0}
   uiControls: []
   rect: {fileID: 2538911062827000086}

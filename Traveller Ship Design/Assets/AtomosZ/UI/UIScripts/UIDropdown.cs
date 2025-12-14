@@ -17,41 +17,37 @@ namespace AtomosZ.UI
 	{
 		public UIControlType dataType { get { return UIControlType.Dropdown; } }
 
-		public bool fillParentHorizontal = true;
-		public Vector2 minDimensions = new Vector2(256, 64);
+		public UIDropdownScriptableObject scriptableObj;
 
-		public UIExpandingLabelScriptableObject scriptableObj;
-
-		public bool useCustomFontSize = false;
-		public bool useCustomFontColor = false;
-		public bool useCustomFontAsset = false;
-
-		[Tooltip("Default: 14.")]
-		public float fontSize = 14;
-		[Tooltip("Default: Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1).")]
-		public Color fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
-		[Tooltip("Default: null")]
-		public TMP_FontAsset fontAsset = null;
+		//[Tooltip("Default: 14.")]
+		//public float fontSize = 14;
+		//[Tooltip("Default: Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1).")]
+		//public Color fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
+		//[Tooltip("Default: null")]
+		//public TMP_FontAsset fontAsset = null;
 
 
-		public DropdownEx(UIExpandingLabelScriptableObject textScriptObj)
+		public DropdownEx(UIDropdownScriptableObject scriptObj)
 		{
-			this.scriptableObj = textScriptObj;
+			this.scriptableObj = scriptObj;
 
-			if (scriptableObj == null)
-			{
-				useCustomFontSize = true;
-				useCustomFontColor = true;
-				useCustomFontAsset = true;
-			}
+			//if (scriptableObj == null)
+			//{
+			//	useCustomFontSize = true;
+			//	useCustomFontColor = true;
+			//	useCustomFontAsset = true;
+			//}
 		}
 	}
 
 	[ExecuteAlways]
 	public class UIDropdown : MonoBehaviour, IUIBehavior
 	{
+		public UIControlType dataType { get { return UIControlType.Dropdown; } }
+
 		[SerializeField] private TMP_Dropdown dropdown;
-		[SerializeField] private DropdownEx dropdownEx;
+		[SerializeField] private Image arrow;
+		[SerializeField] private UIDropdownScriptableObject dropdownData;
 
 		[SerializeField] private string _referenceName = "dropdown";
 		public string referenceName
@@ -65,7 +61,7 @@ namespace AtomosZ.UI
 		}
 
 
-		public bool isDirty { get; set; } = true;
+		public bool isDirty { get; set; }
 		private UIDesignObject _designObject;
 		public UIDesignObject designObject
 		{
@@ -83,6 +79,157 @@ namespace AtomosZ.UI
 				return this;
 			return null;
 		}
+
+		[SerializeField] private bool _interactable = true;
+		public bool interactable
+		{
+			get { return _interactable; }
+			set
+			{
+				_interactable = dropdown.interactable = value;
+			}
+		}
+
+		[SerializeField] private bool _fillParentHorizontal = false;
+		public bool fillParentHorizontal
+		{
+			get { return _fillParentHorizontal; }
+			set
+			{
+				_fillParentHorizontal = value;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private Vector2 _minDimensions = new Vector2(64, 10);
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions; }
+			set
+			{
+				_minDimensions = value;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private Sprite _arrowSprite;
+		public Sprite arrowSprite
+		{
+			get { return _arrowSprite = arrow.sprite; }
+			set
+			{
+				_arrowSprite = arrow.sprite = value;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private TMP_FontAsset _fontAsset;
+		public TMP_FontAsset fontAsset
+		{
+			get { return _fontAsset = dropdown.captionText.font; }
+			set
+			{
+				_fontAsset = dropdown.captionText.font = value;
+				var allText = GetComponentsInChildren<TMP_Text>();
+				foreach (var text in allText)
+					text.font = value;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private float _fontSize = 18;
+		public float fontSize
+		{
+			get { return _fontSize = dropdown.captionText.fontSize; }
+			set
+			{
+				_fontSize = dropdown.captionText.fontSize = value;
+				var allText = GetComponentsInChildren<TMP_Text>();
+				foreach (var text in allText)
+					text.fontSize = value;
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] private Color _fontColor;
+		public Color fontColor
+		{
+			get { return _fontColor = dropdown.captionText.color; }
+			set
+			{
+				_fontColor = dropdown.captionText.color = value;
+				var allText = GetComponentsInChildren<TMP_Text>();
+				foreach (var text in allText)
+					text.color = value;
+			}
+		}
+
+		[SerializeField] private TextAlignmentOptions _alignmentOptions;
+		public TextAlignmentOptions alignmentOptions
+		{
+			get
+			{
+				var val = _alignmentOptions = (TextAlignmentOptions)(
+					(int)dropdown.captionText.verticalAlignment | (int)dropdown.captionText.horizontalAlignment);
+				if (val == 0)
+				{
+					_alignmentOptions = TextAlignmentOptions.TopLeft;
+					dropdown.captionText.verticalAlignment = VerticalAlignmentOptions.Top;
+					dropdown.captionText.horizontalAlignment = HorizontalAlignmentOptions.Left;
+					foreach (var text in GetComponentsInChildren<TMP_Text>())
+					{
+						text.verticalAlignment = VerticalAlignmentOptions.Top;
+						text.horizontalAlignment = HorizontalAlignmentOptions.Left;
+					}
+				}
+
+				return val;
+			}
+			set
+			{
+				if (alignmentOptions == value)
+					return;
+				_alignmentOptions = value;
+				var vert = (VerticalAlignmentOptions)(value
+					& (TextAlignmentOptions)(VerticalAlignmentOptions.Baseline | VerticalAlignmentOptions.Bottom
+					| VerticalAlignmentOptions.Capline | VerticalAlignmentOptions.Geometry
+					| VerticalAlignmentOptions.Middle | VerticalAlignmentOptions.Top));
+
+				dropdown.captionText.verticalAlignment = vert;
+
+				var horz = (HorizontalAlignmentOptions)(value ^ (TextAlignmentOptions)vert);
+				dropdown.captionText.horizontalAlignment = horz;
+
+				foreach (var text in GetComponentsInChildren<TMP_Text>())
+				{
+					text.verticalAlignment = vert;
+					text.horizontalAlignment = horz;
+				}
+
+				this.SetDirty();
+			}
+		}
+
+		//[SerializeField] private Vector4 _margin;
+		//[Tooltip("An input of Vector4.positiveInfinity will set the margin to the scriptable object value, if it exists.")]
+		//public Vector4 margin
+		//{
+		//	get { return _margin = textLabel.margin; }
+		//	set
+		//	{
+		//		if (margin == value)
+		//			return;
+		//		if (value == Vector4.positiveInfinity)
+		//		{
+		//			if (labelData != null)
+		//				_margin = textLabel.margin = labelData.textMargin;
+		//		}
+		//		else
+		//			_margin = textLabel.margin = value;
+		//		this.SetDirty();
+		//	}
+		//}
+
 
 		public UnityEvent<UIDropdown, int> onValueChangedAction = null;
 
@@ -162,35 +309,6 @@ namespace AtomosZ.UI
 			dropdown.ClearOptions();
 		}
 
-		public TMP_FontAsset fontAsset
-		{
-			get
-			{
-				if (dropdownEx.useCustomFontAsset || dropdownEx.scriptableObj == null)
-					return dropdownEx.fontAsset;
-				return dropdownEx.scriptableObj.fontAsset;
-			}
-		}
-
-		public float fontSize
-		{
-			get
-			{
-				if (dropdownEx.useCustomFontSize || dropdownEx.scriptableObj == null)
-					return dropdownEx.fontSize;
-				return dropdownEx.scriptableObj.fontSize;
-			}
-		}
-
-		public Color fontColor
-		{
-			get
-			{
-				if (dropdownEx.useCustomFontColor || dropdownEx.scriptableObj == null)
-					return dropdownEx.fontColor;
-				return dropdownEx.scriptableObj.fontColor;
-			}
-		}
 
 
 		public int SelectedIndex()
@@ -204,14 +322,22 @@ namespace AtomosZ.UI
 		}
 
 
-		public void OnEnable()
+		void OnEnable()
 		{
+			//dropdown.onValueChanged.RemoveAllListeners();
+			//dropdown.onValueChanged.AddListener(OnValueChanged);
 			if (optionsDelegate != null)
 				optionsDelegate.Invoke(this);
-			else
-				dropdown.ClearOptions();
+			//else
+			//	dropdown.ClearOptions();
 
 			this.SetDirty();
+		}
+
+		public void OnValueChanged(int newValue)
+		{
+			if (onValueChangedAction != null)
+				onValueChangedAction.Invoke(this, value);
 		}
 
 		public UIDesignObject Select()
@@ -234,31 +360,54 @@ namespace AtomosZ.UI
 
 		public IUIDataEx GetBackingData()
 		{
-			return dropdownEx;
+			return new DropdownEx(dropdownData);
+		}
+
+		public void UpdateBackingData(UIDropdownScriptableObject backingData)
+		{
+			dropdownData = backingData;
+			if (backingData != null)
+			{
+				arrowSprite = backingData.arrowSprite;
+				if (backingData.labelData != null)
+				{
+					fontAsset = backingData.labelData.fontAsset;
+					fontColor = backingData.labelData.fontColor;
+					fontSize = backingData.labelData.fontSize;
+				}
+
+				this.SetDirty();
+			}
 		}
 
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
-			dropdownEx = (DropdownEx)backingData;
-			UpdateBackingData();
+			UpdateBackingData(((DropdownEx)backingData).scriptableObj);
 		}
 
 		public void UpdateBackingData()
 		{
-			this.SetGameObjectNameToReferenceName(gameObject);
-
-			dropdown.captionText.font = fontAsset;
-			dropdown.captionText.fontSize = fontSize;
-			dropdown.captionText.color = fontColor;
-
 			var layout = GetComponent<LayoutElement>();
-			if (dropdownEx.fillParentHorizontal)
+			if (fillParentHorizontal)
 				layout.flexibleWidth = 1;
 			else
 				layout.flexibleWidth = -1;
 
-			layout.minWidth = dropdownEx.minDimensions.x;
-			layout.minHeight = dropdownEx.minDimensions.y;
+			float arrowWidth = 0;
+			if (arrow != null)
+				arrowWidth = arrow.rectTransform.sizeDelta.x;
+			var minWidth = minDimensions.x;
+			var textLabel = dropdown.captionText;
+			textLabel.ForceMeshUpdate(false, true);
+			var labelOffset = textLabel.margin.x + textLabel.margin.z + arrowWidth - textLabel.rectTransform.offsetMax.x;
+			foreach (var option in options)
+			{
+				var dimens = dropdown.captionText.GetPreferredValues(option.text);
+				minWidth = Mathf.Max(minWidth, dimens.x + labelOffset);
+			}
+
+			layout.minWidth = minWidth;
+			layout.minHeight = minDimensions.y;
 
 			isDirty = false;
 		}

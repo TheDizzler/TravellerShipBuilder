@@ -12,12 +12,21 @@ namespace AtomosZ.UI
 	public class SliderEx : IUIDataEx
 	{
 		public UIControlType dataType { get { return UIControlType.Slider; } }
+		public UISliderScriptableObject sliderData;
+
+		public SliderEx(UISliderScriptableObject sliderData)
+		{
+			this.sliderData = sliderData;
+		}
 	}
 
 	[ExecuteAlways]
 	public class UISlider : MonoBehaviour, IUIBehavior
 	{
-		[SerializeField] private SliderEx sliderEx;
+		public UIControlType dataType { get { return UIControlType.Slider; } }
+
+		[SerializeField] private UISliderScriptableObject sliderData;
+		[SerializeField] private RectTransform rectTransform;
 		[SerializeField] private string _referenceName;
 		public string referenceName
 		{
@@ -233,13 +242,20 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[SerializeField] private LabelEx _labelEx;
-		public LabelEx labelEx
+		[SerializeField] private UIExpandingLabelScriptableObject _labelData;
+		public UIExpandingLabelScriptableObject labelData
 		{
-			get { return _labelEx; }
+			get { return _labelData; }
 			set
 			{
-				_labelEx = value;
+				if (value == null)
+				{
+					if (sliderData != null)
+						labelData = sliderData.labelData;
+				}
+				else
+					_labelData = value;
+
 				this.SetDirty();
 			}
 		}
@@ -258,15 +274,18 @@ namespace AtomosZ.UI
 		}
 
 		[SerializeField] private Sprite _handleSprite;
+		[Tooltip("A value of null will set the sprite to the ScriptableObject value, if it exists")]
 		public Sprite handleSprite
 		{
-			get
-			{
-				_handleSprite = GetComponent<SliderCustom>().handleSprite;
-				return _handleSprite;
-			}
+			get { return _handleSprite = GetComponent<SliderCustom>().handleSprite; }
 			set
 			{
+				if (value == null)
+				{
+					if (sliderData != null)
+						value = sliderData.handleSprite;
+				}
+
 				_handleSprite = value;
 				var slider = GetComponent<SliderCustom>().handleSprite = value;
 				this.SetDirty();
@@ -353,13 +372,27 @@ namespace AtomosZ.UI
 
 		public IUIDataEx GetBackingData()
 		{
-			return sliderEx;
+			return new SliderEx(sliderData);
+		}
+
+		public void UpdateBackingData(UISliderScriptableObject backingData)
+		{
+			sliderData = backingData;
+			if (sliderData != null)
+			{
+				labelData = sliderData.labelData;
+				unitSpan = sliderData.unitSpan;
+				handleOffset = sliderData.handleOffset;
+				showHandle = sliderData.showHandle;
+				handleSprite = sliderData.handleSprite;
+				showUnits = sliderData.showUnits;
+			}
+
 		}
 
 		public void UpdateBackingData(IUIDataEx backingData)
 		{
-			sliderEx = (SliderEx)backingData;
-			UpdateBackingData();
+			UpdateBackingData(((SliderEx)backingData).sliderData);
 		}
 
 		private static bool isInPrefabStage()
@@ -374,33 +407,34 @@ namespace AtomosZ.UI
 
 		void Update()
 		{
-			if (isDirty)
+			if (isDirty || lastWidth != rectTransform.sizeDelta.x)
 				UpdateBackingData();
 		}
 
+		private float lastWidth = -1;
 		public void UpdateBackingData()
 		{
-			this.SetGameObjectNameToReferenceName(gameObject);
-
 			Canvas.ForceUpdateCanvases();
 			var slider = GetComponent<SliderCustom>();
-			slider.UpdateSlider(sliderEx);
+			slider.UpdateSlider();
 #if DEBUG
 			// this required or the handle will not report the correct value after becoming active.
 			//if (!Application.isPlaying)
-			//slider.UpdateSlider(sliderEx);
+			//slider.UpdateSlider();
 #endif
 
-			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
+			rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
+
+			lastWidth = rectTransform.sizeDelta.x;
 
 			isDirty = false;
 		}
 
 		public Vector2 GetMinDimensions()
 		{
-			if (isDirty)
+			if (isDirty || lastWidth != rectTransform.sizeDelta.x)
 				UpdateBackingData();
-			return GetComponent<RectTransform>().sizeDelta;
+			return rectTransform.sizeDelta;
 		}
 
 		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput,

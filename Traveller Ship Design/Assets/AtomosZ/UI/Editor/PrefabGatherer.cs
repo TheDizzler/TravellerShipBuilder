@@ -30,7 +30,7 @@ namespace AtomosZ.UI.EditorZ
 			if (provider.checkBoxScriptObj == null)
 				provider.checkBoxScriptObj = AssetDatabase.LoadAssetAtPath<UICheckBoxScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UICheckBoxData.asset");
 			if (provider.dropdownScriptObj == null)
-				provider.dropdownScriptObj = AssetDatabase.LoadAssetAtPath<UIExpandingLabelScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UIDropdownData.asset");
+				provider.dropdownScriptObj = AssetDatabase.LoadAssetAtPath<UIDropdownScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UIDropdownData.asset");
 			if (provider.inputFieldScriptObj == null)
 				provider.inputFieldScriptObj = AssetDatabase.LoadAssetAtPath<UIExpandingInputFieldScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UIExpandingInputFieldData.asset");
 			if (provider.textScriptObj == null)

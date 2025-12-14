@@ -57,7 +57,7 @@ namespace AtomosZ.UI
 		public void ShowHandle(bool show)
 		{
 			handleSlideArea.gameObject.SetActive(show);
-			UpdateSlider(null);
+			UpdateSlider();
 		}
 
 
@@ -79,14 +79,14 @@ namespace AtomosZ.UI
 
 		public void SetFontColor(Color newColor)
 		{
-			minUnit.SetColor(newColor);
-			maxUnit.SetColor(newColor);
+			minUnit.color = newColor;
+			maxUnit.color = newColor;
 			foreach (var unit in unitLabels)
-				unit.SetColor(newColor);
+				unit.color = newColor;
 		}
 
 		private float handleHorzOverhang;
-		public void UpdateSlider(SliderEx sliderEx)
+		public void UpdateSlider()
 		{
 			handleHorzOverhang = 0;
 			if (slider.showHandle)
@@ -123,8 +123,8 @@ namespace AtomosZ.UI
 			SetValueFill();
 
 
-			if (slider.showUnits)   // @TODO(Tristan): stop this from updating everytime anything on the slider is changed
-			{                       // but also need a way to flag that text needs to be refreshed
+			if (slider.showUnits)
+			{
 				CreateUnitLabels();
 			}
 			else
@@ -151,14 +151,14 @@ namespace AtomosZ.UI
 
 
 			var labelData = (LabelEx)minUnit.GetBackingData();
-			var clone = (LabelEx)labelData.Clone();
+			//var clone = (LabelEx)labelData.Clone();
 			minUnit.text = nextUnit.ToString();
-			minUnit.UpdateBackingData(clone);
+			minUnit.UpdateBackingData(labelData);
 
-			clone = (LabelEx)labelData.Clone();
-			clone.fontSize = slider.fontSize;
+			//clone = (LabelEx)labelData.Clone();
+			//clone.fontSize = slider.fontSize;
 			maxUnit.text = slider.maxValue.ToString();
-			maxUnit.UpdateBackingData(clone);
+			maxUnit.UpdateBackingData(labelData);
 
 			ClearLabels();
 
@@ -171,12 +171,11 @@ namespace AtomosZ.UI
 				while ((nextUnit += unitDiff) < slider.maxValue)
 				{
 					nextPos += distDiff;
-					clone = (LabelEx)labelData.Clone();
-					
+
 					var newLabel = Instantiate(sliderUnitPrefab, units.transform, false);
 					newLabel.GetComponent<RectTransform>().anchoredPosition = new Vector2(nextPos, 0);
 					newLabel.text = nextUnit.ToString();
-					newLabel.UpdateBackingData(clone);
+					newLabel.UpdateBackingData(labelData);
 					unitLabels.Add(newLabel);
 				}
 			}

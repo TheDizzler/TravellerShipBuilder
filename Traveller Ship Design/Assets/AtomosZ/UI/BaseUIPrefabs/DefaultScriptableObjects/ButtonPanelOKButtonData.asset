@@ -13,14 +13,4 @@ MonoBehaviour:
   m_Name: ButtonPanelOKButtonData
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIButtonScriptableObject
   sprite: {fileID: 21300000, guid: 1032f322c761dcb4ba3f9a728db6a540, type: 3}
-  labelEx:
-    text: OK
-    scriptableObj: {fileID: 11400000, guid: 3d5fa61f4ddd9c241b284b5e227fe8e2, type: 2}
-    useCustomFontSize: 0
-    useCustomFontColor: 0
-    useCustomFontAsset: 0
-    fontSize: 55.28
-    fontColor: {r: 0.3079107, g: 0.6603774, b: 0.21389571, a: 1}
-    fontAsset: {fileID: 11400000, guid: d317d9d1d23b98c479b3f3a4da6de00f, type: 2}
-    minLabelDimensions: {x: 64, y: 1}
-    maxLabelDimensions: {x: 1025, y: 256}
+  labelData: {fileID: 11400000, guid: 3d5fa61f4ddd9c241b284b5e227fe8e2, type: 2}
