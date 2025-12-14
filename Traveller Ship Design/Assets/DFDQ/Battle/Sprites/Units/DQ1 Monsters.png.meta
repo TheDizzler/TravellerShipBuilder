@@ -1,0 +1,1443 @@
+fileFormatVersion: 2
+guid: 4dbdf71e028ae384c9be0b5e9cef8193
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7099749136687185953
+    second: DQ1 Monsters_0
+  - first:
+      213: -29696018132843667
+    second: DQ1 Monsters_1
+  - first:
+      213: -5017046945476601615
+    second: DQ1 Monsters_2
+  - first:
+      213: -861571135670914960
+    second: DQ1 Monsters_3
+  - first:
+      213: -8893324736434084628
+    second: DQ1 Monsters_4
+  - first:
+      213: -6784816484828669463
+    second: DQ1 Monsters_5
+  - first:
+      213: -1479581988950970492
+    second: DQ1 Monsters_6
+  - first:
+      213: -1132843016615636492
+    second: DQ1 Monsters_7
+  - first:
+      213: -8292033990042779945
+    second: DQ1 Monsters_8
+  - first:
+      213: 7936968794917112111
+    second: DQ1 Monsters_9
+  - first:
+      213: 3266186005943802294
+    second: DQ1 Monsters_10
+  - first:
+      213: -7636139581192951946
+    second: DQ1 Monsters_11
+  - first:
+      213: -1534383320988768219
+    second: DQ1 Monsters_12
+  - first:
+      213: 579182094705445940
+    second: DQ1 Monsters_13
+  - first:
+      213: -338907422897809229
+    second: DQ1 Monsters_14
+  - first:
+      213: -5019874496291516426
+    second: DQ1 Monsters_15
+  - first:
+      213: -8364101101409595188
+    second: DQ1 Monsters_16
+  - first:
+      213: -5854805467760725858
+    second: DQ1 Monsters_17
+  - first:
+      213: -1655359464330563197
+    second: DQ1 Monsters_18
+  - first:
+      213: 8898216407288580563
+    second: DQ1 Monsters_19
+  - first:
+      213: 2516689945234379978
+    second: DQ1 Monsters_20
+  - first:
+      213: -2019018272888667080
+    second: DQ1 Monsters_21
+  - first:
+      213: -5916002783623068520
+    second: DQ1 Monsters_22
+  - first:
+      213: -5170170893544807193
+    second: DQ1 Monsters_23
+  - first:
+      213: -7504680212698974893
+    second: DQ1 Monsters_24
+  - first:
+      213: -333705628369428211
+    second: DQ1 Monsters_25
+  - first:
+      213: -1963495308775855878
+    second: DQ1 Monsters_26
+  - first:
+      213: 1132002246822099119
+    second: DQ1 Monsters_27
+  - first:
+      213: -3782768641630150106
+    second: DQ1 Monsters_28
+  - first:
+      213: 3965400146316021608
+    second: DQ1 Monsters_29
+  - first:
+      213: 1612215523793086102
+    second: DQ1 Monsters_30
+  - first:
+      213: 3424109766776595014
+    second: DQ1 Monsters_31
+  - first:
+      213: -4786873447560116317
+    second: DQ1 Monsters_32
+  - first:
+      213: -6543549055500520040
+    second: DQ1 Monsters_33
+  - first:
+      213: 8823109537458929651
+    second: DQ1 Monsters_34
+  - first:
+      213: -8427612560295753201
+    second: DQ1 Monsters_35
+  - first:
+      213: -7654106074414252605
+    second: DQ1 Monsters_36
+  - first:
+      213: -8387745873975318883
+    second: DQ1 Monsters_37
+  - first:
+      213: -204294482140463272
+    second: DQ1 Monsters_38
+  - first:
+      213: -1496347930534994928
+    second: DQ1 Monsters_39
+  - first:
+      213: -2893371646473664
+    second: DQ1 Monsters_40
+  - first:
+      213: -2743373813477469558
+    second: DQ1 Monsters_41
+  - first:
+      213: 1495128413137748530
+    second: DQ1 Monsters_42
+  - first:
+      213: -4870354865185983708
+    second: DQ1 Monsters_43
+  - first:
+      213: -4260371281090120034
+    second: DQ1 Monsters_44
+  - first:
+      213: 7428875809088385328
+    second: DQ1 Monsters_45
+  - first:
+      213: 51074556755377147
+    second: DQ1 Monsters_46
+  - first:
+      213: -8299156905028860932
+    second: DQ1 Monsters_47
+  - first:
+      213: 8741192138574200385
+    second: DQ1 Monsters_48
+  - first:
+      213: -310209474389333029
+    second: DQ1 Monsters_49
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: slime_blue_DQ1
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 316
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdfbf59b6cf987d90800000000000000
+      internalID: -7099749136687185953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_1
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 331
+        width: 26
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d63c2fbf0af769ff0800000000000000
+      internalID: -29696018132843667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_2
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 316
+        width: 38
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f89861726edf5ab0800000000000000
+      internalID: -5017046945476601615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_3
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 316
+        width: 38
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 070fa9ded951b04f0800000000000000
+      internalID: -861571135670914960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: scorpion
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 316
+        width: 43
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce4e6a46540949480800000000000000
+      internalID: -8893324736434084628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_5
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 316
+        width: 34
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e99293ca5d77d1a0800000000000000
+      internalID: -6784816484828669463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_6
+      rect:
+        serializedVersion: 2
+        x: 488
+        y: 316
+        width: 51
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48fe28c2508777be0800000000000000
+      internalID: -1479581988950970492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_7
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 329
+        width: 26
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f1d75847455740f0800000000000000
+      internalID: -1132843016615636492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_8
+      rect:
+        serializedVersion: 2
+        x: 644
+        y: 316
+        width: 45
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7def806e407ccec80800000000000000
+      internalID: -8292033990042779945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: goldman
+      rect:
+        serializedVersion: 2
+        x: 713
+        y: 316
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f29056e2117c52e60800000000000000
+      internalID: 7936968794917112111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_10
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 332
+        width: 39
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b9d1ae0ed2d35d20800000000000000
+      internalID: 3266186005943802294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_11
+      rect:
+        serializedVersion: 2
+        x: 865
+        y: 316
+        width: 49
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 677a1b7428bf60690800000000000000
+      internalID: -7636139581192951946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_12
+      rect:
+        serializedVersion: 2
+        x: 954
+        y: 323
+        width: 34
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5282e23cf76c4bae0800000000000000
+      internalID: -1534383320988768219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_13
+      rect:
+        serializedVersion: 2
+        x: 1034
+        y: 323
+        width: 29
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43c4f27eb0ba90800800000000000000
+      internalID: 579182094705445940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_14
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 316
+        width: 16
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b8de669e75fb4bf0800000000000000
+      internalID: -338907422897809229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_15
+      rect:
+        serializedVersion: 2
+        x: 590
+        y: 316
+        width: 22
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ff4087fdb2d55ab0800000000000000
+      internalID: -5019874496291516426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_16
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 316
+        width: 24
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc01709fc5ebceb80800000000000000
+      internalID: -8364101101409595188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slime_red
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 223
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e907b19727d8fbea0800000000000000
+      internalID: -5854805467760725858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_18
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 238
+        width: 26
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 381fef0765bf609e0800000000000000
+      internalID: -1655359464330563197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_19
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 223
+        width: 38
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d90dfa7da0dc7b70800000000000000
+      internalID: 8898216407288580563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_20
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 223
+        width: 38
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac41e73db241de220800000000000000
+      internalID: 2516689945234379978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_21
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 223
+        width: 43
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 834c279f3910bf3e0800000000000000
+      internalID: -2019018272888667080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_22
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 223
+        width: 34
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 894cce700d226eda0800000000000000
+      internalID: -5916002783623068520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_23
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 223
+        width: 49
+        height: 52
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e4a23e07fcdf38b0800000000000000
+      internalID: -5170170893544807193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_24
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 223
+        width: 26
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 355bc29ab150ad790800000000000000
+      internalID: -7504680212698974893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_25
+      rect:
+        serializedVersion: 2
+        x: 643
+        y: 223
+        width: 46
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d01ed71cf707e5bf0800000000000000
+      internalID: -333705628369428211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_26
+      rect:
+        serializedVersion: 2
+        x: 714
+        y: 223
+        width: 50
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af8e4427b6340c4e0800000000000000
+      internalID: -1963495308775855878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_27
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 239
+        width: 39
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa876cebb0ea5bf00800000000000000
+      internalID: 1132002246822099119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_28
+      rect:
+        serializedVersion: 2
+        x: 852
+        y: 226
+        width: 49
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 622e52066f7e08bc0800000000000000
+      internalID: -3782768641630150106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_29
+      rect:
+        serializedVersion: 2
+        x: 954
+        y: 230
+        width: 34
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86fc2796c6ee70730800000000000000
+      internalID: 3965400146316021608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_30
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 223
+        width: 16
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 696ae0d1a7dbf5610800000000000000
+      internalID: 1612215523793086102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_31
+      rect:
+        serializedVersion: 2
+        x: 810
+        y: 223
+        width: 24
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6422aa0f0b1e48f20800000000000000
+      internalID: 3424109766776595014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_32
+      rect:
+        serializedVersion: 2
+        x: 899
+        y: 223
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a70e6d16fb919db0800000000000000
+      internalID: -4786873447560116317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slime_metal
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 130
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8957c80adc4a035a0800000000000000
+      internalID: -6543549055500520040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_34
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 130
+        width: 26
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ffb992a06bf17a70800000000000000
+      internalID: 8823109537458929651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_35
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 130
+        width: 34
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0a83fe170b1b0b80800000000000000
+      internalID: -8427612560295753201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_36
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 130
+        width: 43
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cdf069141727c590800000000000000
+      internalID: -7654106074414252605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_37
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 130
+        width: 34
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d96e37b519db89b80800000000000000
+      internalID: -8387745873975318883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_38
+      rect:
+        serializedVersion: 2
+        x: 488
+        y: 130
+        width: 51
+        height: 52
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85ff17a30433a2df0800000000000000
+      internalID: -204294482140463272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_39
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 130
+        width: 26
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01c12143c77eb3be0800000000000000
+      internalID: -1496347930534994928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_40
+      rect:
+        serializedVersion: 2
+        x: 643
+        y: 130
+        width: 46
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04a0fca6e78b5fff0800000000000000
+      internalID: -2893371646473664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_41
+      rect:
+        serializedVersion: 2
+        x: 714
+        y: 130
+        width: 50
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8211993d049de9d0800000000000000
+      internalID: -2743373813477469558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_42
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 146
+        width: 39
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2324ba6ce53cfb410800000000000000
+      internalID: 1495128413137748530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_43
+      rect:
+        serializedVersion: 2
+        x: 852
+        y: 133
+        width: 49
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4237e7aed06096cb0800000000000000
+      internalID: -4870354865185983708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_44
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 130
+        width: 24
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e96f85b64ee10e4c0800000000000000
+      internalID: -4260371281090120034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_45
+      rect:
+        serializedVersion: 2
+        x: 899
+        y: 130
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 031b431403ba81760800000000000000
+      internalID: 7428875809088385328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_46
+      rect:
+        serializedVersion: 2
+        x: 852
+        y: 87
+        width: 23
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfbf67ce90475b000800000000000000
+      internalID: 51074556755377147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_47
+      rect:
+        serializedVersion: 2
+        x: 853
+        y: 9
+        width: 75
+        height: 93
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf3468404c873dc80800000000000000
+      internalID: -8299156905028860932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_48
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 39
+        width: 332
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14ef62defe3fe4970800000000000000
+      internalID: 8741192138574200385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ1 Monsters_49
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 37
+        width: 36
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdb2019602ae1bbf0800000000000000
+      internalID: -310209474389333029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 898a21433ac901c4fa9e970c9e796bba
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      DQ1 Monsters_1: -29696018132843667
+      DQ1 Monsters_10: 3266186005943802294
+      DQ1 Monsters_11: -7636139581192951946
+      DQ1 Monsters_12: -1534383320988768219
+      DQ1 Monsters_13: 579182094705445940
+      DQ1 Monsters_14: -338907422897809229
+      DQ1 Monsters_15: -5019874496291516426
+      DQ1 Monsters_16: -8364101101409595188
+      DQ1 Monsters_18: -1655359464330563197
+      DQ1 Monsters_19: 8898216407288580563
+      DQ1 Monsters_2: -5017046945476601615
+      DQ1 Monsters_20: 2516689945234379978
+      DQ1 Monsters_21: -2019018272888667080
+      DQ1 Monsters_22: -5916002783623068520
+      DQ1 Monsters_23: -5170170893544807193
+      DQ1 Monsters_24: -7504680212698974893
+      DQ1 Monsters_25: -333705628369428211
+      DQ1 Monsters_26: -1963495308775855878
+      DQ1 Monsters_27: 1132002246822099119
+      DQ1 Monsters_28: -3782768641630150106
+      DQ1 Monsters_29: 3965400146316021608
+      DQ1 Monsters_3: -861571135670914960
+      DQ1 Monsters_30: 1612215523793086102
+      DQ1 Monsters_31: 3424109766776595014
+      DQ1 Monsters_32: -4786873447560116317
+      DQ1 Monsters_34: 8823109537458929651
+      DQ1 Monsters_35: -8427612560295753201
+      DQ1 Monsters_36: -7654106074414252605
+      DQ1 Monsters_37: -8387745873975318883
+      DQ1 Monsters_38: -204294482140463272
+      DQ1 Monsters_39: -1496347930534994928
+      DQ1 Monsters_40: -2893371646473664
+      DQ1 Monsters_41: -2743373813477469558
+      DQ1 Monsters_42: 1495128413137748530
+      DQ1 Monsters_43: -4870354865185983708
+      DQ1 Monsters_44: -4260371281090120034
+      DQ1 Monsters_45: 7428875809088385328
+      DQ1 Monsters_46: 51074556755377147
+      DQ1 Monsters_47: -8299156905028860932
+      DQ1 Monsters_48: 8741192138574200385
+      DQ1 Monsters_49: -310209474389333029
+      DQ1 Monsters_5: -6784816484828669463
+      DQ1 Monsters_6: -1479581988950970492
+      DQ1 Monsters_7: -1132843016615636492
+      DQ1 Monsters_8: -8292033990042779945
+      goldman: 7936968794917112111
+      scorpion: -8893324736434084628
+      slime_blue_DQ1: -7099749136687185953
+      slime_metal: -6543549055500520040
+      slime_red: -5854805467760725858
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,3653 @@
+fileFormatVersion: 2
+guid: 516325f448fb76646a82018d63ecbb50
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3285879261670647274
+    second: DQ3 monsters-4_0
+  - first:
+      213: 5269666139398287464
+    second: DQ3 monsters-4_1
+  - first:
+      213: -8617784762190848499
+    second: DQ3 monsters-4_2
+  - first:
+      213: 4694477974839549054
+    second: DQ3 monsters-4_3
+  - first:
+      213: 7475164503618746635
+    second: DQ3 monsters-4_4
+  - first:
+      213: 7662488462109786760
+    second: DQ3 monsters-4_5
+  - first:
+      213: -6763798685355660546
+    second: DQ3 monsters-4_6
+  - first:
+      213: -2456581361195365858
+    second: DQ3 monsters-4_7
+  - first:
+      213: 5857922510020460196
+    second: DQ3 monsters-4_8
+  - first:
+      213: -7268356659959998714
+    second: DQ3 monsters-4_9
+  - first:
+      213: 6355648720645577745
+    second: DQ3 monsters-4_10
+  - first:
+      213: -9118284107793413936
+    second: DQ3 monsters-4_11
+  - first:
+      213: -8184240664002074905
+    second: DQ3 monsters-4_12
+  - first:
+      213: -7170386778394943180
+    second: DQ3 monsters-4_13
+  - first:
+      213: 8086304132099402535
+    second: DQ3 monsters-4_14
+  - first:
+      213: 2368859475166607679
+    second: DQ3 monsters-4_15
+  - first:
+      213: 5508321856148727247
+    second: DQ3 monsters-4_16
+  - first:
+      213: -499960177843722230
+    second: DQ3 monsters-4_17
+  - first:
+      213: 2937922092392213765
+    second: DQ3 monsters-4_18
+  - first:
+      213: -7570592512820122488
+    second: DQ3 monsters-4_19
+  - first:
+      213: 8063654033337650805
+    second: DQ3 monsters-4_20
+  - first:
+      213: -7576314865792383902
+    second: DQ3 monsters-4_21
+  - first:
+      213: -7703988341813940710
+    second: DQ3 monsters-4_22
+  - first:
+      213: -8660220753294277551
+    second: DQ3 monsters-4_23
+  - first:
+      213: -4651083898172611825
+    second: DQ3 monsters-4_24
+  - first:
+      213: 8129266106729835200
+    second: DQ3 monsters-4_25
+  - first:
+      213: -6418511190453499412
+    second: DQ3 monsters-4_26
+  - first:
+      213: 3008968965051505733
+    second: DQ3 monsters-4_27
+  - first:
+      213: 7872518386307930759
+    second: DQ3 monsters-4_28
+  - first:
+      213: 2736399293977036726
+    second: DQ3 monsters-4_29
+  - first:
+      213: -7570173992518625290
+    second: DQ3 monsters-4_30
+  - first:
+      213: 3183237778546847580
+    second: DQ3 monsters-4_31
+  - first:
+      213: -5833234824131300341
+    second: DQ3 monsters-4_32
+  - first:
+      213: -9150875182756754969
+    second: DQ3 monsters-4_33
+  - first:
+      213: -2704505775233645225
+    second: DQ3 monsters-4_34
+  - first:
+      213: -1126741447326259178
+    second: DQ3 monsters-4_35
+  - first:
+      213: 5826518335599792545
+    second: DQ3 monsters-4_36
+  - first:
+      213: 5372453685006792399
+    second: DQ3 monsters-4_37
+  - first:
+      213: -7022356947527958770
+    second: DQ3 monsters-4_38
+  - first:
+      213: 8023606397356320557
+    second: DQ3 monsters-4_39
+  - first:
+      213: 473333355869213840
+    second: DQ3 monsters-4_40
+  - first:
+      213: 6952086776116555956
+    second: DQ3 monsters-4_41
+  - first:
+      213: -4912221000507772084
+    second: DQ3 monsters-4_42
+  - first:
+      213: -2775187410126089647
+    second: DQ3 monsters-4_43
+  - first:
+      213: 1648992580718520295
+    second: DQ3 monsters-4_44
+  - first:
+      213: -7784241691749648388
+    second: DQ3 monsters-4_45
+  - first:
+      213: 1989378747626281711
+    second: DQ3 monsters-4_46
+  - first:
+      213: 3838675727438148330
+    second: DQ3 monsters-4_47
+  - first:
+      213: -2702379958983662769
+    second: DQ3 monsters-4_48
+  - first:
+      213: 1870996387618551708
+    second: DQ3 monsters-4_49
+  - first:
+      213: -5082162298160443767
+    second: DQ3 monsters-4_50
+  - first:
+      213: 4803515840204586666
+    second: DQ3 monsters-4_51
+  - first:
+      213: 4283096365312919201
+    second: DQ3 monsters-4_52
+  - first:
+      213: 2754233525095830810
+    second: DQ3 monsters-4_53
+  - first:
+      213: 2019957506802666691
+    second: DQ3 monsters-4_54
+  - first:
+      213: 6064871815096437346
+    second: DQ3 monsters-4_55
+  - first:
+      213: 4718468754703221830
+    second: DQ3 monsters-4_56
+  - first:
+      213: 7328421268150577316
+    second: DQ3 monsters-4_57
+  - first:
+      213: 4419278104061391724
+    second: DQ3 monsters-4_58
+  - first:
+      213: 3260582637239698869
+    second: DQ3 monsters-4_59
+  - first:
+      213: 1148640176825012277
+    second: DQ3 monsters-4_60
+  - first:
+      213: 8416292871150211081
+    second: DQ3 monsters-4_61
+  - first:
+      213: 2710073198948599093
+    second: DQ3 monsters-4_62
+  - first:
+      213: 4995856431415235547
+    second: DQ3 monsters-4_63
+  - first:
+      213: -3509534125174298725
+    second: DQ3 monsters-4_64
+  - first:
+      213: -5677765212064555722
+    second: DQ3 monsters-4_65
+  - first:
+      213: -943174051536230476
+    second: DQ3 monsters-4_66
+  - first:
+      213: 8228128245699197741
+    second: DQ3 monsters-4_67
+  - first:
+      213: -2391697661129824027
+    second: DQ3 monsters-4_68
+  - first:
+      213: 7267755048897851623
+    second: DQ3 monsters-4_69
+  - first:
+      213: 8702556547257422072
+    second: DQ3 monsters-4_70
+  - first:
+      213: 7631130793581960521
+    second: DQ3 monsters-4_71
+  - first:
+      213: 8850725187426431183
+    second: DQ3 monsters-4_72
+  - first:
+      213: -6626446539401861376
+    second: DQ3 monsters-4_73
+  - first:
+      213: 4905604550699684202
+    second: DQ3 monsters-4_74
+  - first:
+      213: -4584776208330804536
+    second: DQ3 monsters-4_75
+  - first:
+      213: 8598678930996474840
+    second: DQ3 monsters-4_76
+  - first:
+      213: 8134039131328561518
+    second: DQ3 monsters-4_77
+  - first:
+      213: -5619636088407823488
+    second: DQ3 monsters-4_78
+  - first:
+      213: -8783450827568898225
+    second: DQ3 monsters-4_79
+  - first:
+      213: 3210794684662335185
+    second: DQ3 monsters-4_80
+  - first:
+      213: -355867242951014539
+    second: DQ3 monsters-4_81
+  - first:
+      213: 7016259971703841005
+    second: DQ3 monsters-4_82
+  - first:
+      213: 3216820561097086812
+    second: DQ3 monsters-4_83
+  - first:
+      213: -2337679309168869668
+    second: DQ3 monsters-4_84
+  - first:
+      213: -4552072882329052973
+    second: DQ3 monsters-4_85
+  - first:
+      213: -2542446957877146111
+    second: DQ3 monsters-4_86
+  - first:
+      213: -4536664538654005702
+    second: DQ3 monsters-4_87
+  - first:
+      213: 3113362964914119539
+    second: DQ3 monsters-4_88
+  - first:
+      213: 2147017114239941423
+    second: DQ3 monsters-4_89
+  - first:
+      213: 2678716266685411736
+    second: DQ3 monsters-4_90
+  - first:
+      213: -3660670516097258362
+    second: DQ3 monsters-4_91
+  - first:
+      213: -1673887148574829541
+    second: DQ3 monsters-4_92
+  - first:
+      213: 6659936483952025645
+    second: DQ3 monsters-4_93
+  - first:
+      213: 6321848696831484649
+    second: DQ3 monsters-4_94
+  - first:
+      213: -5551518549663590737
+    second: DQ3 monsters-4_95
+  - first:
+      213: -7206453444918757138
+    second: DQ3 monsters-4_96
+  - first:
+      213: 7802426762493284276
+    second: DQ3 monsters-4_97
+  - first:
+      213: 8473183129585045459
+    second: DQ3 monsters-4_98
+  - first:
+      213: -8190678320768161453
+    second: DQ3 monsters-4_99
+  - first:
+      213: -1907224404586221085
+    second: DQ3 monsters-4_100
+  - first:
+      213: 4721544616050235694
+    second: DQ3 monsters-4_101
+  - first:
+      213: 8504608933605438520
+    second: DQ3 monsters-4_102
+  - first:
+      213: 4828958094237488933
+    second: DQ3 monsters-4_103
+  - first:
+      213: 6499662522539818013
+    second: DQ3 monsters-4_104
+  - first:
+      213: 7290203136738151231
+    second: DQ3 monsters-4_105
+  - first:
+      213: 3818125242416652934
+    second: DQ3 monsters-4_106
+  - first:
+      213: 3863932087202264817
+    second: DQ3 monsters-4_107
+  - first:
+      213: 7542884331564069255
+    second: DQ3 monsters-4_108
+  - first:
+      213: -3429317263344995294
+    second: DQ3 monsters-4_109
+  - first:
+      213: 5248499049098826576
+    second: DQ3 monsters-4_110
+  - first:
+      213: 3624554674327310379
+    second: DQ3 monsters-4_111
+  - first:
+      213: 4545446972929051951
+    second: DQ3 monsters-4_112
+  - first:
+      213: 5064666823018014962
+    second: DQ3 monsters-4_113
+  - first:
+      213: 545065234010983110
+    second: DQ3 monsters-4_114
+  - first:
+      213: 6343088929354530895
+    second: DQ3 monsters-4_115
+  - first:
+      213: -7428059783120164479
+    second: DQ3 monsters-4_116
+  - first:
+      213: -1884436345959096332
+    second: DQ3 monsters-4_117
+  - first:
+      213: -6398342489111569911
+    second: DQ3 monsters-4_118
+  - first:
+      213: -5990795884228814437
+    second: DQ3 monsters-4_119
+  - first:
+      213: 7362012530376870919
+    second: DQ3 monsters-4_120
+  - first:
+      213: 8564378638919941605
+    second: DQ3 monsters-4_121
+  - first:
+      213: -8010098810190781939
+    second: DQ3 monsters-4_122
+  - first:
+      213: 98952571055899616
+    second: DQ3 monsters-4_123
+  - first:
+      213: 8771490528564276043
+    second: DQ3 monsters-4_124
+  - first:
+      213: -5000048581775147257
+    second: DQ3 monsters-4_125
+  - first:
+      213: -1866095223190463207
+    second: DQ3 monsters-4_126
+  - first:
+      213: -5725083285434050160
+    second: DQ3 monsters-4_127
+  - first:
+      213: -1205444225713352159
+    second: DQ3 monsters-4_128
+  - first:
+      213: 1530472807770540370
+    second: DQ3 monsters-4_129
+  - first:
+      213: 4783161791936204200
+    second: DQ3 monsters-4_130
+  - first:
+      213: -8781136077371228497
+    second: DQ3 monsters-4_131
+  - first:
+      213: -8484293120776887503
+    second: DQ3 monsters-4_132
+  - first:
+      213: 7854366742032103692
+    second: DQ3 monsters-4_133
+  - first:
+      213: 1610859966039630395
+    second: DQ3 monsters-4_134
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 0
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DQ3 monsters-4_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 520
+        width: 20
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61a5c4988363662d0800000000000000
+      internalID: -3285879261670647274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_1
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 520
+        width: 20
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8603db31f6d912940800000000000000
+      internalID: 5269666139398287464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_2
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 520
+        width: 20
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0e17d2fa6a776880800000000000000
+      internalID: -8617784762190848499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_3
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 519
+        width: 40
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7cd43088d2262140800000000000000
+      internalID: 4694477974839549054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_4
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 519
+        width: 40
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b09fdcbc28e1db760800000000000000
+      internalID: 7475164503618746635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_5
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 519
+        width: 40
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 882459f98a0a65a60800000000000000
+      internalID: 7662488462109786760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_6
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 519
+        width: 44
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efa2f1b8ee82222a0800000000000000
+      internalID: -6763798685355660546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_7
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 518
+        width: 44
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1aca1c744878edd0800000000000000
+      internalID: -2456581361195365858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_8
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 516
+        width: 44
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4aeb88b7c758b4150800000000000000
+      internalID: 5857922510020460196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_9
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 516
+        width: 35
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6075d3e802c912b90800000000000000
+      internalID: -7268356659959998714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_10
+      rect:
+        serializedVersion: 2
+        x: 373
+        y: 517
+        width: 35
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11cde3776dcc33850800000000000000
+      internalID: 6355648720645577745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_11
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 517
+        width: 35
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d842e92ae8557180800000000000000
+      internalID: -9118284107793413936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_12
+      rect:
+        serializedVersion: 2
+        x: 453
+        y: 520
+        width: 44
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e669d16a7cbb6e80800000000000000
+      internalID: -8184240664002074905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_13
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 520
+        width: 44
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 431ac93273bad7c90800000000000000
+      internalID: -7170386778394943180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_14
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 519
+        width: 44
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72bee8bd3c2583070800000000000000
+      internalID: 8086304132099402535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_15
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 518
+        width: 41
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f39bf145421efd020800000000000000
+      internalID: 2368859475166607679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_16
+      rect:
+        serializedVersion: 2
+        x: 639
+        y: 518
+        width: 41
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc5e3483b8d717c40800000000000000
+      internalID: 5508321856148727247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_17
+      rect:
+        serializedVersion: 2
+        x: 683
+        y: 520
+        width: 37
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a08a8cdfdd8cf09f0800000000000000
+      internalID: -499960177843722230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_18
+      rect:
+        serializedVersion: 2
+        x: 725
+        y: 524
+        width: 25
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50d6fc6c39895c820800000000000000
+      internalID: 2937922092392213765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_19
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 525
+        width: 25
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88cef16683adfe690800000000000000
+      internalID: -7570592512820122488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_20
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 475
+        width: 32
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57e8cb8ce9ad7ef60800000000000000
+      internalID: 8063654033337650805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_21
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 474
+        width: 32
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2640fe545c58bd690800000000000000
+      internalID: -7576314865792383902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_22
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 474
+        width: 59
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1eed6cab6fe51590800000000000000
+      internalID: -7703988341813940710
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_23
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 473
+        width: 59
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 154cd63db17b0d780800000000000000
+      internalID: -8660220753294277551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_24
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 479
+        width: 52
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f03e1ec46d7047fb0800000000000000
+      internalID: -4651083898172611825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_25
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 479
+        width: 52
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ca21401474f0d070800000000000000
+      internalID: 8129266106729835200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_26
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 479
+        width: 52
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce9462a341edce6a0800000000000000
+      internalID: -6418511190453499412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_27
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 484
+        width: 36
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54cd11ed45102c920800000000000000
+      internalID: 3008968965051505733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_28
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 484
+        width: 36
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78a9d9f03cdc04d60800000000000000
+      internalID: 7872518386307930759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_29
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 484
+        width: 36
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b78129e8a4a9f520800000000000000
+      internalID: 2736399293977036726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_30
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 475
+        width: 40
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f7d600ccd651f690800000000000000
+      internalID: -7570173992518625290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_31
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 472
+        width: 40
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5f63e1e4e12d2c20800000000000000
+      internalID: 3183237778546847580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_32
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 471
+        width: 40
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b04373055df2c0fa0800000000000000
+      internalID: -5833234824131300341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_33
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 456
+        width: 57
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e988d3318f810180800000000000000
+      internalID: -9150875182756754969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_34
+      rect:
+        serializedVersion: 2
+        x: 673
+        y: 456
+        width: 57
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 755c436935aa77ad0800000000000000
+      internalID: -2704505775233645225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_35
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 456
+        width: 57
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 618a8669f920d50f0800000000000000
+      internalID: -1126741447326259178
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_36
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 428
+        width: 35
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a1d9b65e83fbd050800000000000000
+      internalID: 5826518335599792545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_37
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 428
+        width: 35
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc6711b792ace8a40800000000000000
+      internalID: 5372453685006792399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_38
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 418
+        width: 50
+        height: 52
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0f7990ff839b8e90800000000000000
+      internalID: -7022356947527958770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_39
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 418
+        width: 50
+        height: 52
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d27a9fbe183995f60800000000000000
+      internalID: 8023606397356320557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_40
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 421
+        width: 44
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0949de8ed2e919600800000000000000
+      internalID: 473333355869213840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_41
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 421
+        width: 44
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b03e12d616ca7060800000000000000
+      internalID: 6952086776116555956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_42
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 423
+        width: 44
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c43358ea60944dbb0800000000000000
+      internalID: -4912221000507772084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_43
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 424
+        width: 44
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1525c4a01cd8c79d0800000000000000
+      internalID: -2775187410126089647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_44
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 425
+        width: 44
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e76bf2f30662e610800000000000000
+      internalID: 1648992580718520295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_45
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 424
+        width: 44
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf7f97d8c61d8f390800000000000000
+      internalID: -7784241691749648388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_46
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 423
+        width: 36
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fead9f74e61bb9b10800000000000000
+      internalID: 1989378747626281711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_47
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 423
+        width: 36
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae27dd56c37b54530800000000000000
+      internalID: 3838675727438148330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_48
+      rect:
+        serializedVersion: 2
+        x: 532
+        y: 423
+        width: 36
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f43e4a0ceb73f7ad0800000000000000
+      internalID: -2702379958983662769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_49
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 430
+        width: 28
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c97fa043d4d17f910800000000000000
+      internalID: 1870996387618551708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_50
+      rect:
+        serializedVersion: 2
+        x: 604
+        y: 430
+        width: 28
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98e8347f0588879b0800000000000000
+      internalID: -5082162298160443767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_51
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 411
+        width: 44
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aae3b50e43489a240800000000000000
+      internalID: 4803515840204586666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_52
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 411
+        width: 44
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a64e31937d907b30800000000000000
+      internalID: 4283096365312919201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_53
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 415
+        width: 28
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a151fcb6cc0093620800000000000000
+      internalID: 2754233525095830810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_54
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 372
+        width: 48
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cc4b5676a4580c10800000000000000
+      internalID: 2019957506802666691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_55
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 372
+        width: 48
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26a0a1368c0ca2450800000000000000
+      internalID: 6064871815096437346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_56
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 372
+        width: 48
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6448dd7355e5b7140800000000000000
+      internalID: 4718468754703221830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_57
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 373
+        width: 52
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a86884d058c3b560800000000000000
+      internalID: 7328421268150577316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_58
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 373
+        width: 52
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c63bd34750e645d30800000000000000
+      internalID: 4419278104061391724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_59
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 373
+        width: 52
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b58a7d12aaef3d20800000000000000
+      internalID: 3260582637239698869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_60
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 374
+        width: 36
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5309562b72ac0ff00800000000000000
+      internalID: 1148640176825012277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_61
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 374
+        width: 36
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9009f8e56cdacc470800000000000000
+      internalID: 8416292871150211081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_62
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 374
+        width: 36
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53543a2473d1c9520800000000000000
+      internalID: 2710073198948599093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_63
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 373
+        width: 50
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd31b5784f8d45540800000000000000
+      internalID: 4995856431415235547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_64
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 373
+        width: 50
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b97efd5be41ab4fc0800000000000000
+      internalID: -3509534125174298725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_65
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 376
+        width: 35
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63d52d82f968431b0800000000000000
+      internalID: -5677765212064555722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_66
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 376
+        width: 15
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b721d0823c29e2f0800000000000000
+      internalID: -943174051536230476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_67
+      rect:
+        serializedVersion: 2
+        x: 581
+        y: 395
+        width: 33
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2b32438b0f203270800000000000000
+      internalID: 8228128245699197741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_68
+      rect:
+        serializedVersion: 2
+        x: 591
+        y: 376
+        width: 36
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e8693226abfeced0800000000000000
+      internalID: -2391697661129824027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_69
+      rect:
+        serializedVersion: 2
+        x: 642
+        y: 355
+        width: 39
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e0bb14f5b04cd460800000000000000
+      internalID: 7267755048897851623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_70
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 355
+        width: 39
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f057055211b5c870800000000000000
+      internalID: 8702556547257422072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_71
+      rect:
+        serializedVersion: 2
+        x: 718
+        y: 355
+        width: 39
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94d5ff9760937e960800000000000000
+      internalID: 7631130793581960521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_72
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 321
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc0b7213aa714da70800000000000000
+      internalID: 8850725187426431183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_73
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 321
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 007e5d71bf12a04a0800000000000000
+      internalID: -6626446539401861376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_74
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 321
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a619efc0955341440800000000000000
+      internalID: 4905604550699684202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_75
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 315
+        width: 52
+        height: 56
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c2b7c7645a9f50c0800000000000000
+      internalID: -4584776208330804536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_76
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 315
+        width: 52
+        height: 56
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d33ea31ee4a45770800000000000000
+      internalID: 8598678930996474840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_77
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 315
+        width: 52
+        height: 56
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6147f37e79e1e070800000000000000
+      internalID: 8134039131328561518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_78
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 311
+        width: 40
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08b6c7f60ca0302b0800000000000000
+      internalID: -5619636088407823488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_79
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 311
+        width: 40
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4f15a0520aea1680800000000000000
+      internalID: -8783450827568898225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_80
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 311
+        width: 40
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d6c20211c80f8c20800000000000000
+      internalID: 3210794684662335185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slime_blue
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 326
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57705b4c0a4bf0bf0800000000000000
+      internalID: -355867242951014539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slime_red
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 325
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de023314543ce5160800000000000000
+      internalID: 7016259971703841005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slime_metal
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 325
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c575d52c14174ac20800000000000000
+      internalID: 3216820561097086812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_84
+      rect:
+        serializedVersion: 2
+        x: 513
+        y: 301
+        width: 56
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cde753acd05ee8fd0800000000000000
+      internalID: -2337679309168869668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_85
+      rect:
+        serializedVersion: 2
+        x: 568
+        y: 301
+        width: 56
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d89619d4d9c3d0c0800000000000000
+      internalID: -4552072882329052973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_86
+      rect:
+        serializedVersion: 2
+        x: 624
+        y: 301
+        width: 56
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10ec57756f967bcd0800000000000000
+      internalID: -2542446957877146111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_87
+      rect:
+        serializedVersion: 2
+        x: 690
+        y: 304
+        width: 41
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a36aa6c63a78a01c0800000000000000
+      internalID: -4536664538654005702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_88
+      rect:
+        serializedVersion: 2
+        x: 729
+        y: 304
+        width: 41
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 373209c0f13e43b20800000000000000
+      internalID: 3113362964914119539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_89
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 241
+        width: 62
+        height: 76
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2bb4f4a0bcbbcd10800000000000000
+      internalID: 2147017114239941423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_90
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 241
+        width: 62
+        height: 76
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89138d98046bc2520800000000000000
+      internalID: 2678716266685411736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_91
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 265
+        width: 66
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68ce6488f8fa23dc0800000000000000
+      internalID: -3660670516097258362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_92
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 265
+        width: 66
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b141b1bc18825c8e0800000000000000
+      internalID: -1673887148574829541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_93
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 265
+        width: 66
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d20ef9042f8dc6c50800000000000000
+      internalID: 6659936483952025645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_94
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 222
+        width: 68
+        height: 63
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e2286a25e7bbb750800000000000000
+      internalID: 6321848696831484649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Troll_Boss
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 222
+        width: 79
+        height: 67
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa65f43da4b05f2b0800000000000000
+      internalID: -5551518549663590737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_96
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 223
+        width: 81
+        height: 69
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee83a35f5c88dfb90800000000000000
+      internalID: -7206453444918757138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_97
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 219
+        width: 55
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bfc96c2dc9c74c60800000000000000
+      internalID: 7802426762493284276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_98
+      rect:
+        serializedVersion: 2
+        x: 632
+        y: 206
+        width: 56
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dfcfbbd92bc69570800000000000000
+      internalID: 8473183129585045459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_99
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 206
+        width: 56
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 359ee1d967dd45e80800000000000000
+      internalID: -8190678320768161453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_100
+      rect:
+        serializedVersion: 2
+        x: 748
+        y: 226
+        width: 51
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e1bea9428d2885e0800000000000000
+      internalID: -1907224404586221085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_101
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 174
+        width: 68
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2915deffcb468140800000000000000
+      internalID: 4721544616050235694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_102
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 174
+        width: 68
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8347a2904c0760670800000000000000
+      internalID: 8504608933605438520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_103
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 174
+        width: 68
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 527d5424dc7e30340800000000000000
+      internalID: 4828958094237488933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_104
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 173
+        width: 79
+        height: 84
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1cb7e7a0a0733a50800000000000000
+      internalID: 6499662522539818013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_105
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 140
+        width: 50
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3b47b1b0210c2560800000000000000
+      internalID: 7290203136738151231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_106
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 140
+        width: 50
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 682623ebda4bcf430800000000000000
+      internalID: 3818125242416652934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_107
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 140
+        width: 50
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f6bce5e2c17f9530800000000000000
+      internalID: 3863932087202264817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_108
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 140
+        width: 50
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7817cbce555bda860800000000000000
+      internalID: 7542884331564069255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_109
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 138
+        width: 68
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 224f4384e1e9860d0800000000000000
+      internalID: -3429317263344995294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_110
+      rect:
+        serializedVersion: 2
+        x: 644
+        y: 138
+        width: 68
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 053d281d31a66d840800000000000000
+      internalID: 5248499049098826576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_111
+      rect:
+        serializedVersion: 2
+        x: 715
+        y: 138
+        width: 68
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b20d248c5410d4230800000000000000
+      internalID: 3624554674327310379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_112
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 123
+        width: 59
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2d8fc660fba41f30800000000000000
+      internalID: 4545446972929051951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_113
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 123
+        width: 59
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f8e1bb44af494640800000000000000
+      internalID: 5064666823018014962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_114
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 123
+        width: 59
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cac3a441f5709700800000000000000
+      internalID: 545065234010983110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_115
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 86
+        width: 43
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f40c3ec26cd270850800000000000000
+      internalID: 6343088929354530895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_116
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 86
+        width: 48
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 189e1c89bfa3ae890800000000000000
+      internalID: -7428059783120164479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_117
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 86
+        width: 48
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ffd545a02329d5e0800000000000000
+      internalID: -1884436345959096332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_118
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 82
+        width: 57
+        height: 52
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90a5731f7658437a0800000000000000
+      internalID: -6398342489111569911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_119
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 82
+        width: 57
+        height: 52
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b995ba642ea6cdca0800000000000000
+      internalID: -5990795884228814437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_120
+      rect:
+        serializedVersion: 2
+        x: 466
+        y: 83
+        width: 262
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70c8619046f1b2660800000000000000
+      internalID: 7362012530376870919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_121
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 63
+        width: 60
+        height: 56
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ed34cefef8cad670800000000000000
+      internalID: 8564378638919941605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_122
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 63
+        width: 60
+        height: 56
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d02acca429966d090800000000000000
+      internalID: -8010098810190781939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_123
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 63
+        width: 60
+        height: 56
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e3066fc6dc8f5100800000000000000
+      internalID: 98952571055899616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_124
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 12
+        width: 68
+        height: 68
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4be6c199289ab970800000000000000
+      internalID: 8771490528564276043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_125
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 12
+        width: 68
+        height: 68
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70fb8976e424c9ab0800000000000000
+      internalID: -5000048581775147257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_126
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 12
+        width: 68
+        height: 68
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91ddda0184c4a16e0800000000000000
+      internalID: -1866095223190463207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_127
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 10
+        width: 81
+        height: 68
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0995d2ea51b6c80b0800000000000000
+      internalID: -5725083285434050160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_128
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 11
+        width: 81
+        height: 68
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1225fc90dd6654fe0800000000000000
+      internalID: -1205444225713352159
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_129
+      rect:
+        serializedVersion: 2
+        x: 572
+        y: 7
+        width: 68
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 259ce8de8e45d3510800000000000000
+      internalID: 1530472807770540370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_130
+      rect:
+        serializedVersion: 2
+        x: 643
+        y: 7
+        width: 68
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ad0497be44316240800000000000000
+      internalID: 4783161791936204200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_131
+      rect:
+        serializedVersion: 2
+        x: 712
+        y: 7
+        width: 68
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: faebbe71343232680800000000000000
+      internalID: -8781136077371228497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_132
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 14
+        width: 52
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 133adcdbb5cb14a80800000000000000
+      internalID: -8484293120776887503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_133
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 14
+        width: 52
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c09377a00f0500d60800000000000000
+      internalID: 7854366742032103692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DQ3 monsters-4_134
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 14
+        width: 52
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b32a0baba9cea5610800000000000000
+      internalID: 1610859966039630395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: e8f8f10e8bf09a44ea3e5085bc3c1ff6
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      DQ3 monsters-4_0: -3285879261670647274
+      DQ3 monsters-4_1: 5269666139398287464
+      DQ3 monsters-4_10: 6355648720645577745
+      DQ3 monsters-4_100: -1907224404586221085
+      DQ3 monsters-4_101: 4721544616050235694
+      DQ3 monsters-4_102: 8504608933605438520
+      DQ3 monsters-4_103: 4828958094237488933
+      DQ3 monsters-4_104: 6499662522539818013
+      DQ3 monsters-4_105: 7290203136738151231
+      DQ3 monsters-4_106: 3818125242416652934
+      DQ3 monsters-4_107: 3863932087202264817
+      DQ3 monsters-4_108: 7542884331564069255
+      DQ3 monsters-4_109: -3429317263344995294
+      DQ3 monsters-4_11: -9118284107793413936
+      DQ3 monsters-4_110: 5248499049098826576
+      DQ3 monsters-4_111: 3624554674327310379
+      DQ3 monsters-4_112: 4545446972929051951
+      DQ3 monsters-4_113: 5064666823018014962
+      DQ3 monsters-4_114: 545065234010983110
+      DQ3 monsters-4_115: 6343088929354530895
+      DQ3 monsters-4_116: -7428059783120164479
+      DQ3 monsters-4_117: -1884436345959096332
+      DQ3 monsters-4_118: -6398342489111569911
+      DQ3 monsters-4_119: -5990795884228814437
+      DQ3 monsters-4_12: -8184240664002074905
+      DQ3 monsters-4_120: 7362012530376870919
+      DQ3 monsters-4_121: 8564378638919941605
+      DQ3 monsters-4_122: -8010098810190781939
+      DQ3 monsters-4_123: 98952571055899616
+      DQ3 monsters-4_124: 8771490528564276043
+      DQ3 monsters-4_125: -5000048581775147257
+      DQ3 monsters-4_126: -1866095223190463207
+      DQ3 monsters-4_127: -5725083285434050160
+      DQ3 monsters-4_128: -1205444225713352159
+      DQ3 monsters-4_129: 1530472807770540370
+      DQ3 monsters-4_13: -7170386778394943180
+      DQ3 monsters-4_130: 4783161791936204200
+      DQ3 monsters-4_131: -8781136077371228497
+      DQ3 monsters-4_132: -8484293120776887503
+      DQ3 monsters-4_133: 7854366742032103692
+      DQ3 monsters-4_134: 1610859966039630395
+      DQ3 monsters-4_14: 8086304132099402535
+      DQ3 monsters-4_15: 2368859475166607679
+      DQ3 monsters-4_16: 5508321856148727247
+      DQ3 monsters-4_17: -499960177843722230
+      DQ3 monsters-4_18: 2937922092392213765
+      DQ3 monsters-4_19: -7570592512820122488
+      DQ3 monsters-4_2: -8617784762190848499
+      DQ3 monsters-4_20: 8063654033337650805
+      DQ3 monsters-4_21: -7576314865792383902
+      DQ3 monsters-4_22: -7703988341813940710
+      DQ3 monsters-4_23: -8660220753294277551
+      DQ3 monsters-4_24: -4651083898172611825
+      DQ3 monsters-4_25: 8129266106729835200
+      DQ3 monsters-4_26: -6418511190453499412
+      DQ3 monsters-4_27: 3008968965051505733
+      DQ3 monsters-4_28: 7872518386307930759
+      DQ3 monsters-4_29: 2736399293977036726
+      DQ3 monsters-4_3: 4694477974839549054
+      DQ3 monsters-4_30: -7570173992518625290
+      DQ3 monsters-4_31: 3183237778546847580
+      DQ3 monsters-4_32: -5833234824131300341
+      DQ3 monsters-4_33: -9150875182756754969
+      DQ3 monsters-4_34: -2704505775233645225
+      DQ3 monsters-4_35: -1126741447326259178
+      DQ3 monsters-4_36: 5826518335599792545
+      DQ3 monsters-4_37: 5372453685006792399
+      DQ3 monsters-4_38: -7022356947527958770
+      DQ3 monsters-4_39: 8023606397356320557
+      DQ3 monsters-4_4: 7475164503618746635
+      DQ3 monsters-4_40: 473333355869213840
+      DQ3 monsters-4_41: 6952086776116555956
+      DQ3 monsters-4_42: -4912221000507772084
+      DQ3 monsters-4_43: -2775187410126089647
+      DQ3 monsters-4_44: 1648992580718520295
+      DQ3 monsters-4_45: -7784241691749648388
+      DQ3 monsters-4_46: 1989378747626281711
+      DQ3 monsters-4_47: 3838675727438148330
+      DQ3 monsters-4_48: -2702379958983662769
+      DQ3 monsters-4_49: 1870996387618551708
+      DQ3 monsters-4_5: 7662488462109786760
+      DQ3 monsters-4_50: -5082162298160443767
+      DQ3 monsters-4_51: 4803515840204586666
+      DQ3 monsters-4_52: 4283096365312919201
+      DQ3 monsters-4_53: 2754233525095830810
+      DQ3 monsters-4_54: 2019957506802666691
+      DQ3 monsters-4_55: 6064871815096437346
+      DQ3 monsters-4_56: 4718468754703221830
+      DQ3 monsters-4_57: 7328421268150577316
+      DQ3 monsters-4_58: 4419278104061391724
+      DQ3 monsters-4_59: 3260582637239698869
+      DQ3 monsters-4_6: -6763798685355660546
+      DQ3 monsters-4_60: 1148640176825012277
+      DQ3 monsters-4_61: 8416292871150211081
+      DQ3 monsters-4_62: 2710073198948599093
+      DQ3 monsters-4_63: 4995856431415235547
+      DQ3 monsters-4_64: -3509534125174298725
+      DQ3 monsters-4_65: -5677765212064555722
+      DQ3 monsters-4_66: -943174051536230476
+      DQ3 monsters-4_67: 8228128245699197741
+      DQ3 monsters-4_68: -2391697661129824027
+      DQ3 monsters-4_69: 7267755048897851623
+      DQ3 monsters-4_7: -2456581361195365858
+      DQ3 monsters-4_70: 8702556547257422072
+      DQ3 monsters-4_71: 7631130793581960521
+      DQ3 monsters-4_72: 8850725187426431183
+      DQ3 monsters-4_73: -6626446539401861376
+      DQ3 monsters-4_74: 4905604550699684202
+      DQ3 monsters-4_75: -4584776208330804536
+      DQ3 monsters-4_76: 8598678930996474840
+      DQ3 monsters-4_77: 8134039131328561518
+      DQ3 monsters-4_78: -5619636088407823488
+      DQ3 monsters-4_79: -8783450827568898225
+      DQ3 monsters-4_8: 5857922510020460196
+      DQ3 monsters-4_80: 3210794684662335185
+      DQ3 monsters-4_84: -2337679309168869668
+      DQ3 monsters-4_85: -4552072882329052973
+      DQ3 monsters-4_86: -2542446957877146111
+      DQ3 monsters-4_87: -4536664538654005702
+      DQ3 monsters-4_88: 3113362964914119539
+      DQ3 monsters-4_89: 2147017114239941423
+      DQ3 monsters-4_9: -7268356659959998714
+      DQ3 monsters-4_90: 2678716266685411736
+      DQ3 monsters-4_91: -3660670516097258362
+      DQ3 monsters-4_92: -1673887148574829541
+      DQ3 monsters-4_93: 6659936483952025645
+      DQ3 monsters-4_94: 6321848696831484649
+      DQ3 monsters-4_96: -7206453444918757138
+      DQ3 monsters-4_97: 7802426762493284276
+      DQ3 monsters-4_98: 8473183129585045459
+      DQ3 monsters-4_99: -8190678320768161453
+      Troll_Boss: -5551518549663590737
+      slime_blue: -355867242951014539
+      slime_metal: 3216820561097086812
+      slime_red: 7016259971703841005
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

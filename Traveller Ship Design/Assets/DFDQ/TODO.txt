@@ -1,0 +1,25 @@
+Attacking
+- attack templating
+	- minimun ranges
+	- show cells with targets
+	- show invalid targets
+	- rotate template
+	- AoE blocked by barriers
+- inflict "damage" on enemies/objects
+- 
+
+Movement
+- show invalid movement cells
+- move unit
+- show enemy control tiles
+- movement interrupt
+
+
+Map
+- scrolling
+- objects that can be squeezed through/under
+- semi-random for overworld encounters
+- loading pre-built zones
+
+Abilities
+- scriptable objects?

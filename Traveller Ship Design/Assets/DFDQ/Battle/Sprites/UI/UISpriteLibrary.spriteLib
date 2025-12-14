@@ -1,0 +1,153 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e6fedc2472449cead18ef23b5cb30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrarySourceAsset
+  m_Library:
+  - m_Name: LeftBorders
+    m_Hash: 109225
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: blue_border_left
+      m_Hash: 986375262
+      m_Sprite: {fileID: 1175490179, guid: 81f8973b483aa4f498a18a38025da906, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1175490179, guid: 81f8973b483aa4f498a18a38025da906, type: 3}
+    - m_Name: green_border_left
+      m_Hash: 499638221
+      m_Sprite: {fileID: 1832460300, guid: 074f41565ad1a5549bbde7e31eea0e42, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1832460300, guid: 074f41565ad1a5549bbde7e31eea0e42, type: 3}
+    - m_Name: red_border_left
+      m_Hash: 762734299
+      m_Sprite: {fileID: 347465389, guid: cb79c23d97bfacf41bf55083707e7594, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 347465389, guid: cb79c23d97bfacf41bf55083707e7594, type: 3}
+    - m_Name: yellow_border_left
+      m_Hash: 118903980
+      m_Sprite: {fileID: 1303875445, guid: 61c64b7b863f26342a30b6682508a9ed, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1303875445, guid: 61c64b7b863f26342a30b6682508a9ed, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 4
+  - m_Name: TopBorders
+    m_Hash: 998681020
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: blue_border_top
+      m_Hash: 162956469
+      m_Sprite: {fileID: 7289041577865337696, guid: 81f8973b483aa4f498a18a38025da906, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 7289041577865337696, guid: 81f8973b483aa4f498a18a38025da906, type: 3}
+    - m_Name: yellow_border_top
+      m_Hash: 312002362
+      m_Sprite: {fileID: -663638661411368115, guid: 61c64b7b863f26342a30b6682508a9ed, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -663638661411368115, guid: 61c64b7b863f26342a30b6682508a9ed, type: 3}
+    - m_Name: red_border_top
+      m_Hash: 669878718
+      m_Sprite: {fileID: -1994176272677361903, guid: cb79c23d97bfacf41bf55083707e7594, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -1994176272677361903, guid: cb79c23d97bfacf41bf55083707e7594, type: 3}
+    - m_Name: green_border_top
+      m_Hash: 432528174
+      m_Sprite: {fileID: 249022036899197820, guid: 074f41565ad1a5549bbde7e31eea0e42, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 249022036899197820, guid: 074f41565ad1a5549bbde7e31eea0e42, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 4
+  - m_Name: RightBorders
+    m_Hash: 1005531523
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: blue_border_right
+      m_Hash: 1001409934
+      m_Sprite: {fileID: 803955412, guid: 81f8973b483aa4f498a18a38025da906, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 803955412, guid: 81f8973b483aa4f498a18a38025da906, type: 3}
+    - m_Name: green_border_right
+      m_Hash: 315720267
+      m_Sprite: {fileID: 973210561, guid: 074f41565ad1a5549bbde7e31eea0e42, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 973210561, guid: 074f41565ad1a5549bbde7e31eea0e42, type: 3}
+    - m_Name: red_border_right
+      m_Hash: 653624995
+      m_Sprite: {fileID: 409379242, guid: cb79c23d97bfacf41bf55083707e7594, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 409379242, guid: cb79c23d97bfacf41bf55083707e7594, type: 3}
+    - m_Name: yellow_border_right
+      m_Hash: 679346702
+      m_Sprite: {fileID: 1786074842, guid: 61c64b7b863f26342a30b6682508a9ed, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1786074842, guid: 61c64b7b863f26342a30b6682508a9ed, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 4
+  - m_Name: BottomBorders
+    m_Hash: 913790602
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: blue_border_bottom
+      m_Hash: 424309446
+      m_Sprite: {fileID: -1933667803, guid: 81f8973b483aa4f498a18a38025da906, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -1933667803, guid: 81f8973b483aa4f498a18a38025da906, type: 3}
+    - m_Name: green_border_bottom
+      m_Hash: 841819446
+      m_Sprite: {fileID: 1161520215, guid: 074f41565ad1a5549bbde7e31eea0e42, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1161520215, guid: 074f41565ad1a5549bbde7e31eea0e42, type: 3}
+    - m_Name: red_border_bottom
+      m_Hash: 470313848
+      m_Sprite: {fileID: -1259177075, guid: cb79c23d97bfacf41bf55083707e7594, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -1259177075, guid: cb79c23d97bfacf41bf55083707e7594, type: 3}
+    - m_Name: yellow_border_bottom
+      m_Hash: 882982825
+      m_Sprite: {fileID: 1832362556, guid: 61c64b7b863f26342a30b6682508a9ed, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1832362556, guid: 61c64b7b863f26342a30b6682508a9ed, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 4
+  - m_Name: Transparents
+    m_Hash: 176237873
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: blue_pressed
+      m_Hash: 702037086
+      m_Sprite: {fileID: 21300000, guid: 8b01d7f33f410c940a5435220ad50bf7, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 8b01d7f33f410c940a5435220ad50bf7, type: 3}
+    - m_Name: green_pressed
+      m_Hash: 1012378873
+      m_Sprite: {fileID: 21300000, guid: 19568dd5bd003394eab33c8b53dd1d27, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 19568dd5bd003394eab33c8b53dd1d27, type: 3}
+    - m_Name: grey_pressed
+      m_Hash: 547460110
+      m_Sprite: {fileID: 21300000, guid: cdcca68d22f6760459f1debcc31f3349, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: cdcca68d22f6760459f1debcc31f3349, type: 3}
+    - m_Name: red_pressed
+      m_Hash: 834061100
+      m_Sprite: {fileID: 21300000, guid: 92f04958c687e17438376091887e2aee, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 92f04958c687e17438376091887e2aee, type: 3}
+    - m_Name: yellow_pressed
+      m_Hash: 265817718
+      m_Sprite: {fileID: 21300000, guid: 84a2903cf77e2184aa18a1c1da08694e, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 84a2903cf77e2184aa18a1c1da08694e, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 5
+  m_PrimaryLibraryGUID: 
+  m_ModificationHash: 638991984698731426
+  m_Version: 1

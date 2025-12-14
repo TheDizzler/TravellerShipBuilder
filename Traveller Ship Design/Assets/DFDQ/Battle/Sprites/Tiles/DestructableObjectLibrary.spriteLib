@@ -1,0 +1,140 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e6fedc2472449cead18ef23b5cb30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrarySourceAsset
+  m_Library:
+  - m_Name: StoneWall
+    m_Hash: 161334200
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: tile_wall_stone_bottom
+      m_Hash: 229983317
+      m_Sprite: {fileID: -6874287413705991746, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -6874287413705991746, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: tile_wall_stone_bottomleft
+      m_Hash: 1000118404
+      m_Sprite: {fileID: -7463225442290131092, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -7463225442290131092, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: tile_wall_stone_bottomLeftRight
+      m_Hash: 136937032
+      m_Sprite: {fileID: 5411324579994578214, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 5411324579994578214, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: tile_wall_stone_bottomright
+      m_Hash: 502734904
+      m_Sprite: {fileID: -7491089270941445154, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -7491089270941445154, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: tile_wall_stone_center
+      m_Hash: 68869589
+      m_Sprite: {fileID: -3720351981202299588, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -3720351981202299588, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: tile_wall_stone_left
+      m_Hash: 67997382
+      m_Sprite: {fileID: -8469697690282429261, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -8469697690282429261, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: tile_wall_stone_leftRight
+      m_Hash: 845991988
+      m_Sprite: {fileID: -2060205701972810849, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -2060205701972810849, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: tile_wall_stone_right
+      m_Hash: 98210194
+      m_Sprite: {fileID: 3537860896965224377, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 3537860896965224377, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: tile_wall_stone_center_broken
+      m_Hash: 853878957
+      m_Sprite: {fileID: 365180567111198494, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 365180567111198494, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: tile_wall_stone_left_broken
+      m_Hash: 656262920
+      m_Sprite: {fileID: 1136636858301586503, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1136636858301586503, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: rubble_00
+      m_Hash: 196895035
+      m_Sprite: {fileID: 8794339829995047195, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 8794339829995047195, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    - m_Name: rubble_01
+      m_Hash: 1018909101
+      m_Sprite: {fileID: 8343581493411087946, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 8343581493411087946, guid: 3abe7afdac2801348adf0f0357b5f05a, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 12
+  - m_Name: WallDamageDecals
+    m_Hash: 1006158030
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: wall_damage_light_hole
+      m_Hash: 621217301
+      m_Sprite: {fileID: 395661139210840291, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 395661139210840291, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+    - m_Name: wall_damage_light_small
+      m_Hash: 522020625
+      m_Sprite: {fileID: 6942699573622689454, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 6942699573622689454, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+    - m_Name: wall_damage_light_mid
+      m_Hash: 60327377
+      m_Sprite: {fileID: -404541812321332646, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -404541812321332646, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+    - m_Name: wall_damage_light_large
+      m_Hash: 859022524
+      m_Sprite: {fileID: 4934518564064880267, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 4934518564064880267, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+    - m_Name: wall_damage_dark_hole
+      m_Hash: 181285643
+      m_Sprite: {fileID: -6521181783283197106, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -6521181783283197106, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+    - m_Name: wall_damage_dark_small
+      m_Hash: 628986695
+      m_Sprite: {fileID: 432741695235750433, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 432741695235750433, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+    - m_Name: wall_damage_dark_mid
+      m_Hash: 987396615
+      m_Sprite: {fileID: -3750704029581750381, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -3750704029581750381, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+    - m_Name: wall_damage_dark_large
+      m_Hash: 156455146
+      m_Sprite: {fileID: -6380053865821182195, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -6380053865821182195, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+    - m_Name: wall_damage_light_alt
+      m_Hash: 709007508
+      m_Sprite: {fileID: -4431335809962269794, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -4431335809962269794, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+    - m_Name: wall_damage_none
+      m_Hash: 345309575
+      m_Sprite: {fileID: -1243771416, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -1243771416, guid: 4a65068496a99ab4ca13c538387abc49, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 10
+  m_PrimaryLibraryGUID: 
+  m_ModificationHash: 638996032271349315
+  m_Version: 1
