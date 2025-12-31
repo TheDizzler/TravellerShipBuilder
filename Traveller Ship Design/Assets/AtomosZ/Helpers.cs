@@ -41,11 +41,111 @@ namespace AtomosZ
 			return result;
 		}
 
+		public static int Distance(Vector3Int a, Vector3Int b)
+		{
+			int xd = a.y - b.y;
+			int yd = a.x - ((a.y - (a.y & 1)) / 2) - (b.x - (b.y - (b.y & 1)) / 2);
+			int dist = (Mathf.Abs(xd) + Mathf.Abs(xd + yd) + Mathf.Abs(yd)) / 2;
+			return dist;
+		}
+
+		/// <summary>
+		/// Vector3Int(1, 0, 0)
+		/// </summary>
+		/// <param name="vec"></param>
+		/// <returns></returns>
+		public static Vector3Int Up(this Vector3Int vec)
+		{
+			return vec + Vector3Int.right;
+		}
+		/// <summary>
+		/// Vector3Int(0, 1, 0)
+		/// </summary>
+		/// <param name="vec"></param>
+		/// <returns></returns>
+		public static Vector3Int UpRight(this Vector3Int vec)
+		{
+			return vec + Vector3Int.up;
+		}
+		/// <summary>
+		/// Vector3Int(-1, 1, 0)
+		/// </summary>
+		/// <param name="vec"></param>
+		/// <returns></returns>
+		public static Vector3Int DownRight(this Vector3Int vec)
+		{
+			return vec + Vector3Int.left + Vector3Int.up;
+		}
+		/// <summary>
+		/// Vector3Int(-1, 0, 0)
+		/// </summary>
+		/// <param name="vec"></param>
+		/// <returns></returns>
+		public static Vector3Int Down(this Vector3Int vec)
+		{
+			return vec + Vector3Int.left;
+		}
+		/// <summary>
+		/// Vector3Int(-1, -1, 0)
+		/// </summary>
+		/// <param name="vec"></param>
+		/// <returns></returns>
+		public static Vector3Int DownLeft(this Vector3Int vec)
+		{
+			return vec + Vector3Int.left + Vector3Int.down;
+		}
+		/// <summary>
+		/// Vector3Int(0, -1, 0)
+		/// </summary>
+		/// <param name="vec"></param>
+		/// <returns></returns>
+		public static Vector3Int UpLeft(this Vector3Int vec)
+		{
+			return vec + Vector3Int.down;
+		}
+
+		public static Vector3Int GetNeighbourPos(this Vector3Int vec, CanonicalDirection dir)
+		{
+			switch (dir)
+			{
+				case CanonicalDirection.Up:
+					return vec.Up();
+				case CanonicalDirection.UpRight:
+					return vec.UpRight();
+				case CanonicalDirection.DownRight:
+					return vec.DownRight();
+				case CanonicalDirection.Down:
+					return vec.Down();
+				case CanonicalDirection.DownLeft:
+					return vec.DownLeft();
+				case CanonicalDirection.UpLeft:
+					return vec.UpLeft();
+				default:
+					throw new Exception($"what the heck is a {dir}?");
+			}
+		}
+
+		/// <summary>
+		/// The 6 directions for a <i><b>FLAT</b></i>-top hex.
+		/// </summary>
+		public enum CanonicalDirection
+		{
+			Up = 0x0, UpRight, DownRight, Down, DownLeft, UpLeft,
+			North = 0x0, NorthEast, SouthEast, South, SouthWest, NorthWest,
+		}
+
+		/// <summary>
+		/// The four compass point directions.
+		/// </summary>
+		public enum CardinalDirection
+		{
+			Up = 0x0, Right, Down, Left,
+			//North = 0x0, East, South, West,
+		}
 		public static Vector2Int Up(this Vector2Int vec)
 		{
 			return vec + Vector2Int.up;
 		}
-
 		public static Vector2Int Right(this Vector2Int vec)
 		{
 			return vec + Vector2Int.right;
@@ -172,6 +272,40 @@ namespace AtomosZ
 				Object.Destroy(child.gameObject);
 #endif
 			}
+		}
+
+		public static Texture2D ToTexture2D(Camera snapShotCamera, RenderTexture newTexture)
+		{
+			snapShotCamera.enabled = true;
+			RenderTexture currentActiveRT = RenderTexture.active;
+			RenderTexture.active = newTexture;
+
+			snapShotCamera.Render();
+
+			Texture2D tex = new Texture2D(newTexture.width,
+				newTexture.height, TextureFormat.RGB24, false);
+			tex.ReadPixels(new Rect(0, 0, newTexture.width, newTexture.height), 0, 0);
+			tex.Apply();
+
+			RenderTexture.active = currentActiveRT;
+			snapShotCamera.enabled = false;
+			return tex;
+		}
+	}
+
+	public static class Log
+	{
+		public static void Warning(string msg)
+		{
+			Debug.LogWarning(msg);
+		}
+		public static void Error(string msg)
+		{
+			Debug.LogError(msg);
+		}
+		public static void Exception(string msg)
+		{
+			Debug.LogException(new Exception(msg));
 		}
 	}
 }

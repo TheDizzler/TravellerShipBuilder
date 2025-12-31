@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AtomosZ.UI
 {
-	[CreateAssetMenu(fileName = "labelData", menuName = "AtomosZ/UIScriptableObjects/UITextScriptableObject", order = 0)]
+	[CreateAssetMenu(fileName = "labelData", menuName = "AtomosZ/UI/UITextScriptableObject", order = 0)]
 	public class UIExpandingLabelScriptableObject : ScriptableObject
 	{
 		[Tooltip("Default: 36")]

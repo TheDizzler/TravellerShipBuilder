@@ -2,24 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	/// <summary>
-	/// @TODO(Tristan): maxSigFigs
-	/// </summary>
-	[Serializable]
-	public class SliderEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.Slider; } }
-		public UISliderScriptableObject sliderData;
-
-		public SliderEx(UISliderScriptableObject sliderData)
-		{
-			this.sliderData = sliderData;
-		}
-	}
-
 	[ExecuteAlways]
 	public class UISlider : MonoBehaviour, IUIBehavior
 	{
@@ -370,14 +356,15 @@ namespace AtomosZ.UI
 		}
 
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
-			return new SliderEx(sliderData);
+			return sliderData;
 		}
 
-		public void UpdateBackingData(UISliderScriptableObject backingData)
+
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			sliderData = backingData;
+			sliderData = (UISliderScriptableObject)backingData;
 			if (sliderData != null)
 			{
 				labelData = sliderData.labelData;
@@ -387,12 +374,6 @@ namespace AtomosZ.UI
 				handleSprite = sliderData.handleSprite;
 				showUnits = sliderData.showUnits;
 			}
-
-		}
-
-		public void UpdateBackingData(IUIDataEx backingData)
-		{
-			UpdateBackingData(((SliderEx)backingData).sliderData);
 		}
 
 		private static bool isInPrefabStage()

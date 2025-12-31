@@ -2,15 +2,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static AtomosZ.UI.MagicWindow;
 
 
 namespace AtomosZ.UI
 {
-	public class SpinnerEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.Spinner; } }
-	}
-
 	[ExecuteAlways]
 	public class UISpinner : MonoBehaviour, IUIBehavior
 	{
@@ -203,9 +199,9 @@ namespace AtomosZ.UI
 			this.SetDirty();
 		}
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
-			return new SpinnerEx();
+			return null;
 		}
 
 
@@ -215,7 +211,7 @@ namespace AtomosZ.UI
 		/// then remove all IUIDataEx and only pass the ScriptableObjects.
 		/// </summary>
 		/// <param name="backingData"></param>
-		public void UpdateBackingData(IUIDataEx backingData)
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
 			UpdateBackingData();
 		}

@@ -28,14 +28,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 406007581663478937}
   - {fileID: 7316720326687756132}
   m_Father: {fileID: 3825835391147064959}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: -43.41}
-  m_SizeDelta: {x: 166.41, y: 0}
+  m_SizeDelta: {x: 186.64, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1446057733472547327
 GameObject:
@@ -74,7 +73,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 166.41, y: 86.41}
+  m_SizeDelta: {x: 186.64, y: 86.41}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4400289810483429264
 MonoBehaviour:
@@ -91,10 +90,8 @@ MonoBehaviour:
   _referenceName: rootTabControl
   _designObject: {fileID: 2560098995760729520}
   tabPanels:
-    keys:
-    - {fileID: 6361666675946949519}
-    values:
-    - {fileID: 4966230734555878253}
+  - tabLabel: {fileID: 6361666675946949519}
+    panel: {fileID: 4966230734555878253}
   tabControlData: {fileID: 11400000, guid: 790f7b4bb9b710b49911cc030f5756f2, type: 2}
   selectedTabIndex: 0
   tabItemPrefab: {fileID: 7330561272148096184, guid: 6c6e9b2b017284540a216890c7bf0be3, type: 3}
@@ -121,158 +118,6 @@ MonoBehaviour:
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
---- !u!1 &1809178376603989318
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 406007581663478937}
-  - component: {fileID: 6017489490894869436}
-  - component: {fileID: 5671732405208023505}
-  - component: {fileID: 5290557634896436737}
-  - component: {fileID: 1560474726141723026}
-  - component: {fileID: 8316470567965739537}
-  m_Layer: 0
-  m_Name: panel_00
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &406007581663478937
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1809178376603989318}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7525724327870039334}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 9.59, y: 32}
-  m_Pivot: {x: 0, y: 1}
---- !u!114 &6017489490894869436
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1809178376603989318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 609c63b92ee8b3e44b9dee1c7b856bb7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPanel
-  panelData: {fileID: 0}
-  _referenceName: 
-  _designObject: {fileID: 5671732405208023505}
-  _sprite: {fileID: 0}
-  _layoutPadding:
-    m_Left: 32
-    m_Right: 32
-    m_Top: 16
-    m_Bottom: 16
-  _layoutSpacing: 0
-  _borderless: 0
-  _minDimensions: {x: 0, y: 0}
-  tabLabel: {fileID: 0}
-  uiControls: []
-  rect: {fileID: 406007581663478937}
---- !u!114 &5671732405208023505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1809178376603989318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 0
-  tooltip: []
---- !u!114 &5290557634896436737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1809178376603989318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 32
-    m_Right: 32
-    m_Top: 16
-    m_Bottom: 16
-  m_ChildAlignment: 0
-  m_Spacing: 8
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 1
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
---- !u!114 &1560474726141723026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1809178376603989318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8d2a9c7a5c887bf45b947d6445d62561, type: 3}
-  m_Type: 2
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &8316470567965739537
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1809178376603989318}
-  m_CullTransparentMesh: 1
 --- !u!1 &1966772244492785500
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,7 +153,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 166.41, y: 54.41}
+  m_SizeDelta: {x: 186.64, y: 54.41}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8816971246287878466
 MonoBehaviour:
@@ -330,7 +175,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Traveller
+  m_text: T
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_sharedMaterial: {fileID: -5212590573181050906, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
@@ -447,7 +292,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -102.41, y: 32}
+  m_SizeDelta: {x: 0, y: 32}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4966230734555878253
 MonoBehaviour:
@@ -462,7 +307,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPanel
   panelData: {fileID: 0}
-  _referenceName: 
+  _referenceName: panel_00
   _designObject: {fileID: 4744660158183157174}
   _sprite: {fileID: 0}
   _layoutPadding:
@@ -515,7 +360,7 @@ MonoBehaviour:
     m_Top: 16
     m_Bottom: 16
   m_ChildAlignment: 0
-  m_Spacing: 8
+  m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -624,46 +469,18 @@ MonoBehaviour:
   panelScriptObj: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
   horizontalPanelScriptObj: {fileID: 11400000, guid: ce1eba15204d2244a8afb65cdc2be026, type: 2}
   textScriptObj: {fileID: 11400000, guid: 602ee890f7215c84e86858806d8cd97f, type: 2}
-  dropdownScriptObj: {fileID: 0}
+  dropdownScriptObj: {fileID: 11400000, guid: 9dc0573a54af75d4e8ecad2090d58a11, type: 2}
   checkBoxScriptObj: {fileID: 11400000, guid: b07b814d0d2387741a590f0e97184b34, type: 2}
   inputFieldScriptObj: {fileID: 11400000, guid: 9ca31f4b689e8ea44acd3ffbc1c18147, type: 2}
   sliderScriptObj: {fileID: 11400000, guid: 8181c99cb6437ea458a02fe691635b77, type: 2}
   buttonScriptObj: {fileID: 11400000, guid: a308899491cf25a459f2ecb401b6aa67, type: 2}
   buttonPanelScriptObj: {fileID: 11400000, guid: 56557aa7b7c6fad48b93d20458c100fb, type: 2}
   imageViewScriptObj: {fileID: 11400000, guid: 04ca78633c910a242b8446e33520c341, type: 2}
-  imageViewPanelScriptObj: {fileID: 11400000, guid: 6d8a33448b05f544fa7af08d9f8976bd, type: 2}
+  result: 0
+  isDragging: 0
+  _showCloseButton: 0
+  modalClickBlocker: {fileID: 0}
   currentType: 0
-  controlList:
-  - controlType: 0
-    labelEx:
-      rid: 8598804468195655680
-    inputFieldEx:
-      rid: -2
-    checkBoxEx:
-      rid: -2
-    sliderEx:
-      rid: -2
-    buttonEx:
-      rid: -2
-    imageEx:
-      rid: -2
-    imagePanelEx:
-      rid: -2
-    buttonPanelEx:
-      rid: -2
-    dropdownEx:
-      rid: -2
-    panelEx:
-      rid: -2
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 8598804468195655680
-      type: {class: LabelEx, ns: AtomosZ.UI, asm: Assembly-CSharp}
-      data:
-        scriptableObj: {fileID: 0}
 --- !u!114 &4508516794867129895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -725,7 +542,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 166.41, y: 54.41}
+  m_SizeDelta: {x: 186.64, y: 54.41}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6361666675946949519
 MonoBehaviour:
@@ -745,15 +562,15 @@ MonoBehaviour:
   _designObject: {fileID: 4198941472097476559}
   _referenceName: titlebar
   _interactable: 1
-  _text: Traveller
+  _text: T
   _color: {r: 0, g: 0, b: 0, a: 1}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
   _fontSize: 36
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 514
-  _margin: {x: 12, y: 8, z: 46, w: 16}
-  _minLabelDimensions: {x: 54.41, y: 10}
+  _margin: {x: 12, y: 8, z: 12, w: 4}
+  _minLabelDimensions: {x: 54.41, y: 32}
   _maxLabelDimensions: {x: 1025, y: 256}
 --- !u!114 &6888745483806320589
 MonoBehaviour:

@@ -1,36 +1,14 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.Common;
 using System.Diagnostics;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 
 using UnityEngine.UI;
+using static AtomosZ.UI.MagicWindow;
 using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
-	/// <summary>
-	/// THis is ready to be removed completely
-	/// </summary>
-	[Serializable]
-	public class LabelEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.Text; } }
-
-		public UIExpandingLabelScriptableObject scriptableObj;
-
-
-
-		public LabelEx(UIExpandingLabelScriptableObject textScriptObj)
-		{
-			this.scriptableObj = textScriptObj;
-
-		}
-	}
-
 	[ExecuteAlways]
 	public class UIExpandingLabel : MonoBehaviour, IUIBehavior
 	{
@@ -306,7 +284,7 @@ namespace AtomosZ.UI
 			if (labelDims.x < newWidth)
 			{
 				labelDims.x = newWidth;
-				minLabelDimensions = labelDims;
+				maxLabelDimensions = labelDims;
 			}
 
 			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
@@ -358,16 +336,16 @@ namespace AtomosZ.UI
 			this.SetDirty();
 		}
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
-			return new LabelEx(labelData);
+			return labelData;
 		}
 
 
 
-		public void UpdateBackingData(UIExpandingLabelScriptableObject dataEx)
+		public void UpdateBackingData(ScriptableObject dataEx)
 		{
-			labelData = dataEx;
+			labelData = (UIExpandingLabelScriptableObject)dataEx;
 			if (labelData != null)
 			{
 				color = labelData.fontColor;
@@ -376,13 +354,9 @@ namespace AtomosZ.UI
 				fontSize = labelData.fontSize;
 				fontStyles = labelData.fontStyles;
 				margin = labelData.textMargin;
-				this.SetDirty();
 			}
-		}
 
-		public void UpdateBackingData(IUIDataEx dataEx)
-		{
-			UpdateBackingData(((LabelEx)dataEx).scriptableObj);
+			this.SetDirty();
 		}
 
 		void Update()
@@ -399,7 +373,7 @@ namespace AtomosZ.UI
 			//if (name == "UIExpandingText (TMP)")
 			//	name = name;
 
-			var rect = transform.GetComponent<RectTransform>();
+			//var rect = textLabel.transform.GetComponent<RectTransform>();
 
 			var prefTextSize = textLabel.GetPreferredValues(text);
 			var singleLineTextHeight = prefTextSize.y; // this is the height of a single line, assuming no linefeed
@@ -424,7 +398,9 @@ namespace AtomosZ.UI
 				var preferredValues = textLabel.GetPreferredValues();   // this is values INCLUDING margins
 
 				newWidth = Mathf.Min(preferredValues.x, actualMaxWidth);
-				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+
+				textLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+
 				textLabel.ForceMeshUpdate();
 				Canvas.ForceUpdateCanvases();
 
@@ -466,21 +442,22 @@ namespace AtomosZ.UI
 
 					Debug.LogWarning("what the hell???");
 				}
-
-				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
 			}
 
-
+			newWidth += 10;
 			if (image != null)
 			{
 				var imageLabelSize = new Vector2(newWidth, newHeight);
-				imageLabelSize.y = newHeight;
 				image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, imageLabelSize.x);
 				image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, imageLabelSize.y);
 			}
 
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
+			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+			textLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+
+
+			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
+			textLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
 			isDirty = false;
 		}
 
@@ -491,18 +468,7 @@ namespace AtomosZ.UI
 			if (isDirty)
 				UpdateBackingData();
 
-			return transform.GetComponent<RectTransform>().sizeDelta;
-			//if (image == null)
-			//{
-			//	var size = textLabel.rectTransform.sizeDelta;
-			//	size.x += textLabel.margin.x + textLabel.margin.z;
-			//	size.y += textLabel.margin.y + textLabel.margin.w;
-			//	return size;
-			//}
-			//else
-			//{
-			//	return image.rectTransform.sizeDelta;
-			//}
+			return textLabel.rectTransform.sizeDelta;
 		}
 
 		public void SetHover(bool isHover)

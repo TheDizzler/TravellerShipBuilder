@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AtomosZ.MG2eTraveller.Starmap;
 using UnityEngine;
 
 namespace AtomosZ
@@ -23,7 +24,8 @@ namespace AtomosZ
 			{
 				var index = keys.IndexOf(key);
 				if (index == -1)
-					return default;
+					//return default;
+					Debug.LogException(new Exception($"CustomDictionary exception: key {key} does not exist in collection"));
 				return values[index];
 			}
 			set
@@ -38,13 +40,14 @@ namespace AtomosZ
 		}
 
 
-		public TKey this[TValue key]
+		public TKey this[TValue tValue]
 		{
 			get
 			{
-				var index = values.IndexOf(key);
+				var index = values.IndexOf(tValue);
 				if (index == -1)
-					return default;
+					Debug.LogException(new Exception($"CustomDictionary exception: value {tValue} does not exist in collection."));
+				//return default;
 				return keys[index];
 			}
 		}
@@ -54,7 +57,8 @@ namespace AtomosZ
 			get
 			{
 				if (index == -1 || index >= keys.Count)
-					return default;
+					Debug.LogException(new Exception($"CustomDictionary exception: index {index} does not exist in collection."));
+				//return default;
 				return new KeyValuePair<TKey, TValue>(keys[index], values[index]);
 			}
 		}
@@ -94,16 +98,22 @@ namespace AtomosZ
 		}
 
 		/// <summary>
-		/// What's the point of this?
+		///
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="value"></param>
 		public void Add(TKey key, TValue value)
 		{
 			if (keys.Contains(key))
-				Debug.LogException(new Exception("CustomDictionary exception: key already exists in collection"));
-			keys.Add(key);
-			values.Add(value);
+			{
+				Debug.Log($"CustomDictionary exception: key {key} already exists in collection");
+				this[key] = value;
+			}
+			else
+			{
+				keys.Add(key);
+				values.Add(value);
+			}
 			DEBUG_CheckIntegrity();
 		}
 
@@ -111,9 +121,15 @@ namespace AtomosZ
 		public void Add(KeyValuePair<TKey, TValue> item)
 		{
 			if (keys.Contains(item.Key))
-				return;
-			keys.Add(item.Key);
-			values.Add(item.Value);
+			{
+				Debug.Log(($"CustomDictionary exception: key {item.Key} already exists in collection"));
+				this[item.Key] = item.Value;
+			}
+			else
+			{
+				keys.Add(item.Key);
+				values.Add(item.Value);
+			}
 			DEBUG_CheckIntegrity();
 		}
 
@@ -126,6 +142,12 @@ namespace AtomosZ
 		{
 			foreach (var key in keys)
 				Add(key, initValue);
+		}
+
+		public void AddRange(CustomDictionary<TKey, TValue> values)
+		{
+			foreach (var val in values)
+				Add(val);
 		}
 
 		public bool Remove(TKey key)
@@ -213,6 +235,18 @@ namespace AtomosZ
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		public List<TKey> GetKeysFromValue(TValue value)
+		{
+			var foundKeys = new List<TKey>();
+			for (int i = 0; i < keys.Count; ++i)
+			{
+				if (values[i].Equals(value))
+					foundKeys.Add(keys[i]);
+			}
+
+			return foundKeys;
 		}
 	}
 }

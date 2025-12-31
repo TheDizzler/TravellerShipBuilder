@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-
 using UnityEngine;
+using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
@@ -17,6 +15,8 @@ namespace AtomosZ.UI
 		/// ModalClickBlocker should not need a reference name.
 		/// </summary>
 		public string referenceName { get; set; }
+
+		public bool interactable { get; set; }
 
 		public IUIBehavior GetControl(string controlRefName)
 		{
@@ -43,7 +43,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
 			throw new System.NotImplementedException();
 		}
@@ -63,7 +63,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void UpdateBackingData(IUIDataEx backingData)
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
 			throw new System.NotImplementedException();
 		}

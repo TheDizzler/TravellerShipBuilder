@@ -2,37 +2,20 @@ using System;
 
 using UnityEngine;
 using UnityEngine.UI;
+using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[Serializable]
-	public class ImageEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.Image; } }
-
-		public UIImageViewScriptableObject scriptableObject;
-
-
-		public bool isVisible = true;
-		public Sprite sprite;
-		public bool forceSize = false;
-		public Vector2 size = new Vector2(256, 256);
-		public bool showCaption = true;
-
-
-		public ImageEx(UIImageViewScriptableObject scriptObj)
-		{
-			scriptableObject = scriptObj;
-		}
-	}
-
 	[ExecuteAlways]
 	public class UIImageView : MonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Image; } }
 		[SerializeField] private Image image;
 		[SerializeField] private UIExpandingLabel captionLabel;
-		[SerializeField] private ImageEx imageEx;
+		[SerializeField] private UIImageViewScriptableObject imageData;
+
+		public Button button { get { return GetComponent<Button>(); } }
+
 
 		[SerializeField] private string _referenceName;
 		public string referenceName
@@ -40,7 +23,7 @@ namespace AtomosZ.UI
 			get { return _referenceName; }
 			set
 			{
-				_referenceName= value;
+				_referenceName = value;
 				this.SetGameObjectNameToReferenceName(gameObject);
 			}
 		}
@@ -59,11 +42,36 @@ namespace AtomosZ.UI
 		public bool isDirty { get; set; } = true;
 
 
+		[SerializeField] private bool _interactable = true;
+		public bool interactable
+		{
+			get { return _interactable; }
+			set
+			{
+				_interactable = value;
+				button.interactable = value;
+			}
+		}
+
+		[SerializeField] public Sprite _sprite;
+		[Tooltip("null sprite will set to defaultSprite (if available)")]
+		public Sprite sprite
+		{
+			get { return _sprite = image.sprite; }
+			set
+			{
+				if (value == null && imageData != null)
+					value = imageData.defaultSprite;
+				_sprite = image.sprite = value;
+				this.SetDirty();
+			}
+		}
+
 		[SerializeField] private string _text = "Caption #00";
 		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
 		public string text
 		{
-			get { return _text; }
+			get { return _text = captionLabel.text; }
 			set
 			{
 				if (_text == text)
@@ -74,6 +82,62 @@ namespace AtomosZ.UI
 			}
 		}
 
+
+		[SerializeField] private Vector2 _minDimensions;
+		/// <summary>
+		/// If either x or y is <= 0, sets image to native size.
+		/// </summary>
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions = image.rectTransform.sizeDelta; }
+			set
+			{
+				if (value.x <= 0 || value.y <= 0)
+				{
+					image.SetNativeSize();
+				}
+				else
+				{
+					image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value.x);
+					image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value.y);
+				}
+				this.SetDirty();
+			}
+		}
+
+		/// <summary>
+		/// If either x or y is <= 0, sets image to native size.
+		/// </summary>
+		/// <param name="imageSize"></param>
+		public void SetSize(Vector2 imageSize)
+		{
+			minDimensions = imageSize;
+		}
+
+		[SerializeField] private bool _showImage = true;
+		public bool showImage
+		{
+			get { return _showImage; }
+			set
+			{
+				_showImage = value;
+				image.gameObject.SetActive(value);
+				this.SetDirty();
+			}
+		}
+		[SerializeField] private bool _showCaption = true;
+		public bool showCaption
+		{
+			get { return _showCaption; }
+			set
+			{
+				_showCaption = value;
+				captionLabel.gameObject.SetActive(value);
+				this.SetDirty();
+			}
+		}
+
+
 		public IUIBehavior GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
@@ -81,26 +145,21 @@ namespace AtomosZ.UI
 			return captionLabel.GetControl(controlRefName);
 		}
 
-
-		public void SetSize(Vector2 imageSize)
+		public ScriptableObject GetBackingData()
 		{
-			imageEx.size = imageSize;
-			imageEx.forceSize = true;
-			this.SetDirty();
+			return imageData;
 		}
 
-		public IUIDataEx GetBackingData()
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			return imageEx;
-		}
+			imageData = (UIImageViewScriptableObject)backingData;
+			if (imageData != null)
+			{
+				captionLabel.UpdateBackingData(imageData.labelData);
+				showImage = imageData.isImageHidden;
+				showCaption = imageData.isCaptionHidden;
+			}
 
-		public void UpdateBackingData(IUIDataEx backingData)
-		{
-			imageEx = (ImageEx)backingData;
-			UIExpandingLabelScriptableObject data = null;
-			if (imageEx.scriptableObject != null)
-				data = imageEx.scriptableObject.labelData;
-			captionLabel.UpdateBackingData(new LabelEx(data));
 			UpdateBackingData();
 		}
 
@@ -114,41 +173,26 @@ namespace AtomosZ.UI
 		{
 			this.SetGameObjectNameToReferenceName(gameObject);
 
-			gameObject.SetActive(imageEx.isVisible);
-			if (!imageEx.isVisible)
-				return;
-			image.sprite = imageEx.sprite;
-			if (imageEx.forceSize)
+			float height = 0;
+			float width = 0;
+			if (showImage)
 			{
-				if (imageEx.size.x <= 0)
-					imageEx.size.x = 32;
-				if (imageEx.size.y <= 0)
-					imageEx.size.y = 32;
-				image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, imageEx.size.x);
-				image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, imageEx.size.y);
-			}
-			else
-			{
-				image.SetNativeSize();
+				width = image.rectTransform.sizeDelta.x;
+				height = image.rectTransform.sizeDelta.y;
 			}
 
-			float height = image.rectTransform.sizeDelta.y;
-
-			if (imageEx.showCaption)
+			if (showCaption)
 			{
-				captionLabel.gameObject.SetActive(true);
 				captionLabel.UpdateBackingData();
 
 				var layout = GetComponent<VerticalLayoutGroup>();
 				var textSize = captionLabel.GetMinDimensions();
 				height += textSize.y;
 				height += layout.spacing;
-			}
-			else
-			{
-				captionLabel.gameObject.SetActive(false);
+				width = MathF.Max(textSize.x, width);
 			}
 
+			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
 			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 
 			isDirty = false;

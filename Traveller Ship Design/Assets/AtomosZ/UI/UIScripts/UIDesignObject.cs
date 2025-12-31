@@ -128,7 +128,7 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
 			if (hasUpdatableBackingData)
 			{
@@ -150,7 +150,7 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public void UpdateBackingData(IUIDataEx backingData)
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
 			if (hasUpdatableBackingData)
 			{

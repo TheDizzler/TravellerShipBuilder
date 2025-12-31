@@ -4,6 +4,7 @@ using AtomosZ.MG2eTraveller.Ship;	// @TODO(Tristan): Ship design stuff should no
 using UnityEngine;
 
 using static AtomosZ.Keyboard;
+using static AtomosZ.UI.MagicWindow;
 
 
 namespace AtomosZ.UI
@@ -12,7 +13,7 @@ namespace AtomosZ.UI
 	{
 		public UIControlType dataType { get; }
 
-		[SerializeField] private DynamicPanel panel;
+		[SerializeField] private MagicWindow panel;
 		[SerializeField] private RectTransform panelRect;
 		private Vector2 startDragPos;
 
@@ -30,6 +31,7 @@ namespace AtomosZ.UI
 		public bool isDirty { get; set; }
 		public string referenceName { get; set; }
 		
+		public bool interactable { get; set; }
 
 		public IUIBehavior GetControl(string controlRefName)
 		{
@@ -112,12 +114,12 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public void UpdateBackingData(IUIDataEx backingData)
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
 			throw new System.NotImplementedException();
 		}

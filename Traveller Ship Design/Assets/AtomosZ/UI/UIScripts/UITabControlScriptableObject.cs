@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace AtomosZ.UI
 {
-	[CreateAssetMenu(fileName = "tabControlData", menuName = "AtomosZ/UIScriptableObjects/UITabControlScriptableObject")]
+	[CreateAssetMenu(fileName = "tabControlData", menuName = "AtomosZ/UI/TabControlScriptableObject")]
 	public class UITabControlScriptableObject : ScriptableObject
 	{
 		[Tooltip("The UIPanelScriptableObject that new child panels will inherit.")]

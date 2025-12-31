@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -212,6 +213,51 @@ Transform:
   - {fileID: 1639144243}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras:
+  - {fileID: 1639144241}
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &549643352
 GameObject:
   m_ObjectHideFlags: 0
@@ -851,18 +897,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83cd86452f6511548990a98ac5af366c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPrefabProvider
+  panelScriptObj: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
+  horizontalPanelScriptObj: {fileID: 11400000, guid: ce1eba15204d2244a8afb65cdc2be026, type: 2}
   textScriptObj: {fileID: 11400000, guid: 602ee890f7215c84e86858806d8cd97f, type: 2}
-  dropdownScriptObj: {fileID: 11400000, guid: a22e1f16cdb147547b5d6c8222d55958, type: 2}
+  dropdownScriptObj: {fileID: 11400000, guid: 9dc0573a54af75d4e8ecad2090d58a11, type: 2}
   checkBoxScriptObj: {fileID: 11400000, guid: b07b814d0d2387741a590f0e97184b34, type: 2}
   inputFieldScriptObj: {fileID: 11400000, guid: 9ca31f4b689e8ea44acd3ffbc1c18147, type: 2}
   sliderScriptObj: {fileID: 11400000, guid: 8181c99cb6437ea458a02fe691635b77, type: 2}
   buttonScriptObj: {fileID: 11400000, guid: a308899491cf25a459f2ecb401b6aa67, type: 2}
   buttonPanelScriptObj: {fileID: 11400000, guid: 56557aa7b7c6fad48b93d20458c100fb, type: 2}
   imageViewScriptObj: {fileID: 11400000, guid: 04ca78633c910a242b8446e33520c341, type: 2}
-  imageViewPanelScriptObj: {fileID: 11400000, guid: 6d8a33448b05f544fa7af08d9f8976bd, type: 2}
+  tabbedWindowScriptObj: {fileID: 11400000, guid: 0027f5f71500d714f8d2ed0bfb2b42d4, type: 2}
+  titleBarWindowScriptObj: {fileID: 11400000, guid: 790f7b4bb9b710b49911cc030f5756f2, type: 2}
+  contextMenuWindowScriptObj: {fileID: 11400000, guid: 6ad28b677fe12a3458672ec0448d5ca0, type: 2}
   uiPrefabs:
-    keys: 0100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c000000
+    keys: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f00000010000000
     values:
+    - {fileID: 4975009020863022449, guid: a97aee397c773d2429f1a3d59026b0cf, type: 3}
     - {fileID: 6311154708473013455, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
     - {fileID: 5761179207979531042, guid: 53db565345bf96f45b685e5078f6c6b5, type: 3}
     - {fileID: 5773319279418712064, guid: cc31ca90912907a4092621913b28ee88, type: 3}
@@ -875,8 +926,11 @@ MonoBehaviour:
     - {fileID: 3451710294960635019, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
     - {fileID: 2237528456814338375, guid: 108c35f0d8a52ad4996cd45bbca125ae, type: 3}
     - {fileID: 3898854370579401519, guid: 3952e60ed4b030b4d8fed2b3b8f576f4, type: 3}
+    - {fileID: 974002178803776813, guid: caf2293ad686bcd46a573eca466e4a7d, type: 3}
+    - {fileID: 4757135074788766894, guid: ff5b9d9e845249241834e9a163305104, type: 3}
+    - {fileID: 1551854222198439915, guid: 1ec87a869128d7e46b5bf60283125fae, type: 3}
+    - {fileID: 1551854222198439915, guid: 6a46ce684b853da42969c871a2750070, type: 3}
   defaultFont: {fileID: 0}
-  uiCanvas: {fileID: 0}
 --- !u!1 &1526743754
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,6 +1175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1639144243}
   - component: {fileID: 1639144241}
+  - component: {fileID: 1639144244}
   m_Layer: 0
   m_Name: UI Camera
   m_TagString: Untagged
@@ -1137,7 +1192,7 @@ Camera:
   m_GameObject: {fileID: 1639144240}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 3
+  m_ClearFlags: 4
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -1173,7 +1228,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -1194,6 +1249,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 519420032}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1639144244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639144240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 1
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!224 &1814655476
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1303,6 +1402,7 @@ GameObject:
   - component: {fileID: 1900904568}
   - component: {fileID: 1900904566}
   - component: {fileID: 1900904567}
+  - component: {fileID: 1900904569}
   m_Layer: 0
   m_Name: ScreenshotCamera
   m_TagString: Untagged
@@ -1384,6 +1484,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1900904569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900904565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &1975196829
 GameObject:
   m_ObjectHideFlags: 0

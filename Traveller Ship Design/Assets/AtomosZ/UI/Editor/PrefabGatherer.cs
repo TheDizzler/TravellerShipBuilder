@@ -20,7 +20,10 @@ namespace AtomosZ.UI.EditorZ
 			provider.uiPrefabs.Clear();
 			foreach (UIPrefabType prefabType in Enum.GetValues(typeof(UIPrefabType)))
 			{
-				var prefab = AssetDatabase.LoadAssetAtPath<UIDesignObject>($"Assets/AtomosZ/UI/BaseUIPrefabs/UI{prefabType}.prefab");
+				string prefabName = prefabType.ToString();
+				if (prefabType != UIPrefabType.MagicWindow)
+					prefabName = "UI" + prefabName;
+				var prefab = AssetDatabase.LoadAssetAtPath<UIDesignObject>($"Assets/AtomosZ/UI/BaseUIPrefabs/{prefabName}.prefab");
 				if (prefab == null)
 					Debug.LogWarning("No prefab found for " + prefabType);
 				else
@@ -43,8 +46,8 @@ namespace AtomosZ.UI.EditorZ
 				provider.buttonPanelScriptObj = AssetDatabase.LoadAssetAtPath<UIButtonPanelScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UIButtonPanelData.asset");
 			if (provider.imageViewScriptObj == null)
 				provider.imageViewScriptObj = AssetDatabase.LoadAssetAtPath<UIImageViewScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UIImageViewData.asset");
-			if (provider.imageViewPanelScriptObj == null)
-				provider.imageViewPanelScriptObj = AssetDatabase.LoadAssetAtPath<UIImageViewPanelScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UIImageViewPanelData.asset");
+			//if (provider.imageViewPanelScriptObj == null)
+			//	provider.imageViewPanelScriptObj = AssetDatabase.LoadAssetAtPath<UIImageViewPanelScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UIImageViewPanelData.asset");
 
 			if (provider.tabbedWindowScriptObj == null)
 				provider.tabbedWindowScriptObj = AssetDatabase.LoadAssetAtPath<UITabControlScriptableObject>(DEFAULT_SO_FOLDER_PATH + "TabControlData_Tabbed.asset");

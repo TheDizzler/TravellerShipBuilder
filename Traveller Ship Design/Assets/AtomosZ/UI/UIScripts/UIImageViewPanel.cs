@@ -1,295 +1,305 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+//using System;
+//using System.Collections;
+//using System.Collections.Generic;
 
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
-
-
-namespace AtomosZ.UI
-{
-	[Serializable]
-	public class ImageViewDataEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.ImagePanel; } }
-		public string referenceName;
-
-		/// <summary>
-		/// I have decided that this MAY NOT be NULL!<br/>
-		/// And so it shall be so...
-		/// </summary>
-		public UIImageViewPanelScriptableObject scriptableObj;
-
-		//public Vector2 imageSize = new Vector2(256, 256);
-		//public Vector2 maxPanelSize = new Vector2(512, 512);
-		public bool useAllAvailableHeight = false;
-		//public Sprite defaultSprite;
-		public bool showCaptions = true;
-
-		/// <summary>
-		/// This should share the same label data (except the text, of course) with all child images.
-		/// </summary>
-		public LabelEx labelEx;
-		//= new LabelEx
-		//{
-		//	//fontColor = Color.black,
-		//	//fontSize = 36,
-		//	//maxLabelDimensions = new Vector2(125, 125),
-		//	text = "Image #00",
-		//};
-
-		public ImageViewDataEx(UIImageViewPanelScriptableObject scriptObj)
-		{
-			if (scriptObj == null)
-				Debug.LogException(new Exception("Invalid ImageViewPanel state: may not be null."));
-			scriptableObj = scriptObj;
-			labelEx = new LabelEx(scriptableObj.labelData);
-		}
-	}
-
-	[ExecuteAlways]
-	public class UIImageViewPanel : MonoBehaviour, IUIBehavior
-	{
-		public UIControlType dataType { get { return UIControlType.ImagePanel; } }
-		[SerializeField] private ImageViewDataEx viewDataEx;
-		[SerializeField] public GridLayoutGroup gridLayout;
-		[SerializeField] public ScrollRect scrollRect;
-
-		[SerializeField] public Dictionary<ImageEx, UIImageView> images = new();
-
-		public string referenceName
-		{
-			get { return viewDataEx.referenceName; }
-			set
-			{
-				viewDataEx.referenceName = value;
-				this.SetGameObjectNameToReferenceName(gameObject);
-			}
-		}
-
-		private UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
-
-		public bool isDirty { get; set; } = true;
-
-		void OnEnable()
-		{
-			var imageViews = GetComponentsInChildren<UIImageView>();
-			images.Clear();
-			foreach (var imageView in imageViews)
-			{
-				images.Add((ImageEx)imageView.GetBackingData(), imageView);
-			}
-
-			this.SetDirty();
-		}
-
-		public IUIBehavior GetControl(string controlRefName)
-		{
-			if (referenceName == controlRefName)
-				return this;
-			foreach (var image in images)
-			{
-				var ctrl = image.Value.GetControl(controlRefName);
-				if (ctrl != null)
-					return ctrl;
-			}
-
-			return null;
-		}
+//using UnityEngine;
+//using UnityEngine.Events;
+//using UnityEngine.UI;
+//using static AtomosZ.UI.MagicWindow;
 
 
-		public IUIDataEx GetBackingData()
-		{
-			return viewDataEx;
-		}
+//namespace AtomosZ.UI
+//{
+//	//[Serializable]
+//	//public class ImageViewDataEx : IUIDataEx
+//	//{
+//	//public UIControlType dataType { get { return UIControlType.ImagePanel; } }
+//	//public string referenceName;
 
-		public void UpdateBackingData(IUIDataEx backingData)
-		{
-			viewDataEx = (ImageViewDataEx)backingData;
-			UpdateBackingData();
-		}
+//	/// <summary>
+//	/// I have decided that this MAY NOT be NULL!<br/>
+//	/// And so it shall be so...
+//	/// </summary>
+//	//public UIImageViewPanelScriptableObject scriptableObj;
 
-		void Update()
-		{
-			if (isDirty)
-				UpdateBackingData();
-		}
+//	//public Vector2 imageSize = new Vector2(256, 256);
+//	//public Vector2 maxPanelSize = new Vector2(512, 512);
+//	public bool useAllAvailableHeight = false;
+//	//public Sprite defaultSprite;
+//	public bool showCaptions = true;
 
-		public void UpdateBackingData()
-		{
-			this.SetGameObjectNameToReferenceName(gameObject);
+//	/// <summary>
+//	/// This should share the same label data (except the text, of course) with all child images.
+//	/// </summary>
+//	//public LabelEx labelEx;
+//	//= new LabelEx
+//	//{
+//	//	//fontColor = Color.black,
+//	//	//fontSize = 36,
+//	//	//maxLabelDimensions = new Vector2(125, 125),
+//	//	text = "Image #00",
+//	//};
 
-			var rect = GetComponent<RectTransform>();
-			var panelSize = rect.sizeDelta;
+//	//	public ImageViewDataEx(UIImageViewPanelScriptableObject scriptObj)
+//	//	{
+//	//		if (scriptObj == null)
+//	//			Debug.LogException(new Exception("Invalid ImageViewPanel state: may not be null."));
+//	//		scriptableObj = scriptObj;
+//	//		labelEx = new LabelEx(scriptableObj.labelData);
+//	//	}
+//	//}
 
-			var minSize = gridLayout.cellSize;
-			minSize.x += gridLayout.padding.right + gridLayout.padding.left;
-			minSize.y += gridLayout.padding.top + gridLayout.padding.bottom;
+//	[ExecuteAlways]
+//	public class UIImageViewPanel : MonoBehaviour, IUIBehavior
+//	{
+//		public UIControlType dataType { get { return UIControlType.ImagePanel; } }
+//		[SerializeField] private UIImageViewPanelScriptableObject viewDataEx;
+//		[SerializeField] public GridLayoutGroup gridLayout;
+//		[SerializeField] public ScrollRect scrollRect;
 
-			if (viewDataEx.useAllAvailableHeight)
-			{
-				panelSize.y = viewDataEx.scriptableObj.maxPanelSize.y;
-			}
+//		[SerializeField] public Dictionary<ImageEx, UIImageView> images = new();
 
-			var newWidth = Mathf.Max(panelSize.x, minSize.x);
-			var newHeight = Mathf.Max(panelSize.y, minSize.y);
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
+//		[SerializeField] private string _referenceName;
+//		public string referenceName
+//		{
+//			get { return _referenceName; }
+//			set
+//			{
+//				_referenceName = value;
+//				this.SetGameObjectNameToReferenceName(gameObject);
+//			}
+//		}
 
-			var contentWidthAvailable = rect.sizeDelta.x - (gridLayout.padding.right + gridLayout.padding.left);
-			var imageWidth = minSize.x + gridLayout.spacing.x;
-			var imagesPerRow = contentWidthAvailable / imageWidth;
-			float imagesOnRow = Mathf.FloorToInt(imagesPerRow);
-			if (imagesOnRow <= 0)
-				imagesOnRow = 1;
-			int rowsRequired = Mathf.CeilToInt(images.Count / imagesOnRow);
+//		private UIDesignObject _designObject;
+//		public UIDesignObject designObject
+//		{
+//			get
+//			{
+//				if (_designObject == null)
+//					_designObject = GetComponent<UIDesignObject>();
+//				return _designObject;
+//			}
+//		}
 
-			var contentHeight = rowsRequired * minSize.y;
-			scrollRect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentHeight);
+//		public bool isDirty { get; set; } = true;
 
-			foreach (var image in images)
-			{
-				image.Key.showCaption = viewDataEx.showCaptions;
-				image.Key.forceSize = true;
-				image.Key.size = viewDataEx.scriptableObj.imageSize;
-				//image.Key.labelEx.fontSize = viewData.labelEx.fontSize;
-				//image.Key.labelEx.fontColor = viewData.labelEx.fontColor;
-				//image.Key.labelEx.fontAsset = viewData.labelEx.fontAsset;
-				//image.Key.labelEx.maxLabelDimensions = viewData.labelEx.maxLabelDimensions;
-				//image.Key.labelEx.minLabelDimensions = viewData.labelEx.minLabelDimensions;
-				image.Value.UpdateBackingData();
-			}
+//		void OnEnable()
+//		{
+//			var imageViews = GetComponentsInChildren<UIImageView>();
+//			images.Clear();
+//			foreach (var imageView in imageViews)
+//			{
+//				images.Add((ImageEx)imageView.GetBackingData(), imageView);
+//			}
 
-			isDirty = false;
-		}
+//			this.SetDirty();
+//		}
 
-		public Vector2 GetMinDimensions()
-		{
-			if (isDirty)
-				UpdateBackingData();
-			return GetComponent<RectTransform>().sizeDelta;
-		}
+//		public IUIBehavior GetControl(string controlRefName)
+//		{
+//			if (referenceName == controlRefName)
+//				return this;
+//			foreach (var image in images)
+//			{
+//				var ctrl = image.Value.GetControl(controlRefName);
+//				if (ctrl != null)
+//					return ctrl;
+//			}
 
-
-		public void ClearImages()
-		{
-			foreach (var image in images)
-			{
-#if UNITY_EDITOR
-				if (Application.isEditor && !Application.isPlaying)
-					DestroyImmediate(image.Value.gameObject);
-				else
-					Destroy(image.Value.gameObject);
-#else
-			Destroy(image.Value.gameObject);
-#endif
-			}
-
-			images.Clear();
-		}
-
-		public void RemoveImage(ImageEx imageEx)
-		{
-			if (!images.TryGetValue(imageEx, out var imageView))
-			{
-				Debug.LogWarning("Image not found in view");
-				return;
-			}
-
-			images.Remove(imageEx);
-
-#if UNITY_EDITOR
-			if (Application.isEditor && !Application.isPlaying)
-				DestroyImmediate(imageView.gameObject);
-			else
-				Destroy(imageView.gameObject);
-#else
-		Destroy(imageView.gameObject);
-#endif
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sprite">Null sprite will result in the view panels default sprite.</param>
-		/// <param name="caption"></param>
-		/// <returns></returns>
-		public UIImageView AddImage(Sprite sprite, string caption, UnityAction value)
-		{
-			var imageEx = new ImageEx(viewDataEx.scriptableObj.imageViewData)
-			{
-				sprite = sprite == null ? viewDataEx.scriptableObj.defaultSprite : sprite,
-			};
+//			return null;
+//		}
 
 
-			var imageView = AddImage(imageEx);
-			imageView.text = caption;
-			imageView.GetComponent<Button>().onClick.AddListener(value);
-			return imageView;
-		}
+//		public ScriptableObject GetBackingData()
+//		{
+//			return viewDataEx;
+//		}
 
-		/// <summary>
-		/// All data (except text) in LabelEx gets overwritten by viewPanel defaults.
-		/// </summary>
-		/// <param name="imageEx"></param>
-		/// <returns></returns>
-		public UIImageView AddImage(ImageEx imageEx)
-		{
-			if (images.ContainsKey(imageEx))
-			{
-				Debug.LogWarning("Image already in view");
-				return images[imageEx];
-			}
+//		public void UpdateBackingData(ScriptableObject backingData)
+//		{
+//			viewDataEx = (UIImageViewPanelScriptableObject)backingData;
+//			if (viewDataEx != null)
+//			{
+//				viewDataEx.labelData ;
+//				viewDataEx.imageViewData;
+//				viewDataEx.maxPanelSize;
+//				viewDataEx.imageSize;
+//			}
 
-			imageEx.size = viewDataEx.scriptableObj.imageSize;
-			imageEx.forceSize = true;
-			var imageDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabProvider.UIPrefabType.ImageView), gridLayout.transform);
-			var image = imageDO.GetComponent<UIImageView>();
+//			UpdateBackingData();
+//		}
 
-			image.UpdateBackingData(imageEx);
-			images.Add(imageEx, image);
-			return image;
-		}
+//		void Update()
+//		{
+//			if (isDirty)
+//				UpdateBackingData();
+//		}
+
+//		public void UpdateBackingData()
+//		{
+//			this.SetGameObjectNameToReferenceName(gameObject);
+
+//			var rect = GetComponent<RectTransform>();
+//			var panelSize = rect.sizeDelta;
+
+//			var minSize = gridLayout.cellSize;
+//			minSize.x += gridLayout.padding.right + gridLayout.padding.left;
+//			minSize.y += gridLayout.padding.top + gridLayout.padding.bottom;
+
+//			if (viewDataEx.useAllAvailableHeight)
+//			{
+//				panelSize.y = viewDataEx.scriptableObj.maxPanelSize.y;
+//			}
+
+//			var newWidth = Mathf.Max(panelSize.x, minSize.x);
+//			var newHeight = Mathf.Max(panelSize.y, minSize.y);
+//			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+//			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
+
+//			var contentWidthAvailable = rect.sizeDelta.x - (gridLayout.padding.right + gridLayout.padding.left);
+//			var imageWidth = minSize.x + gridLayout.spacing.x;
+//			var imagesPerRow = contentWidthAvailable / imageWidth;
+//			float imagesOnRow = Mathf.FloorToInt(imagesPerRow);
+//			if (imagesOnRow <= 0)
+//				imagesOnRow = 1;
+//			int rowsRequired = Mathf.CeilToInt(images.Count / imagesOnRow);
+
+//			var contentHeight = rowsRequired * minSize.y;
+//			scrollRect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentHeight);
+
+//			foreach (var image in images)
+//			{
+//				image.Key.showCaption = viewDataEx.showCaptions;
+//				image.Key.forceSize = true;
+//				image.Key.size = viewDataEx.scriptableObj.imageSize;
+//				//image.Key.labelEx.fontSize = viewData.labelEx.fontSize;
+//				//image.Key.labelEx.fontColor = viewData.labelEx.fontColor;
+//				//image.Key.labelEx.fontAsset = viewData.labelEx.fontAsset;
+//				//image.Key.labelEx.maxLabelDimensions = viewData.labelEx.maxLabelDimensions;
+//				//image.Key.labelEx.minLabelDimensions = viewData.labelEx.minLabelDimensions;
+//				image.Value.UpdateBackingData();
+//			}
+
+//			isDirty = false;
+//		}
+
+//		public Vector2 GetMinDimensions()
+//		{
+//			if (isDirty)
+//				UpdateBackingData();
+//			return GetComponent<RectTransform>().sizeDelta;
+//		}
 
 
-		public void ResetToLastPosition()
-		{
-			throw new System.NotImplementedException();
-		}
+//		public void ClearImages()
+//		{
+//			foreach (var image in images)
+//			{
+//#if UNITY_EDITOR
+//				if (Application.isEditor && !Application.isPlaying)
+//					DestroyImmediate(image.Value.gameObject);
+//				else
+//					Destroy(image.Value.gameObject);
+//#else
+//			Destroy(image.Value.gameObject);
+//#endif
+//			}
 
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
-		{
-			throw new System.NotImplementedException();
-		}
+//			images.Clear();
+//		}
 
-		public UIDesignObject Select()
-		{
-			throw new System.NotImplementedException();
-		}
+//		public void RemoveImage(ImageEx imageEx)
+//		{
+//			if (!images.TryGetValue(imageEx, out var imageView))
+//			{
+//				Debug.LogWarning("Image not found in view");
+//				return;
+//			}
 
-		public void Deselect()
-		{
-			throw new System.NotImplementedException();
-		}
+//			images.Remove(imageEx);
 
-		public void SetHover(bool isHover)
-		{
-			throw new System.NotImplementedException();
-		}
+//#if UNITY_EDITOR
+//			if (Application.isEditor && !Application.isPlaying)
+//				DestroyImmediate(imageView.gameObject);
+//			else
+//				Destroy(imageView.gameObject);
+//#else
+//		Destroy(imageView.gameObject);
+//#endif
+//		}
 
-		public void UpdateHover(Vector3 posOfHover)
-		{
-			throw new System.NotImplementedException();
-		}
-	}
-}
+//		/// <summary>
+//		/// 
+//		/// </summary>
+//		/// <param name="sprite">Null sprite will result in the view panels default sprite.</param>
+//		/// <param name="caption"></param>
+//		/// <returns></returns>
+//		public UIImageView AddImage(Sprite sprite, string caption, UnityAction value)
+//		{
+//			var imageEx = new ImageEx(viewDataEx.scriptableObj.imageViewData)
+//			{
+//				sprite = sprite == null ? viewDataEx.scriptableObj.defaultSprite : sprite,
+//			};
+
+
+//			var imageView = AddImage(imageEx);
+//			imageView.text = caption;
+//			imageView.GetComponent<Button>().onClick.AddListener(value);
+//			return imageView;
+//		}
+
+//		/// <summary>
+//		/// All data (except text) in LabelEx gets overwritten by viewPanel defaults.
+//		/// </summary>
+//		/// <param name="imageEx"></param>
+//		/// <returns></returns>
+//		public UIImageView AddImage(ImageEx imageEx)
+//		{
+//			if (images.ContainsKey(imageEx))
+//			{
+//				Debug.LogWarning("Image already in view");
+//				return images[imageEx];
+//			}
+
+//			imageEx.size = viewDataEx.scriptableObj.imageSize;
+//			imageEx.forceSize = true;
+//			var imageDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabProvider.UIPrefabType.ImageView), gridLayout.transform);
+//			var image = imageDO.GetComponent<UIImageView>();
+
+//			image.UpdateBackingData(imageEx);
+//			images.Add(imageEx, image);
+//			return image;
+//		}
+
+
+//		public void ResetToLastPosition()
+//		{
+//			throw new System.NotImplementedException();
+//		}
+
+//		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
+//		{
+//			throw new System.NotImplementedException();
+//		}
+
+//		public UIDesignObject Select()
+//		{
+//			throw new System.NotImplementedException();
+//		}
+
+//		public void Deselect()
+//		{
+//			throw new System.NotImplementedException();
+//		}
+
+//		public void SetHover(bool isHover)
+//		{
+//			throw new System.NotImplementedException();
+//		}
+
+//		public void UpdateHover(Vector3 posOfHover)
+//		{
+//			throw new System.NotImplementedException();
+//		}
+//	}
+//}

@@ -60,9 +60,17 @@ MonoBehaviour:
   yesButton: {fileID: 4066357127763818192}
   noButton: {fileID: 2465359610918080959}
   cancelButton: {fileID: 1712294518062390921}
-  _buttons: 1
+  minButtonWidth:
+    keys: 01000000020000000300000004000000
+    values:
+    - 150
+    - 300
+    - 450
+    - 300
   buttonPanelData: {fileID: 11400000, guid: 56557aa7b7c6fad48b93d20458c100fb, type: 2}
   _referenceName: buttonPanel
+  _interactable: 1
+  _buttons: 3
 --- !u!114 &-7266102065753428195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,6 +259,10 @@ PrefabInstance:
     - target: {fileID: 5027443682642349068, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_Name
       value: CancelButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 5027443682642349068, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_Pivot.x
@@ -469,6 +481,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OKButton
       objectReference: {fileID: 0}
+    - target: {fileID: 5027443682642349068, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -483,7 +499,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_AnchorMin.x
@@ -491,7 +507,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.x
@@ -531,11 +547,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 42.255
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -18.14
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -685,6 +701,10 @@ PrefabInstance:
     - target: {fileID: 5027443682642349068, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_Name
       value: YesButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 5027443682642349068, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_Pivot.x
@@ -898,6 +918,10 @@ PrefabInstance:
     - target: {fileID: 5027443682642349068, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_Name
       value: NoButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 5027443682642349068, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_Pivot.x

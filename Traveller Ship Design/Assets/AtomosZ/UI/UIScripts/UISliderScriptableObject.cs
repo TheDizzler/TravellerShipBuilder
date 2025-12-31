@@ -10,7 +10,7 @@ namespace AtomosZ.UI
 	/// <summary>
 	/// @TODO(Tristan): maxSigFigs
 	/// </summary>
-	[CreateAssetMenu(fileName = "sliderData", menuName = "AtomosZ/UIScriptableObjects/UISliderScriptableObject")]
+	[CreateAssetMenu(fileName = "sliderData", menuName = "AtomosZ/UI/UISliderScriptableObject")]
 	public class UISliderScriptableObject : ScriptableObject
 	{
 		public bool showHandle = true;

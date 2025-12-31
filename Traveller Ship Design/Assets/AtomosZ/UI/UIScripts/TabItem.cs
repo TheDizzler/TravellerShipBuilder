@@ -1,4 +1,5 @@
 using UnityEngine;
+using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {

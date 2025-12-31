@@ -138,6 +138,7 @@ namespace AtomosZ.UI
 
 		private float showHandleUnitOffset = 42.0f;
 		private float hideHandleUnitOffset = 32.0f;
+		
 		internal void CreateUnitLabels()
 		{
 			units.gameObject.SetActive(true);
@@ -150,13 +151,11 @@ namespace AtomosZ.UI
 			float nextUnit = slider.minValue;
 
 
-			var labelData = (LabelEx)minUnit.GetBackingData();
-			//var clone = (LabelEx)labelData.Clone();
+			var labelData = minUnit.GetBackingData();
 			minUnit.text = nextUnit.ToString();
 			minUnit.UpdateBackingData(labelData);
 
-			//clone = (LabelEx)labelData.Clone();
-			//clone.fontSize = slider.fontSize;
+
 			maxUnit.text = slider.maxValue.ToString();
 			maxUnit.UpdateBackingData(labelData);
 

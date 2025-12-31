@@ -11,6 +11,7 @@ using UnityEngine;
 using static AtomosZ.Keyboard;
 using static AtomosZ.MG2eTraveller.Ship.DesignManager;
 using static AtomosZ.MG2eTraveller.Ship.RoomSerializer;
+using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.MG2eTraveller.Ship
 {
@@ -192,34 +193,31 @@ namespace AtomosZ.MG2eTraveller.Ship
 		private void ShowSaveRoomDialog()
 		{
 			var savedRoom = GetSerializableData();
-			var panel = DesignManager.GetDynamicPanel();
-			panel.name = "SaveRoomLayoutPanel";
-			panel.designObject.isModal = true;
-			panel.showCloseButton = true;
-			panel.SetTitle("Save Room Layout", DynamicPanel.TitleLabelStyle.Bar);
+			var window = DesignManager.GetMagicWindow();
+			window.name = "SaveRoomLayoutPanel";
+			window.designObject.isModal = true;
+			window.showCloseButton = true;
+			window.SetTitle("Save Room Layout");
 			if (RoomSerializer.IsNameUnique(savedRoom.roomLabel))
 			{
 				if (!RoomSerializer.SaveRoom(savedRoom, savedRoom.roomLabel))
 				{
-					panel.SetTitle("Error while saving", DynamicPanel.TitleLabelStyle.Bar);
-					panel.AddText_NoData("Could not save file");
+					window.SetTitle("Error while saving");
+					window.AddText("Could not save file");
 				}
 				else
 				{
-					var label = panel.AddText(new LabelEx(null));
+					var label = window.AddText();
 					label.text = "Room saved";
-					var buttonPanel = panel.AddButtonPanel(new ButtonPanelEx(null));
+					var buttonPanel = window.AddButtonPanel();
 					buttonPanel.buttons = UIButtonPanel.DialogButton.OK;
 				}
 			}
 			else
 			{
-				panel.SetTitle("Room already exists", DynamicPanel.TitleLabelStyle.Bar);
-				panel.AddText_NoData($"Room with same name already exists. Overwrite or save as alternate?");
-				var checkBox = (UICheckBox)panel.AddUIControl(UIControlType.CheckBox);
-				var checkBoxData = (CheckBoxEx)checkBox.GetBackingData();
-				//checkBoxData.action = new UnityEngine.Events.UnityEvent<bool>();
-				//checkBoxData.action.AddListener(OnOverwriteToggled);
+				window.SetTitle("Room already exists");
+				window.AddText($"Room with same name already exists. Overwrite or save as alternate?");
+				var checkBox = (UICheckBox)window.AddUIControl(UIControlType.CheckBox);
 				checkBox.AddListener(OnOverwriteToggled);
 
 				int altNum = 0;
@@ -244,20 +242,20 @@ namespace AtomosZ.MG2eTraveller.Ship
 				}
 				while (!RoomSerializer.IsNameUnique(altName));
 
-				var inputField = panel.AddInputField(new InputFieldEx(null));
+				var inputField = window.AddInputField();
 				inputFieldText = inputField.GetComponent<TMP_InputField>();
 				inputField.SetText("Enter new room name", altName);
-				var buttonPanel = panel.AddButtonPanel(new ButtonPanelEx(null));
+				var buttonPanel = window.AddButtonPanel();
 				buttonPanel.buttons = UIButtonPanel.DialogButton.OKCancel;
-				panel.OnClose += SaveRenamePanelClosed;
+				window.OnClose += SaveRenamePanelClosed;
 			}
 
-			panel.Show(Vector2.zero);
+			window.Show(Vector2.zero);
 		}
 
-		private void SaveRenamePanelClosed(DynamicPanel panel)
+		private void SaveRenamePanelClosed(MagicWindow panel)
 		{
-			if (panel.result == BottomPanel.DialogResult.OK)
+			if (panel.result == DialogResult.OK)
 			{
 				if (!inputFieldText.interactable)
 				{ // overwrite
@@ -283,23 +281,23 @@ namespace AtomosZ.MG2eTraveller.Ship
 
 		public void ShowRenameDialog()
 		{
-			var panel = DesignManager.GetDynamicPanel();
-			panel.designObject.isModal = true;
-			var inputField = panel.AddInputField(new InputFieldEx(null));
+			var window = DesignManager.GetMagicWindow();
+			window.designObject.isModal = true;
+			var inputField = window.AddInputField();
 			inputFieldText = inputField.GetComponent<TMP_InputField>();
 			inputField.SetText("Enter new room name", roomLabel.text);
-			var buttonPanel = panel.AddButtonPanel(new ButtonPanelEx(null));
+			var buttonPanel = window.AddButtonPanel();
 			buttonPanel.buttons = UIButtonPanel.DialogButton.OKCancel;
-			panel.SetTitle("Enter room name", DynamicPanel.TitleLabelStyle.BladedBar);
+			window.SetTitle("Enter room name");
 
-			panel.OnClose += RenameDialogClosed;
+			window.OnClose += RenameDialogClosed;
 
-			panel.Show(Vector2.zero);
+			window.Show(Vector2.zero);
 		}
 
-		private void RenameDialogClosed(DynamicPanel panel)
+		private void RenameDialogClosed(MagicWindow panel)
 		{
-			if (panel.result == BottomPanel.DialogResult.OK)
+			if (panel.result == DialogResult.OK)
 			{
 				SetRoomName(inputFieldText.text);
 			}

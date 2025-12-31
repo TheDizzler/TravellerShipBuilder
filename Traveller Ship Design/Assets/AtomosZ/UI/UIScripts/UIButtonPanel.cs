@@ -1,28 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
-using TMPro;
-
 using UnityEngine;
 using UnityEngine.UI;
+using static AtomosZ.UI.MagicWindow;
 
 
 namespace AtomosZ.UI
 {
-	[Serializable]
-	public class ButtonPanelEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.ButtonPanel; } }
-
-		public UIButtonPanelScriptableObject scriptableObj;
-
-		public ButtonPanelEx(UIButtonPanelScriptableObject scriptObj)
-		{
-			scriptableObj = scriptObj;
-		}
-	}
-
 	[ExecuteAlways]
 	public class UIButtonPanel : MonoBehaviour, IUIBehavior
 	{
@@ -40,6 +25,74 @@ namespace AtomosZ.UI
 			YesNoCancel = 0x3,
 			YesNo = 0x4,
 		}
+
+		// <summary>
+		// These are min widths when font size is 24.
+		// TODO(Tristan): dynamic widths on font change!
+		// TODO(Tristan): show dictionary in editor.
+		// </summary>
+		//[SerializeField] private CustomDictionary<DialogButton, float> minButtonWidth = new()
+		//{
+		//	[DialogButton.OK] = 150,
+		//	[DialogButton.OKCancel] = 300,
+		//	[DialogButton.YesNoCancel] = 450,
+		//	[DialogButton.YesNo] = 300,
+		//};
+
+		[SerializeField] private UIButtonPanelScriptableObject buttonPanelData;
+
+		[SerializeField] private string _referenceName = "buttonPanel";
+		public string referenceName
+		{
+			get { return _referenceName; }
+			set
+			{
+				_referenceName = value;
+				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
+
+
+		private UIDesignObject _designObject;
+		public UIDesignObject designObject
+		{
+			get
+			{
+				if (_designObject == null)
+					_designObject = GetComponent<UIDesignObject>();
+				return _designObject;
+			}
+		}
+
+		[SerializeField] private bool _interactable = true;
+		public bool interactable
+		{
+			get { return _interactable; }
+			set
+			{
+				_interactable
+					= okButton.interactable
+					= yesButton.interactable
+					= noButton.interactable
+					= cancelButton.interactable
+					= value;
+
+			}
+		}
+
+		public bool isDirty { get; set; }
+
+		[SerializeField] private bool _fillParentHorizontal = false;
+		public bool fillParentHorizontal
+		{
+			get { return _fillParentHorizontal; }
+			set
+			{
+				_fillParentHorizontal = value;
+				this.SetDirty();
+			}
+		}
+
 
 		[SerializeField] private DialogButton _buttons = DialogButton.OK;
 		public DialogButton buttons
@@ -103,48 +156,8 @@ namespace AtomosZ.UI
 			button.UpdateBackingData(buttonData);
 		}
 
-		/// <summary>
-		/// These are min widths when font size is 24.
-		/// TODO(Tristan): dynamic widths on font change!
-		/// TODO(Tristan): show dictionary in editor.
-		/// </summary>
-		[UDictionary.Split(50, 50)]
-		private Dictionary<DialogButton, float> minButtonWidth = new()
-		{
-			[DialogButton.OK] = 150,
-			[DialogButton.OKCancel] = 300,
-			[DialogButton.YesNoCancel] = 450,
-			[DialogButton.YesNo] = 300,
-		};
-
-		[SerializeField] private UIButtonPanelScriptableObject buttonPanelData;
-
-		[SerializeField] private string _referenceName = "buttonPanel";
-		public string referenceName
-		{
-			get { return _referenceName; }
-			set
-			{
-				_referenceName = value;
-				this.SetGameObjectNameToReferenceName(gameObject);
-			}
-		}
 
 
-		private UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
-
-		public bool isDirty { get; set; }
-
-		
 		public IUIBehavior GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
@@ -160,20 +173,6 @@ namespace AtomosZ.UI
 			return null;
 		}
 
-
-		[Obsolete("TODO: Replace with MagicWindow")]
-		public void SetResultListeners(DynamicPanel parent)
-		{
-			okButton.GetComponent<Button>().onClick.RemoveAllListeners();
-			okButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultOK);
-			cancelButton.GetComponent<Button>().onClick.RemoveAllListeners();
-			cancelButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultCancel);
-			yesButton.GetComponent<Button>().onClick.RemoveAllListeners();
-			yesButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultYes);
-			noButton.GetComponent<Button>().onClick.RemoveAllListeners();
-			noButton.GetComponent<Button>().onClick.AddListener(parent.SetDialogResultNo);
-		}
-
 		public void SetResultListeners(MagicWindow magicWindow)
 		{
 			Debug.LogWarning("Magic Window not set up for button panel!");
@@ -185,28 +184,24 @@ namespace AtomosZ.UI
 		}
 
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
-			return new ButtonPanelEx(buttonPanelData);
+			return buttonPanelData;
 		}
 
-		public void UpdateBackingData(UIButtonPanelScriptableObject backingData)
+
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			buttonPanelData = backingData;
-			if (backingData != null)
+			buttonPanelData = (UIButtonPanelScriptableObject)backingData;
+			if (buttonPanelData != null)
 			{
-				okButton.UpdateBackingData(backingData.okButtonData);
-				yesButton.UpdateBackingData(backingData.yesButtonData);
-				noButton.UpdateBackingData(backingData.noButtonData);
-				cancelButton.UpdateBackingData(backingData.cancelButtonData);
+				okButton.UpdateBackingData(buttonPanelData.okButtonData);
+				yesButton.UpdateBackingData(buttonPanelData.yesButtonData);
+				noButton.UpdateBackingData(buttonPanelData.noButtonData);
+				cancelButton.UpdateBackingData(buttonPanelData.cancelButtonData);
 			}
 
 			this.SetDirty();
-		}
-
-		public void UpdateBackingData(IUIDataEx backingData)
-		{
-			UpdateBackingData(((ButtonPanelEx)backingData).scriptableObj);
 		}
 
 
@@ -222,9 +217,10 @@ namespace AtomosZ.UI
 			if (horzLayout == null)
 				Debug.LogException(new Exception("No layout group found on panel"));
 
-			Vector2 minDim = new Vector2(minButtonWidth[_buttons], 10);
-			minDim.x = horzLayout.padding.left + horzLayout.padding.right;
-			minDim.y = 0;
+			horzLayout.childForceExpandWidth = _fillParentHorizontal;
+
+			//Vector2 minDim = new Vector2(minButtonWidth[_buttons], 10);
+			Vector2 minDim = new Vector2(horzLayout.padding.horizontal, horzLayout.padding.vertical);
 
 			var activeChildren = 0;
 			var uiControls = new UIButton[]
@@ -280,7 +276,8 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
+		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput,
+			ref UIDesignObject currentlySelectedObject)
 		{
 			throw new System.NotImplementedException();
 		}

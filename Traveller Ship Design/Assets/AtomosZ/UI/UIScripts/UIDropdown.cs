@@ -8,38 +8,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Debug = UnityEngine.Debug;
+using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[Serializable]
-	public class DropdownEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.Dropdown; } }
-
-		public UIDropdownScriptableObject scriptableObj;
-
-		//[Tooltip("Default: 14.")]
-		//public float fontSize = 14;
-		//[Tooltip("Default: Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1).")]
-		//public Color fontColor = new Color(50.0f / 256, 50.0f / 256, 50.0f / 256, 1);
-		//[Tooltip("Default: null")]
-		//public TMP_FontAsset fontAsset = null;
-
-
-		public DropdownEx(UIDropdownScriptableObject scriptObj)
-		{
-			this.scriptableObj = scriptObj;
-
-			//if (scriptableObj == null)
-			//{
-			//	useCustomFontSize = true;
-			//	useCustomFontColor = true;
-			//	useCustomFontAsset = true;
-			//}
-		}
-	}
-
 	[ExecuteAlways]
 	public class UIDropdown : MonoBehaviour, IUIBehavior
 	{
@@ -358,31 +330,26 @@ namespace AtomosZ.UI
 				UpdateBackingData();
 		}
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
-			return new DropdownEx(dropdownData);
+			return dropdownData;
 		}
 
-		public void UpdateBackingData(UIDropdownScriptableObject backingData)
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			dropdownData = backingData;
-			if (backingData != null)
+			dropdownData = (UIDropdownScriptableObject)backingData;
+			if (dropdownData != null)
 			{
-				arrowSprite = backingData.arrowSprite;
-				if (backingData.labelData != null)
+				arrowSprite = dropdownData.arrowSprite;
+				if (dropdownData.labelData != null)
 				{
-					fontAsset = backingData.labelData.fontAsset;
-					fontColor = backingData.labelData.fontColor;
-					fontSize = backingData.labelData.fontSize;
+					fontAsset = dropdownData.labelData.fontAsset;
+					fontColor = dropdownData.labelData.fontColor;
+					fontSize = dropdownData.labelData.fontSize;
 				}
 
 				this.SetDirty();
 			}
-		}
-
-		public void UpdateBackingData(IUIDataEx backingData)
-		{
-			UpdateBackingData(((DropdownEx)backingData).scriptableObj);
 		}
 
 		public void UpdateBackingData()

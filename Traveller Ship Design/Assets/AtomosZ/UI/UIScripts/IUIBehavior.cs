@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using AtomosZ.UI;
 using UnityEngine;
 
 using static AtomosZ.Keyboard;
+using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
@@ -35,6 +33,14 @@ namespace AtomosZ.UI
 
 		public IUIBehavior GetControl(string controlRefName);
 
+		public bool interactable { get; set; }
+		//{
+		//	get { return _interactable; }
+		//	set
+		//	{
+		//		_interactable = dropdown.interactable = value;
+		//	}
+		//}
 		public void SetHover(bool isHover);
 		public void UpdateHover(Vector3 posOfHover);
 		public void ResetToLastPosition();
@@ -55,8 +61,8 @@ namespace AtomosZ.UI
 		public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput, ref UIDesignObject currentlySelectedObject);
 		//public void RecalculateDimension();
 		public Vector2 GetMinDimensions();
-		public IUIDataEx GetBackingData();
-		public void UpdateBackingData(IUIDataEx backingData);
+		public ScriptableObject GetBackingData();
+		public void UpdateBackingData(ScriptableObject backingData);
 		public void UpdateBackingData();
 	}
 

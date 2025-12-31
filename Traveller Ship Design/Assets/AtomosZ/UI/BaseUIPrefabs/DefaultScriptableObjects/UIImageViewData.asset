@@ -13,3 +13,6 @@ MonoBehaviour:
   m_Name: UIImageViewData
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIImageViewScriptableObject
   labelData: {fileID: 11400000, guid: 452293887a8c2c14cb3962fd59ed503c, type: 2}
+  isImageHidden: 0
+  isCaptionHidden: 0
+  defaultSprite: {fileID: 2420301657204973463, guid: 42144bbdcc437ee4bbcb02fddb490d3b, type: 3}

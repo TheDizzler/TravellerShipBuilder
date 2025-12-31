@@ -102,8 +102,8 @@ namespace AtomosZ.MG2eTraveller.Ship
 			designBehavior.GetContextMenuItems(actionDict);
 			if (actionDict.Count > 0)
 			{
-				var contextMenu = DesignManager.GetDynamicPanel();
-				contextMenu.SetTitle("", DynamicPanel.TitleLabelStyle.None);
+				var contextMenu = DesignManager.GetMagicWindow();
+				contextMenu.SetTitle("");
 				contextMenu.SetContextMenuActions(actionDict);
 				contextMenu.Show(openContextPosition);
 				return contextMenu.designObject;

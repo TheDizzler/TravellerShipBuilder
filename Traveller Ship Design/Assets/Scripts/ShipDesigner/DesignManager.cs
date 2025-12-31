@@ -10,6 +10,7 @@ using UnityEngine.EventSystems;
 
 using static AtomosZ.Keyboard;
 using static AtomosZ.MG2eTraveller.Ship.CustomCursor;
+using static AtomosZ.UI.MagicWindow;
 using static AtomosZ.UI.UIPrefabProvider;
 
 namespace AtomosZ.MG2eTraveller.Ship
@@ -38,17 +39,15 @@ namespace AtomosZ.MG2eTraveller.Ship
 			return instance.prefabs[prefabType];
 		}
 
-		[Obsolete("Replace with MagicWindow")]
-		public static DynamicPanel GetDynamicPanel()
+		public static MagicWindow GetMagicWindow()
 		{
-			return instance._GetDynamicPanel();
+			return instance._GetMagicWindow();
 		}
 
-		[Obsolete("Replace with MagicWindow")]
-		private DynamicPanel _GetDynamicPanel()
+		private MagicWindow _GetMagicWindow()
 		{
-			var panelUIObject = Instantiate(GetUIPrefab(UIPrefabType.DynamicPanel));
-			var panel = panelUIObject.GetComponent<DynamicPanel>();
+			var panelUIObject = Instantiate(GetUIPrefab(UIPrefabType.MagicWindow));
+			var panel = panelUIObject.GetComponent<MagicWindow>();
 			//AddToCanvas(panelUIObject.transform);
 			return panel;
 		}
@@ -81,7 +80,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		[SerializeField] private Canvas uiCanvas;
 		[SerializeField] private UIInput uiInput;
 		[SerializeField] private GameObject objectPicker;
-		[SerializeField] private DynamicPanel roomGeomorphTab;
+		[SerializeField] private MagicWindow roomGeomorphTab;
 		[SerializeField] private GameObject cursorPrefab;
 		[SerializeField] private CustomCursor cursor;
 		[SerializeField] private GameObject linePointIndicator;
@@ -169,7 +168,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		/// serialized for debugging
 		/// </summary>
 		[SerializeField]
-		private LinkedList<DynamicPanel> dialogStack = new();
+		private LinkedList<MagicWindow> dialogStack = new();
 
 		void Awake()
 		{
@@ -199,38 +198,33 @@ namespace AtomosZ.MG2eTraveller.Ship
 		int panelCount = 1;
 		public void MakeModalPanel(UIButton sender)
 		{
-			var panel = GetDynamicPanel();
-			panel.designObject.isModal = true;
-			var label = panel.AddText(new LabelEx(null));
+			var window = GetMagicWindow();
+			window.designObject.isModal = true;
+			var label = window.panel.AddText(null);
 			label.text = "Panel " + panelCount++;
-
-			var button = (UIButton)panel.AddUIControl(UIControlType.Button);
-			var buttonEx = (ButtonEx)button.GetBackingData();
+			var button = (UIButton)window.AddUIControl(UIControlType.Button);
 			button.text = "Modal Panel";
 			button.AddListener(MakeModalPanel);
-			button = (UIButton)panel.AddUIControl(UIControlType.Button);
-			buttonEx = (ButtonEx)button.GetBackingData();
+			button = (UIButton)window.AddUIControl(UIControlType.Button);
 			button.text = "Non Modal Panel";
 			button.AddListener(MakeNonModalPanel);
-			panel.SetTitle("Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
-			panel.Show(Vector2.zero);
+			window.SetTitle("Modal test");
+			window.Show(Vector2.zero);
 		}
 
 		public void MakeNonModalPanel(UIButton sender)
 		{
-			var panel = DesignManager.GetDynamicPanel();
-			var label = panel.AddText(new LabelEx(null));
+			var window = DesignManager.GetMagicWindow();
+			var label = (UIExpandingLabel)window.AddUIControl(UIControlType.Text);
 			label.text = "Panel " + panelCount++;
-			var button = (UIButton)panel.AddUIControl(UIControlType.Button);
-			var buttonEx = (ButtonEx)button.GetBackingData();
+			var button = (UIButton)window.AddUIControl(UIControlType.Button);
 			button.text = "Modal Panel";
 			button.AddListener(MakeModalPanel);
-			button = (UIButton)panel.AddUIControl(UIControlType.Button);
-			buttonEx = (ButtonEx)button.GetBackingData();
+			button = (UIButton)window.AddUIControl(UIControlType.Button);
 			button.text = "Non Modal Panel";
 			button.AddListener(MakeNonModalPanel);
-			panel.SetTitle("Non Modal test", DynamicPanel.TitleLabelStyle.BladedBar);
-			panel.Show(Vector2.zero);
+			window.SetTitle("Non Modal test");
+			window.Show(Vector2.zero);
 		}
 #endif
 
@@ -243,22 +237,23 @@ namespace AtomosZ.MG2eTraveller.Ship
 
 		public void ShowRoomGeomorphs()
 		{
-			var serializedRooms = RoomSerializer.GetRoomGeomorphs();
-			if (roomGeomorphTab == null)
-			{
-				var prefab = (UIDesignObject)AssetDatabase.LoadAssetAtPath($"Assets/Prefabs/UIPrefabs/GeomorphRoomDisplay.prefab", typeof(UIDesignObject));
-				roomGeomorphTab = Instantiate(prefab, uiCanvas.transform).GetComponent<DynamicPanel>();
-			}
+			Debug.LogError("ImageViewPanel has not yet been implemented");
+			//var serializedRooms = RoomSerializer.GetRoomGeomorphs();
+			//if (roomGeomorphTab == null)
+			//{
+			//	var prefab = (UIDesignObject)AssetDatabase.LoadAssetAtPath($"Assets/Prefabs/UIPrefabs/GeomorphRoomDisplay.prefab", typeof(UIDesignObject));
+			//	roomGeomorphTab = Instantiate(prefab, uiCanvas.transform).GetComponent<MagicWindow>();
+			//}
 
-			roomGeomorphTab.gameObject.SetActive(true);
-			var imagePanel = roomGeomorphTab.GetComponentInChildren<UIImageViewPanel>();
-			imagePanel.ClearImages();
-			var screenshotLayer = LayerMask.NameToLayer("Geomorph Screenshot");
-			foreach (var room in serializedRooms)
-			{
-				Sprite sprite = RoomSerializer.CreateSpriteOfGeomorph(room, screenshotLayer);
-				imagePanel.AddImage(sprite, room.roomLabel, () => DesignManager.instance.StartCreateRoomFromSerializedData(room));
-			}
+			//roomGeomorphTab.gameObject.SetActive(true);
+			//var imagePanel = roomGeomorphTab.GetComponentInChildren<UIImageViewPanel>();
+			//imagePanel.ClearImages();
+			//var screenshotLayer = LayerMask.NameToLayer("Geomorph Screenshot");
+			//foreach (var room in serializedRooms)
+			//{
+			//	Sprite sprite = RoomSerializer.CreateSpriteOfGeomorph(room, screenshotLayer);
+			//	imagePanel.AddImage(sprite, room.roomLabel, () => DesignManager.instance.StartCreateRoomFromSerializedData(room));
+			//}
 		}
 
 
@@ -350,7 +345,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 			//		this is to prevent fast dragging movements from flickering the mousecursor
 			// 
 
-			DynamicPanel topDialog = null;
+			MagicWindow topDialog = null;
 			if (dialogStack.Count != 0)
 			{
 				topDialog = dialogStack.Last.Value;
@@ -376,7 +371,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 					return;
 				}
 
-				if (topDialog.isContextMenu &&
+				if (topDialog.windowStyle == WindowStyle.ContextMenu &&
 					Input.GetMouseButtonDown(1))
 				{
 					topDialog.Close();
@@ -421,7 +416,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 				var topDialog = dialogStack.Last.Value;
 				//if (topDialog.designObject.isModal)
 				//return;
-				if (topDialog.isContextMenu)
+				if (topDialog.windowStyle == WindowStyle.ContextMenu)
 				{
 					if ((modifierKeys & ModifierKey.Esc) == ModifierKey.Esc
 						|| Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
@@ -836,19 +831,19 @@ namespace AtomosZ.MG2eTraveller.Ship
 		}
 
 
-		public static void ShowDialog(DynamicPanel dialog)
+		public static void ShowDialog(MagicWindow dialog)
 		{
 			instance._ShowDialog(dialog);
 		}
 
 
-		private void _ShowDialog(DynamicPanel dialog)
+		private void _ShowDialog(MagicWindow dialog)
 		{
 			if (dialog.designObject.isModal)
 			{
-				var blocker = Instantiate(GetUIPrefab(UIPrefabType.ModalClickBlocker));
-				AddToCanvas(blocker.transform);
-				dialog.modalClickBlocker = blocker;
+				//var blocker = Instantiate(GetUIPrefab(UIPrefabType.ModalClickBlocker));
+				//AddToCanvas(blocker.transform);
+				//dialog.modalClickBlocker = blocker;
 			}
 
 			AddToCanvas(dialog.transform);
@@ -857,7 +852,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		}
 
 
-		public static void CloseDialog(DynamicPanel panel)
+		public static void CloseDialog(MagicWindow panel)
 		{
 			instance._CloseDialog(panel);
 		}
@@ -867,7 +862,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		/// Change this too object pool?
 		/// </summary>
 		/// <param name="dialogRect"></param>
-		private void _CloseDialog(DynamicPanel panel)
+		private void _CloseDialog(MagicWindow panel)
 		{
 			if (!dialogStack.Contains(panel))
 			{
@@ -875,10 +870,10 @@ namespace AtomosZ.MG2eTraveller.Ship
 			}
 
 			dialogStack.Remove(panel);
-			if (panel.modalClickBlocker != null)
-			{
-				Destroy(panel.modalClickBlocker.gameObject);
-			}
+			//if (panel.modalClickBlocker != null)
+			//{
+			//	Destroy(panel.modalClickBlocker.gameObject);
+			//}
 
 			Destroy(panel.gameObject);
 			// turn off UI mode, so next update will check for another panelRect in the stack.
@@ -890,11 +885,13 @@ namespace AtomosZ.MG2eTraveller.Ship
 		{
 			Debug.LogError(titleText + "\n" + errorMsg);
 
-			var panel = DesignManager.GetDynamicPanel();
-			panel.showCloseButton = true;
-			panel.SetTitle(titleText, DynamicPanel.TitleLabelStyle.Bar);
-			panel.AddText_NoData(errorMsg);
-			panel.Show(Vector2.zero);
+			var window = DesignManager.GetMagicWindow();
+			var buttons = (UIButtonPanel)window.AddUIControl(UIControlType.ButtonPanel);
+			buttons.buttons = UIButtonPanel.DialogButton.OKCancel;
+			window.showCloseButton = true;
+			window.SetTitle(titleText);
+			window.AddText(errorMsg);
+			window.Show(Vector2.zero);
 		}
 	}
 }

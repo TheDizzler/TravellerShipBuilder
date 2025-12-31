@@ -4,10 +4,7 @@ using UnityEngine;
 
 namespace AtomosZ.UI
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	[CreateAssetMenu(fileName = "buttonData", menuName = "AtomosZ/UIScriptableObjects/UIButtonPanelScriptableObject")]
+	[CreateAssetMenu(fileName = "ButtonData", menuName = "AtomosZ/UI/UIButtonPanelScriptableObject")]
 	public class UIButtonPanelScriptableObject : ScriptableObject
 	{
 		public UIButtonScriptableObject okButtonData;

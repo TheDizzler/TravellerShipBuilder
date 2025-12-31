@@ -3,21 +3,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[Serializable]
-	public class ButtonEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.Button; } }
-		public UIButtonScriptableObject scriptableObj;
-
-		public ButtonEx(UIButtonScriptableObject scriptObj)
-		{
-			scriptableObj = scriptObj;
-		}
-	}
-
 	[ExecuteAlways]
 	public class UIButton : MonoBehaviour, IUIBehavior
 	{
@@ -155,27 +144,23 @@ namespace AtomosZ.UI
 		}
 
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
-			return new ButtonEx(buttonData);
+			return buttonData;
 		}
 
-		public void UpdateBackingData(UIButtonScriptableObject backingData)
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			buttonData = backingData;
-			if (backingData != null)
+			buttonData = (UIButtonScriptableObject)backingData;
+			if (buttonData != null)
 			{
-				textLabel.UpdateBackingData(backingData.labelData);
-				image.sprite = backingData.sprite;
+				textLabel.UpdateBackingData(buttonData.labelData);
+				image.sprite = buttonData.sprite;
 			}
 
 			this.SetDirty();
 		}
 
-		public void UpdateBackingData(IUIDataEx backingData)
-		{
-			UpdateBackingData(((ButtonEx)backingData).scriptableObj);
-		}
 
 		void Update()
 		{

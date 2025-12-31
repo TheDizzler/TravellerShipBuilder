@@ -3,25 +3,11 @@ using TMPro;
 
 using UnityEngine;
 using UnityEngine.UI;
+using static AtomosZ.UI.MagicWindow;
 
 
 namespace AtomosZ.UI
 {
-	[Serializable]
-	/// TODO(Tristan): Char limit.
-	public class InputFieldEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.InputField; } }
-
-		public UIExpandingInputFieldScriptableObject scriptableObj;
-
-
-		public InputFieldEx(UIExpandingInputFieldScriptableObject scriptObj)
-		{
-			scriptableObj = scriptObj;
-		}
-	}
-
 	/// <summary>
 	/// @NOTE(Tristan): The built-in TMP Input Field is shit. It will not respect manual resizing and the single/multiline handling
 	/// is buggy at best. Like the Slider, a new one from scratch will need to be created if it is to be useful at all.
@@ -52,6 +38,18 @@ namespace AtomosZ.UI
 			{
 				_referenceName = value;
 				this.SetGameObjectNameToReferenceName(gameObject);
+			}
+		}
+
+
+		[SerializeField] private bool _interactable = true;
+		public bool interactable
+		{
+			get { return _interactable = inputFieldTMP.interactable; }
+			set
+			{
+				_interactable = inputFieldTMP.interactable = value;
+
 			}
 		}
 
@@ -304,27 +302,23 @@ namespace AtomosZ.UI
 		}
 
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
-			return new InputFieldEx(inputFieldData);
+			return inputFieldData;
 		}
 
-		public void UpdateBackingData(UIExpandingInputFieldScriptableObject backingData)
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			inputFieldData = backingData;
+			inputFieldData = (UIExpandingInputFieldScriptableObject)backingData;
 			if (backingData != null)
 			{
-				fontAsset = backingData.fontAsset;
-				fontColor = backingData.fontColor;
-				placeholderFontColor = backingData.placeholderFontColor;
-				fontSize = backingData.fontSize;
-				this.SetDirty();
+				fontAsset = inputFieldData.fontAsset;
+				fontColor = inputFieldData.fontColor;
+				placeholderFontColor = inputFieldData.placeholderFontColor;
+				fontSize = inputFieldData.fontSize;
 			}
-		}
 
-		public void UpdateBackingData(IUIDataEx backingData)
-		{
-			UpdateBackingData(((InputFieldEx)backingData).scriptableObj);
+			this.SetDirty();
 		}
 
 		void Update()

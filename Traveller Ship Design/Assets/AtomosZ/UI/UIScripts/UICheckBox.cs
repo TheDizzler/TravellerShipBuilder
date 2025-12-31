@@ -7,24 +7,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static AtomosZ.UI.MagicWindow;
 using FontStyles = TMPro.FontStyles;
 
 namespace AtomosZ.UI
 {
-	[Serializable]
-	public class CheckBoxEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.CheckBox; } }
-
-		public UICheckBoxScriptableObject scriptableObj;
-
-
-		public CheckBoxEx(UICheckBoxScriptableObject scriptObj)
-		{
-			this.scriptableObj = scriptObj;
-		}
-	}
-
 	[ExecuteAlways]
 	public class UICheckBox : MonoBehaviour, IUIBehavior
 	{
@@ -229,9 +216,9 @@ namespace AtomosZ.UI
 		}
 
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
-			return new CheckBoxEx(checkBoxData);
+			return checkBoxData;
 		}
 
 		void Update()
@@ -242,26 +229,26 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData(UICheckBoxScriptableObject backingData)
 		{
-			checkBoxData = backingData;
-			if (backingData != null)
-			{
-				textLabel.UpdateBackingData(backingData.labelData);
-				if (backingData.labelData != null)
-				{
-					fontColor = backingData.labelData.fontColor;
-					disabledFontColor = backingData.labelData.disabledColor;
-					margin = backingData.labelData.textMargin;
-				}
-
-				boxSprite = backingData.boxSprite;
-				checkSprite = backingData.checkSprite;
-				this.SetDirty();
-			}
+			
 		}
 
-		public void UpdateBackingData(IUIDataEx backingData)
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			UpdateBackingData(((CheckBoxEx)backingData).scriptableObj);
+			checkBoxData = ((UICheckBoxScriptableObject)backingData);
+			if (checkBoxData != null)
+			{
+				textLabel.UpdateBackingData(checkBoxData.labelData);
+				if (checkBoxData.labelData != null)
+				{
+					fontColor = checkBoxData.labelData.fontColor;
+					disabledFontColor = checkBoxData.labelData.disabledColor;
+					margin = checkBoxData.labelData.textMargin;
+				}
+
+				boxSprite = checkBoxData.boxSprite;
+				checkSprite = checkBoxData.checkSprite;
+				this.SetDirty();
+			}
 		}
 
 		public void UpdateBackingData()

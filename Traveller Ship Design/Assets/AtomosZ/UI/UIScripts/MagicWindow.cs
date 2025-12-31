@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
+using static AtomosZ.Keyboard;
+using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.UIButtonPanel;
 using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
@@ -10,6 +14,32 @@ namespace AtomosZ.UI
 	[ExecuteAlways]
 	public class MagicWindow : MonoBehaviour, IUIBehavior
 	{
+		public enum UIControlType
+		{
+			Text,
+			InputField,
+			CheckBox,
+			Slider,
+			Button,
+			ButtonPanel,
+			Image,
+			ImagePanel,
+			Dropdown,
+			TabControl,
+			Panel,
+			HorizontalPanel,
+			Spinner,
+		}
+
+		public enum DialogResult
+		{
+			None,
+			OK,
+			Cancel,
+			Yes,
+			No,
+		}
+
 		public UIControlType dataType { get; }
 		public enum WindowStyle
 		{
@@ -45,20 +75,28 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public bool interactable { get; set; }
+
 		public bool isDirty { get; set; }
 
-		public UIExpandingLabel titlebar { get { return rootTabControl.tabPanels[0].Key; } }
+		public UIExpandingLabel titlebar { get { return rootTabControl.tabPanels[0].tabLabel; } }
 
 		public UITabControl rootTabControl;
+
+		/// <summary>
+		/// If this is a tabbed window, gets the currently selected panel, otherwise the main (root) panel.
+		/// </summary>
 		public UIPanel panel
 		{
 			get
 			{
+#if DEBUG
 				if (rootTabControl == null)
 				{
 					Debug.Log("rootTabControl is null and this is fucked");
 					rootTabControl = GetComponentInChildren<UITabControl>();
 				}
+#endif
 
 				return rootTabControl.SelectedPanel();
 			}
@@ -75,11 +113,29 @@ namespace AtomosZ.UI
 		[SerializeField] public UIButtonScriptableObject buttonScriptObj;
 		[SerializeField] public UIButtonPanelScriptableObject buttonPanelScriptObj;
 		[SerializeField] public UIImageViewScriptableObject imageViewScriptObj;
-		[SerializeField] public UIImageViewPanelScriptableObject imageViewPanelScriptObj;
+		//[SerializeField] public UIImageViewPanelScriptableObject imageViewPanelScriptObj;
 
+		public DialogResult result;
+		public UnityAction<MagicWindow> OnClose;
+
+		public bool isDragging;
+
+		//[SerializeField] private Button minimizeButton;
+		//[SerializeField] private Button maximizeButton;
+		//[SerializeField] private Button closeButton;
+		//[SerializeField] public bool showMinimizeButton;
+		//[SerializeField] public bool showMaximizeButton;
+		[SerializeField] public bool _showCloseButton;
+		public bool showCloseButton
+		{
+			get { return _showCloseButton; }
+			set { Debug.LogWarning("Close button has not yet been implemented"); }
+		}
+
+
+		[SerializeField] private UIDesignObject modalClickBlocker;
 #if UNITY_EDITOR
 		[SerializeField] public UIControlType currentType;
-		public List<UIControl> controlList = new();
 
 		[Conditional("UNITY_EDITOR")]
 		public void RecordPrefabInstances()
@@ -93,9 +149,9 @@ namespace AtomosZ.UI
 			rootTabControl = Instantiate(UIPrefabProvider.GetUIPrefab(
 				UIPrefabProvider.UIPrefabType.TabControl), this.transform).GetComponent<UITabControl>();
 			rootTabControl.referenceName = "rootTabControl";
-			rootTabControl.tabPanels[0].Value.tabLabel.referenceName = "panel_00";
-			rootTabControl.tabPanels[0].Key.referenceName = "tab_00";
-			rootTabControl.UpdateBackingData(new TabControlEx(GetStyleData(windowStyle)));
+			rootTabControl.tabPanels[0].panel.tabLabel.referenceName = "panel_00";
+			rootTabControl.tabPanels[0].tabLabel.referenceName = "tab_00";
+			rootTabControl.UpdateBackingData(GetStyleData(windowStyle));
 		}
 #endif
 
@@ -129,11 +185,10 @@ namespace AtomosZ.UI
 				buttonPanelScriptObj = uiProvider.buttonPanelScriptObj;
 			if (imageViewScriptObj == null)
 				imageViewScriptObj = uiProvider.imageViewScriptObj;
-			if (imageViewPanelScriptObj == null)
-				imageViewPanelScriptObj = uiProvider.imageViewPanelScriptObj;
+			//if (imageViewPanelScriptObj == null)
+			//	imageViewPanelScriptObj = uiProvider.imageViewPanelScriptObj;
 
 			FindStyleData();
-
 		}
 
 		private void FindStyleData()
@@ -185,12 +240,6 @@ namespace AtomosZ.UI
 			return windowStyleDatas[windowStyle];
 		}
 
-		public void RemoveControl(UIControl uiControl)
-		{
-			var uiData = uiControl.GetData();
-			panel.RemoveControl(uiData);
-		}
-
 		public IUIBehavior GetControl(string referenceName)
 		{
 			return rootTabControl.GetControl(referenceName);
@@ -206,26 +255,78 @@ namespace AtomosZ.UI
 			return panel.GetControls();
 		}
 
-		public List<UIDesignObject> GetControlsFromTransform()
+#if DEBUG
+		public List<UIDesignObject> GetControlsFromTransform_DEBUG()
 		{
 			if (panel != null)
 				return panel.GetControlsFromTransform();
 			Debug.LogException(new Exception("Why is this null?"));
 			return null;
 		}
+#endif
 
 		public void ChangeWindowStyle(WindowStyle windowStyle)
 		{
 			var styleData = GetStyleData(windowStyle);
 			if (styleData == null)
 				return;
-			var newStyleData = new TabControlEx(styleData);
+			var newStyleData = styleData;
 			rootTabControl.UpdateBackingData(newStyleData);
 #if UNITY_EDITOR
 			rootTabControl.UpdateBackingData(newStyleData); // tabs do not properly update unless this is called again
 			RecordPrefabInstances(); // probably necessary?
 #endif
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="modiferKeys"></param>
+		/// <returns>True if input consumed.</returns>
+		/// <exception cref="Exception"></exception>
+		public bool Input(ModifierKey modiferKeys)
+		{
+			if ((modiferKeys & ModifierKey.Esc) == ModifierKey.Esc
+				&& (_designObject.isModal || windowStyle == WindowStyle.ContextMenu))
+			{
+				SetDialogResultDefaultNegative();
+				return true;
+			}
+
+			return false;
+		}
+
+		public void SetDialogResultDefaultNegative()
+		{
+			DialogButton buttons = panel.GetPanelButtons();
+
+			switch (buttons)
+			{
+				case (DialogButton)(-1):
+					Close();
+					return;
+
+				case DialogButton.OK:
+					SetDialogResultOK();
+					return;
+
+				case DialogButton.OKCancel:
+					SetDialogResultCancel();
+					return;
+
+				case DialogButton.YesNo:
+					SetDialogResultNo();
+					return;
+
+				case DialogButton.YesNoCancel:
+					SetDialogResultCancel();
+					return;
+
+				default:
+					throw new Exception("Unimplemented DialogButton option: " + buttons);
+			}
+		}
+
 
 		void Update()
 		{
@@ -250,38 +351,167 @@ namespace AtomosZ.UI
 			return rootTabControl.GetMinDimensions();
 		}
 
+		public void SetTitle(string titleText)
+		{
+			titlebar.text = titleText;
+		}
 
+		public void SetTitle(string titleText, float textSize)
+		{
+			titlebar.text = titleText;
+			titlebar.fontSize = textSize;
+		}
+
+
+		/// <summary>
+		/// Can add multiple methods to a single UnityAction as below:<br/>
+		/// <c>
+		/// UnityAction action = null;<br/>
+		/// action += () => FunctionWithParam("name");<br/>
+		/// action += () => FunctionNoParam();<br/>
+		/// action += delegate {// some code here};</c>
+		/// </summary>
+		/// <param name="clickActions"></param>
+		public void SetContextMenuActions(List<DesignAction> clickActions)
+		{
+			windowStyle = WindowStyle.ContextMenu;
+			//tabs[selectedTabIndex].SetContextMenuActions(clickActions);
+			RecalculateDimensions();
+			isDirty = true;
+		}
+
+		public void SetDialogResultOK()
+		{
+			this.result = DialogResult.OK;
+			Close();
+		}
+
+		public void SetDialogResultCancel()
+		{
+			this.result = DialogResult.Cancel;
+			Close();
+		}
+
+		public void SetDialogResultYes()
+		{
+			this.result = DialogResult.Yes;
+			Close();
+		}
+
+		public void SetDialogResultNo()
+		{
+			this.result = DialogResult.No;
+			Close();
+		}
+
+
+
+
+		public void Show(Vector2 pos)
+		{
+			GetComponent<RectTransform>().anchoredPosition = pos;
+			gameObject.SetActive(true);
+			if (designObject.isModal)
+			{
+				//modalClickBlocker.
+				Debug.LogWarning("modal blocker?");
+			}
+		}
+
+
+		public void Hide()
+		{
+			gameObject.SetActive(false);
+		}
+
+		/// <summary>
+		/// DesignManager handles destruction of objects.
+		/// That way we can create a pool if we so desire.
+		/// </summary>
+		public void Close()
+		{
+			if (OnClose != null)
+				OnClose(this);
+			OnClose = null;
+			gameObject.SetActive(false);
+		}
+
+		/// <summary>
+		/// Minimize to a titlebar only,
+		/// then move to bottom of screen?
+		/// </summary>
+		//public void Minimize()
+		//{
+		//	isMinimized = !isMinimized;
+		//	// is this necessary?
+		//	// @TODO(Tristan): performance testing to see if controls are still being "drawn" even if this panel is hidden
+		//	tabs[selectedTabIndex].ShowControls(!isMinimized);
+		//	Refresh();
+		//}
+
+
+
+		public UIExpandingLabel AddText()
+		{
+			return panel.AddText(null);
+		}
+
+		public UIExpandingLabel AddText(string text)
+		{
+			return panel.AddText_(text);
+		}
+
+		public UIExpandingInputField AddInputField()
+		{
+			return panel.AddInputField(null);
+		}
+
+		public UIButton AddButton()
+		{
+			return panel.AddButton(null);
+		}
+
+		public UIButtonPanel AddButtonPanel()
+		{
+			return panel.AddButtonPanel(null);
+		}
+
+		/// <summary>
+		/// Adds a control to the currently selected panel (root panel, if not multi-tabbed).
+		/// </summary>
+		/// <param name="ctrlType"></param>
+		/// <returns></returns>
 		public IUIBehavior AddUIControl(UIControlType ctrlType)
 		{
 			isDirty = true;
 			switch (ctrlType)
 			{
 				case UIControlType.Text:
-					return panel.AddUIControl(new LabelEx(textScriptObj));
+					return panel.AddText(textScriptObj);
 
 				case UIControlType.InputField:
-					return panel.AddUIControl(new InputFieldEx(inputFieldScriptObj));
+					return panel.AddInputField(inputFieldScriptObj);
 
 				case UIControlType.Dropdown:
-					return panel.AddUIControl(new DropdownEx(dropdownScriptObj));
+					return panel.AddDropdown(dropdownScriptObj);
 
 				case UIControlType.CheckBox:
-					return panel.AddUIControl(new CheckBoxEx(checkBoxScriptObj));
+					return panel.AddCheckBox(checkBoxScriptObj);
 
 				case UIControlType.Slider:
-					return panel.AddUIControl(new SliderEx(sliderScriptObj));
+					return panel.AddSlider(sliderScriptObj);
 
 				case UIControlType.Button:
-					return panel.AddUIControl(new ButtonEx(buttonScriptObj));
+					return panel.AddButton(buttonScriptObj);
 
 				case UIControlType.ButtonPanel:
-					return panel.AddUIControl(new ButtonPanelEx(buttonPanelScriptObj));
+					return panel.AddButtonPanel(buttonPanelScriptObj);
 
 				case UIControlType.Image:
-					return panel.AddUIControl(new ImageEx(imageViewScriptObj));
+					return panel.AddImage(imageViewScriptObj);
 
-				case UIControlType.ImagePanel:
-					return panel.AddUIControl(new ImageViewDataEx(imageViewPanelScriptObj));
+				//case UIControlType.ImagePanel:
+				//return panel.AddImagePanel(new ImageViewDataEx(imageViewPanelScriptObj));
 
 				case UIControlType.HorizontalPanel:
 					return panel.AddHorizontalPanel(horizontalPanelScriptObj);
@@ -292,10 +522,17 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public TabPanel AddTab(string tabText, UIPanelScriptableObject overridePanelData = null)
+		public TabPanel AddTab(
+			string tabText, UIPanelScriptableObject overridePanelData = null)
 		{
 			var tabPanel = rootTabControl.AddTab(tabText, overridePanelData);
 			return tabPanel;
+		}
+
+
+		public TabPanel SelectTab(int tabIndex)
+		{
+			return rootTabControl.SelectTab(tabIndex);
 		}
 
 		public void ResetToLastPosition()
@@ -328,7 +565,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
 			throw new System.NotImplementedException();
 		}
@@ -338,7 +575,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void UpdateBackingData(IUIDataEx backingData)
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
 			throw new System.NotImplementedException();
 		}

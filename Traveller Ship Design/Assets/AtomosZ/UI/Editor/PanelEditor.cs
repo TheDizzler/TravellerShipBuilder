@@ -6,6 +6,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI.EditorZ
 {
@@ -17,13 +18,14 @@ namespace AtomosZ.UI.EditorZ
 
 		private Dictionary<UIControlType, SerializedProperty> scriptableObjects;
 		private Editor tabEditor;
-		private UIPanelEditor panelEditor;
+		private Editor tabLabelEditor;
+		private Editor panelEditor;
 		private MagicWindow.WindowStyle prevWindowStyle;
 		private Dictionary<UITabControlScriptableObject, UITabControlScriptableObjectEditor> tabScriptObjEditors = new();
 		private bool isTabControlScriptObjFoldout;
 		private bool isScriptObjFoldout;
 		private bool isTitleBarFoldout;
-		private Editor tabLabelEditor;
+		
 
 		void OnEnable()
 		{
@@ -42,7 +44,7 @@ namespace AtomosZ.UI.EditorZ
 				[UIControlType.Button] = serializedObject.FindProperty("buttonScriptObj"),
 				[UIControlType.ButtonPanel] = serializedObject.FindProperty("buttonPanelScriptObj"),
 				[UIControlType.Image] = serializedObject.FindProperty("imageViewScriptObj"),
-				[UIControlType.ImagePanel] = serializedObject.FindProperty("imageViewPanelScriptObj"),
+				//[UIControlType.ImagePanel] = serializedObject.FindProperty("imageViewPanelScriptObj"),
 			};
 		}
 
@@ -112,15 +114,13 @@ namespace AtomosZ.UI.EditorZ
 					{
 						++EditorGUI.indentLevel;
 
-						Editor.CreateCachedEditor(magicWindow.rootTabControl.tabPanels[0].Key, typeof(UIExpandingLabelEditor), ref tabLabelEditor);
+						Editor.CreateCachedEditor(magicWindow.rootTabControl.tabPanels[0].tabLabel, typeof(UIExpandingLabelEditor), ref tabLabelEditor);
 						tabLabelEditor.OnInspectorGUI();
 
 						--EditorGUI.indentLevel;
 					}
 
-					if (panelEditor == null)
-						panelEditor = (UIPanelEditor)Editor.CreateEditor(
-							magicWindow.rootTabControl.SelectedPanel(), typeof(UIPanelEditor));
+					Editor.CreateCachedEditor(magicWindow.rootTabControl.SelectedPanel(), typeof(UIPanelEditor), ref panelEditor);
 					panelEditor.OnInspectorGUI();
 
 					if (!tabScriptObjEditors.TryGetValue(magicWindow.rootTabControl.tabControlData, out var tabDataEditor)
@@ -172,10 +172,10 @@ namespace AtomosZ.UI.EditorZ
 
 
 	[CustomEditor(typeof(UITabControl))]
-	public class TabControlEditor : Editor
+	public class TabControlEditor : EditorEx
 	{
 		public UITabControl tabControl;
-		private TabLookupDictionary tabPanels;
+		private List<TabPanel> tabPanels;
 		private int removeTabIndex;
 		private Editor panelEditor;
 		private static bool isTabEditFoldout = true;
@@ -234,27 +234,29 @@ namespace AtomosZ.UI.EditorZ
 				selectedIndex.intValue = 0;
 
 			var selectedTabPanel = tabPanels[selectedIndex.intValue];
-			UIExpandingLabel selectedTab = selectedTabPanel.Key;
+			UIExpandingLabel selectedTab = selectedTabPanel.tabLabel;
 
 			if (isPanelFoldout = EditorGUILayout.Foldout(isPanelFoldout,
 				"Selected Tab: " + selectedTab.referenceName + " - Edit and Add Controls", true))
 			{
-				++EditorGUI.indentLevel;
+				++indentLevel;
 
 				if (isTabLabelExFoldout = EditorGUILayout.Foldout(isTabLabelExFoldout, "Tab Label Properties", true))
 				{
-					++EditorGUI.indentLevel;
+					++indentLevel;
 
-					Editor.CreateCachedEditor(selectedTabPanel.Key, typeof(UIExpandingLabelEditor), ref tabLabelEditor);
+					Editor.CreateCachedEditor(selectedTabPanel.tabLabel, typeof(UIExpandingLabelEditor), ref tabLabelEditor);
 					tabLabelEditor.OnInspectorGUI();
+
+					--indentLevel;
 				}
 
-				Editor.CreateCachedEditor(selectedTabPanel.Value, typeof(UIPanelEditor), ref panelEditor);
+				Editor.CreateCachedEditor(selectedTabPanel.panel, typeof(UIPanelEditor), ref panelEditor);
 				panelEditor.OnInspectorGUI();
 				//if (((UIPanelEditor)panelEditor).isDeadEditor)
 				//	lastSelectedIndex = -1;
 
-				--EditorGUI.indentLevel;
+				--indentLevel;
 			}
 
 			if (windowStyle == MagicWindow.WindowStyle.Tabbed)
@@ -269,7 +271,7 @@ namespace AtomosZ.UI.EditorZ
 					if (removeTabIndex < 0)
 						removeTabIndex = 0;
 
-					if (GUILayout.Button("Remove " + tabPanels[removeTabIndex].Key.name))
+					if (GUILayout.Button("Remove " + tabPanels[removeTabIndex].tabLabel.name))
 					{
 						tabControl.RemoveTab(removeTabIndex);
 						EditorUtility.SetDirty(tabControl);
@@ -296,7 +298,7 @@ namespace AtomosZ.UI.EditorZ
 
 				EditorGUILayout.PropertyField(serializedObject.FindProperty("panelPrefab"));// this is sometimes null if the foldout is closed?
 
-				var selectedPanel = selectedTabPanel.Value;
+				var selectedPanel = selectedTabPanel.panel;
 				Editor.CreateCachedEditor(selectedPanel, typeof(UIPanelEditor), ref panelEditor);
 				panelEditor.OnInspectorGUI();
 
@@ -343,14 +345,14 @@ namespace AtomosZ.UI.EditorZ
 
 
 	[CustomEditor(typeof(UITabControlScriptableObject))]
-	public class UITabControlScriptableObjectEditor : Editor
+	public class UITabControlScriptableObjectEditor : EditorEx
 	{
 		public override void OnInspectorGUI()
 		{
-			EditorGUI.BeginChangeCheck();
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("panelScriptableObj"));
-			var windowStyleProp = serializedObject.FindProperty("windowStyle");
-			EditorGUILayout.PropertyField(windowStyleProp);
+			BeginChangeCheck();
+			PropertyField(FindProperty("panelScriptableObj"));
+			var windowStyleProp = FindProperty("windowStyle");
+			PropertyField(windowStyleProp);
 			var windowStyle = (MagicWindow.WindowStyle)windowStyleProp.enumValueIndex;
 			switch (windowStyle)
 			{
@@ -359,38 +361,38 @@ namespace AtomosZ.UI.EditorZ
 
 				case MagicWindow.WindowStyle.Tabbed:
 				{
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleBarFontSize"), new GUIContent("Tab Text Font Size"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleBarFontColor"), new GUIContent("Tab Text Font Color"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("tabTextAlignment"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleBarSprites"), new GUIContent("Tab Sprites"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleTextMargin"), new GUIContent("Tab text Margin"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleBarMinSize"), new GUIContent("Tab min Size"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleBarVerticalOffset"), new GUIContent("Tab Vertical Offset"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("selectedTabColor"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("deselectedTabColor"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("disabledTabColor"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("tabHorizontaloffset"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("panelWidthAdjust"));
+					PropertyField(FindProperty("titleBarFontSize"), new GUIContent("Tab Text Font Size"));
+					PropertyField(FindProperty("titleBarFontColor"), new GUIContent("Tab Text Font Color"));
+					PropertyField(FindProperty("tabTextAlignment"));
+					PropertyField(FindProperty("titleBarSprites"), new GUIContent("Tab Sprites"));
+					PropertyField(FindProperty("titleTextMargin"), new GUIContent("Tab text Margin"));
+					PropertyField(FindProperty("titleBarMinSize"), new GUIContent("Tab min Size"));
+					PropertyField(FindProperty("titleBarVerticalOffset"), new GUIContent("Tab Vertical Offset"));
+					PropertyField(FindProperty("selectedTabColor"));
+					PropertyField(FindProperty("deselectedTabColor"));
+					PropertyField(FindProperty("disabledTabColor"));
+					PropertyField(FindProperty("tabHorizontaloffset"));
+					PropertyField(FindProperty("panelWidthAdjust"));
 
 				}
 				break;
 
 				case MagicWindow.WindowStyle.TitleBar:
 				{
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleBarFontSize"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleBarFontColor"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("tabTextAlignment"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleBarSprites"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleTextMargin"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleBarMinSize"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("titleBarVerticalOffset"));
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("selectedTabColor"), new GUIContent("TitleBar Color"));
+					PropertyField(FindProperty("titleBarFontSize"));
+					PropertyField(FindProperty("titleBarFontColor"));
+					PropertyField(FindProperty("tabTextAlignment"));
+					PropertyField(FindProperty("titleBarSprites"));
+					PropertyField(FindProperty("titleTextMargin"));
+					PropertyField(FindProperty("titleBarMinSize"));
+					PropertyField(FindProperty("titleBarVerticalOffset"));
+					PropertyField(FindProperty("selectedTabColor"), new GUIContent("TitleBar Color"));
 				}
 				break;
 			}
 
 			serializedObject.ApplyModifiedProperties();
-			if (EditorGUI.EndChangeCheck())
+			if (EndChangeCheck())
 			{ }
 		}
 	}
@@ -420,6 +422,10 @@ namespace AtomosZ.UI.EditorZ
 		private Editor checkboxEditor;
 		private Editor labelEditor;
 		private Editor inputEditor;
+		private Editor buttonEditor;
+		private Editor panelDataEditor;
+		private Editor buttonPanelEditor;
+		private Editor imageEditor;
 
 		private UIControlType currentType;
 		private Dictionary<UIControlType, string> propertyName = new()
@@ -438,8 +444,7 @@ namespace AtomosZ.UI.EditorZ
 		private bool isUIControlsFoldout = true;
 		private bool isPanelDataFoldout = false;
 		public bool isDeadEditor;
-		private Editor buttonEditor;
-		private Editor panelDataEditor;
+		
 
 		public void OnEnable()
 		{
@@ -520,43 +525,43 @@ namespace AtomosZ.UI.EditorZ
 
 			if (GUILayout.Button($"Add {currentType} to {panel.referenceName} panel"))
 			{
-				 IUIBehavior uiBehave = null;
+				IUIBehavior uiBehave = null;
 				switch (currentType)
 				{
 					case UIControlType.Text:
-						uiBehave = panel.AddUIControl(new LabelEx(null));
+						uiBehave = panel.AddText(null);
 						break;
 
 					case UIControlType.Button:
-						uiBehave = panel.AddUIControl(new ButtonEx(null));
+						uiBehave = panel.AddButton(null);
 						break;
 
 					case UIControlType.ButtonPanel:
-						uiBehave = panel.AddUIControl(new ButtonPanelEx(null));
+						uiBehave = panel.AddButtonPanel(null);
 						break;
 
 					case UIControlType.CheckBox:
-						uiBehave = panel.AddUIControl(new CheckBoxEx(null));
+						uiBehave = panel.AddCheckBox(null);
 						break;
 
 					case UIControlType.Dropdown:
-						uiBehave = panel.AddUIControl(new DropdownEx(null));
+						uiBehave = panel.AddDropdown(null);
 						break;
 
 					case UIControlType.Image:
-						uiBehave = panel.AddUIControl(new ImageEx(null));
+						uiBehave = panel.AddImage(null);
 						break;
 
-					case UIControlType.ImagePanel:
-						uiBehave = panel.AddUIControl(new ImageViewDataEx(null));
-						break;
+					//case uicontroltype.imagepanel:
+					//	uibehave = panel.addimagepane(null);
+					//	break;
 
 					case UIControlType.InputField:
-						uiBehave = panel.AddUIControl(new InputFieldEx(null));
+						uiBehave = panel.AddInputField(null);
 						break;
 
 					case UIControlType.Slider:
-						uiBehave = panel.AddUIControl(new SliderEx(null));
+						uiBehave = panel.AddSlider(null);
 						break;
 
 					case UIControlType.TabControl:
@@ -564,7 +569,7 @@ namespace AtomosZ.UI.EditorZ
 						break;
 
 					case UIControlType.Spinner:
-						uiBehave = panel.AddUIControl(new SpinnerEx());
+						uiBehave = panel.AddSpinner(null);
 						break;
 
 					case UIControlType.HorizontalPanel:
@@ -607,15 +612,15 @@ namespace AtomosZ.UI.EditorZ
 
 					var uiControl = control.GetComponent<IUIBehavior>();
 					var data = uiControl.GetBackingData();
-					if (data == null)
-					{
-						Debug.LogWarning($"{uiControl.referenceName} data is missing");
-						continue;
-					}
+					//if (data == null)
+					//{
+					//	Debug.LogWarning($"{uiControl.referenceName} data is missing");
+					//	continue;
+					//}
 
 					SerializedObject uiSO = null;
 					string referenceName = null;
-					switch (data.dataType)
+					switch (uiControl.dataType)
 					{
 						case UIControlType.Text:
 						{
@@ -666,13 +671,13 @@ namespace AtomosZ.UI.EditorZ
 						break;
 
 
-						case UIControlType.ImagePanel:
-						{
-							var uiCtrl = (UIImageViewPanel)uiControl;
-							uiSO = new SerializedObject(uiCtrl);
-							referenceName = uiCtrl.referenceName;
-						}
-						break;
+						//case UIControlType.ImagePanel:
+						//{
+						//	var uiCtrl = (UIImageViewPanel)uiControl;
+						//	uiSO = new SerializedObject(uiCtrl);
+						//	referenceName = uiCtrl.referenceName;
+						//}
+						//break;
 
 						case UIControlType.InputField:
 						{
@@ -716,17 +721,17 @@ namespace AtomosZ.UI.EditorZ
 						break;
 
 						default:
-							Debug.Log($"{data.dataType} not yet implemented");
+							Debug.Log($"{uiControl.dataType} not yet implemented");
 							continue;
 					}
 
-					var labelText = $"{(uiControl.designObject.gameObject.activeSelf ? "" : "(hidden) ")}{data.dataType.ToString()} - {referenceName}";
+					var labelText = $"{(uiControl.designObject.gameObject.activeSelf ? "" : "(hidden) ")}{uiControl.dataType.ToString()} - {referenceName}";
 					isFoldout[control] = EditorGUILayout.Foldout(isFoldout[control], labelText, true);
 					if (isFoldout[control])
 					{
 						++EditorGUI.indentLevel;
 						uiControl.designObject.gameObject.SetActive(EditorGUILayout.Toggle("Is Visible", uiControl.designObject.gameObject.activeSelf));
-						switch (data.dataType)
+						switch (uiControl.dataType)
 						{
 							case UIControlType.TabControl:
 							{
@@ -785,6 +790,13 @@ namespace AtomosZ.UI.EditorZ
 							}
 							break;
 
+							case UIControlType.ButtonPanel:
+							{
+								Editor.CreateCachedEditor((UIButtonPanel)uiControl, typeof(UIButtonPanelEditor), ref buttonPanelEditor);
+								buttonPanelEditor.OnInspectorGUI();
+							}
+							break;
+
 							case UIControlType.CheckBox:
 							{
 								Editor.CreateCachedEditor((UICheckBox)uiControl, typeof(UICheckBoxEditor), ref checkboxEditor);
@@ -806,6 +818,13 @@ namespace AtomosZ.UI.EditorZ
 							}
 							break;
 
+							case UIControlType.Image:
+							{
+								Editor.CreateCachedEditor((UIImageView)uiControl, typeof(UIImageViewEditor), ref imageEditor);
+								imageEditor.OnInspectorGUI();
+							}
+							break;
+
 							case UIControlType.Panel:
 							case UIControlType.HorizontalPanel:
 							{
@@ -816,7 +835,7 @@ namespace AtomosZ.UI.EditorZ
 
 							default:
 							{
-								EditorGUILayout.PropertyField(uiSO.FindProperty(propertyName[data.dataType]));
+								EditorGUILayout.PropertyField(uiSO.FindProperty(propertyName[uiControl.dataType]));
 							}
 							break;
 						}
@@ -885,150 +904,150 @@ namespace AtomosZ.UI.EditorZ
 
 
 
-	[CustomEditor(typeof(BottomPanel))]
-	public class BottomPanelEditor : Editor
-	{
-		private Vector2 lastSize;
-		private BottomPanel panel;
-		private RectTransform rect;
+	//[CustomEditor(typeof(BottomPanel))]
+	//public class BottomPanelEditor : Editor
+	//{
+	//	private Vector2 lastSize;
+	//	private BottomPanel panel;
+	//	private RectTransform rect;
 
-		public void OnEnable()
-		{
-			panel = (BottomPanel)target;
-			rect = panel.GetComponent<RectTransform>();
-		}
+	//	public void OnEnable()
+	//	{
+	//		panel = (BottomPanel)target;
+	//		rect = panel.GetComponent<RectTransform>();
+	//	}
 
-		public void OnSceneGUI()
-		{
-			// lock the panel size so it can't get changed except by it's parent 
-			if (lastSize != rect.sizeDelta)
-			{
-				panel.SetToParentSize();
-				lastSize = rect.sizeDelta;
-			}
-		}
-	}
+	//	public void OnSceneGUI()
+	//	{
+	//		// lock the panel size so it can't get changed except by it's parent 
+	//		if (lastSize != rect.sizeDelta)
+	//		{
+	//			panel.SetToParentSize();
+	//			lastSize = rect.sizeDelta;
+	//		}
+	//	}
+	//}
 
 
 
-	[CustomEditor(typeof(UIImageViewPanel))]
-	public class UIImageViewPanelEditor : Editor
-	{
-		private UIImageViewPanel imageViewPanel;
-		private ImageViewDataEx viewDataEx;
-		private Dictionary<ImageEx, UIImageView> images = new();
-		private bool imagesVisible = true;
-		private SerializedObject gridLayoutSO;
-		private SerializedObject scrollRectSO;
-		private SerializedObject contentRectSO;
+	//[CustomEditor(typeof(UIImageViewPanel))]
+	//public class UIImageViewPanelEditor : Editor
+	//{
+	//	private UIImageViewPanel imageViewPanel;
+	//	private ImageViewDataEx viewDataEx;
+	//	private Dictionary<ImageEx, UIImageView> images = new();
+	//	private bool imagesVisible = true;
+	//	private SerializedObject gridLayoutSO;
+	//	private SerializedObject scrollRectSO;
+	//	private SerializedObject contentRectSO;
 
-		public void OnEnable()
-		{
-			imageViewPanel = (UIImageViewPanel)target;
-			viewDataEx = (ImageViewDataEx)imageViewPanel.GetBackingData();
-			gridLayoutSO = new SerializedObject(imageViewPanel.gridLayout);
-			scrollRectSO = new SerializedObject(imageViewPanel.scrollRect);
-			contentRectSO = new SerializedObject(imageViewPanel.scrollRect.content);
-			BuildImageList();
-		}
+	//	public void OnEnable()
+	//	{
+	//		imageViewPanel = (UIImageViewPanel)target;
+	//		viewDataEx = (ImageViewDataEx)imageViewPanel.GetBackingData();
+	//		gridLayoutSO = new SerializedObject(imageViewPanel.gridLayout);
+	//		scrollRectSO = new SerializedObject(imageViewPanel.scrollRect);
+	//		contentRectSO = new SerializedObject(imageViewPanel.scrollRect.content);
+	//		BuildImageList();
+	//	}
 
-		private void BuildImageList()
-		{
-			var imageViews = imageViewPanel.GetComponentsInChildren<UIImageView>();
-			images.Clear();
-			foreach (var imageView in imageViews)
-			{
-				images.Add((ImageEx)imageView.GetBackingData(), imageView);
-			}
+	//	private void BuildImageList()
+	//	{
+	//		var imageViews = imageViewPanel.GetComponentsInChildren<UIImageView>();
+	//		images.Clear();
+	//		foreach (var imageView in imageViews)
+	//		{
+	//			images.Add((ImageEx)imageView.GetBackingData(), imageView);
+	//		}
 
-			imageViewPanel.images = images;
-		}
+	//		imageViewPanel.images = images;
+	//	}
 
-		public override void OnInspectorGUI()
-		{
-			EditorGUI.BeginChangeCheck();
-			base.OnInspectorGUI();
-			var maxPanelSize = viewDataEx.scriptableObj.maxPanelSize;
-			var imageSize = viewDataEx.scriptableObj.imageSize;
-			int imagesOnRow = Mathf.FloorToInt(
-				(maxPanelSize.x - (imageViewPanel.gridLayout.padding.left + imageViewPanel.gridLayout.padding.right))
-				/ (imageSize.x + imageViewPanel.gridLayout.spacing.x));
-			var minWidthReq = imageSize.x * imagesOnRow + imageViewPanel.gridLayout.spacing.x * (imagesOnRow - 1);
+	//	public override void OnInspectorGUI()
+	//	{
+	//		EditorGUI.BeginChangeCheck();
+	//		base.OnInspectorGUI();
+	//		var maxPanelSize = viewDataEx.scriptableObj.maxPanelSize;
+	//		var imageSize = viewDataEx.scriptableObj.imageSize;
+	//		int imagesOnRow = Mathf.FloorToInt(
+	//			(maxPanelSize.x - (imageViewPanel.gridLayout.padding.left + imageViewPanel.gridLayout.padding.right))
+	//			/ (imageSize.x + imageViewPanel.gridLayout.spacing.x));
+	//		var minWidthReq = imageSize.x * imagesOnRow + imageViewPanel.gridLayout.spacing.x * (imagesOnRow - 1);
 
-			GUILayout.BeginHorizontal();
-			EditorGUILayout.FloatField("min panel width", minWidthReq);
-			EditorGUILayout.IntField("images on row", imagesOnRow);
+	//		GUILayout.BeginHorizontal();
+	//		EditorGUILayout.FloatField("min panel width", minWidthReq);
+	//		EditorGUILayout.IntField("images on row", imagesOnRow);
 
-			GUILayout.EndHorizontal();
+	//		GUILayout.EndHorizontal();
 
-			if (EditorGUI.EndChangeCheck())
-			{
-				imageViewPanel.UpdateBackingData();
-				Debug.LogWarning("label min/max dimensions have been removed from LabelEx");
-				//imageViewPanel.gridLayout.cellSize = new Vector2(
-				//	Mathf.Max(imageSize.x, viewDataEx.labelEx.maxLabelDimensions.x),
-				//	imageSize.y + viewDataEx.labelEx.maxLabelDimensions.y); // will need to figure this out
-				gridLayoutSO.ApplyModifiedProperties();
+	//		if (EditorGUI.EndChangeCheck())
+	//		{
+	//			imageViewPanel.UpdateBackingData();
+	//			Debug.LogWarning("label min/max dimensions have been removed from LabelEx");
+	//			//imageViewPanel.gridLayout.cellSize = new Vector2(
+	//			//	Mathf.Max(imageSize.x, viewDataEx.labelEx.maxLabelDimensions.x),
+	//			//	imageSize.y + viewDataEx.labelEx.maxLabelDimensions.y); // will need to figure this out
+	//			gridLayoutSO.ApplyModifiedProperties();
 
-				contentRectSO.ApplyModifiedProperties();
-			}
+	//			contentRectSO.ApplyModifiedProperties();
+	//		}
 
-			if (GUILayout.Button("Add Image"))
-			{
-				imageViewPanel.AddImage(new ImageEx(viewDataEx.scriptableObj.imageViewData)
-				{
-					sprite = viewDataEx.scriptableObj.defaultSprite,
-				});
-			}
+	//		if (GUILayout.Button("Add Image"))
+	//		{
+	//			imageViewPanel.AddImage(new ImageEx(viewDataEx.scriptableObj.imageViewData)
+	//			{
+	//				sprite = viewDataEx.scriptableObj.defaultSprite,
+	//			});
+	//		}
 
-			imagesVisible = EditorGUILayout.BeginFoldoutHeaderGroup(imagesVisible, "Images");
-			if (imagesVisible)
-			{
-				ImageEx remove = null;
-				foreach (var image in images)
-				{
-					var rect = EditorGUILayout.BeginHorizontal();
-					var newSprite = (Sprite)EditorGUILayout.ObjectField(image.Key.sprite, typeof(Sprite), false);
-					var newText = EditorGUILayout.TextField(image.Value.text);
-					EditorGUILayout.EndHorizontal();
+	//		imagesVisible = EditorGUILayout.BeginFoldoutHeaderGroup(imagesVisible, "Images");
+	//		if (imagesVisible)
+	//		{
+	//			ImageEx remove = null;
+	//			foreach (var image in images)
+	//			{
+	//				var rect = EditorGUILayout.BeginHorizontal();
+	//				var newSprite = (Sprite)EditorGUILayout.ObjectField(image.Key.sprite, typeof(Sprite), false);
+	//				var newText = EditorGUILayout.TextField(image.Value.text);
+	//				EditorGUILayout.EndHorizontal();
 
-					if (newSprite != image.Key.sprite || newText != image.Value.text)
-					{
-						image.Key.sprite = newSprite;
-						image.Value.text = newText;
-						image.Value.UpdateBackingData();
-					}
+	//				if (newSprite != image.Key.sprite || newText != image.Value.text)
+	//				{
+	//					image.Key.sprite = newSprite;
+	//					image.Value.text = newText;
+	//					image.Value.UpdateBackingData();
+	//				}
 
-					if (GUILayout.Button("Remove"))
-					{
-						remove = image.Key;
+	//				if (GUILayout.Button("Remove"))
+	//				{
+	//					remove = image.Key;
 
-					}
+	//				}
 
-					GUILayout.Space(15);
-				}
+	//				GUILayout.Space(15);
+	//			}
 
-				if (remove != null)
-				{
-					imageViewPanel.RemoveImage(remove);
-				}
-			}
-		}
+	//			if (remove != null)
+	//			{
+	//				imageViewPanel.RemoveImage(remove);
+	//			}
+	//		}
+	//	}
 
-		//public void OnSceneGUI()
-		//{
-		//	var size = rect.sizeDelta;
-		//	if (size != lastSize)
-		//	{
-		//		imageViewPanel.UpdateBackingData();
-		//		lastSize = size;
-		//	}
-		//}
-	}
+	//	//public void OnSceneGUI()
+	//	//{
+	//	//	var size = rect.sizeDelta;
+	//	//	if (size != lastSize)
+	//	//	{
+	//	//		imageViewPanel.UpdateBackingData();
+	//	//		lastSize = size;
+	//	//	}
+	//	//}
+	//}
 
 
 	[CustomEditor(typeof(UIButtonPanel))]
-	public class UIButtonPanelEditor : Editor
+	public class UIButtonPanelEditor : EditorEx
 	{
 		private UIButtonPanel buttonPanel;
 
@@ -1041,19 +1060,35 @@ namespace AtomosZ.UI.EditorZ
 		{
 			EditorGUI.BeginChangeCheck();
 
-			var refNameProp = serializedObject.FindProperty("_referenceName");
-			EditorGUILayout.PropertyField(refNameProp);
+			var refNameProp = FindProperty("_referenceName");
+			PropertyField(refNameProp);
 
+			var activateProp = FindProperty("_interactable");
+			PropertyField(activateProp);
 
+			var buttonsProp = FindProperty("_buttons");
+			PropertyField(buttonsProp);
 
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("okButton"));
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("yesButton"));
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("noButton"));
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("cancelButton"));
+			if (buttonPanel.buttons == UIButtonPanel.DialogButton.OKCancel
+				|| buttonPanel.buttons == UIButtonPanel.DialogButton.OK)
+				PropertyField(FindProperty("okButton"));
+			if (buttonPanel.buttons == UIButtonPanel.DialogButton.YesNoCancel
+				|| buttonPanel.buttons == UIButtonPanel.DialogButton.YesNoCancel)
+			{
+				PropertyField(FindProperty("yesButton"));
+				PropertyField(FindProperty("noButton"));
+			}
 
-			var dataProp = serializedObject.FindProperty("buttonPanelData");
+			if (buttonPanel.buttons == UIButtonPanel.DialogButton.OKCancel
+				|| buttonPanel.buttons == UIButtonPanel.DialogButton.YesNoCancel)
+				PropertyField(FindProperty("cancelButton"));
+
+			var fillParentProp = FindProperty("_fillParentHorizontal");
+			PropertyField(fillParentProp);
+
+			var dataProp = FindProperty("buttonPanelData");
 			var oldData = dataProp.boxedValue;
-			EditorGUILayout.PropertyField(dataProp);
+			PropertyField(dataProp);
 
 			bool refreshPanelData = false;
 			if (dataProp.boxedValue != null)
@@ -1063,6 +1098,9 @@ namespace AtomosZ.UI.EditorZ
 			if (EditorGUI.EndChangeCheck())
 			{
 				buttonPanel.referenceName = refNameProp.stringValue;
+				buttonPanel.interactable = activateProp.boolValue;
+				buttonPanel.buttons = (UI.UIButtonPanel.DialogButton)buttonsProp.enumValueFlag;
+				buttonPanel.fillParentHorizontal = fillParentProp.boolValue;
 				if (refreshPanelData || oldData != dataProp.boxedValue)
 					buttonPanel.UpdateBackingData((UIButtonPanelScriptableObject)dataProp.boxedValue);
 			}
@@ -1219,6 +1257,9 @@ namespace AtomosZ.UI.EditorZ
 			var refNameProp = serializedObject.FindProperty("_referenceName");
 			EditorGUILayout.PropertyField(refNameProp);
 
+			var activateProp = serializedObject.FindProperty("_interactable");
+			EditorGUILayout.PropertyField(activateProp);
+
 			var textProp = serializedObject.FindProperty("_text");
 			EditorGUILayout.PropertyField(textProp);
 			var placeholderTextProp = serializedObject.FindProperty("_placeholderText");
@@ -1255,6 +1296,7 @@ namespace AtomosZ.UI.EditorZ
 			if (EditorGUI.EndChangeCheck())
 			{
 				inputField.referenceName = refNameProp.stringValue;
+				inputField.interactable = activateProp.boolValue;
 				inputField.placeholderText = placeholderTextProp.stringValue;
 				inputField.text = textProp.stringValue;
 				inputField.fontAsset = (TMP_FontAsset)fontAssetProp.boxedValue;
@@ -1282,7 +1324,88 @@ namespace AtomosZ.UI.EditorZ
 	}
 
 	[CustomEditor(typeof(UIImageView))]
-	public class ImageViewEditor : Editor { }
+	public class UIImageViewEditor : EditorEx
+	{
+		private UIImageView image;
+		private SerializedProperty dataProp;
+		private Editor imageViewDataEditor;
+
+		private void OnEnable()
+		{
+			image = (UIImageView)target;
+			dataProp = serializedObject.FindProperty("imageData");
+		}
+
+		public override void OnInspectorGUI()
+		{
+			EditorGUI.BeginChangeCheck();
+			var refNameProp = FindProperty("_referenceName");
+			PropertyField(refNameProp);
+
+			//var activateProp = FindProperty("_interactable");
+			//PropertyField(activateProp);
+
+			var minDimenProp = FindProperty("_minDimensions");
+			PropertyField(minDimenProp);
+
+			var showImageProp = FindProperty("_showImage");
+			PropertyField(showImageProp);			
+
+			var spriteProp = FindProperty("_sprite");
+			PropertyField(spriteProp);
+
+			var showCaptionProp = FindProperty("_showCaption");
+			PropertyField(showCaptionProp);
+
+
+			var textProp = FindProperty("_text");
+			PropertyField(textProp);
+
+
+			var oldData = dataProp.boxedValue;
+			EditorGUILayout.PropertyField(dataProp);
+			if (oldData != dataProp.boxedValue)
+			{
+				image.UpdateBackingData((ScriptableObject)dataProp.boxedValue);
+			}
+
+			if (dataProp.boxedValue != null)
+			{
+				EditorGUILayout.BeginHorizontal();
+				GUILayout.FlexibleSpace();
+				var imageData = (UIImageViewScriptableObject)dataProp.boxedValue;
+				if (GUILayout.Button($"Reset To ScriptableObject data", EditorStyles.miniButtonRight, GUILayout.ExpandWidth(false)))
+				{
+					image.UpdateBackingData(imageData);
+
+					if (imageData.labelData != null)
+					{
+					}
+				}
+				EditorGUILayout.EndHorizontal();
+
+				GUI.enabled = false;
+				++EditorGUI.indentLevel;
+				Editor.CreateCachedEditor(imageData, typeof(UIImageViewScriptableObjectEditor), ref imageViewDataEditor);
+				imageViewDataEditor.OnInspectorGUI();
+				--EditorGUI.indentLevel;
+				GUI.enabled = true;
+			}
+
+			serializedObject.ApplyModifiedProperties();
+			if (EditorGUI.EndChangeCheck())
+			{
+				//image.interactable = activateProp.boolValue;
+				image.referenceName = refNameProp.stringValue;
+				image.minDimensions = minDimenProp.vector2Value;
+				image.sprite = (Sprite)spriteProp.boxedValue;
+				image.showImage = showImageProp.boolValue;
+				image.showCaption = showCaptionProp.boolValue;
+				image.text = textProp.stringValue;
+				//image.fillParentHorizontal = fillProp.boolValue;
+			}
+		}
+	}
 
 
 
@@ -2023,6 +2146,9 @@ namespace AtomosZ.UI.EditorZ
 	[CustomEditor(typeof(UIButtonScriptableObject))]
 	public class UIButtonScriptableObjectEditor : Editor { }
 
+	[CustomEditor(typeof(UIImageViewScriptableObject))]
+	public class UIImageViewScriptableObjectEditor : Editor { }
+
 
 
 	/// <summary>
@@ -2074,180 +2200,180 @@ namespace AtomosZ.UI.EditorZ
 	}
 
 
-	[Obsolete("Delete after fixing ship design")]
-	[CustomEditor(typeof(DynaPanelOp))]
-	public class DynaPanelOpEditor : Editor
-	{
-		private DynaPanelOp dynaPanOp;
+	//[Obsolete("Delete after fixing ship design")]
+	//[CustomEditor(typeof(DynaPanelOp))]
+	//public class DynaPanelOpEditor : Editor
+	//{
+	//	private DynaPanelOp dynaPanOp;
 
-		private RectTransform rect;
-		private Vector2 lastSize;
-		private SerializedProperty currentType;
+	//	private RectTransform rect;
+	//	private Vector2 lastSize;
+	//	private SerializedProperty currentType;
 
-		private SerializedProperty uiControls;
-		private Dictionary<UIControlType, SerializedProperty> scriptableObjects;
-
-
-		private DynamicPanel dynaPan;
-		private SerializedObject dynaPanSO;
-		private SerializedProperty titleStyle;
-		private SerializedProperty titleText;
-		private SerializedProperty centerTitleText;
-		private SerializedProperty panelStyle;
-		private SerializedProperty tabs;
-		private SerializedProperty selectedTabIndex;
-		private SerializedProperty minDims;
-		private SerializedProperty maxDims;
-		private SerializedProperty alwaysShrink;
-		private SerializedProperty showCloseButton;
-		private SerializedProperty showMinimizeButton;
-		private SerializedProperty showMaximizeButton;
-		private bool isVisible;
-
-		void OnEnable()
-		{
-			dynaPanOp = (DynaPanelOp)target;
+	//	private SerializedProperty uiControls;
+	//	private Dictionary<UIControlType, SerializedProperty> scriptableObjects;
 
 
-			rect = dynaPanOp.GetComponent<RectTransform>();
+	//	private DynamicPanel dynaPan;
+	//	private SerializedObject dynaPanSO;
+	//	private SerializedProperty titleStyle;
+	//	private SerializedProperty titleText;
+	//	private SerializedProperty centerTitleText;
+	//	private SerializedProperty panelStyle;
+	//	private SerializedProperty tabs;
+	//	private SerializedProperty selectedTabIndex;
+	//	private SerializedProperty minDims;
+	//	private SerializedProperty maxDims;
+	//	private SerializedProperty alwaysShrink;
+	//	private SerializedProperty showCloseButton;
+	//	private SerializedProperty showMinimizeButton;
+	//	private SerializedProperty showMaximizeButton;
+	//	private bool isVisible;
+
+	//	void OnEnable()
+	//	{
+	//		dynaPanOp = (DynaPanelOp)target;
 
 
-			lastSize = rect.sizeDelta;
-			currentType = serializedObject.FindProperty("currentType");
-			uiControls = serializedObject.FindProperty("uiControls");
-
-			scriptableObjects = new Dictionary<UIControlType, SerializedProperty>
-			{
-				[UIControlType.Text] = serializedObject.FindProperty("textScriptObj"),
-				[UIControlType.InputField] = serializedObject.FindProperty("inputFieldScriptObj"),
-				[UIControlType.Dropdown] = serializedObject.FindProperty("dropdownScriptObj"),
-				[UIControlType.CheckBox] = serializedObject.FindProperty("checkBoxScriptObj"),
-				[UIControlType.Slider] = serializedObject.FindProperty("sliderScriptObj"),
-				[UIControlType.Button] = serializedObject.FindProperty("buttonScriptObj"),
-				[UIControlType.ButtonPanel] = serializedObject.FindProperty("buttonPanelScriptObj"),
-				[UIControlType.Image] = serializedObject.FindProperty("imageViewScriptObj"),
-				[UIControlType.ImagePanel] = serializedObject.FindProperty("imageViewPanelScriptObj"),
-			};
+	//		rect = dynaPanOp.GetComponent<RectTransform>();
 
 
-			dynaPan = dynaPanOp.GetComponent<DynamicPanel>();
-			dynaPanSO = new SerializedObject(dynaPan);
-			titleStyle = dynaPanSO.FindProperty("titleType");
-			titleText = dynaPanSO.FindProperty("_titleText");
-			centerTitleText = dynaPanSO.FindProperty("centerTitleText");
-			panelStyle = dynaPanSO.FindProperty("panelType");
-			tabs = dynaPanSO.FindProperty("tabs");
-			selectedTabIndex = dynaPanSO.FindProperty("selectedTabIndex");
-			minDims = dynaPanSO.FindProperty("minSize");
-			maxDims = dynaPanSO.FindProperty("maxSize");
-			alwaysShrink = dynaPanSO.FindProperty("alwaysShrinkToMinSize");
-			showCloseButton = dynaPanSO.FindProperty("showCloseButton");
-			showMinimizeButton = dynaPanSO.FindProperty("showMinimizeButton");
-			showMaximizeButton = dynaPanSO.FindProperty("showMaximizeButton");
+	//		lastSize = rect.sizeDelta;
+	//		currentType = serializedObject.FindProperty("currentType");
+	//		uiControls = serializedObject.FindProperty("uiControls");
 
-			BuildControlList();
-		}
+	//		scriptableObjects = new Dictionary<UIControlType, SerializedProperty>
+	//		{
+	//			[UIControlType.Text] = serializedObject.FindProperty("textScriptObj"),
+	//			[UIControlType.InputField] = serializedObject.FindProperty("inputFieldScriptObj"),
+	//			[UIControlType.Dropdown] = serializedObject.FindProperty("dropdownScriptObj"),
+	//			[UIControlType.CheckBox] = serializedObject.FindProperty("checkBoxScriptObj"),
+	//			[UIControlType.Slider] = serializedObject.FindProperty("sliderScriptObj"),
+	//			[UIControlType.Button] = serializedObject.FindProperty("buttonScriptObj"),
+	//			[UIControlType.ButtonPanel] = serializedObject.FindProperty("buttonPanelScriptObj"),
+	//			[UIControlType.Image] = serializedObject.FindProperty("imageViewScriptObj"),
+	//			[UIControlType.ImagePanel] = serializedObject.FindProperty("imageViewPanelScriptObj"),
+	//		};
 
-		private void BuildControlList()
-		{
-			var currentControls = dynaPan.GetComponentInChildren<BottomPanel>().GetControlsFromTransform();
-			dynaPanOp.uiControls.Clear();
-			foreach (var control in currentControls.Values)
-			{
-				if (!control.TryGetComponent<IUIBehavior>(out var uiBehavior))
-				{
-					Debug.LogError($"control {control.name} has no UIBehavior");
-					continue;
-				}
 
-				var dataEx = uiBehavior.GetBackingData();
-				var newCtrl = new UIControl();
-				newCtrl.controlType = dataEx.dataType;
-				dynaPanOp.uiControls.Add(newCtrl);
-				typeof(UIControl).GetField(UIControl.panelControlNames[dataEx.dataType]).SetValue(newCtrl, dataEx);
-			}
+	//		dynaPan = dynaPanOp.GetComponent<DynamicPanel>();
+	//		dynaPanSO = new SerializedObject(dynaPan);
+	//		titleStyle = dynaPanSO.FindProperty("titleType");
+	//		titleText = dynaPanSO.FindProperty("_titleText");
+	//		centerTitleText = dynaPanSO.FindProperty("centerTitleText");
+	//		panelStyle = dynaPanSO.FindProperty("panelType");
+	//		tabs = dynaPanSO.FindProperty("tabs");
+	//		selectedTabIndex = dynaPanSO.FindProperty("selectedTabIndex");
+	//		minDims = dynaPanSO.FindProperty("minSize");
+	//		maxDims = dynaPanSO.FindProperty("maxSize");
+	//		alwaysShrink = dynaPanSO.FindProperty("alwaysShrinkToMinSize");
+	//		showCloseButton = dynaPanSO.FindProperty("showCloseButton");
+	//		showMinimizeButton = dynaPanSO.FindProperty("showMinimizeButton");
+	//		showMaximizeButton = dynaPanSO.FindProperty("showMaximizeButton");
 
-			dynaPan.Refresh();
-		}
+	//		BuildControlList();
+	//	}
 
-		public override void OnInspectorGUI()
-		{
-			EditorGUI.BeginChangeCheck();
-			EditorGUILayout.PropertyField(titleStyle);
-			EditorGUILayout.PropertyField(titleText);
-			switch (dynaPan.titleType)
-			{
-				case UI.DynamicPanel.TitleLabelStyle.Bar:
-					EditorGUILayout.PropertyField(centerTitleText);
-					break;
+	//	private void BuildControlList()
+	//	{
+	//		var currentControls = dynaPan.GetComponentInChildren<BottomPanel>().GetControlsFromTransform();
+	//		dynaPanOp.uiControls.Clear();
+	//		foreach (var control in currentControls.Values)
+	//		{
+	//			if (!control.TryGetComponent<IUIBehavior>(out var uiBehavior))
+	//			{
+	//				Debug.LogError($"control {control.name} has no UIBehavior");
+	//				continue;
+	//			}
 
-				case UI.DynamicPanel.TitleLabelStyle.SquareTab:
-				case UI.DynamicPanel.TitleLabelStyle.BladedTab:
-				{
-					EditorGUILayout.PropertyField(tabs);
-					EditorGUILayout.PropertyField(selectedTabIndex);
-				}
-				break;
-			}
+	//			var dataEx = uiBehavior.GetBackingData();
+	//			var newCtrl = new UIControl();
+	//			newCtrl.controlType = dataEx.dataType;
+	//			dynaPanOp.uiControls.Add(newCtrl);
+	//			typeof(UIControl).GetField(UIControl.panelControlNames[dataEx.dataType]).SetValue(newCtrl, dataEx);
+	//		}
 
-			EditorGUILayout.PropertyField(panelStyle);
-			EditorGUILayout.PropertyField(minDims);
-			EditorGUILayout.PropertyField(maxDims);
-			EditorGUILayout.PropertyField(alwaysShrink);
-			EditorGUILayout.PropertyField(showCloseButton);
-			EditorGUILayout.PropertyField(showMinimizeButton);
-			//EditorGUILayout.PropertyField(showMaximizeButton);
+	//		dynaPan.Refresh();
+	//	}
 
-			isVisible = EditorGUILayout.Foldout(isVisible, "Default UI Scriptable Objects", true);
-			if (isVisible)
-			{
-				foreach (var so in scriptableObjects)
-					EditorGUILayout.PropertyField(so.Value);
-			}
+	//	public override void OnInspectorGUI()
+	//	{
+	//		EditorGUI.BeginChangeCheck();
+	//		EditorGUILayout.PropertyField(titleStyle);
+	//		EditorGUILayout.PropertyField(titleText);
+	//		switch (dynaPan.titleType)
+	//		{
+	//			case UI.DynamicPanel.TitleLabelStyle.Bar:
+	//				EditorGUILayout.PropertyField(centerTitleText);
+	//				break;
 
-			EditorGUILayout.PropertyField(currentType);
-			EditorGUILayout.PropertyField(scriptableObjects[dynaPanOp.currentType]);
+	//			case UI.DynamicPanel.TitleLabelStyle.SquareTab:
+	//			case UI.DynamicPanel.TitleLabelStyle.BladedTab:
+	//			{
+	//				EditorGUILayout.PropertyField(tabs);
+	//				EditorGUILayout.PropertyField(selectedTabIndex);
+	//			}
+	//			break;
+	//		}
 
-			if (GUILayout.Button($"Add {dynaPanOp.currentType} to Panel"))
-			{
-				dynaPanOp.AddUIControl();
-				BuildControlList();
-			}
+	//		EditorGUILayout.PropertyField(panelStyle);
+	//		EditorGUILayout.PropertyField(minDims);
+	//		EditorGUILayout.PropertyField(maxDims);
+	//		EditorGUILayout.PropertyField(alwaysShrink);
+	//		EditorGUILayout.PropertyField(showCloseButton);
+	//		EditorGUILayout.PropertyField(showMinimizeButton);
+	//		//EditorGUILayout.PropertyField(showMaximizeButton);
 
-			EditorGUILayout.PropertyField(uiControls);
+	//		isVisible = EditorGUILayout.Foldout(isVisible, "Default UI Scriptable Objects", true);
+	//		if (isVisible)
+	//		{
+	//			foreach (var so in scriptableObjects)
+	//				EditorGUILayout.PropertyField(so.Value);
+	//		}
 
-			if (GUILayout.Button("Clear All"))
-			{
-				dynaPan.ClearControlsEditor();
-			}
+	//		EditorGUILayout.PropertyField(currentType);
+	//		EditorGUILayout.PropertyField(scriptableObjects[dynaPanOp.currentType]);
 
-			var soUpdated = serializedObject.ApplyModifiedProperties();
-			var panelSOUpdated = dynaPanSO.ApplyModifiedProperties();
-			if (soUpdated || panelSOUpdated)
-			{
-				//dynaPan.UpdateData(dynaPanOp.uiControls);
-			}
+	//		if (GUILayout.Button($"Add {dynaPanOp.currentType} to Panel"))
+	//		{
+	//			dynaPanOp.AddUIControl();
+	//			BuildControlList();
+	//		}
 
-			if (EditorGUI.EndChangeCheck())
-			{
-				dynaPan.Refresh();
-				BuildControlList();
-			}
-		}
+	//		EditorGUILayout.PropertyField(uiControls);
 
-		/// <summary>
-		/// This is to prevent the user from manually resizing the panel.
-		/// Maybe we can toggle this?
-		/// </summary>
-		public void OnSceneGUI()
-		{
-			var size = rect.sizeDelta;
-			if (size != lastSize)
-			{
-				lastSize = size;
-			}
-		}
-	}
+	//		if (GUILayout.Button("Clear All"))
+	//		{
+	//			dynaPan.ClearControlsEditor();
+	//		}
+
+	//		var soUpdated = serializedObject.ApplyModifiedProperties();
+	//		var panelSOUpdated = dynaPanSO.ApplyModifiedProperties();
+	//		if (soUpdated || panelSOUpdated)
+	//		{
+	//			//dynaPan.UpdateData(dynaPanOp.uiControls);
+	//		}
+
+	//		if (EditorGUI.EndChangeCheck())
+	//		{
+	//			dynaPan.Refresh();
+	//			BuildControlList();
+	//		}
+	//	}
+
+	//	/// <summary>
+	//	/// This is to prevent the user from manually resizing the panel.
+	//	/// Maybe we can toggle this?
+	//	/// </summary>
+	//	public void OnSceneGUI()
+	//	{
+	//		var size = rect.sizeDelta;
+	//		if (size != lastSize)
+	//		{
+	//			lastSize = size;
+	//		}
+	//	}
+	//}
 
 
 

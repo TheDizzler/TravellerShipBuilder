@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AtomosZ.UI
 {
-	[CreateAssetMenu(fileName = "inputFieldData", menuName = "AtomosZ/UIScriptableObjects/UIInputFieldScriptableObject")]
+	[CreateAssetMenu(fileName = "inputFieldData", menuName = "AtomosZ/UI/UIInputFieldScriptableObject")]
 	public class UIExpandingInputFieldScriptableObject : ScriptableObject
 	{
 		[Tooltip("Default: 18")]

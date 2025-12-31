@@ -2,24 +2,27 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.UIButtonPanel;
 using static AtomosZ.UI.UIPrefabProvider;
 
 namespace AtomosZ.UI
 {
 	[Serializable]
-	public class PanelEx : IUIDataEx
-	{
-		public UIControlType dataType { get { return UIControlType.Panel; } }
+	//public class PanelEx : IUIDataEx
+	//{
+	//	public UIControlType dataType { get { return UIControlType.Panel; } }
 
-		public UIPanelScriptableObject scriptableObj;
+	//	public UIPanelScriptableObject scriptableObj;
 
-		public PanelEx(UIPanelScriptableObject scriptObj)
-		{
-			scriptableObj = scriptObj;
-		}
-	}
+	//	public PanelEx(UIPanelScriptableObject scriptObj)
+	//	{
+	//		scriptableObj = scriptObj;
+	//	}
+	//}
 
 	[ExecuteAlways]
 	public class UIPanel : MonoBehaviour, IUIBehavior
@@ -50,6 +53,8 @@ namespace AtomosZ.UI
 		}
 
 		public bool isDirty { get; set; }
+
+		public bool interactable { get; set; }
 
 		[SerializeField] private Sprite _sprite;
 		public Sprite sprite
@@ -143,12 +148,12 @@ namespace AtomosZ.UI
 		public RectTransform rect;
 
 
-		//[System.Diagnostics.Conditional("DEBUG")]
-		//public void RecordPrefabInstances()
-		//{
-		//	PrefabUtility.RecordPrefabInstancePropertyModifications(this);
-		//	PrefabUtility.RecordPrefabInstancePropertyModifications(GetComponent<HorizontalOrVerticalLayoutGroup>());
-		//}
+		[System.Diagnostics.Conditional("DEBUG")]
+		public void RecordPrefabInstances()
+		{
+			PrefabUtility.RecordPrefabInstancePropertyModifications(this);
+			PrefabUtility.RecordPrefabInstancePropertyModifications(GetComponent<HorizontalOrVerticalLayoutGroup>());
+		}
 
 		void Awake()
 		{
@@ -161,9 +166,9 @@ namespace AtomosZ.UI
 			return GetComponent<HorizontalLayoutGroup>() != null;
 		}
 
-		public IUIDataEx GetBackingData()
+		public ScriptableObject GetBackingData()
 		{
-			return new PanelEx(panelData);
+			return panelData;
 		}
 
 		public void UpdateBackingData(UIPanelScriptableObject backingData)
@@ -181,9 +186,9 @@ namespace AtomosZ.UI
 			this.SetDirty();
 		}
 
-		public void UpdateBackingData(IUIDataEx backingData)
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			panelData = ((PanelEx)backingData).scriptableObj;
+			panelData = ((UIPanelScriptableObject)backingData);
 			this.SetDirty();
 		}
 
@@ -193,10 +198,10 @@ namespace AtomosZ.UI
 				UpdateBackingData();
 		}
 
-		private Vector2 preferredChildSize;
+		[SerializeField] private Vector2 minDim;
 		public void UpdateBackingData()
 		{
-			var minDim = new Vector2(layoutPadding.left, layoutPadding.top);
+			minDim = new Vector2(0, layoutPadding.top);
 			var vertLayout = GetComponent<VerticalLayoutGroup>();
 			if (vertLayout != null)
 			{
@@ -217,21 +222,7 @@ namespace AtomosZ.UI
 					++activeChildren;
 					var childMinDim = child.GetMinDimensions();
 					minDim.y += childMinDim.y;
-					if (minDim.x < childMinDim.x)
-						minDim.x = childMinDim.x;
-				}
-
-				if (preferredChildSize.x != minDim.x)
-				{
-					preferredChildSize = minDim;
-					// resize controls to fit parent if needed
-					foreach (var child in uiControls)
-					{
-						if (!child.gameObject.activeSelf)
-							continue;
-						var behave = child.GetUIBehavior();
-						//behave.SetPreferredWidth(minDim.x);
-					}
+					minDim.x = Mathf.Max(minDim.x, childMinDim.x);
 				}
 
 				if (activeChildren > 0)
@@ -262,14 +253,14 @@ namespace AtomosZ.UI
 					minDim.x += horzLayout.spacing * (activeChildren - 1);
 			}
 
-			minDim.x += layoutPadding.right;
+			minDim.x += layoutPadding.horizontal;
 			minDim.y += layoutPadding.bottom;
 			minDim.y = Mathf.Max(minDim.y, minDimensions.y);
 
 			if (rect == null)
 				rect = GetComponent<RectTransform>();
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDim.y);
-			//rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, minDim.x);
+			//rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, minDim.x); // this gets set by tabcontrol
 
 
 			isDirty = false;
@@ -287,7 +278,7 @@ namespace AtomosZ.UI
 			if (isDirty)
 				UpdateBackingData();
 
-			return rect.sizeDelta;
+			return minDim;
 		}
 
 		/// <summary>
@@ -334,40 +325,23 @@ namespace AtomosZ.UI
 			return null;
 		}
 
-
-
-		public IUIBehavior AddUIControl(IUIDataEx uiDataEx)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns>-1 if panel does not have a ButtonPanel.</returns>
+		public DialogButton GetPanelButtons()
 		{
-			this.SetDirty();
-			switch (uiDataEx.dataType)
+			foreach (var control in uiControls)
 			{
-				case UIControlType.Button:
-					return AddButton(((ButtonEx)uiDataEx).scriptableObj);
-				case UIControlType.ButtonPanel:
-					return AddButtonPanel(((ButtonPanelEx)uiDataEx).scriptableObj);
-				case UIControlType.CheckBox:
-					return AddCheckBox(((CheckBoxEx)uiDataEx).scriptableObj);
-				case UIControlType.Dropdown:
-					return AddDropdown(((DropdownEx)uiDataEx).scriptableObj);
-				case UIControlType.Image:
-					return AddImage((ImageEx)uiDataEx);
-				case UIControlType.ImagePanel:
-					return AddImagePanel((ImageViewDataEx)uiDataEx);
-				case UIControlType.InputField:
-					return AddInputField(((InputFieldEx)uiDataEx).scriptableObj);
-				case UIControlType.Slider:
-					return AddSlider((SliderEx)uiDataEx);
-				case UIControlType.Text:
-					return AddText(((LabelEx)uiDataEx).scriptableObj);
-				case UIControlType.Spinner:
-					return AddSpinner((SpinnerEx)uiDataEx);
-
-				default:
-					Debug.LogException(new Exception($"Panel Control type {uiDataEx.dataType} not yet implemented."));
-					return null;
+				var uiB = control.GetUIBehavior();
+				if (uiB.dataType == UIControlType.ButtonPanel)
+				{
+					return ((UIButtonPanel)uiB).buttons;
+				}
 			}
-		}
 
+			return (DialogButton)(-1);
+		}
 
 		public UITabControl AddTabControl()
 		{
@@ -412,7 +386,7 @@ namespace AtomosZ.UI
 		}
 
 
-		private UISpinner AddSpinner(SpinnerEx dataEx)
+		public UISpinner AddSpinner(UISpinnerScriptableObject dataEx)
 		{
 			var prefabType = UIPrefabType.Spinner;
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
@@ -428,7 +402,7 @@ namespace AtomosZ.UI
 			return uiSpinner;
 		}
 
-		private UIButton AddButton(UIButtonScriptableObject dataEx)
+		public UIButton AddButton(UIButtonScriptableObject dataEx)
 		{
 			var prefabType = UIPrefabType.Button;
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
@@ -444,12 +418,14 @@ namespace AtomosZ.UI
 			return uiButton;
 		}
 
+
 		/// <summary>
+		/// Only one ButtonPanel allowed per panel.<br/>
 		/// @TODO(Tristan): make sure ButtonPanel is always the last in the controls list?
 		/// </summary>
 		/// <param name="dataEx"></param>
 		/// <returns></returns>
-		private UIButtonPanel AddButtonPanel(UIButtonPanelScriptableObject dataEx)
+		public UIButtonPanel AddButtonPanel(UIButtonPanelScriptableObject dataEx)
 		{
 			UIButtonPanel buttonPanel = GetComponentInChildren<UIButtonPanel>();
 			if (buttonPanel == null)
@@ -459,23 +435,8 @@ namespace AtomosZ.UI
 				SetReferenceNameAndAddControl(UIPrefabType.ButtonPanel, uiDO);
 			}
 
-
-
 			var magicWindow = GetComponentInParent<MagicWindow>();
-
-			if (magicWindow == null)
-			{
-				var dynamicPanel = GetComponentInParent<DynamicPanel>();
-				if (dynamicPanel != null)
-				{
-					Debug.LogError("Time to upgrade away from DynamicPanel");
-					buttonPanel.SetResultListeners(dynamicPanel);
-				}
-			}
-			else
-			{
-				buttonPanel.SetResultListeners(magicWindow);
-			}
+			buttonPanel.SetResultListeners(magicWindow);
 
 #if UNITY_EDITOR
 			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
@@ -487,7 +448,7 @@ namespace AtomosZ.UI
 		}
 
 
-		private UIDropdown AddDropdown(UIDropdownScriptableObject dataEx)
+		public UIDropdown AddDropdown(UIDropdownScriptableObject dataEx)
 		{
 			var prefabType = UIPrefabType.Dropdown;
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(prefabType), transform);
@@ -503,22 +464,22 @@ namespace AtomosZ.UI
 			return dropdown;
 		}
 
-		private UIImageViewPanel AddImagePanel(ImageViewDataEx dataEx)
-		{
-			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ImageViewPanel), transform);
-			var imagePanel = uiDO.GetComponent<UIImageViewPanel>();
+		//		public UIImageViewPanel AddImagePanel(ImageViewDataEx dataEx)
+		//		{
+		//			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ImageViewPanel), transform);
+		//			var imagePanel = uiDO.GetComponent<UIImageViewPanel>();
 
-			SetReferenceNameAndAddControl(UIPrefabType.ImageViewPanel, uiDO);
-#if UNITY_EDITOR
-			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
-				return imagePanel;
-#endif
-			imagePanel.UpdateBackingData(dataEx);
+		//			SetReferenceNameAndAddControl(UIPrefabType.ImageViewPanel, uiDO);
+		//#if UNITY_EDITOR
+		//			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
+		//				return imagePanel;
+		//#endif
+		//			imagePanel.UpdateBackingData(dataEx);
 
-			return imagePanel;
-		}
+		//			return imagePanel;
+		//		}
 
-		private UIImageView AddImage(ImageEx dataEx)
+		public UIImageView AddImage(UIImageViewScriptableObject dataEx)
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ImageView), transform);
 			var image = uiDO.GetComponent<UIImageView>();
@@ -533,7 +494,7 @@ namespace AtomosZ.UI
 			return image;
 		}
 
-		private UISlider AddSlider(SliderEx dataEx)
+		public UISlider AddSlider(UISliderScriptableObject dataEx)
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.Slider), transform);
 			var slider = uiDO.GetComponent<UISlider>();
@@ -548,7 +509,7 @@ namespace AtomosZ.UI
 			return slider;
 		}
 
-		private UICheckBox AddCheckBox(UICheckBoxScriptableObject dataEx)
+		public UICheckBox AddCheckBox(UICheckBoxScriptableObject dataEx)
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.CheckBox), transform);
 			var checkBox = uiDO.GetComponent<UICheckBox>();
@@ -563,7 +524,7 @@ namespace AtomosZ.UI
 			return checkBox;
 		}
 
-		private UIExpandingInputField AddInputField(UIExpandingInputFieldScriptableObject dataEx)
+		public UIExpandingInputField AddInputField(UIExpandingInputFieldScriptableObject dataEx)
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.InputField), transform);
 			var inputRect = uiDO.GetComponent<RectTransform>();
@@ -582,7 +543,14 @@ namespace AtomosZ.UI
 			return inputField;
 		}
 
-		private UIExpandingLabel AddText(UIExpandingLabelScriptableObject dataEx)
+		public UIExpandingLabel AddText_(string text)
+		{
+			var label = AddText(null);
+			label.text = text;
+			return label;
+		}
+
+		public UIExpandingLabel AddText(UIExpandingLabelScriptableObject dataEx)
 		{
 			var uiDO = Instantiate(UIPrefabProvider.GetUIPrefab(UIPrefabType.ExpandingText), transform);
 			var label = uiDO.GetComponent<UIExpandingLabel>();
@@ -633,19 +601,14 @@ namespace AtomosZ.UI
 		public void SetToParentSize()
 		{
 			var magicWindow = GetComponentInParent<MagicWindow>();
-			if (magicWindow != null)
-			{
-				magicWindow.Refresh();
+#if DEBUG
+			if (magicWindow == null)
+			{   // Are we in prefab edit mode?
+				return;
 			}
-			else
-			{
-				var parentPanel = GetComponentInParent<DynamicPanel>();
-				if (parentPanel != null)
-				{
-					Debug.LogWarning("Time to upgrade away from DynamicPanel");
-					parentPanel.Refresh();
-				}
-			}
+#endif
+
+			magicWindow.Refresh();
 
 			var rect = GetComponent<RectTransform>();
 			rect.sizeDelta = new Vector2(0, rect.sizeDelta.y);
@@ -675,61 +638,32 @@ namespace AtomosZ.UI
 #endif
 		}
 
-		public void RemoveControl(IUIDataEx data)
-		{
-			foreach (var cntrl in uiControls)
-			{
-				if (cntrl.GetBackingData() == data)
-				{
-					uiControls.Remove(cntrl);
-#if DEBUG
-					if (Application.isEditor && !Application.isPlaying)
-						DestroyImmediate(cntrl.gameObject);
-					else
-						Destroy(cntrl.gameObject);
-
-					this.RecordPrefabInstances();
-#else
-					Destroy(cntrl.gameObject);
-#endif
-					return;
-				}
-			}
-		}
-
 
 		public void ClearControls()
 		{
-#if UNITY_EDITOR
-			ClearControls_EditorOnly();
-#else
+			this.SetDirty();
+#if DEBUG
+			if (!Application.isPlaying)
+			{
+				foreach (var control in uiControls)
+					DestroyImmediate(control.gameObject);
+
+				if (transform.childCount > 0)
+				{
+					foreach (var childDO in transform.GetComponentsInChildren<UIDesignObject>())
+						DestroyImmediate(childDO.gameObject);
+				}
+
+				return;
+			}
+#endif
+
 			foreach (var control in uiControls)
 				Destroy(control.gameObject);
 			uiControls.Clear();
-#endif
 
-			this.SetDirty();
 		}
 
-		[System.Diagnostics.Conditional("UNITY_EDITOR")]
-		private void ClearControls_EditorOnly()
-		{
-			foreach (var control in uiControls)
-			{
-				if (Application.isPlaying)
-					Destroy(control.gameObject);
-				else
-					DestroyImmediate(control.gameObject);
-			}
-
-			if (transform.childCount > 0)
-			{
-				foreach (var childDO in transform.GetComponentsInChildren<UIDesignObject>())
-					DestroyImmediate(childDO.gameObject);
-			}
-
-			uiControls.Clear();
-		}
 
 		/// <summary>
 		/// Can add multiple methods to a single UnityAction as below:<br/>
@@ -789,7 +723,7 @@ namespace AtomosZ.UI
 		private void SubmitText(string currentText)
 		{
 			//throw new Exception("AddButtonPanel not yet implemented");
-			var parentPanel = GetComponentInParent<DynamicPanel>();
+			var parentPanel = GetComponentInParent<MagicWindow>();
 			if (parentPanel != null)
 				parentPanel.SetDialogResultOK();
 		}
