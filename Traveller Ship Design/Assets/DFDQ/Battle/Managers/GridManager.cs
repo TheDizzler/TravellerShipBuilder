@@ -9,6 +9,7 @@ using AtomosZ.DFDQ.Tiles;
 using UnityEngine;
 using static AtomosZ.DFDQ.AbilityProfile;
 using static AtomosZ.DFDQ.Battle.Units.BaseUnit;
+using static AtomosZ.Helpers;
 using Random = UnityEngine.Random;
 
 
@@ -17,7 +18,6 @@ namespace AtomosZ.DFDQ.Battle
 {
 	public class GridManager : MonoBehaviour
 	{
-		public enum CardinalDirection { Up, Right, Down, Left }
 		public enum HighlightType
 		{
 			FactionHeroMovement,

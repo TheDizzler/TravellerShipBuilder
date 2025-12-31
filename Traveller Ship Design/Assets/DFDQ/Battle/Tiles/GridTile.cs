@@ -6,8 +6,8 @@ using AtomosZ.DFDQ.Battle.Units;
 using AtomosZ.DFDQ.Tiles.Widgets;
 using UnityEngine;
 using static AtomosZ.DFDQ.Battle.BattleManager;
-using static AtomosZ.DFDQ.Battle.GridManager;
 using static AtomosZ.DFDQ.Battle.Units.BaseUnit;
+using static AtomosZ.Helpers;
 
 namespace AtomosZ.DFDQ.Tiles
 {

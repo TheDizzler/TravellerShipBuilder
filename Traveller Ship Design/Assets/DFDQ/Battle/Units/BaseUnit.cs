@@ -46,8 +46,8 @@ namespace AtomosZ.DFDQ.Battle.Units
 		public AbilityProfile ability;
 
 		private bool blocksLineOfSight;
-		[SerializeField] private bool isShowAttack;
-		[SerializeField] private bool isShowMove;
+		[SerializeField] public bool isShowAttack;
+		[SerializeField] public bool isShowMove;
 
 		public void Initialize(ScriptableUnit unitData)
 		{
