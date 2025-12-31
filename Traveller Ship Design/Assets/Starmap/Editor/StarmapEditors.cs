@@ -1,6 +1,7 @@
 using AtomosZ.EditorZ;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace AtomosZ.MG2eTraveller.Starmap.EditorZ
 {
@@ -29,9 +30,97 @@ namespace AtomosZ.MG2eTraveller.Starmap.EditorZ
 	//	}
 	//}
 
+	[CustomEditor(typeof(Starmap))]
+	public class StarmapEditor : EditorEx
+	{
+		private Starmap starmap;
+		private int jump = 1;
+		private Vector2Int dest = new Vector2Int(4, 4);
+
+		void OnEnable()
+		{
+			starmap = (Starmap)target;
+		}
+		public override void OnInspectorGUI()
+		{
+			BeginChangeCheck();
+			base.OnInspectorGUI();
+
+			dest = EditorGUILayout.Vector2IntField("Destination", dest);
+			jump = EditorGUILayout.IntSlider(jump, 1, 6);
+			if (Button("ShowPath"))
+			{
+				starmap.DrawJumpPath(new SystemCoordinates(4, 4), new SystemCoordinates(dest.x, dest.y), jump);
+			}
+
+			if (Button("Show Jump " + jump))
+			{
+				starmap.ShowJumpRange(new SystemCoordinates(dest.x, dest.y), jump);
+			}
+
+			if (Button("Regenerate Sector"))
+			{
+				starmap.GenerateSector();
+			}
+
+			serializedObject.ApplyModifiedProperties();
+			if (EndChangeCheck())
+			{
+
+			}
+		}
+	}
+
+	[CustomEditor(typeof(Fleet))]
+	public class FleetEditor : EditorEx
+	{
+		private Fleet fleet;
+		private Vector3 lastPos;
+
+		void OnEnable()
+		{
+			fleet = (Fleet)target;
+		}
+
+		public override void OnInspectorGUI()
+		{
+			BeginChangeCheck();
+			base.OnInspectorGUI();
+
+
+
+			serializedObject.ApplyModifiedProperties();
+			if (EndChangeCheck())
+			{
+				fleet.UpdatePosition_EDITOR();
+			}
+		}
+
+		void OnSceneGUI()
+		{
+			var pos = fleet.transform.position;
+			if (pos != lastPos || fleet.sectorTilemap != null)
+			{
+				var size = fleet.boxCollider.size;
+				LayerMask layer = LayerMask.GetMask("TerrainTiles");
+				var starCollider = Physics2D.OverlapPoint(new Vector2(pos.x, pos.y), layer);
+				if (starCollider != null)
+				{
+					var star = starCollider.GetComponent<StarSystem>();
+					if (star != null)
+					{
+						fleet.UpdatePosition_EDITOR();
+					}
+				}
+
+				lastPos = pos;
+			}
+		}
+	}
+
 
 	[CustomEditor(typeof(SubSectorMap))]
-	public class _Editor : EditorEx
+	public class SubSectorMapEditor : EditorEx
 	{
 		private SubSectorMap map;
 
@@ -43,12 +132,6 @@ namespace AtomosZ.MG2eTraveller.Starmap.EditorZ
 		{
 			BeginChangeCheck();
 			base.OnInspectorGUI();
-
-
-			if (Button("Create SubSector"))
-			{
-				map.FillSubSector();
-			}
 
 			serializedObject.ApplyModifiedProperties();
 			if (EndChangeCheck())
@@ -68,16 +151,13 @@ namespace AtomosZ.MG2eTraveller.Starmap.EditorZ
 		{
 			star = (StarSystem)target;
 		}
+
 		public override void OnInspectorGUI()
 		{
 			BeginChangeCheck();
 			base.OnInspectorGUI();
 
 
-			if (Button("Highlight"))
-			{
-				star.SetHighlightTest();
-			}
 
 			serializedObject.ApplyModifiedProperties();
 			if (EndChangeCheck())

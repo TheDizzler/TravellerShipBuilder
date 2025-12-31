@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using static AtomosZ.MG2eTraveller.Starmap.SubSectorMap;
-
+using static AtomosZ.MG2eTraveller.Starmap.SectorTilemap;
 
 namespace AtomosZ.MG2eTraveller.Starmap.Tiles
 {

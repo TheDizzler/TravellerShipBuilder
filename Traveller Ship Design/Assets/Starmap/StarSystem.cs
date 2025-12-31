@@ -1,87 +1,178 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using AtomosZ.MG2eTraveller.Starmap.Tiles;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static AtomosZ.MG2eTraveller.Starmap.SectorTilemap;
+using static AtomosZ.MG2eTraveller.Starmap.Starmap;
 
 namespace AtomosZ.MG2eTraveller.Starmap
 {
-	public class StarSystem : MonoBehaviour
+	public class StarSystem : MonoBehaviour, ISelectable
 	{
 		public Tilemap tilemap;
-		public Vector3Int tilePos;
+		public Vector3Int cellCoordinates;
 		public CircleCollider2D starCollider;
 		public SystemTile systemData;
-		public TextMeshPro coords;
-		public TextMeshPro starport;
-		public TextMeshPro worldName;
+
 		public SubSectorMap subSector;
-		public SystemHighlightState highlightState;
+		public string worldName { get { return worldNameTMP.text; } }
+
+		public InteractionState interactionState;
 		public LineRenderer lineRenderer;
 
+		[SerializeField] private SpriteRenderer solarObject;
+		[SerializeField] private MeshRenderer meshRenderer;
 
-		public enum SystemHighlightState
+		[SerializeField] private TextMeshPro coordsTMP;
+		[SerializeField] private TextMeshPro starportTMP;
+		[SerializeField] private TextMeshPro worldNameTMP;
+
+		[SerializeField] private Color neutralBGColor = new Color(0, 0, 0, 0);
+
+
+		public string GetStringCoordinates()
 		{
-			None,
-			MouseOver,
-			Selected,
-			SelectedMouseOver,
+			return coordsTMP.text;
 		}
 
+		void Awake()
+		{
+			CreateFilledHex();
+		}
 
 		void Start()
 		{
-			highlightState = SystemHighlightState.SelectedMouseOver;
-			SetHighlight(SystemHighlightState.None);
+			interactionState = InteractionState.MouseOver;
+			SetInteractionState(InteractionState.None);
+
+			//Physics2D.OverlapArea
+			//if (.IsTouchingLayers(LayerMask.GetMask("Fleet")))
+			//{
+			//	var collisions = new List<Collider2D>();
+			//	starCollider.Overlap(collisions);
+			//	foreach (var col in collisions)
+			//	{
+			//		Fleet fleet = col.GetComponent<Fleet>();
+			//		if (fleet != null)
+			//		{
+			//			AddFleetToSystem(fleet);
+			//		}
+			//	}
+			//}
+
 		}
 
-		public void SetSystemData(Vector3Int pos, SystemTile systemTile, string world)
+		[ContextMenu("Create Hex Mesh")]
+		private void CreateFilledHex()
+		{
+			Vector3[] linePoints = new Vector3[lineRenderer.positionCount];
+			lineRenderer.GetPositions(linePoints);
+
+			int numTriangles = 4;
+			int[] triangles = new int[numTriangles * 3];
+			int i = 0;
+
+			triangles[i++] = 0;
+			triangles[i++] = 1;
+			triangles[i++] = 2;
+
+			triangles[i++] = 2;
+			triangles[i++] = 3;
+			triangles[i++] = 4;
+
+			triangles[i++] = 4;
+			triangles[i++] = 5;
+			triangles[i++] = 0;
+
+			triangles[i++] = 0;
+			triangles[i++] = 2;
+			triangles[i++] = 4;
+
+			Mesh mesh = new Mesh();
+			mesh.vertices = linePoints;
+			mesh.triangles = triangles;
+
+			GetComponent<MeshFilter>().mesh = mesh;
+		}
+
+
+
+		public void SetSystemData(Vector3Int posInSector, SystemTile systemTile, string world)
 		{
 			systemData = systemTile;
-			GetComponent<SpriteRenderer>().sprite = systemTile.sprite;
-			transform.localPosition = tilemap.CellToWorld(pos);
-			tilePos = pos;
+			solarObject.sprite = systemTile.sprite;
+			transform.position = tilemap.CellToWorld(posInSector);
+			cellCoordinates = posInSector;
 
-			var coords = $"{(pos.y + 2).ToString("00")}{(-pos.x + 1).ToString("00")}";
-			if (systemTile.type == SubSectorMap.SystemType.Empty)
+			var coords = $"{(posInSector.y + 2).ToString("00")}{(-posInSector.x + 1).ToString("00")}";
+			if (systemTile.type == SystemType.Empty)
 			{
-				worldName.gameObject.SetActive(false);
-				starport.gameObject.SetActive(false);
-				this.coords.gameObject.SetActive(false);
+				worldNameTMP.gameObject.SetActive(false);
+				starportTMP.gameObject.SetActive(false);
+				this.coordsTMP.gameObject.SetActive(false);
 				name = $"({coords}) void";
 			}
 			else
 			{
-				name = $"({coords}) {systemTile.type}";
-				this.coords.text = coords;
-				starport.gameObject.SetActive(false);
-				worldName.text = world;
+				name = $"({coords}) {world}";
+				this.coordsTMP.text = coords;
+				starportTMP.gameObject.SetActive(false);
+				worldNameTMP.text = world;
 			}
 		}
 
-		[System.Diagnostics.Conditional("DEBUG")]
-		public void SetHighlightTest()
+		private IEnumerator HighlightUpdate(Color color)
 		{
-			if ((highlightState += 1) > SystemHighlightState.Selected)
-				highlightState = SystemHighlightState.None;
-			SetHighlight(highlightState);
+			meshRenderer.material.SetColor("_Color", color);
 
+			while ((highlightTimer -= Time.deltaTime) > 0)
+			{
+				yield return null;
+				var nextColor = Color.Lerp(neutralBGColor, color, highlightTimer / highlightFadeOutTime);
+				meshRenderer.material.SetColor("_Color", nextColor);
+			}
+
+			meshRenderer.material.SetColor("_Color", neutralBGColor);
+
+			highlightCoroutine = null;
 		}
 
-		public void SetHighlight(SystemHighlightState status)
+		private const float highlightFadeOutTime = .35f;
+		private float highlightTimer = 0;
+		private Coroutine highlightCoroutine = null;
+		public void SetBackground(Color color)
 		{
-			if (status == highlightState)
+			if (Application.isPlaying)
+			{
+				highlightTimer = highlightFadeOutTime;
+				if (highlightCoroutine == null)
+					highlightCoroutine = StartCoroutine(HighlightUpdate(color));
+			}
+		}
+
+
+		public void SetInteractionState(InteractionState newState, bool forcedStateChange = false)
+		{
+			if (forcedStateChange)
+				interactionState = newState;
+			else if (!this.CheckState(newState, ref interactionState))
 				return;
-			highlightState = status;
-			var highlightData = subSector.highlightData[status];
+			var highlightData = Starmap.instance.systemHighlightData[interactionState];
+
+			lineRenderer.startWidth = highlightData.thickness;
+			lineRenderer.endWidth = highlightData.thickness;
+
 			if (Application.isPlaying)
 			{
 				lineRenderer.material.SetColor("_Color", highlightData.color);
 				lineRenderer.material.SetFloat("_Pulse_Speed", highlightData.pulseSpeed);
 
-				worldName.fontMaterial.SetInt(ShaderUtilities.Keyword_Glow, highlightData.textGlowPower >= 1 ? 0 : 1);
-				worldName.fontMaterial.SetFloat(ShaderUtilities.ID_GlowPower, highlightData.textGlowPower);
-				worldName.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, highlightData.color);
+				worldNameTMP.fontMaterial.SetInt(ShaderUtilities.Keyword_Glow, highlightData.textGlowPower >= 1 ? 0 : 1);
+				worldNameTMP.fontMaterial.SetFloat(ShaderUtilities.ID_GlowPower, highlightData.textGlowPower);
+				worldNameTMP.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, highlightData.color);
 			}
 			else
 			{
@@ -93,15 +184,22 @@ namespace AtomosZ.MG2eTraveller.Starmap
 					public static int ID_GlowPower;
 					public static int ID_GlowOuter;
 					public static int ID_GlowInner; */
-				worldName.fontSharedMaterial.SetInt(ShaderUtilities.Keyword_Glow, highlightData.textGlowPower >= 1 ? 0 : 1);
-				worldName.fontSharedMaterial.SetFloat(ShaderUtilities.ID_GlowPower, highlightData.textGlowPower);
-				worldName.fontSharedMaterial.SetColor(ShaderUtilities.ID_GlowColor, highlightData.color);
+				worldNameTMP.fontSharedMaterial.SetInt(ShaderUtilities.Keyword_Glow, highlightData.textGlowPower >= 1 ? 0 : 1);
+				worldNameTMP.fontSharedMaterial.SetFloat(ShaderUtilities.ID_GlowPower, highlightData.textGlowPower);
+				worldNameTMP.fontSharedMaterial.SetColor(ShaderUtilities.ID_GlowColor, highlightData.color);
 				//worldName.UpdateMeshPadding();
 			}
 
 			var pos = transform.localPosition;
 			pos.Set(pos.x, pos.y, highlightData.zPopOut);
 			transform.localPosition = pos;
+		}
+
+
+		void OnTriggerEnter2D(Collider2D other)
+		{
+			Debug.Log(other.gameObject.name + " has been detected entering " + name + " system");
+			Starmap.instance.FleetEnteredSystem(this, other.GetComponent<Fleet>());
 		}
 	}
 }
