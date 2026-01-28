@@ -46,9 +46,6 @@ namespace AtomosZ.MG2eTraveller.Starmap
 		public void DrawLine(Vector3Int source, Vector3Int target, int range)
 		{
 			gameObject.SetActive(true);
-			//Vector3 sourceVec3 = new Vector3(source.x, source.y, 0);
-			//Vector3 direction = target - source;
-			//var rot = Quaternion.LookRotation(Vector3.forward, direction);
 
 			var srcWorld = tilemap.CellToWorld(source);
 			var trgWorld = tilemap.CellToWorld(target);
@@ -59,10 +56,9 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			tail.position = srcWorld;
 			head.position = trgWorld;
 
-			//var secondPoint = lineRenderer.GetPosition(1);
 			Vector3 dir = trgWorld - srcWorld;
 			var rot = Quaternion.LookRotation(Vector3.back, dir);
-			head.rotation = tail.rotation = Quaternion.Inverse(rot) /** Quaternion.Euler(0, 0, 180)*/;
+			head.rotation = tail.rotation = Quaternion.Inverse(rot);
 
 			var distance = Helpers.Distance(source, target);
 			if (distance > range)

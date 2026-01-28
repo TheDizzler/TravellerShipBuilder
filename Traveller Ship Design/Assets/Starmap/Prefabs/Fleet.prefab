@@ -139,12 +139,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9d9995b6622aef409455037491da0c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fleet
-  idleOffset: {x: 0, y: 0, z: 0}
-  activeOffset: {x: 0, y: 0, z: 0}
+  idleOffset: {x: 0.15, y: 0.2, z: 0}
+  activeOffset: {x: -0.15, y: 0.2, z: 0}
   boxCollider: {fileID: 6929251664378869964}
   outliner: {fileID: 4065898779785584676}
   interactionState: 0
   jDrive: 2
+  fuelCapacity: 0
+  fuelCurrent: 0
 --- !u!114 &4065898779785584676
 MonoBehaviour:
   m_ObjectHideFlags: 0

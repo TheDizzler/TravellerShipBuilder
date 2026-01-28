@@ -33,6 +33,17 @@ namespace AtomosZ.MG2eTraveller.Starmap
 		[SerializeField] private Color neutralBGColor = new Color(0, 0, 0, 0);
 
 
+		[Serializable]
+		public class FleetLog
+		{
+			public Fleet fleet;
+			public ImperialDate dateEnteredSystem;
+			public ImperialDate dateExitedSystem;
+		}
+
+		[Tooltip("The complete history of fleets that have entered and exited the system.")]
+		public List<FleetLog> fleetHistoryLog = new List<FleetLog>();
+
 		public string GetStringCoordinates()
 		{
 			return coordsTMP.text;
@@ -47,22 +58,6 @@ namespace AtomosZ.MG2eTraveller.Starmap
 		{
 			interactionState = InteractionState.MouseOver;
 			SetInteractionState(InteractionState.None);
-
-			//Physics2D.OverlapArea
-			//if (.IsTouchingLayers(LayerMask.GetMask("Fleet")))
-			//{
-			//	var collisions = new List<Collider2D>();
-			//	starCollider.Overlap(collisions);
-			//	foreach (var col in collisions)
-			//	{
-			//		Fleet fleet = col.GetComponent<Fleet>();
-			//		if (fleet != null)
-			//		{
-			//			AddFleetToSystem(fleet);
-			//		}
-			//	}
-			//}
-
 		}
 
 		[ContextMenu("Create Hex Mesh")]
@@ -108,17 +103,19 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			cellCoordinates = posInSector;
 
 			var coords = $"{(posInSector.y + 2).ToString("00")}{(-posInSector.x + 1).ToString("00")}";
+			this.coordsTMP.text = coords;
 			if (systemTile.type == SystemType.Empty)
 			{
+				name = $"({coords}) void";
+				worldNameTMP.text = "Empty Space";
+
 				worldNameTMP.gameObject.SetActive(false);
 				starportTMP.gameObject.SetActive(false);
 				this.coordsTMP.gameObject.SetActive(false);
-				name = $"({coords}) void";
 			}
 			else
 			{
 				name = $"({coords}) {world}";
-				this.coordsTMP.text = coords;
 				starportTMP.gameObject.SetActive(false);
 				worldNameTMP.text = world;
 			}
@@ -199,7 +196,16 @@ namespace AtomosZ.MG2eTraveller.Starmap
 		void OnTriggerEnter2D(Collider2D other)
 		{
 			Debug.Log(other.gameObject.name + " has been detected entering " + name + " system");
-			Starmap.instance.FleetEnteredSystem(this, other.GetComponent<Fleet>());
+			var fleet = other.GetComponent<Fleet>();
+			Starmap.instance.FleetEnteredSystem(this, fleet);
+			fleet.UpdatePosition(this, true);
+
+			fleetHistoryLog.Add(new FleetLog
+			{
+				fleet = fleet,
+				dateEnteredSystem = Starmap.instance.currentDate.LogDate(),
+				dateExitedSystem = null,
+			});
 		}
 	}
 }

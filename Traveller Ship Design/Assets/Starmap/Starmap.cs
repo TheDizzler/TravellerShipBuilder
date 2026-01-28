@@ -39,7 +39,7 @@ namespace AtomosZ.MG2eTraveller.Starmap
 		}
 	}
 
-	[ExecuteInEditMode]
+	//[ExecuteInEditMode]
 	public class Starmap : MonoBehaviour
 	{
 		private static Starmap _instance;
@@ -53,9 +53,49 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			}
 		}
 
+		public class ImperialDate
+		{
+			internal float second;
+			public int minute;
+			public int hour;
+			public int day = 0;
+			public int year = 1105;
 
-		//public SubSectorMap subSector;
-		public MagicWindow systemWindow;
+			internal void Reset(int startDay, int startYear)
+			{
+				second = 0;
+				minute = 0;
+				day = startDay;
+				year = startYear;
+			}
+
+			public string GetFormattedDateTime()
+			{
+				return $"{hour.ToString("00")}h{minute.ToString("00")} {day.ToString("000")}-{year}";
+			}
+
+			public ImperialDate LogDate()
+			{
+				return new ImperialDate
+				{
+					day = day,
+					hour = hour,
+					minute = minute,
+					second = second,
+					year = year,
+				};
+			}
+		}
+
+		public ImperialDate currentDate;
+
+
+		public MagicWindow selectedSystemWindow;
+		public MagicWindow hoveredSystemWindow;
+		public MagicWindow fleetWindow;
+		public MagicWindow timerWindow;
+		public MagicWindow systemHistoryWindow;
+		public UIExpandingLabel timer;
 
 
 		private Vector3 scrollStartPos;
@@ -89,12 +129,6 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			SelectedMouseOver,
 		}
 
-		public enum MouseMode
-		{
-			None,
-			SelectDestination,
-		}
-		private MouseMode mouseMode;
 
 		[Serializable]
 		public class SelectableShaderData
@@ -231,6 +265,15 @@ namespace AtomosZ.MG2eTraveller.Starmap
 		void Start()
 		{
 			SpriteOutlineCreator.spriteDictionary.Clear();
+			selectedSystemWindow.Hide();
+			hoveredSystemWindow.Hide();
+			fleetWindow.Hide();
+
+			currentDate = new();
+			currentDate.Reset(0, 1105);
+
+
+			Time.timeScale = 0;
 		}
 
 		public Vector2Int sectorSize = new Vector2Int(2, 2);
@@ -240,23 +283,91 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			sector.GenerateSector(sectorSize);
 		}
 
+		public enum TimerSpeed
+		{
+			Paused,
+			Normal,
+			Fast,
+		}
+		public TimerSpeed timerSpeed = TimerSpeed.Paused;
+
+
+
+		public void Pause(UIButton caller)
+		{
+			if (timerSpeed == TimerSpeed.Paused)
+				return;
+			Time.timeScale = 0;
+			timer.text = currentDate.GetFormattedDateTime();
+			timerSpeed = TimerSpeed.Paused;
+			caller.spriteColor = Color.white;
+			((UIButton)timerWindow.GetControl("play_button")).spriteColor = Color.black;
+			((UIButton)timerWindow.GetControl("fastForward_button")).spriteColor = Color.black;
+		}
+
+		public void Play(UIButton caller)
+		{
+			if (timerSpeed == TimerSpeed.Normal)
+				return;
+			Time.timeScale = 1;
+			timerSpeed = TimerSpeed.Normal;
+			caller.spriteColor = Color.white;
+			((UIButton)timerWindow.GetControl("pause_button")).spriteColor = Color.black;
+			((UIButton)timerWindow.GetControl("fastForward_button")).spriteColor = Color.black;
+		}
+
+		public void FastForward(UIButton caller)
+		{
+			if (timerSpeed == TimerSpeed.Fast)
+				return;
+			Time.timeScale = 10;
+			timerSpeed = TimerSpeed.Fast;
+			caller.spriteColor = Color.white;
+			((UIButton)timerWindow.GetControl("pause_button")).spriteColor = Color.black;
+			((UIButton)timerWindow.GetControl("play_button")).spriteColor = Color.black;
+		}
+
+		public float secondInterval = 1;
+		public int baseMinuteIncrement = 5;
+		private void UpdateClock()
+		{
+			currentDate.second += Time.deltaTime;
+			if (currentDate.second >= secondInterval)
+			{
+				currentDate.second -= secondInterval;
+				currentDate.minute += baseMinuteIncrement;
+
+				if (currentDate.minute >= 60)
+				{
+					currentDate.minute -= 60;
+					++currentDate.hour;
+					if (currentDate.hour >= 24)
+					{
+						currentDate.hour -= 24;
+						++currentDate.day;
+						if (currentDate.day >= 365)
+						{
+							currentDate.day -= 365;
+							++currentDate.year;
+						}
+					}
+				}
+
+				timer.text = currentDate.GetFormattedDateTime();
+			}
+		}
+
+
 		void Update()
 		{
+			UpdateClock();
+
 			Vector3 mouseWorldPos = Helpers.GetMouseWorldPos();
 			ModifierKey modifierKeys = GetModifierKeyInput();
 
 
+			bool validDestination = false;
 
-			// 
-			// General Interaction flow
-			//		One fleet and one system can be selected at the same time, but only one object is hoverable.
-			//
-			// check for fleet hover
-			// if found fleet hover 
-			//		check for select
-			// else check for system hover
-			// if system hover
-			//		check for select
 			var mouseCell = sector.GetCellAtWorldPosition(mouseWorldPos);
 			var mouseSystem = GetSystemAt(mouseCell);
 			LayerMask layer = LayerMask.GetMask("Fleet");
@@ -280,13 +391,22 @@ namespace AtomosZ.MG2eTraveller.Starmap
 					var fleetCell = fleetManager.GetCellOf(selectedFleet);
 					ShowJumpRange(fleetCell, selectedFleet.jDrive);
 
-					if (systemHovered != null)
-						jumpPathRenderer.DrawLine(fleetCell,  systemHovered.cellCoordinates, selectedFleet.jDrive);
+					if (systemHovered != null && systemHovered.cellCoordinates != fleetCell)
+					{
+						jumpPathRenderer.DrawLine(fleetCell, systemHovered.cellCoordinates, selectedFleet.jDrive);
+						validDestination = DisplayHoveredSystem(systemHovered, fleetCell, selectedFleet.jDrive);
+					}
 					else
+					{
 						jumpPathRenderer.Hide();
+						hoveredSystemWindow.Hide();
+					}
 				}
 				else
+				{
 					HideJumpPath();
+					hoveredSystemWindow.Hide();
+				}
 
 
 
@@ -306,45 +426,47 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			}
 
 
-			if (Input.GetMouseButtonDown(0)
-				&& hoveredObject != selectedObject)
+			if (Input.GetMouseButtonDown(0))
 			{
-				if (selectedObject != null)
-				{
-					selectedObject.SetInteractionState(InteractionState.None);
+				if (validDestination)
+				{   // ship will enter jump space
+					selectedFleet.SpoolUpJDrive((StarSystem)hoveredObject);
+					DeselectFleet();
 				}
+				else if (hoveredObject != selectedObject)
+				{
+					if (selectedObject != null)
+					{
+						selectedObject.SetInteractionState(InteractionState.None);
+					}
 
-				if (hoveredObject != null)
-				{
-					var newSelectedObject = hoveredObject;
-					newSelectedObject.SetInteractionState(InteractionState.Selected);
-				}
+					if (hoveredObject != null)
+					{
+						var newSelectedObject = hoveredObject;
+						newSelectedObject.SetInteractionState(InteractionState.Selected);
+					}
 
-				selectedObject = hoveredObject;
+					selectedObject = hoveredObject;
 
-				if (fleetCollider != null)
-				{
-					selectedFleet = (Fleet)selectedObject;
-					mouseMode = MouseMode.SelectDestination;
-				}
-				else if (mouseSystem != null)
-				{
-					selectedSystem = (StarSystem)selectedObject;
-					DisplaySystemData(selectedSystem);
-					mouseMode = MouseMode.None;
-				}
-				else
-				{
-					mouseMode = MouseMode.None;
+					if (fleetCollider != null)
+					{
+						selectedFleet = (Fleet)selectedObject;
+						DisplayFleetData(selectedFleet);
+					}
+					else if (mouseSystem != null)
+					{
+						selectedSystem = (StarSystem)selectedObject;
+						DisplaySystemData(selectedSystem);
+					}
 				}
 			}
 			else if (Input.GetMouseButtonUp(0))
 			{
 				//EndScroll();
 			}
-			else if (Input.GetMouseButtonDown(1) || Input.GetKey(KeyCode.Escape))
+
+			if (Input.GetMouseButtonDown(1) || Input.GetKey(KeyCode.Escape))
 			{
-				mouseMode = MouseMode.None;
 				if (selectedObject != null)
 				{
 					selectedObject = null;
@@ -352,16 +474,17 @@ namespace AtomosZ.MG2eTraveller.Starmap
 
 				if (selectedFleet != null)
 				{
-					selectedFleet.SetInteractionState(InteractionState.None, true);
-					selectedFleet = null;
+					DeselectFleet();
 				}
 
 				if (selectedSystem != null)
 				{
 					selectedSystem.SetInteractionState(InteractionState.None, true);
 					selectedSystem = null;
+					selectedSystemWindow.gameObject.SetActive(false);
 				}
 			}
+
 			if (Input.GetMouseButtonDown(2))
 			{
 				scrollStartPos = mouseWorldPos;
@@ -376,6 +499,8 @@ namespace AtomosZ.MG2eTraveller.Starmap
 				scrollStartPos = mouseWorldPos;
 			}
 
+
+			// map scrolling/zooming
 			if (Input.mouseScrollDelta != Vector2.zero)
 			{
 				if ((modifierKeys & ModifierKey.Ctrl) == ModifierKey.Ctrl)
@@ -404,22 +529,79 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			}
 		}
 
+		private void DeselectFleet()
+		{
+			selectedFleet.SetInteractionState(InteractionState.None, true);
+			selectedFleet = null;
+			fleetWindow.gameObject.SetActive(false);
+		}
+
+		private void DisplayFleetData(Fleet fleet)
+		{
+			fleetWindow.gameObject.SetActive(true);
+			((UIExpandingLabel)fleetWindow.GetControl("shipName_label")).text = fleet.name;
+			((UIExpandingLabel)fleetWindow.GetControl("jDrive_label")).text = fleet.jDrive + "";
+			((UIExpandingLabel)fleetWindow.GetControl("fuelCapacity_label")).text = fleet.fuelCapacity + "";
+			((UIExpandingLabel)fleetWindow.GetControl("fuelCurrent_label")).text = fleet.fuelCurrent + "";
+		}
+
+		private bool DisplayHoveredSystem(StarSystem hoveredSystem, Vector3Int fleetCell, int maxJump)
+		{
+			hoveredSystemWindow.Show();
+			hoveredSystemWindow.SetTitle(hoveredSystem.worldName);
+			//((UIExpandingLabel)hoveredSystemWindow.GetControl("uwp_label")).text = system.uwp;
+			((UIExpandingLabel)hoveredSystemWindow.GetControl("coords_label")).text = hoveredSystem.GetStringCoordinates();
+
+			var distanceLabel = (UIExpandingLabel)hoveredSystemWindow.GetControl("distance_label");
+			var dist = Helpers.Distance(fleetCell, hoveredSystem.cellCoordinates);
+			distanceLabel.text = "Jump " + dist;
+			bool validDestination;
+			if (dist > maxJump)
+			{
+				validDestination = false;
+				distanceLabel.color = new Color(1, 0, 0);
+			}
+			else
+			{
+				validDestination = true;
+				distanceLabel.color = new Color(1, 1, 1);
+			}
+			//((UIExpandingLabel)hoveredSystemWindow.GetControl("fuelCost_label")).text = ;
+
+			return validDestination;
+		}
+
+
 		private void DisplaySystemData(StarSystem system)
 		{
-			var title = (UIExpandingLabel)systemWindow.GetControl("titlebar");
-			title.text = system.worldName;
-			var locationLabel = (UIExpandingLabel)systemWindow.GetControl("location_label");
+			selectedSystemWindow.gameObject.SetActive(true);
+			if (system.systemData.type == SectorTilemap.SystemType.Empty)
+			{
+				selectedSystemWindow.SetTitle("Empty Space");
+			}
+			else
+			{
+				var title = (UIExpandingLabel)selectedSystemWindow.GetControl("titlebar");
+				title.text = system.worldName;
+			}
+
+			var locationLabel = (UIExpandingLabel)selectedSystemWindow.GetControl("location_label");
 
 			locationLabel.text = system.GetStringCoordinates();
 
-			var fleetPanel = (UIPanel)systemWindow.GetControl("fleet_panel");
+			var fleetPanel = (UIPanel)selectedSystemWindow.GetControl("fleet_panel");
 			fleetPanel.ClearControls();
 
-			var fleets = fleetManager.GetFleetsAt(system);
-			foreach (var fleet in fleets)
-			{
-				fleetPanel.AddText_("•" + fleet.name);
-			}
+			//var fleets = fleetManager.GetFleetsAt(system);
+			//if (fleets.Count == 0)
+			//{
+			//	fleetPanel.AddText_("No known fleets in system");
+			//}
+
+			//foreach (var fleet in fleets)
+			//{
+			//	fleetPanel.AddText_("•" + fleet.name);
+			//}
 		}
 
 
@@ -441,8 +623,6 @@ namespace AtomosZ.MG2eTraveller.Starmap
 				//Debug.Log($"{q}, ({r} => {maxR})");
 				for (; r <= maxR; ++r)
 				{
-					//var nextSystemCoord = startPos + new Vector3Int(r, q);
-					//var nextPos = nextSystemCoord.ConvertToTilemapCoordinates();
 					var nextPos = new Vector3Int(startCell.x + r, startCell.y + q);
 					var nextSystem = GetSystemAt(nextPos);
 					if (nextSystem != null)
