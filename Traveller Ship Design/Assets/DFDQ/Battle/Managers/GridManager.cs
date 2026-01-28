@@ -67,7 +67,7 @@ namespace AtomosZ.DFDQ.Battle
 
 
 		public Vector2Int testAttackSize = new Vector2Int(1, 1);
-		[SerializeField] public ObjectForge.ObjectPoolTest<TerrainHighlighter> highlightPool;
+		[SerializeField] public ObjectForge.ObjectPool<TerrainHighlighter> highlightPool;
 
 		void Awake()
 		{
@@ -200,7 +200,7 @@ namespace AtomosZ.DFDQ.Battle
 			{
 				if (high.highlightType == highlightType)
 				{
-					highlightPool.Return(high.poolID);
+					high.ReturnToPool();
 				}
 			}
 		}
@@ -238,7 +238,7 @@ namespace AtomosZ.DFDQ.Battle
 		{
 			if (highlightPool != null)
 				highlightPool.Clear();
-			highlightPool = new ObjectForge.ObjectPoolTest<TerrainHighlighter>(highlighterPrefab);
+			highlightPool = new ObjectForge.ObjectPool<TerrainHighlighter>(highlighterPrefab);
 			//highlightPool.OnDestroy += highlightPool.DestroyMonoBehaviour;
 			//highlightPool.OnSleep += highlightPool.SleepMonoBehaviour;
 			//highlightPool.OnAwake += highlightPool.WakeMonoBehaviour;

@@ -9,11 +9,8 @@ using static AtomosZ.ObjectForge;
 
 namespace AtomosZ.DFDQ.Tiles
 {
-	public class TerrainHighlighter : MonoBehaviour, PooledObject<TerrainHighlighter>
+	public class TerrainHighlighter : MonoBehaviour, IPooledObject<TerrainHighlighter>
 	{
-		public int poolID { get; set; }
-		bool PooledObject<TerrainHighlighter>.isLive { get; set; }
-
 		public HighlightType highlightType;
 		[SerializeField] private SpriteRenderer main;
 		[SerializeField] private SpriteRenderer top, left, bottom, right;
@@ -54,6 +51,13 @@ namespace AtomosZ.DFDQ.Tiles
 			}
 		}
 
+		public ObjectPool<TerrainHighlighter> pool { get; set; }
+		public bool isLive { get; set; }
+
+		public void ReturnToPool()
+		{
+			this.Return();
+		}
 
 		public void SetBorders(Borders borders)
 		{
@@ -63,6 +67,7 @@ namespace AtomosZ.DFDQ.Tiles
 			right.gameObject.SetActive(((borders & Borders.Right) == Borders.Right));
 			bottom.gameObject.SetActive(((borders & Borders.Bottom) == Borders.Bottom));
 		}
+
 		public void RemoveBorder(Borders side)
 		{
 			SetBorders(activeBorders & ~side);

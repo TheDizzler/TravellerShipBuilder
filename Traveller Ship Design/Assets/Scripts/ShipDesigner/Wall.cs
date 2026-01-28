@@ -262,7 +262,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 				startDragPosition = mouseWorldPos;
 			startDragPoints = new Vector3[lineRenderer.positionCount];
 			lineRenderer.GetPositions(startDragPoints);
-			CustomCursor.SetCursor(designObject.moveCursorMode);
+			DesignerCustomCursor.SetCursor(designObject.moveCursorMode);
 		}
 
 		public bool IsDragging()
@@ -947,11 +947,12 @@ namespace AtomosZ.MG2eTraveller.Ship
 			return totalLength;
 		}
 
-		public void GetContextMenuItems(List<DesignAction> actionDict)
+		public void GetContextMenuItems(List<UIMenuAction> actionDict)
 		{
 			if (room == null)
 			{
-				DesignAction createRoomAction = new DesignAction("Create Room", EditMode.None);
+				UIMenuAction createRoomAction = new UIMenuAction("Create Room", delegate
+					{ DesignManager.instance.ContextMenuCallback(EditMode.None); });
 				createRoomAction += _ConvertToRoom;
 				actionDict.Add(createRoomAction);
 			}

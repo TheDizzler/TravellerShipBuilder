@@ -83,7 +83,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		}
 
 
-		public void GetContextMenuItems(List<DesignAction> actionDict)
+		public void GetContextMenuItems(List<UIMenuAction> actionDict)
 		{
 			room.GetContextMenuItems(actionDict);
 		}

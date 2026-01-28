@@ -150,26 +150,30 @@ namespace AtomosZ.MG2eTraveller.Ship
 		}
 
 
-		public void GetContextMenuItems(List<DesignAction> actionDict)
+		public void GetContextMenuItems(List<UIMenuAction> actionDict)
 		{
-			var renameAction = new DesignAction("Rename Room", EditMode.None);
+			var renameAction = new UIMenuAction("Rename Room", delegate
+				{ DesignManager.instance.ContextMenuCallback(EditMode.None); });
 			renameAction += ShowRenameDialog;
 			actionDict.Add(renameAction);
 
 			if (!isLayoutLocked)
 			{
-				var lockAction = new DesignAction("Lock Layout", EditMode.None);
+				var lockAction = new UIMenuAction("Lock Layout", delegate
+				{ DesignManager.instance.ContextMenuCallback(EditMode.None); });
 				lockAction += LockRoom;
 				actionDict.Add(lockAction);
 			}
 			else
 			{
-				var lockAction = new DesignAction("Unlock Layout", EditMode.None);
+				var lockAction = new UIMenuAction("Unlock Layout", delegate
+				{ DesignManager.instance.ContextMenuCallback(EditMode.None); });
 				lockAction += LockRoom;
 				actionDict.Add(lockAction);
 			}
 
-			var saveRoomAction = new DesignAction("Save Room Layout", EditMode.None);
+			var saveRoomAction = new UIMenuAction("Save Room Layout", delegate
+				{ DesignManager.instance.ContextMenuCallback(EditMode.None); });
 			saveRoomAction += ShowSaveRoomDialog;
 			actionDict.Add(saveRoomAction);
 
@@ -179,7 +183,8 @@ namespace AtomosZ.MG2eTraveller.Ship
 
 			actionDict.Add(null);
 
-			var dismantleAction = new DesignAction("Dismantle Room", EditMode.None);
+			var dismantleAction = new UIMenuAction("Dismantle Room", delegate
+				{ DesignManager.instance.ContextMenuCallback(EditMode.None); });
 			dismantleAction.enabled = !isLayoutLocked;
 			dismantleAction += Dismantle;
 			actionDict.Add(dismantleAction);
@@ -195,7 +200,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 			var savedRoom = GetSerializableData();
 			var window = DesignManager.GetMagicWindow();
 			window.name = "SaveRoomLayoutPanel";
-			window.designObject.isModal = true;
+			window.isModal = true;
 			window.showCloseButton = true;
 			window.SetTitle("Save Room Layout");
 			if (RoomSerializer.IsNameUnique(savedRoom.roomLabel))
@@ -282,7 +287,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		public void ShowRenameDialog()
 		{
 			var window = DesignManager.GetMagicWindow();
-			window.designObject.isModal = true;
+			window.isModal = true;
 			var inputField = window.AddInputField();
 			inputFieldText = inputField.GetComponent<TMP_InputField>();
 			inputField.SetText("Enter new room name", roomLabel.text);

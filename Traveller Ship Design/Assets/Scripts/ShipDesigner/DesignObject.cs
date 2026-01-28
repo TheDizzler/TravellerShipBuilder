@@ -7,8 +7,8 @@ using UnityEngine;
 
 
 using static AtomosZ.Keyboard;
-using static AtomosZ.MG2eTraveller.Ship.CustomCursor;
 using static AtomosZ.MG2eTraveller.Ship.DesignManager;
+using static AtomosZ.MG2eTraveller.Ship.DesignerCustomCursor;
 
 
 namespace AtomosZ.MG2eTraveller.Ship
@@ -73,9 +73,9 @@ namespace AtomosZ.MG2eTraveller.Ship
 
 			designBehavior.SetHover(isHover);
 			if (isHover)
-				CustomCursor.SetCursor(hoverCursorMode);
+				DesignerCustomCursor.SetCursor(hoverCursorMode);
 			else
-				CustomCursor.SetCursor(CursorSpriteMode.Default);
+				DesignerCustomCursor.SetCursor(CursorSpriteMode.Default);
 		}
 
 		public void UpdateHover(Vector3 posOfHover)
@@ -90,7 +90,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		}
 
 
-		public UIDesignObject GetContextMenu(Vector2 openContextPosition)
+		public MagicWindow GetContextMenu(Vector2 openContextPosition)
 		{
 			if (!isHoverable)
 				return null;
@@ -98,7 +98,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 			if (designBehavior == null)
 				SearchForDesignObject();
 
-			var actionDict = new List<DesignAction>();
+			var actionDict = new List<UIMenuAction>();
 			designBehavior.GetContextMenuItems(actionDict);
 			if (actionDict.Count > 0)
 			{
@@ -106,7 +106,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 				contextMenu.SetTitle("");
 				contextMenu.SetContextMenuActions(actionDict);
 				contextMenu.Show(openContextPosition);
-				return contextMenu.designObject;
+				return contextMenu;
 			}
 
 			return null;

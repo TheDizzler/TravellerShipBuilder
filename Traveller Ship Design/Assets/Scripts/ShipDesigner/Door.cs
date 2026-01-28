@@ -154,7 +154,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 				wall.UnbindDoor(this);
 			}
 
-			CustomCursor.SetCursor(designObject.moveCursorMode);
+			DesignerCustomCursor.SetCursor(designObject.moveCursorMode);
 		}
 
 		public void MouseDrag(Vector2 worldPos)
@@ -308,7 +308,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		}
 
 
-		public void GetContextMenuItems(List<DesignAction> actionDict)
+		public void GetContextMenuItems(List<UIMenuAction> actionDict)
 		{
 			bool locked = false;
 			if (wall != null)
@@ -319,7 +319,8 @@ namespace AtomosZ.MG2eTraveller.Ship
 				locked = wall.IsLayoutLocked();
 			}
 
-			var deleteAction = new DesignAction("Delete Door", EditMode.None);
+			var deleteAction = new UIMenuAction("Delete Door", delegate
+				{ DesignManager.instance.ContextMenuCallback(EditMode.None); });
 			deleteAction.enabled = !locked;
 			deleteAction += Delete;
 			actionDict.Add(deleteAction);

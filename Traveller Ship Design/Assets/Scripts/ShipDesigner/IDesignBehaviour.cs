@@ -25,7 +25,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput, ref DesignObject currentlySelectedObject, ref EditMode editMode);
 		public void SetHover(bool isHovering);
 		public void UpdateHover(Vector3 posOfHover);
-		public void GetContextMenuItems(List<DesignAction> actionDict);
+		public void GetContextMenuItems(List<UIMenuAction> actionDict);
 		public Vector3 SnapToGrid(Vector3 pos);
 		public void MouseDrag(Vector2 worldPos);
 		public bool IsDragging();

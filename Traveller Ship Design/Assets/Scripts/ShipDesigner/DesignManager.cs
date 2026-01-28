@@ -2,14 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using AtomosZ.UI;
-
-using UnityEditor;
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 using static AtomosZ.Keyboard;
-using static AtomosZ.MG2eTraveller.Ship.CustomCursor;
+using static AtomosZ.MG2eTraveller.Ship.DesignerCustomCursor;
 using static AtomosZ.UI.MagicWindow;
 using static AtomosZ.UI.UIPrefabProvider;
 
@@ -46,10 +43,8 @@ namespace AtomosZ.MG2eTraveller.Ship
 
 		private MagicWindow _GetMagicWindow()
 		{
-			var panelUIObject = Instantiate(GetUIPrefab(UIPrefabType.MagicWindow));
-			var panel = panelUIObject.GetComponent<MagicWindow>();
-			//AddToCanvas(panelUIObject.transform);
-			return panel;
+			var window = (MagicWindow)GetMagicUIControl(UIPrefabType.MagicWindow, uiCanvas.transform);
+			return window;
 		}
 
 		public static Camera GetScreenshotCamera()
@@ -82,7 +77,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		[SerializeField] private GameObject objectPicker;
 		[SerializeField] private MagicWindow roomGeomorphTab;
 		[SerializeField] private GameObject cursorPrefab;
-		[SerializeField] private CustomCursor cursor;
+		[SerializeField] private DesignerCustomCursor cursor;
 		[SerializeField] private GameObject linePointIndicator;
 
 		[SerializeField] private LayerMask designObjectLayerMask;
@@ -163,7 +158,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		/// serialized for debugging
 		/// </summary>
 		[SerializeField]
-		private UIDesignObject uiHoverObject;
+		private UIMonoBehaviour uiHoverObject;
 		/// <summary>
 		/// serialized for debugging
 		/// </summary>
@@ -181,8 +176,8 @@ namespace AtomosZ.MG2eTraveller.Ship
 			mainCamera = Camera.main;
 			uiLayerIndex = LayerMask.NameToLayer("UI");
 			blockerTag = TagHandle.GetExistingTag("ClickBlocker");
-			cursor = Instantiate(cursorPrefab).GetComponent<CustomCursor>();
-			CustomCursor.SetCursor(CursorSpriteMode.Default);
+			cursor = Instantiate(cursorPrefab).GetComponent<DesignerCustomCursor>();
+			DesignerCustomCursor.SetCursor(CursorSpriteMode.Default);
 
 			_instance = this;
 		}
@@ -199,7 +194,8 @@ namespace AtomosZ.MG2eTraveller.Ship
 		public void MakeModalPanel(UIButton sender)
 		{
 			var window = GetMagicWindow();
-			window.designObject.isModal = true;
+			Debug.LogException(new Exception("Because of how we rearranged the UIControl stuff, we need to re-implement modal windows!"));
+			//window.isModal = true;
 			var label = window.panel.AddText(null);
 			label.text = "Panel " + panelCount++;
 			var button = (UIButton)window.AddUIControl(UIControlType.Button);
@@ -305,11 +301,11 @@ namespace AtomosZ.MG2eTraveller.Ship
 					hoverObject = null;
 				}
 
-				CustomCursor.SetCursor(newSpriteMode, enableUIMode);
+				DesignerCustomCursor.SetCursor(newSpriteMode, enableUIMode);
 			}
 			else
 			{
-				CustomCursor.SetCursor(newSpriteMode);
+				DesignerCustomCursor.SetCursor(newSpriteMode);
 			}
 		}
 
@@ -353,8 +349,8 @@ namespace AtomosZ.MG2eTraveller.Ship
 					return;
 			} // else we are in a "temporary" ui state
 
-			var isHoveringUI = IsPointerOverUIDesignObject(
-				Helpers.GetUIRaycasts(), out UIDesignObject mouseOverUIObject);
+			var isHoveringUI = IsPointerOverUIObject(
+				Helpers.GetUIRaycasts(), out UIMonoBehaviour mouseOverUIObject);
 
 			ModifierKey modifierKeys = GetModifierKeyInput();
 			if (topDialog != null)
@@ -366,7 +362,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 
 				if (/*!topDialog.designObject.isModal && */!isHoveringUI)
 				{
-					topDialog.designObject.SetHover(false);
+					DesignerCustomCursor.SetCursor(CursorSpriteMode.Default);
 					ToggleUIMode(false, CursorSpriteMode.Default);
 					return;
 				}
@@ -378,14 +374,15 @@ namespace AtomosZ.MG2eTraveller.Ship
 					return;
 				}
 
-				if (isHoveringUI)
-				{
-					topDialog.designObject.UpdateHover(Input.mousePosition);
-				}
+				//if (isHoveringUI)
+				//{
+				//	topDialog.designObject.UpdateHover(Input.mousePosition);
+				//}
 			}
 			else if (isHoveringUI)
 			{
-				mouseOverUIObject.SetHover(true);
+				//DesignerCustomCursor.SetCursor(mouseOverUIObject.hoverCursorMode);
+				DesignerCustomCursor.SetCursor(CursorSpriteMode.UI_Default);
 			}
 			else if (!isHoveringUI)
 			{
@@ -401,10 +398,11 @@ namespace AtomosZ.MG2eTraveller.Ship
 		{
 			//if(editMode != EditMode.CreateObject)
 			var uiHits = Helpers.GetUIRaycasts();
-			if (IsPointerOverUIDesignObject(uiHits, out UIDesignObject mouserOverUIObject))
+			if (IsPointerOverUIObject(uiHits, out UIMonoBehaviour mouserOverUIObject))
 			{
 				uiHoverObject = mouserOverUIObject;
-				ToggleUIMode(true, uiHoverObject.hoverCursorMode);
+				//ToggleUIMode(true, uiHoverObject.hoverCursorMode);
+				ToggleUIMode(true, DesignerCustomCursor.CursorSpriteMode.UI_Default);
 				UIUpdate();
 				return;
 			}
@@ -488,7 +486,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 						}
 					}
 
-					CustomCursor.SetCursor(CursorSpriteMode.Default);
+					DesignerCustomCursor.SetCursor(CursorSpriteMode.Default);
 				}
 			}
 
@@ -706,7 +704,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		{
 			preScrollEditMode = editMode;
 			SetEditMode(EditMode.Scrolling);
-			CustomCursor.SetCursor(CursorSpriteMode.Scroll);
+			DesignerCustomCursor.SetCursor(CursorSpriteMode.Scroll);
 			scrollStartPos = worldPos;
 		}
 
@@ -714,7 +712,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		private void EndScroll()
 		{
 			SetEditMode(preScrollEditMode);
-			CustomCursor.SetCursor(CursorSpriteMode.Default);
+			DesignerCustomCursor.SetCursor(CursorSpriteMode.Default);
 		}
 
 
@@ -807,15 +805,15 @@ namespace AtomosZ.MG2eTraveller.Ship
 		}
 
 
-		private bool IsPointerOverUIDesignObject(List<RaycastResult> eventSystemRaycastResults,
-			out UIDesignObject mouserOverUIObject)
+		private bool IsPointerOverUIObject(List<RaycastResult> eventSystemRaycastResults,
+			out UIMonoBehaviour mouserOverUIObject)
 		{
 			for (int index = 0; index < eventSystemRaycastResults.Count; index++)
 			{
 				RaycastResult curRaysastResult = eventSystemRaycastResults[index];
 				if (curRaysastResult.gameObject.layer == uiLayerIndex)
 				{
-					mouserOverUIObject = curRaysastResult.gameObject.GetComponent<UIDesignObject>();
+					mouserOverUIObject = curRaysastResult.gameObject.GetComponent<UIMonoBehaviour>();
 					if (mouserOverUIObject == null)
 					{
 						//mouserOverUIObject = mouserOverUIObject;
@@ -839,7 +837,8 @@ namespace AtomosZ.MG2eTraveller.Ship
 
 		private void _ShowDialog(MagicWindow dialog)
 		{
-			if (dialog.designObject.isModal)
+			Debug.LogWarning("Because of how we rearranged the UIControl stuff, we need to re-implement modal windows!");
+			//if (dialog.designObject.isModal)
 			{
 				//var blocker = Instantiate(GetUIPrefab(UIPrefabType.ModalClickBlocker));
 				//AddToCanvas(blocker.transform);

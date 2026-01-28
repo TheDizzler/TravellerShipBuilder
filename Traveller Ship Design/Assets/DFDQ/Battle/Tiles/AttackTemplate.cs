@@ -318,8 +318,7 @@ namespace AtomosZ.DFDQ.Tiles
 				if (high == null)
 					continue;
 #endif
-
-				GridManager.instance.highlightPool.Return(high);
+				high.ReturnToPool();
 			}
 
 			highlights.Clear();

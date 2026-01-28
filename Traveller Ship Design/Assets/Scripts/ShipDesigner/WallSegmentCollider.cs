@@ -92,7 +92,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 			wall.Clicked(worldPos, keyInput, ref currentlySelectedObject, ref editMode);
 		}
 
-		public void GetContextMenuItems(List<DesignAction> actionDict)
+		public void GetContextMenuItems(List<UIMenuAction> actionDict)
 		{
 			wall.GetContextMenuItems(actionDict);
 		}

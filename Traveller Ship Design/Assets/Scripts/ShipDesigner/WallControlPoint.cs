@@ -80,7 +80,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 				wall.SetDragging(true);
 			lastPosition = transform.position;
 
-			CustomCursor.SetCursor(designObject.moveCursorMode);
+			DesignerCustomCursor.SetCursor(designObject.moveCursorMode);
 		}
 
 		public void MouseDrag(Vector2 worldPos)
@@ -199,7 +199,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 			}
 		}
 
-		public void GetContextMenuItems(List<DesignAction> actionDict)
+		public void GetContextMenuItems(List<UIMenuAction> actionDict)
 		{
 			wall.GetContextMenuItems(actionDict);
 
@@ -208,18 +208,21 @@ namespace AtomosZ.MG2eTraveller.Ship
 
 			if (!wall.IsLooped())
 			{
-				DesignAction loopAction = new DesignAction("Connect End Points", EditMode.None);
+				UIMenuAction loopAction = new UIMenuAction("Connect End Points", delegate
+					{ DesignManager.instance.ContextMenuCallback(EditMode.None); });
 				loopAction += wall.ConnectEndPoints;
 				actionDict.Add(loopAction);
 			}
 			else
 			{
-				DesignAction loopAction = new DesignAction("Disconnect End Points", EditMode.None);
+				UIMenuAction loopAction = new UIMenuAction("Disconnect End Points", delegate
+					{ DesignManager.instance.ContextMenuCallback(EditMode.None); });
 				loopAction += wall.DisconnectEndPoints;
 				actionDict.Add(loopAction);
 			}
 
-			DesignAction deleteAction = new DesignAction("Delete Control Point", EditMode.None);
+			UIMenuAction deleteAction = new UIMenuAction("Delete Control Point", delegate
+				{ DesignManager.instance.ContextMenuCallback(EditMode.None); });
 			deleteAction += Delete;
 			actionDict.Add(deleteAction);
 		}

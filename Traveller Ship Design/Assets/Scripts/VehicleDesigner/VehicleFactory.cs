@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-
 using AtomosZ.UI;
-
 using TMPro;
-
 using UnityEngine;
+using static AtomosZ.UI.MagicWindow;
 
 
 namespace AtomosZ.MG2eTraveller.Vehicle
@@ -64,7 +62,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			}
 
 			var spacesSpinner = (UISpinner)designWindow.GetControl("spaces_spinner");
-		
+
 
 			var chassis = GetSelectedChassis();
 			if (chassis == null)
@@ -128,7 +126,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			{
 				var optionPanel = Instantiate(optionPanelPrefab, transform);
 				optionPanel.SetOption(option);
-				optionsPanel.AddCustomControl(optionPanel.GetComponent<IUIBehavior>());
+				optionsPanel.AddCustomControl(optionPanel.GetComponent<UIMonoBehaviour>());
 			}
 		}
 
@@ -146,7 +144,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			var techRowPanel = (UIPanel)techTableWindow.AddUIControl(UIControlType.HorizontalPanel);
 			techRowPanel.referenceName = "techTableHeader_panel";
 
-			var label = ((UIExpandingLabel)techRowPanel.AddUIControl(new LabelEx(techTableScriptObj)));
+			var label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
 			label.referenceName = techRowPanel.referenceName + "_tl_label";
 			label.fontStyles = FontStyles.Bold;
 			var labelDimen = label.minLabelDimensions;
@@ -154,13 +152,13 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			label.minLabelDimensions = labelDimen;
 			label.text = "TL";
 
-			label = ((UIExpandingLabel)techRowPanel.AddUIControl(new LabelEx(techTableScriptObj)));
+			label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
 			label.referenceName = techRowPanel.referenceName + "_speed_label";
 			label.fontStyles = FontStyles.Bold;
 			label.minLabelDimensions = labelDimen;
 			label.text = "SPEED";
 
-			label = ((UIExpandingLabel)techRowPanel.AddUIControl(new LabelEx(techTableScriptObj)));
+			label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
 			label.referenceName = techRowPanel.referenceName + "_range_label";
 			label.fontStyles = FontStyles.Bold;
 			label.alignmentOptions = TextAlignmentOptions.TopRight;
@@ -178,7 +176,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 				techRowPanel.referenceName = "techTable_dataRow_panel_row_" + row;
 
 				var techRow = chassis.techTable[row];
-				label = ((UIExpandingLabel)techRowPanel.AddUIControl(new LabelEx(techTableScriptObj)));
+				label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
 				label.minLabelDimensions = labelDimen;
 				var minLevel = techRow.techLevel;
 				var maxLevel = minLevel;
@@ -198,12 +196,12 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 						label.text = minLevel + "-" + maxLevel;
 				}
 
-				label = ((UIExpandingLabel)techRowPanel.AddUIControl(new LabelEx(techTableScriptObj)));
+				label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
 				label.referenceName = techRowPanel.referenceName + "_speed_label_row_" + row;
 				label.minLabelDimensions = labelDimen;
 				label.text = techRow.speed.ToString().Replace('_', ' ');
 
-				label = ((UIExpandingLabel)techRowPanel.AddUIControl(new LabelEx(techTableScriptObj)));
+				label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
 				label.minLabelDimensions = labelDimen;
 				label.alignmentOptions = TextAlignmentOptions.TopRight;
 				label.text = techRow.range + "";
@@ -265,8 +263,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			var ctrls = dataSheetWindow.GetComponentsInChildren<UIExpandingLabel>();
 			foreach (var ctrl in ctrls)
 			{
-				var bd = ((LabelEx)ctrl.GetBackingData());
-				ctrl.UpdateBackingData(new LabelEx(dataSheetLabelScriptObj));
+				ctrl.UpdateBackingData(dataSheetLabelScriptObj);
 				ctrl.minLabelDimensions = new Vector2(120, 10);
 				ctrl.alignmentOptions = TextAlignmentOptions.Left;
 			}
@@ -276,9 +273,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			{
 				if (!panel.IsHorizontal())
 					continue;
-
-				var bd = ((PanelEx)panel.GetBackingData());
-				bd.scriptableObj = horizontalPanelData;
+				panel.UpdateBackingData(horizontalPanelData);
 			}
 
 			dataSheetWindow.Refresh();
