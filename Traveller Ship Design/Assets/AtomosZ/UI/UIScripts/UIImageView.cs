@@ -7,7 +7,7 @@ using static AtomosZ.UI.MagicWindow;
 namespace AtomosZ.UI
 {
 	[ExecuteAlways]
-	public class UIImageView : MonoBehaviour, IUIBehavior
+	public class UIImageView : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Image; } }
 		[SerializeField] private Image image;
@@ -16,33 +16,6 @@ namespace AtomosZ.UI
 
 		public Button button { get { return GetComponent<Button>(); } }
 
-
-		[SerializeField] private string _referenceName;
-		public string referenceName
-		{
-			get { return _referenceName; }
-			set
-			{
-				_referenceName = value;
-				this.SetGameObjectNameToReferenceName(gameObject);
-			}
-		}
-
-		private UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
-
-		public bool isDirty { get; set; } = true;
-
-
-		[SerializeField] private bool _interactable = true;
 		public bool interactable
 		{
 			get { return _interactable; }
@@ -138,7 +111,7 @@ namespace AtomosZ.UI
 		}
 
 
-		public IUIBehavior GetControl(string controlRefName)
+		public UIMonoBehaviour GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
@@ -171,8 +144,6 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			this.SetGameObjectNameToReferenceName(gameObject);
-
 			float height = 0;
 			float width = 0;
 			if (showImage)
@@ -203,36 +174,6 @@ namespace AtomosZ.UI
 			if (isDirty)
 				UpdateBackingData();
 			return GetComponent<RectTransform>().sizeDelta;
-		}
-
-		public void SetHover(bool isHover)
-		{
-			//caption.SetHover "EDFF00"
-		}
-
-		public void UpdateHover(Vector3 posOfHover)
-		{
-			//throw new System.NotImplementedException();
-		}
-
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public UIDesignObject Select()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Deselect()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void ResetToLastPosition()
-		{
-			throw new System.NotImplementedException();
 		}
 	}
 }

@@ -126,16 +126,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: unit
+  _interactable: 1
   labelData: {fileID: 0}
   textLabel: {fileID: 2230423123848178135}
   image: {fileID: 0}
   _designObject: {fileID: 4288333915433089582}
-  _referenceName: unit
-  _interactable: 1
   _text: 2
-  _color: {r: 0, g: 0, b: 0, a: 0}
+  _color: {r: 0, g: 0, b: 0, a: 1}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 0
+  _fontSize: 18
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 258
@@ -245,12 +245,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
@@ -390,10 +386,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cf908483a8233946a6df98c2112693f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sliderData: {fileID: 11400000, guid: 8181c99cb6437ea458a02fe691635b77, type: 2}
-  rectTransform: {fileID: 8705015756943234498}
   _referenceName: uiSlider
   _interactable: 1
+  sliderData: {fileID: 11400000, guid: 8181c99cb6437ea458a02fe691635b77, type: 2}
+  rectTransform: {fileID: 8705015756943234498}
   _showUnits: 1
   _wholeNumbers: 1
   _minValue: 0
@@ -426,12 +422,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 1
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 1
   tooltip: []
@@ -466,10 +458,10 @@ MonoBehaviour:
   minUnit: {fileID: 4322365221261982151}
   maxUnit: {fileID: 7992416808978755985}
   unitLabels:
-  - {fileID: 5576505874648764324}
-  - {fileID: 5543810938251085975}
-  - {fileID: 2040751248644914591}
-  - {fileID: 4674195817948553039}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &5912508382114294937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -624,16 +616,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: unit
+  _interactable: 1
   labelData: {fileID: 0}
   textLabel: {fileID: 2915133550157548615}
   image: {fileID: 0}
   _designObject: {fileID: 7041974613020995334}
-  _referenceName: unit
-  _interactable: 1
   _text: 4
-  _color: {r: 0, g: 0, b: 0, a: 0}
+  _color: {r: 0, g: 0, b: 0, a: 1}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 0
+  _fontSize: 18
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 258
@@ -743,12 +735,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
@@ -999,16 +987,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: unit
+  _interactable: 1
   labelData: {fileID: 0}
   textLabel: {fileID: 9097152023563192305}
   image: {fileID: 0}
   _designObject: {fileID: 4670981176978056112}
-  _referenceName: unit
-  _interactable: 1
   _text: 1
-  _color: {r: 0, g: 0, b: 0, a: 0}
+  _color: {r: 0, g: 0, b: 0, a: 1}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 0
+  _fontSize: 18
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 258
@@ -1118,12 +1106,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
@@ -1377,16 +1361,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: unit
+  _interactable: 1
   labelData: {fileID: 0}
   textLabel: {fileID: 5612314689844856689}
   image: {fileID: 0}
   _designObject: {fileID: 1302808415780851778}
-  _referenceName: unit
-  _interactable: 1
   _text: 3
-  _color: {r: 0, g: 0, b: 0, a: 0}
+  _color: {r: 0, g: 0, b: 0, a: 1}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 0
+  _fontSize: 18
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 258
@@ -1496,12 +1480,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
@@ -1928,12 +1908,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
@@ -2150,12 +2126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []

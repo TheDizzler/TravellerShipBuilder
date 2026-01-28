@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AtomosZ.UI
 {
-	[CreateAssetMenu(fileName = "ImageViewData", menuName = "AtomosZ/UI/UIImageViewScriptableObject")]
+	[CreateAssetMenu(fileName = "ImageViewData", menuName = "AtomosZ/UI/ImageViewScriptableObject")]
 	public class UIImageViewScriptableObject : ScriptableObject
 	{
 		public UIExpandingLabelScriptableObject labelData;

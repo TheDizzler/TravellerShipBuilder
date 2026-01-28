@@ -1,19 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using TMPro;
-
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using static AtomosZ.UI.MagicWindow;
-using FontStyles = TMPro.FontStyles;
+
 
 namespace AtomosZ.UI
 {
 	[ExecuteAlways]
-	public class UICheckBox : MonoBehaviour, IUIBehavior
+	public class UICheckBox : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.CheckBox; } }
 
@@ -25,39 +23,13 @@ namespace AtomosZ.UI
 		public UIExpandingLabel textLabel;
 		public Toggle toggle;
 
-		[SerializeField] private string _referenceName = "checkbox";
-		public string referenceName
-		{
-			get { return _referenceName; }
-			set
-			{
-				_referenceName = value;
-				this.SetGameObjectNameToReferenceName(gameObject);
-			}
-		}
-
-		private UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
-
-
-		public bool isDirty { get; set; } = true;
-
-		public IUIBehavior GetControl(string controlRefName)
+		public UIMonoBehaviour GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
 			return null;
 		}
 
-		[SerializeField] private bool _interactable = true;
 		public bool interactable
 		{
 			get { return _interactable; }
@@ -273,38 +245,6 @@ namespace AtomosZ.UI
 			if (isDirty)
 				UpdateBackingData();
 			return GetComponent<RectTransform>().sizeDelta;
-		}
-
-
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Deselect()
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-		public void ResetToLastPosition()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public UIDesignObject Select()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void SetHover(bool isHover)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void UpdateHover(Vector3 posOfHover)
-		{
-			throw new System.NotImplementedException();
 		}
 	}
 }

@@ -13,7 +13,7 @@ using static AtomosZ.UI.MagicWindow;
 namespace AtomosZ.UI
 {
 	[ExecuteAlways]
-	public class UIDropdown : MonoBehaviour, IUIBehavior
+	public class UIDropdown : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Dropdown; } }
 
@@ -21,38 +21,13 @@ namespace AtomosZ.UI
 		[SerializeField] private Image arrow;
 		[SerializeField] private UIDropdownScriptableObject dropdownData;
 
-		[SerializeField] private string _referenceName = "dropdown";
-		public string referenceName
-		{
-			get { return _referenceName; }
-			set
-			{
-				_referenceName = value;
-				this.SetGameObjectNameToReferenceName(gameObject);
-			}
-		}
-
-
-		public bool isDirty { get; set; }
-		private UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
-
-		public IUIBehavior GetControl(string controlRefName)
+		public UIMonoBehaviour GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
 			return null;
 		}
 
-		[SerializeField] private bool _interactable = true;
 		public bool interactable
 		{
 			get { return _interactable; }
@@ -312,16 +287,6 @@ namespace AtomosZ.UI
 				onValueChangedAction.Invoke(this, value);
 		}
 
-		public UIDesignObject Select()
-		{
-			dropdown.Show();
-			return designObject;
-		}
-
-		public void Deselect()
-		{
-			dropdown.Hide();
-		}
 
 
 		void Update()
@@ -386,31 +351,6 @@ namespace AtomosZ.UI
 				UpdateBackingData();
 			var sDelta = GetComponent<RectTransform>().sizeDelta;
 			return sDelta;
-		}
-
-
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-		public void ResetToLastPosition()
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-
-		public void SetHover(bool isHover)
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-		public void UpdateHover(Vector3 posOfHover)
-		{
-			throw new System.NotImplementedException();
 		}
 	}
 }

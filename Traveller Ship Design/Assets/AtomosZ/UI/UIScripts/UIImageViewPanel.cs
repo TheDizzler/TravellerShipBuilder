@@ -270,36 +270,5 @@
 //			images.Add(imageEx, image);
 //			return image;
 //		}
-
-
-//		public void ResetToLastPosition()
-//		{
-//			throw new System.NotImplementedException();
-//		}
-
-//		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
-//		{
-//			throw new System.NotImplementedException();
-//		}
-
-//		public UIDesignObject Select()
-//		{
-//			throw new System.NotImplementedException();
-//		}
-
-//		public void Deselect()
-//		{
-//			throw new System.NotImplementedException();
-//		}
-
-//		public void SetHover(bool isHover)
-//		{
-//			throw new System.NotImplementedException();
-//		}
-
-//		public void UpdateHover(Vector3 posOfHover)
-//		{
-//			throw new System.NotImplementedException();
-//		}
 //	}
 //}

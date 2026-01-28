@@ -4,7 +4,7 @@ namespace AtomosZ.UI
 	/// <summary>
 	/// TODO(Tristan): Horizontal Layout Panel
 	/// </summary>
-	[CreateAssetMenu(fileName = "panelData", menuName = "AtomosZ/UI/UIPanelScriptableObject")]
+	[CreateAssetMenu(fileName = "PanelData", menuName = "AtomosZ/UI/PanelScriptableObject")]
 	public class UIPanelScriptableObject : ScriptableObject
 	{
 		[Tooltip("The sprite for the panel.")]

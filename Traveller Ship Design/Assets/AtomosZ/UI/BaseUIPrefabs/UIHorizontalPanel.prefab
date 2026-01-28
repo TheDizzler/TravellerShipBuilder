@@ -67,6 +67,7 @@ MonoBehaviour:
   tabLabel: {fileID: 0}
   uiControls: []
   rect: {fileID: 2538911062827000086}
+  minDim: {x: 0, y: 0}
 --- !u!114 &1551854222198439915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,9 +80,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
   isMoveable: 0
   isModal: 0
   isSelectable: 0
@@ -110,7 +108,7 @@ MonoBehaviour:
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
+  m_ChildControlHeight: 1
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0

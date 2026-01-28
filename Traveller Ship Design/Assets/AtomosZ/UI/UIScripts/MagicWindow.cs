@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Pool;
 using static AtomosZ.Keyboard;
-using static AtomosZ.UI.MagicWindow;
 using static AtomosZ.UI.UIButtonPanel;
+using static AtomosZ.UI.UICursors;
 using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
 	[ExecuteAlways]
-	public class MagicWindow : MonoBehaviour, IUIBehavior
+	public class MagicWindow : UIMonoBehaviour, IUIBehavior
 	{
+		public UIControlType dataType { get; }
 		public enum UIControlType
 		{
 			Text,
@@ -29,6 +30,38 @@ namespace AtomosZ.UI
 			Panel,
 			HorizontalPanel,
 			Spinner,
+			Table,
+
+			MenuDivider,
+			MenuButton,
+
+			DataRow,
+			DataCell,
+
+			ModalClickBlocker,
+
+			Window,
+		}
+
+		[Tooltip("Controls that can be added directly to a panel.")]
+		public enum PanelControlType
+		{
+			Text,
+			InputField,
+			CheckBox,
+			Slider,
+			Button,
+			ButtonPanel,
+			Image,
+			
+			Dropdown,
+			TabControl,
+			Panel,
+			HorizontalPanel,
+			Spinner,
+			Table,
+
+			MenuDivider,
 		}
 
 		public enum DialogResult
@@ -40,7 +73,6 @@ namespace AtomosZ.UI
 			No,
 		}
 
-		public UIControlType dataType { get; }
 		public enum WindowStyle
 		{
 			/// <summary>
@@ -60,24 +92,6 @@ namespace AtomosZ.UI
 
 		[SerializeField]
 		public CustomDictionary<WindowStyle, UITabControlScriptableObject> windowStyleDatas;
-
-		[SerializeField] private string _referenceName;
-		public string referenceName { get { return _referenceName; } set { _referenceName = value; } }
-
-		public UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
-
-		public bool interactable { get; set; }
-
-		public bool isDirty { get; set; }
 
 		public UIExpandingLabel titlebar { get { return rootTabControl.tabPanels[0].tabLabel; } }
 
@@ -132,22 +146,34 @@ namespace AtomosZ.UI
 			set { Debug.LogWarning("Close button has not yet been implemented"); }
 		}
 
-
-		[SerializeField] private UIDesignObject modalClickBlocker;
+		public bool isModal = false;
+		[SerializeField] private UIMonoBehaviour modalClickBlocker;
 #if UNITY_EDITOR
 		[SerializeField] public UIControlType currentType;
 
-		[Conditional("UNITY_EDITOR")]
-		public void RecordPrefabInstances()
+		public UICursors cursors;
+
+
+		public bool interactable
 		{
+			get { return _interactable; }
+			set
+			{
+				_interactable = value;
+			}
+		}
+
+		[Conditional("UNITY_EDITOR")]
+		public new void RecordPrefabInstances()
+		{
+			UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(gameObject);
 			rootTabControl.RecordPrefabInstances();
 		}
 
 		[Conditional("UNITY_EDITOR")]
 		public void CreateRootTabControl()
 		{
-			rootTabControl = Instantiate(UIPrefabProvider.GetUIPrefab(
-				UIPrefabProvider.UIPrefabType.TabControl), this.transform).GetComponent<UITabControl>();
+			var rootTabControl = (UITabControl)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.TabControl, transform);
 			rootTabControl.referenceName = "rootTabControl";
 			rootTabControl.tabPanels[0].panel.tabLabel.referenceName = "panel_00";
 			rootTabControl.tabPanels[0].tabLabel.referenceName = "tab_00";
@@ -161,9 +187,15 @@ namespace AtomosZ.UI
 			this.SetDirty();
 		}
 
+		public void SetCursor(UICursorMode cursorMode)
+		{
+			cursors.SetCursor(cursorMode);
+		}
+
 
 		void Start()
 		{
+			cursors = GetComponentInParent<UICursors>();
 			UIPrefabProvider uiProvider = GetComponentInParent<UIPrefabProvider>();
 			if (panelScriptObj == null)
 				panelScriptObj = uiProvider.panelScriptObj;
@@ -240,7 +272,7 @@ namespace AtomosZ.UI
 			return windowStyleDatas[windowStyle];
 		}
 
-		public IUIBehavior GetControl(string referenceName)
+		public UIMonoBehaviour GetControl(string referenceName)
 		{
 			return rootTabControl.GetControl(referenceName);
 		}
@@ -250,16 +282,16 @@ namespace AtomosZ.UI
 			return rootTabControl.EnableTab(tabName, enable);
 		}
 
-		public List<UIDesignObject> GetControls()
+		public List<UIMonoBehaviour> GetControls()
 		{
 			return panel.GetControls();
 		}
 
 #if DEBUG
-		public List<UIDesignObject> GetControlsFromTransform_DEBUG()
+		public List<UIMonoBehaviour> GetControlsFromTransform_DEBUG()
 		{
 			if (panel != null)
-				return panel.GetControlsFromTransform();
+				return panel.GetControlsFromTransform_DEBUG();
 			Debug.LogException(new Exception("Why is this null?"));
 			return null;
 		}
@@ -287,7 +319,7 @@ namespace AtomosZ.UI
 		public bool Input(ModifierKey modiferKeys)
 		{
 			if ((modiferKeys & ModifierKey.Esc) == ModifierKey.Esc
-				&& (_designObject.isModal || windowStyle == WindowStyle.ContextMenu))
+				&& (/*_designObject.isModal || */windowStyle == WindowStyle.ContextMenu))
 			{
 				SetDialogResultDefaultNegative();
 				return true;
@@ -372,10 +404,10 @@ namespace AtomosZ.UI
 		/// action += delegate {// some code here};</c>
 		/// </summary>
 		/// <param name="clickActions"></param>
-		public void SetContextMenuActions(List<DesignAction> clickActions)
+		public void SetContextMenuActions(List<UIMenuAction> clickActions)
 		{
 			windowStyle = WindowStyle.ContextMenu;
-			//tabs[selectedTabIndex].SetContextMenuActions(clickActions);
+			panel.SetContextMenuActions(clickActions);
 			RecalculateDimensions();
 			isDirty = true;
 		}
@@ -405,17 +437,20 @@ namespace AtomosZ.UI
 		}
 
 
-
+		public void Show()
+		{
+			gameObject.SetActive(true);
+		}
 
 		public void Show(Vector2 pos)
 		{
 			GetComponent<RectTransform>().anchoredPosition = pos;
 			gameObject.SetActive(true);
-			if (designObject.isModal)
-			{
-				//modalClickBlocker.
-				Debug.LogWarning("modal blocker?");
-			}
+			//if (designObject.isModal)
+			//{
+			//	//modalClickBlocker.
+			//	Debug.LogWarning("modal blocker?");
+			//}
 		}
 
 
@@ -522,8 +557,7 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public TabPanel AddTab(
-			string tabText, UIPanelScriptableObject overridePanelData = null)
+		public TabPanel AddTab(string tabText, UIPanelScriptableObject overridePanelData = null)
 		{
 			var tabPanel = rootTabControl.AddTab(tabText, overridePanelData);
 			return tabPanel;
@@ -533,36 +567,6 @@ namespace AtomosZ.UI
 		public TabPanel SelectTab(int tabIndex)
 		{
 			return rootTabControl.SelectTab(tabIndex);
-		}
-
-		public void ResetToLastPosition()
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput,
-			ref UIDesignObject currentlySelectedObject)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Deselect()
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-
-
-		public UIDesignObject Select()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void SetHover(bool isHover)
-		{
-			throw new System.NotImplementedException();
 		}
 
 		public ScriptableObject GetBackingData()
@@ -576,12 +580,6 @@ namespace AtomosZ.UI
 		}
 
 		public void UpdateBackingData(ScriptableObject backingData)
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-		public void UpdateHover(Vector3 posOfHover)
 		{
 			throw new System.NotImplementedException();
 		}

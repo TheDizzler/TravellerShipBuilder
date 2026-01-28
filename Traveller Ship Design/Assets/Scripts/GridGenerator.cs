@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using AtomosZ;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -104,7 +104,7 @@ public class GridGenerator : MonoBehaviour
 
 		snapShotCamera.targetTexture = newTexture;
 
-		var gridTex = ToTexture2D(newTexture);
+		var gridTex = Helpers.ToTexture2D(snapShotCamera, newTexture);
 		var gridByte = gridTex.EncodeToPNG();
 		File.WriteAllBytes(@"E:\FirefoxDownloads\temp.png", gridByte);
 
@@ -117,22 +117,6 @@ public class GridGenerator : MonoBehaviour
 		debugText.gameObject.SetActive(false);
 	}
 
-	public Texture2D ToTexture2D(RenderTexture newTexture)
-	{
-		snapShotCamera.enabled = true;
-		RenderTexture currentActiveRT = RenderTexture.active;
-		RenderTexture.active = newTexture;
-
-		snapShotCamera.Render();
-
-		Texture2D tex = new Texture2D(newTexture.width,
-			newTexture.height, TextureFormat.RGB24, false);
-		tex.ReadPixels(new Rect(0, 0, newTexture.width, newTexture.height), 0, 0);
-		tex.Apply();
-
-		RenderTexture.active = currentActiveRT;
-		snapShotCamera.enabled = false;
-		return tex;
-	}
+	
 
 }

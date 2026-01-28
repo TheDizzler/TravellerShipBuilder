@@ -1,10 +1,8 @@
-using TMPro;
-
 using UnityEngine;
 
 namespace AtomosZ.UI
 {
-	[CreateAssetMenu(fileName = "dropdownData", menuName = "AtomosZ/UIScriptableObjects/UIDropdownScriptableObject")]
+	[CreateAssetMenu(fileName = "DropdownData", menuName = "AtomosZ/UI/DropdownScriptableObject")]
 	public class UIDropdownScriptableObject : ScriptableObject
 	{
 		public UIExpandingLabelScriptableObject labelData;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "UISpinnerData", menuName = "AtomosZ/UI/SpinnerScriptableObject")]
+[CreateAssetMenu(fileName = "SpinnerData", menuName = "AtomosZ/UI/SpinnerScriptableObject")]
 public class UISpinnerScriptableObject : ScriptableObject
 {
     

@@ -7,42 +7,18 @@ using static AtomosZ.UI.MagicWindow;
 namespace AtomosZ.UI
 {
 	[ExecuteAlways]
-	public class UISlider : MonoBehaviour, IUIBehavior
+	public class UISlider : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Slider; } }
 
 		[SerializeField] private UISliderScriptableObject sliderData;
 		[SerializeField] private RectTransform rectTransform;
-		[SerializeField] private string _referenceName;
-		public string referenceName
-		{
-			get { return _referenceName; }
-			set
-			{
-				_referenceName = value;
-				this.SetGameObjectNameToReferenceName(gameObject);
-			}
-		}
-
-		private UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
-
-		public bool isDirty { get; set; } = true;
 
 		private SliderCustom slider
 		{
 			get { return GetComponent<SliderCustom>(); }
 		}
 
-		[SerializeField] private bool _interactable = true;
 		public bool interactable
 		{
 			get { return _interactable; }
@@ -348,7 +324,7 @@ namespace AtomosZ.UI
 		}
 
 
-		public IUIBehavior GetControl(string controlRefName)
+		public UIMonoBehaviour GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
@@ -374,16 +350,6 @@ namespace AtomosZ.UI
 				handleSprite = sliderData.handleSprite;
 				showUnits = sliderData.showUnits;
 			}
-		}
-
-		private static bool isInPrefabStage()
-		{
-#if UNITY_EDITOR
-			var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
-			return stage != null;
-#else
-    return false;
-#endif
 		}
 
 		void Update()
@@ -416,40 +382,6 @@ namespace AtomosZ.UI
 			if (isDirty || lastWidth != rectTransform.sizeDelta.x)
 				UpdateBackingData();
 			return rectTransform.sizeDelta;
-		}
-
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput,
-			ref UIDesignObject currentlySelectedObject)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Deselect()
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-
-		public void ResetToLastPosition()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public UIDesignObject Select()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void SetHover(bool isHover)
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-		public void UpdateHover(Vector3 posOfHover)
-		{
-			throw new System.NotImplementedException();
 		}
 	}
 }

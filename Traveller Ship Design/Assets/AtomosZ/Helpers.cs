@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static AtomosZ.DFDQ.Battle.GridManager;
+using UnityEngine.UI;
+
 using Object = UnityEngine.Object;
 
 namespace AtomosZ
@@ -41,6 +42,12 @@ namespace AtomosZ
 			return result;
 		}
 
+		/// <summary>
+		/// Distance (in hexes) between two hex cells.
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <returns></returns>
 		public static int Distance(Vector3Int a, Vector3Int b)
 		{
 			int xd = a.y - b.y;
@@ -291,10 +298,51 @@ namespace AtomosZ
 			snapShotCamera.enabled = false;
 			return tex;
 		}
+
+		/// <summary>
+		/// Get the height of an image according to the rendered sprite and the desired width(if is not specified, it will take the width of the own image's recTransform)
+		/// </summary>
+		public static float GetDesiredHeight(this Image img, float desiredWidth = default)
+		{
+			RectTransform ImageRect = img.rectTransform;
+			float _bodyWidth = desiredWidth == default ? ImageRect.rect.width : desiredWidth;
+			float _imageWidth = (float)img.sprite.texture.width;
+			float _imageHeight = (float)img.sprite.texture.height;
+			float _ratio = _imageWidth / _imageHeight;
+			float _expectedHeight = _bodyWidth / _ratio;
+			return _expectedHeight;
+		}
+
+		public static float GetDesiredWidth(this Image img, float desiredHeight = default)
+		{
+			RectTransform ImageRect = img.rectTransform;
+			float _bodyHeight = desiredHeight == default ? ImageRect.rect.height : desiredHeight;
+			float _imageWidth = (float)img.sprite.texture.width;
+			float _imageHeight = (float)img.sprite.texture.height;
+			float _ratio = _imageWidth / _imageHeight;
+			float _expectedWidth = _bodyHeight / _ratio;
+			return _expectedWidth;
+		}
+
+		public static T GetSingleTon<T>() where T : MonoBehaviour
+		{
+			return GameObject.FindAnyObjectByType<T>();
+		}
+
+#if UNITY_EDITOR
+		public static bool IsPrefabStage()
+		{
+			var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+			return stage != null;
+		}
+#endif
 	}
+
 
 	public static class Log
 	{
+		[System.Diagnostics.DebuggerStepThrough]
+		[HideInCallstack]
 		public static void Warning(string msg)
 		{
 			Debug.LogWarning(msg);

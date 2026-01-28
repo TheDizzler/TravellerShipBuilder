@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -11,49 +10,6 @@ using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
-	//[Serializable]
-	//public class TabLookupDictionary : CustomDictionary<UIExpandingLabel, UIPanel>
-	//{
-	//	public bool Contains(string refName)
-	//	{
-	//		foreach (var tab in Keys)
-	//		{
-	//			if (tab.referenceName == refName)
-	//				return true;
-	//		}
-
-	//		foreach (var panel in Values)
-	//		{
-	//			if (panel.referenceName == refName)
-	//				return true;
-	//		}
-
-	//		return false;
-	//	}
-
-	//	public bool ContainsTab(string panelRefName)
-	//	{
-	//		foreach (var tab in Keys)
-	//		{
-	//			if (tab.referenceName == panelRefName)
-	//				return true;
-	//		}
-
-	//		return false;
-	//	}
-
-	//	public bool ContainsPanel(string panelRefName)
-	//	{
-	//		foreach (var panel in Values)
-	//		{
-	//			if (panel.referenceName == panelRefName)
-	//				return true;
-	//		}
-
-	//		return false;
-	//	}
-	//}
-
 	[Serializable]
 	public class TabPanel
 	{
@@ -69,38 +25,16 @@ namespace AtomosZ.UI
 
 
 	[ExecuteAlways]
-	public class UITabControl : MonoBehaviour, IUIBehavior
+	public class UITabControl : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.TabControl; } }
-		[SerializeField] private string _referenceName;
-		public string referenceName
-		{
-			get { return _referenceName; }
-			set
-			{
-				_referenceName = value;
-				this.SetGameObjectNameToReferenceName(gameObject);
-			}
-		}
-
-		public UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
 
 		public bool interactable { get; set; }
 
-		[SerializeField]
-		public List<TabPanel> tabPanels;
+		[SerializeField] public List<TabPanel> tabPanels;
 		private TabPanel GetTabPanelAtIndex(int tabIndex)
 		{
-			if (tabIndex < 0|| tabIndex > transform.childCount) // must include the Panels gameobject amongst the children
+			if (tabIndex < 0 || tabIndex > transform.childCount) // must include the Panels gameobject amongst the children
 			{
 				Debug.LogError("Invalid tab inded " + tabIndex);
 				return null;
@@ -109,7 +43,7 @@ namespace AtomosZ.UI
 			var tabTransform = transform.GetChild(tabIndex);
 			if (tabTransform == panelsTransform)
 				tabTransform = transform.GetChild(tabIndex + 1);
-				
+
 			var tabLabel = tabTransform.GetComponent<UIExpandingLabel>();
 
 			TabPanel tabPanel = GetTabPanel(tabLabel);
@@ -137,9 +71,8 @@ namespace AtomosZ.UI
 		public UIPanel panelPrefab;
 
 		public RectTransform panelsTransform;
-		public bool isDirty { get; set; }
 
-		public IUIBehavior GetControl(string controlRefName)
+		public UIMonoBehaviour GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
@@ -211,7 +144,7 @@ namespace AtomosZ.UI
 		}
 
 		[Conditional("UNITY_EDITOR")]
-		public void RecordPrefabInstances()
+		public new void RecordPrefabInstances()
 		{
 			PrefabUtility.RecordPrefabInstancePropertyModifications(this);
 			foreach (var tabPanel in tabPanels)
@@ -690,36 +623,6 @@ namespace AtomosZ.UI
 		{
 			TabPanel tabPanel = GetTabPanelAtIndex(selectedTabIndex);
 			return tabPanel.panel;
-		}
-
-		public void SetHover(bool isHover)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void UpdateHover(Vector3 posOfHover)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void ResetToLastPosition()
-		{
-			throw new NotImplementedException();
-		}
-
-		public UIDesignObject Select()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Deselect()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 245.46, y: 66.41}
+  m_SizeDelta: {x: 255.46, y: 66.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4235460900820515980
 MonoBehaviour:
@@ -79,9 +79,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
   isMoveable: 0
   isModal: 0
   isSelectable: 0
@@ -227,7 +224,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 245.46, y: 66.41}
+  m_SizeDelta: {x: 255.46, y: 66.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1978944217387945199
 MonoBehaviour:
@@ -268,9 +265,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 1
   isMoveable: 0
   isModal: 0
   isSelectable: 0
@@ -292,7 +286,7 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: 116
   m_MinHeight: -1
-  m_PreferredWidth: 297.46002
+  m_PreferredWidth: 307.46002
   m_PreferredHeight: -1
   m_FlexibleWidth: 0
   m_FlexibleHeight: -1

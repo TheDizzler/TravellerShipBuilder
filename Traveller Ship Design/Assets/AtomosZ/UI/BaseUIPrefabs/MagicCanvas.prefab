@@ -1,5 +1,40 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6185264926253165263
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3496880337326275063}
+  m_Layer: 5
+  m_Name: ObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &3496880337326275063
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6185264926253165263}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1000}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 33489049433131202}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1000, y: -1000}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7267853904252274131
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,6 +48,8 @@ GameObject:
   - component: {fileID: 9126061725450410503}
   - component: {fileID: 4401487382474081050}
   - component: {fileID: 547093501571894003}
+  - component: {fileID: 4853516221206667452}
+  - component: {fileID: 3041107909327488043}
   m_Layer: 5
   m_Name: MagicCanvas
   m_TagString: Untagged
@@ -31,7 +68,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3496880337326275063}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -148,3 +186,149 @@ MonoBehaviour:
     - {fileID: 1551854222198439915, guid: 1ec87a869128d7e46b5bf60283125fae, type: 3}
     - {fileID: 1551854222198439915, guid: 6a46ce684b853da42969c871a2750070, type: 3}
   defaultFont: {fileID: 0}
+  labelPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+  buttonPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 1978944217387945199, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+  buttonPanelPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 8320262676998505760, guid: 30e4041be43a7cd41ab5c5333fd8325e, type: 3}
+  checkBoxPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 24937739969009248, guid: caa289a349874634fa001d0715dbcb64, type: 3}
+  dropdownPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 3132597873559246341, guid: 3952e60ed4b030b4d8fed2b3b8f576f4, type: 3}
+  panelPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 5821347800241209384, guid: 6a46ce684b853da42969c871a2750070, type: 3}
+  horizontalPanelPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 5821347800241209384, guid: 1ec87a869128d7e46b5bf60283125fae, type: 3}
+  imagePool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 3714226641704735600, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
+  inputPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 5491177040660267407, guid: af17185d5eed67240bdf46ec9a3a9140, type: 3}
+  sliderPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 7859329702581079375, guid: 9b20b3d456fea444899398985fd36ad5, type: 3}
+  spinnerPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 5510448638398286670, guid: ff5b9d9e845249241834e9a163305104, type: 3}
+  tabPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 4227826753104343404, guid: caf2293ad686bcd46a573eca466e4a7d, type: 3}
+  windowPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 7179497505382077658, guid: 99330988dda5a284da54227583121a4b, type: 3}
+  menuDividerPool:
+    sleepTransform: {fileID: 0}
+    pool:
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    - monoBehaviour: {fileID: 0}
+      isLive: 0
+    prefab: {fileID: 6677089725284709947, guid: cc31ca90912907a4092621913b28ee88, type: 3}
+--- !u!114 &4853516221206667452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7267853904252274131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fc2d85748e380243a0cfa2da9ecce39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UICursors
+  cursorTextures:
+    keys: 000000000100000002000000
+    values:
+    - {fileID: 0}
+    - {fileID: 2800000, guid: 9e21d1fcadd8ca24fbd90f711ee710b3, type: 3}
+    - {fileID: 2800000, guid: af9244d5e8da0394db790b7e7d888766, type: 3}
+  cursorHotspots:
+    keys: []
+    values: []
+--- !u!114 &3041107909327488043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7267853904252274131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f989177930f00b4eb5b86af0b1687cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.ObjectForge
+  sleepingPooledObjects: {fileID: 3496880337326275063}

@@ -1,70 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
-using AtomosZ.MG2eTraveller.Ship;	// @TODO(Tristan): Ship design stuff should not be referenced by UI tools
 using UnityEngine;
 
-using static AtomosZ.Keyboard;
 using static AtomosZ.UI.MagicWindow;
 
 
 namespace AtomosZ.UI
 {
-	public class DragPanel : MonoBehaviour, IUIBehavior
+	public class DragPanel : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get; }
 
-		[SerializeField] private MagicWindow panel;
-		[SerializeField] private RectTransform panelRect;
+		private MagicWindow window;
+		private RectTransform windowRect;
 		private Vector2 startDragPos;
 
-		private UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
-
-		public bool isDirty { get; set; }
-		public string referenceName { get; set; }
-		
 		public bool interactable { get; set; }
 
-		public IUIBehavior GetControl(string controlRefName)
+		void OnEnable()
+		{
+			window = GetComponentInParent<MagicWindow>();
+			windowRect = window.GetComponent<RectTransform>();
+		}
+
+		public UIMonoBehaviour GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
 			return null;
 		}
 
-		public void SetHover(bool isHover)
-		{
-		}
-
-		public void UpdateHover(Vector3 posOfHover)
-		{
-		}
-
-		public void Clicked(Vector3 mouseWorldPos, ModifierKey keyInput,
-			ref UIDesignObject currentlySelectedObject)
-		{
-			if (currentlySelectedObject != null)
-			{
-				currentlySelectedObject.Deselect();
-			}
-
-			currentlySelectedObject = designObject;
-			currentlySelectedObject.Select();
-		}
 
 		public void BeginDrag()
 		{
 			startDragPos = UIInput.GetUICoordinates(Input.mousePosition);
-			panel.isDragging = true;
-			CustomCursor.SetCursor(panel.designObject.moveCursorMode);
+			window.isDragging = true;
+			window.cursors.SetCursor(UICursors.UICursorMode.Drag);
 		}
 
 		/// <summary>
@@ -74,7 +45,7 @@ namespace AtomosZ.UI
 		{
 			var screenPosition = UIInput.GetUICoordinates(Input.mousePosition);
 			Vector2 diff = screenPosition - startDragPos;
-			panelRect.anchoredPosition += diff;
+			windowRect.anchoredPosition += diff;
 			startDragPos = screenPosition;
 		}
 
@@ -82,31 +53,15 @@ namespace AtomosZ.UI
 		{
 			var screenPosition = UIInput.GetUICoordinates(Input.mousePosition);
 			Vector2 diff = screenPosition - startDragPos;
-			panelRect.anchoredPosition += diff;
-			panel.isDragging = false;
-			CustomCursor.SetCursor(panel.designObject.hoverCursorMode);
+			windowRect.anchoredPosition += diff;
+			window.isDragging = false;
+			window.cursors.SetCursor(UICursors.UICursorMode.Default);
 		}
 
 
 		public void PointerUp()
 		{
-			panel.SelectTab(transform.GetSiblingIndex());
-		}
-
-
-		public void ResetToLastPosition()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public UIDesignObject Select()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Deselect()
-		{
-			throw new System.NotImplementedException();
+			window.SelectTab(transform.GetSiblingIndex());
 		}
 
 		public Vector2 GetMinDimensions()

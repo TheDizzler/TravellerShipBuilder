@@ -8,33 +8,9 @@ using static AtomosZ.UI.MagicWindow;
 namespace AtomosZ.UI
 {
 	[ExecuteAlways]
-	public class UISpinner : MonoBehaviour, IUIBehavior
+	public class UISpinner : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Spinner; } }
-
-		public UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
-
-		public bool isDirty { get; set; } = true;
-
-		[SerializeField] private string _referenceName;
-		public string referenceName
-		{
-			get { return _referenceName; }
-			set
-			{
-				_referenceName = value;
-				this.SetGameObjectNameToReferenceName(gameObject);
-			}
-		}
 
 		[SerializeField] public RectTransform baseRect;
 		[SerializeField] public Button leftButton;
@@ -120,7 +96,6 @@ namespace AtomosZ.UI
 		}
 
 
-
 		[SerializeField] private TextAlignmentOptions _alignmentOptions;
 		public TextAlignmentOptions alignmentOptions
 		{
@@ -143,8 +118,6 @@ namespace AtomosZ.UI
 			}
 		}
 
-
-		[SerializeField] private bool _interactable = true;
 		public bool interactable
 		{
 			get { return _interactable; }
@@ -224,8 +197,6 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData()
 		{
-			this.SetGameObjectNameToReferenceName(gameObject);
-
 			// calculate min dimension for input field give max&min
 			text.ForceMeshUpdate(false, true);
 			var minPrefTextSize = placeholderText.GetPreferredValues(_minValue.ToString());
@@ -272,45 +243,11 @@ namespace AtomosZ.UI
 		}
 
 
-		public IUIBehavior GetControl(string controlRefName)
+		public UIMonoBehaviour GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
 			return null;
-		}
-
-
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Deselect()
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-
-		public void ResetToLastPosition()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public UIDesignObject Select()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void SetHover(bool isHover)
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-		public void UpdateHover(Vector3 posOfHover)
-		{
-			throw new System.NotImplementedException();
 		}
 	}
 }

@@ -1,0 +1,272 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Dynamic;
+using AtomosZ.UI;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+using static AtomosZ.ObjectForge;
+using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
+
+
+namespace AtomosZ
+{
+	public static class PooledObjectExt
+	{
+		/// <summary>
+		/// Use ReturnToPool().
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="pooledObject"></param>
+		internal static void Return<T>(this IPooledObject<T> pooledObject) where T : MonoBehaviour, IPooledObject<T>
+		{
+#if UNITY_EDITOR
+			if (Helpers.IsPrefabStage())
+			{ // this may or may not work, depending if the transform is on the base prefab (?)
+			  //GameObject.DestroyImmediate((MonoBehaviour)pooledObject);
+			  //GameObject.Destroy((MonoBehaviour)pooledObject);
+			  //return;
+			}
+#endif
+
+			if (pooledObject.pool == null)
+			{
+				Debug.LogError($"Object pool on {((MonoBehaviour)pooledObject).name} is null. This is verboten."
+					+ "\nPooled objects should never be manually Destroy()ed. Use ObjectPool.Clear() instead!");
+
+				if (Application.isPlaying)
+					GameObject.Destroy(((MonoBehaviour)pooledObject).gameObject);
+				else
+					GameObject.DestroyImmediate(((MonoBehaviour)pooledObject).gameObject);
+				return;
+			}
+
+			pooledObject.pool.Return((T)pooledObject);
+		}
+
+		public static void OnDestroyPooledObject<T>(this IPooledObject<T> pooledObject) where T : MonoBehaviour, IPooledObject<T>
+		{
+			if (pooledObject.pool != null)
+			{
+				if (Application.isPlaying)
+				{
+					Log.Error($"PooledObject {((MonoBehaviour)pooledObject).name} was not destroyed proplerly!"
+						+ "\nPooled objects should never be manually Destroy()ed. Use ObjectPool.Clear() instead!");
+				}
+
+				pooledObject.pool.ReportDeleted((T)pooledObject);
+			}
+		}
+
+		public static void OnSceneGUI<T>(this IPooledObject<T> pooledObject) where T : MonoBehaviour, IPooledObject<T>
+		{
+			Log.Warning("test");
+		}
+	}
+
+	public class ObjectForge : MonoBehaviour
+	{
+		private static ObjectForge _instance;
+		public static ObjectForge instance
+		{
+			get
+			{
+				if (_instance == null)
+					_instance = GameObject.FindAnyObjectByType<ObjectForge>();
+				return _instance;
+			}
+		}
+
+
+		public Transform sleepingPooledObjects;
+
+
+		public interface IPooledObject<T> where T : MonoBehaviour, IPooledObject<T>
+		{
+			public bool isLive { get; set; }
+			public ObjectPool<T> pool { get; set; }
+			public void ReturnToPool();
+		}
+
+
+		[Serializable]
+		public class ObjectPool<T> where T : MonoBehaviour, IPooledObject<T>
+		{
+			public Transform sleepTransform = ObjectForge.instance.sleepingPooledObjects;
+
+			[SerializeField] private List<T> pool = new();
+			/// <summary>
+			/// Optional. The function to call when a new object of this type gets constructed.
+			/// </summary>
+			/// <returns></returns>
+			public delegate T CreateNewDelegate();
+			/// <summary>
+			/// Optional. The function to call when a new object of this type gets constructed.
+			/// </summary>
+			public CreateNewDelegate CreateNew;
+			public T prefab;
+
+
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="prefab"></param>
+			/// <param name="initialSize"></param>
+			/// <param name="createNew">Optional. The function to call when a new object of this type gets constructed. 
+			/// Default is: <code> return Instantiate(prefab, sleepTransform);</code></param>
+			public ObjectPool(T prefab, int initialSize = 2, CreateNewDelegate createNew = null)
+			{
+				this.prefab = prefab;
+				if (createNew != null)
+				{
+					CreateNew += createNew;
+				}
+				else
+				{
+					CreateNew += () =>
+					{
+						var result = Instantiate(prefab, sleepTransform);
+						return result;
+					};
+				}
+
+				for (int i = 0; i < initialSize; ++i)
+				{
+					T result = CreateNew();
+					pool.Add(result);
+					result.pool = this;
+					Return(result);
+				}
+			}
+
+
+			public T GetNext()
+			{
+#if DEBUG
+				if (CreateNew == null)
+					CreateNew += () =>
+				{
+					var result = Instantiate(prefab, sleepTransform);
+					return result;
+				};
+#endif
+
+
+				for (int i = 0; i < pool.Count; ++i)
+				{
+					if (!pool[i].isLive)
+					{
+						var p = pool[i];
+						p.isLive = true;
+						if (p == null)
+						{
+							if (Application.isPlaying)
+							{
+								Log.Warning($"A pooled object of type {typeof(T)} has disappeared. This should NOT happen."
+									+ " Please use IPooledObject.ReturnToPool() to return objects and ObjectPool.Clear() to destroy.");
+							}
+
+							p = CreateNew();
+							p.pool = this;
+						}
+
+						return p;
+					}
+				}
+
+
+				T result = CreateNew();
+				pool.Add(result);
+				result.pool = this;
+				result.isLive = true;
+				return result;
+			}
+
+			[Conditional("DEBUG")]
+			public void WakeAll()
+			{
+				for (int i = 0; i < pool.Count; ++i)
+				{
+					var p = pool[i];
+					p.isLive = true;
+					p.gameObject.SetActive(true);
+				}
+			}
+
+
+			public void ReturnAll()
+			{
+				for (int i = 0; i < pool.Count; ++i)
+				{
+					Return(pool[i]);
+				}
+			}
+
+
+			public void Return(T sleepObject)
+			{
+				sleepObject.gameObject.SetActive(false);
+				sleepObject.transform.SetParent(sleepTransform);
+
+				foreach (var obj in pool)
+				{
+					if (obj == sleepObject)
+					{
+						obj.isLive = false;
+						return;
+					}
+				}
+
+				// object was not found in pool. This COULD be an issue, but necessarily.
+				// if the object was created in the editor it might not have been initialized from the pool.
+				// I think adding it to the pool now should not be a problem.
+
+				pool.Add(sleepObject);
+			}
+
+
+			public void ReportDeleted(T deletedObj)
+			{
+				for (int i = 0; i < pool.Count; ++i)
+				{
+					var obj = pool[i];
+					if (obj == deletedObj)
+					{
+						pool.Remove(obj);
+						return;
+					}
+				}
+			}
+
+			/// <summary>
+			/// Destroys all gameobjects in pool.
+			/// </summary>
+			public void Clear()
+			{
+				if (pool == null)
+					return;
+				for (int i = 0; i < pool.Count; ++i)
+				{
+#if DEBUG
+					if (!Application.isPlaying)
+					{
+						if (pool[i] == null)
+							continue;
+						pool[i].pool = null;
+						DestroyImmediate(pool[i].gameObject);
+						continue;
+					}
+
+#else
+					pool[i].pool = null;
+					Destroy(pool[i].gameObject);
+#endif
+				}
+
+				pool.Clear();
+			}
+		}
+	}
+}

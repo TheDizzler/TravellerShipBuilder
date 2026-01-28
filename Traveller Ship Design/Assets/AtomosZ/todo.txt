@@ -1,0 +1,4 @@
+- separate trimmed down custom editors for controls in window/tab/panel views
+- have all controls referenceable from the MagicCanvas
+- Separate MagicWindow into Tabbed, non-tabbed, and title-less MagicWindows
+- figure out how to tokenize controls so not looking up with text compare

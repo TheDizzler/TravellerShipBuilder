@@ -1,3 +1,5 @@
+using System;
+using AtomosZ.UI;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,6 +13,7 @@ namespace AtomosZ.EditorZ
 	/// [HideInCallstack]				// hide from the Console window callstack. When you hide these methods they are removed from the detail area of the selected message in the Console window. <br/>
 	/// [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType)]
 	///									// Use this attribute to get a callback when the runtime is starting up and loading the first scene.
+	///	[DebuggerStepThrough]
 	/// 
 	///	Enum Attributes: <br/>
 	/// [InspectorName("16 bits")]		// attribute on enum value declarations to change the display name shown in the Inspector.
@@ -56,9 +59,17 @@ namespace AtomosZ.EditorZ
 			GUILayout.FlexibleSpace();
 		}
 
-		public SerializedProperty FindProperty(string propertName)
+
+		public SerializedProperty Property(string propertyName)
 		{
-			return serializedObject.FindProperty(propertName);
+			var prop = FindProperty(propertyName);
+			PropertyField(prop);
+			return prop;
+		}
+
+		public SerializedProperty FindProperty(string propertyName)
+		{
+			return serializedObject.FindProperty(propertyName);
 		}
 
 		public bool PropertyField(SerializedProperty labelDataProp)
@@ -99,6 +110,68 @@ namespace AtomosZ.EditorZ
 		public Vector2Int Vector2IntField(string text, Vector2Int vec)
 		{
 			return EditorGUILayout.Vector2IntField(text, vec);
+		}
+
+		internal void SODataDisplay<T, V>(string foldoutLabel, SerializedProperty prop,
+			ref Editor editor, ref bool isFoldout) where T : ScriptableObject where V : Editor
+		{
+			BeginHorizontal();
+			{
+				isFoldout = EditorGUILayout.Foldout(isFoldout, foldoutLabel, true);
+				EditorGUILayout.PropertyField(prop, GUIContent.none);
+			}
+			EndHorizontal();
+
+			if (isFoldout && prop.boxedValue != null)
+			{
+				++EditorGUI.indentLevel;
+
+				if (prop.boxedValue != null)
+				{
+					GUI.enabled = false;
+					Editor.CreateCachedEditor((T)prop.boxedValue, typeof(V), ref editor);
+					editor.OnInspectorGUI();
+					GUI.enabled = true;
+				}
+				--EditorGUI.indentLevel;
+			}
+		}
+
+		public void CreateScriptObjectEditor<T,V>(string foldoutLabel, SerializedProperty prop,
+			T oldValue, ref Editor scriptObjEditor, ref bool isFoldout, IUIBehavior dataOwner,
+			Action<T> updateBackingData) where T : ScriptableObject where V : Editor
+		{
+			BeginHorizontal();
+			{
+				isFoldout = EditorGUILayout.Foldout(isFoldout, foldoutLabel, true);
+				EditorGUILayout.PropertyField(prop, GUIContent.none);
+			}
+			EndHorizontal();
+
+			T newValue = (T)prop.boxedValue;
+			if (isFoldout && newValue != null)
+			{
+				++indentLevel;
+				Editor.CreateCachedEditor(newValue, typeof(V), ref scriptObjEditor);
+				scriptObjEditor.OnInspectorGUI();
+				if (dataOwner != null) // this is null when the caller is a ScriptableObject editor.
+				{
+					EditorGUILayout.BeginHorizontal();
+					GUILayout.FlexibleSpace();
+					if (oldValue != newValue
+						|| GUILayout.Button($"Reset To ScriptableObject data", EditorStyles.miniButtonRight, GUILayout.ExpandWidth(false)))
+					{
+						updateBackingData(newValue);
+
+						EditorUtility.SetDirty(dataOwner.uIMonoBehaviour);
+						dataOwner.UpdateBackingData();
+						dataOwner.uIMonoBehaviour.RecordPrefabInstances();
+					}
+					EditorGUILayout.EndHorizontal();
+	}
+
+				--indentLevel;
+			}
 		}
 	}
 }

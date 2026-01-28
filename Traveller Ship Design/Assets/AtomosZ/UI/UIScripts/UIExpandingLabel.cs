@@ -10,7 +10,7 @@ using Debug = UnityEngine.Debug;
 namespace AtomosZ.UI
 {
 	[ExecuteAlways]
-	public class UIExpandingLabel : MonoBehaviour, IUIBehavior
+	public class UIExpandingLabel : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Text; } }
 		[SerializeField] private UIExpandingLabelScriptableObject labelData;
@@ -18,31 +18,7 @@ namespace AtomosZ.UI
 		[SerializeField] private TextMeshProUGUI textLabel;
 		[SerializeField] private Image image;
 
-		public UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
-			}
-		}
 
-		public bool isDirty { get; set; } = true;
-
-		[SerializeField] private string _referenceName;
-		public string referenceName
-		{
-			get { return _referenceName; }
-			set
-			{
-				_referenceName = value;
-				this.SetGameObjectNameToReferenceName(gameObject);
-			}
-		}
-
-		[SerializeField] private bool _interactable = true;
 		public bool interactable
 		{
 			get { return _interactable; }
@@ -110,12 +86,44 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public bool autoSizeFont
+		{
+			get { return textLabel.enableAutoSizing; }
+			set
+			{
+				if (value == textLabel.enableAutoSizing)
+					return;
+				textLabel.enableAutoSizing = value;
+				this.SetDirty();
+			}
+		}
 
-		[SerializeField] private float _fontSize;
+		public float fontSizeMin
+		{
+			get { return textLabel.fontSizeMin; }
+			set
+			{
+				textLabel.fontSizeMin = value;
+				this.SetDirty();
+			}
+		}
+
+		public float fontSizeMax
+		{
+			get { return textLabel.fontSizeMax; }
+			set
+			{
+				textLabel.fontSizeMax = value;
+				this.SetDirty();
+			}
+		}
+
+
+		//[SerializeField] private float _fontSize;
 		[Tooltip("A value of <= 0 will set the fontSize to the scriptable object value, if it exists")]
 		public float fontSize
 		{
-			get { return _fontSize = textLabel.fontSize; }
+			get { return /*_fontSize = */textLabel.fontSize; }
 			set
 			{
 				if (value < 1)
@@ -129,7 +137,8 @@ namespace AtomosZ.UI
 				if (value == fontSize)
 					return;
 
-				_fontSize = textLabel.fontSize = value;
+				/*_fontSize = */
+				textLabel.fontSize = value;
 				this.SetDirty();
 			}
 		}
@@ -222,6 +231,9 @@ namespace AtomosZ.UI
 				this.SetDirty();
 			}
 		}
+
+
+		public bool fitToParent;
 
 		[SerializeField] private Vector2 _minLabelDimensions = new Vector2(64, 10);
 		public Vector2 minLabelDimensions
@@ -316,15 +328,33 @@ namespace AtomosZ.UI
 			textLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
 		}
 
+
+
 		[Conditional("UNITY_EDITOR")]
-		public void RecordPrefabInstances()
+		public void UpdateBackingData_EDITOR()
+		{
+			referenceName = _referenceName;
+			interactable = _interactable;
+			text = _text;
+			color = _color;
+			disabledColor = _disabledColor;
+			//fontSize = _fontSize;
+			fontAsset = _fontAsset;
+			fontStyles = _fontStyles;
+			alignmentOptions = _alignmentOptions;
+			margin = _margin;
+			UpdateBackingData();
+		}
+
+		[Conditional("UNITY_EDITOR")]
+		public new void RecordPrefabInstances()
 		{
 			PrefabUtility.RecordPrefabInstancePropertyModifications(this);
 			PrefabUtility.RecordPrefabInstancePropertyModifications(textLabel);
 		}
 
 
-		public IUIBehavior GetControl(string controlRefName)
+		public UIMonoBehaviour GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
@@ -336,6 +366,18 @@ namespace AtomosZ.UI
 			this.SetDirty();
 		}
 
+		public override void ReturnToPool()
+		{
+			autoSizeFont = false;
+			fitToParent = false;
+			image = null;
+			color = Color.black;
+			fontAsset = null;
+			fontStyles = FontStyles.Normal;
+			alignmentOptions = (TextAlignmentOptions)((int)VerticalAlignmentOptions.Top | (int)HorizontalAlignmentOptions.Left);
+
+			base.ReturnToPool();
+		}
 		public ScriptableObject GetBackingData()
 		{
 			return labelData;
@@ -369,6 +411,15 @@ namespace AtomosZ.UI
 		public void UpdateBackingData()
 		{
 			textLabel.ForceMeshUpdate(false, true);
+
+			if (fitToParent)
+			{
+				var parent = transform.parent.GetComponent<UIMonoBehaviour>();
+				rect.sizeDelta = parent.rect.sizeDelta;
+				isDirty = false;
+				return;
+			}
+
 
 			//if (name == "UIExpandingText (TMP)")
 			//	name = name;
@@ -469,36 +520,6 @@ namespace AtomosZ.UI
 				UpdateBackingData();
 
 			return textLabel.rectTransform.sizeDelta;
-		}
-
-		public void SetHover(bool isHover)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void UpdateHover(Vector3 posOfHover)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void ResetToLastPosition()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public UIDesignObject Select()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Deselect()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
-		{
-			throw new System.NotImplementedException();
 		}
 	}
 }

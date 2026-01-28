@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using AtomosZ.MG2eTraveller.Starmap;
+
 using UnityEngine;
 
 namespace AtomosZ
@@ -18,6 +18,7 @@ namespace AtomosZ
 		public List<TKey> keys = new();
 		public List<TValue> values = new();
 
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
 		public TValue this[TKey key]
 		{
 			get

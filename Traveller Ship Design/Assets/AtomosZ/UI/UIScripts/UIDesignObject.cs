@@ -2,16 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using AtomosZ.MG2eTraveller.Ship;                       // @TODO(Tristan): this should not be here.
-using static AtomosZ.MG2eTraveller.Ship.CustomCursor;	// @TODO(Tristan): this should not be here.
 
 namespace AtomosZ.UI
 {
+	/// <summary>
+	/// @NOTE(Tristan): while this is mostly vestigial, a class that inherits Monobehavior is required for serialization<br/>
+	/// @UPDATE(Tristan): UIMonoBehaviour now has this role.
+	/// The only constructive thing this class does now is confirming that UIControls are set to the UI layer.
+	/// @TODO(Tristan): remove this MonoBeheviour from all UIControls.
+	/// </summary>
 	public class UIDesignObject : MonoBehaviour
 	{
-		public CursorSpriteMode hoverCursorMode = CursorSpriteMode.UI_Default;
-		public CursorSpriteMode moveCursorMode = CursorSpriteMode.UI_Default;
-
 		private RectTransform _rect;
 		public RectTransform rect
 		{
@@ -23,10 +24,8 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public bool isHoverable = false;
 		public bool isMoveable = false;
 		public bool isModal = false;
-		public bool isSelectable = false;
 		/// <summary>
 		/// This is basically mandatory and should not be an option. Only useful for toggling off when creating a new control.
 		/// </summary>
@@ -45,7 +44,7 @@ namespace AtomosZ.UI
 
 		private void SearchForDesignObject()
 		{
-			//#if UNITY_EDITOR
+#if DEBUG
 			if (gameObject.layer != 5)
 			{
 				var trans = transform.parent;
@@ -58,7 +57,7 @@ namespace AtomosZ.UI
 
 				Debug.LogError($"{name}:{gameObject.name} Layer is NOT set to UI!");
 			}
-			//#endif
+#endif
 
 			var components = GetComponents<MonoBehaviour>();
 			foreach (var comp in components)
@@ -70,40 +69,13 @@ namespace AtomosZ.UI
 				}
 			}
 
-			if (isHoverable
-				|| isMoveable
+			if (isMoveable
 				|| isModal
-				|| isSelectable
 				|| hasCustomDimensions
 				|| hasUpdatableBackingData)
 				throw new Exception("UIDesignObject MUST have a IUIBehavior if any options are enabled!");
 		}
 
-		public void SetHover(bool isHover)
-		{
-			if (!isHoverable)
-				return;
-
-			if (uiBehavior == null)
-				SearchForDesignObject();
-
-			uiBehavior.SetHover(isHover);
-			if (isHover)
-				CustomCursor.SetCursor(hoverCursorMode);
-			else
-				CustomCursor.SetCursor(CursorSpriteMode.Default);
-		}
-
-		public void UpdateHover(Vector3 posOfHover)
-		{
-			if (!isHoverable)
-				return;
-
-			if (uiBehavior == null)
-				SearchForDesignObject();
-
-			uiBehavior.UpdateHover(posOfHover);
-		}
 
 		public Vector2 GetMinDimensions()
 		{
@@ -117,16 +89,6 @@ namespace AtomosZ.UI
 			return GetComponent<RectTransform>().sizeDelta;
 		}
 
-
-		public void ResetToLastPosition()
-		{
-			if (isMoveable)
-			{
-				if (uiBehavior == null)
-					SearchForDesignObject();
-				uiBehavior.ResetToLastPosition();
-			}
-		}
 
 		public ScriptableObject GetBackingData()
 		{
@@ -160,46 +122,11 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public UIDesignObject Select()
-		{
-			if (isSelectable)
-			{
-				if (uiBehavior == null)
-					SearchForDesignObject();
-				DesignManager.instance.toolTip.SetToolTip(tooltip);
-				return uiBehavior.Select();
-			}
-
-			return null;
-		}
-
-		public void Deselect()
-		{
-			if (isSelectable)
-			{
-				if (uiBehavior == null)
-					SearchForDesignObject();
-
-				DesignManager.instance.toolTip.SetToolTip(null);
-				uiBehavior.Deselect();
-			}
-		}
-
 		public IUIBehavior GetUIBehavior()
 		{
 			if (uiBehavior == null)
 				SearchForDesignObject();
 			return uiBehavior;
-		}
-
-		public string referenceName
-		{
-			get
-			{
-				if (uiBehavior == null)
-					SearchForDesignObject();
-				return uiBehavior.referenceName;
-			}
 		}
 	}
 }

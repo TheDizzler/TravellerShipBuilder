@@ -1,11 +1,8 @@
-using TMPro;
-
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace AtomosZ.UI
 {
-	[CreateAssetMenu(fileName = "checkBoxData", menuName = "AtomosZ/UIScriptableObjects/UICheckBoxScriptableObject")]
+	[CreateAssetMenu(fileName = "CheckBoxData", menuName = "AtomosZ/UI/CheckBoxScriptableObject")]
 	public class UICheckBoxScriptableObject : ScriptableObject
 	{
 		public Sprite boxSprite;

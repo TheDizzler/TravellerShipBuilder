@@ -1,6 +1,4 @@
-using System;
 using TMPro;
-
 using UnityEngine;
 using UnityEngine.UI;
 using static AtomosZ.UI.MagicWindow;
@@ -16,7 +14,7 @@ namespace AtomosZ.UI
 	/// Should create scrollbar.
 	/// </summary>
 	[ExecuteAlways]
-	public class UIExpandingInputField : MonoBehaviour, IUIBehavior
+	public class UIExpandingInputField : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.InputField; } }
 
@@ -29,20 +27,6 @@ namespace AtomosZ.UI
 		[SerializeField] private RectTransform textAreaRect;
 		[SerializeField] private Image image;
 
-
-		[SerializeField] private string _referenceName = "inputField";
-		public string referenceName
-		{
-			get { return _referenceName; }
-			set
-			{
-				_referenceName = value;
-				this.SetGameObjectNameToReferenceName(gameObject);
-			}
-		}
-
-
-		[SerializeField] private bool _interactable = true;
 		public bool interactable
 		{
 			get { return _interactable = inputFieldTMP.interactable; }
@@ -50,17 +34,6 @@ namespace AtomosZ.UI
 			{
 				_interactable = inputFieldTMP.interactable = value;
 
-			}
-		}
-
-		private UIDesignObject _designObject;
-		public UIDesignObject designObject
-		{
-			get
-			{
-				if (_designObject == null)
-					_designObject = GetComponent<UIDesignObject>();
-				return _designObject;
 			}
 		}
 
@@ -257,8 +230,6 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public bool isDirty { get; set; } = true;
-
 		public float horizontalTextAreaOffsets
 		{
 			get { return Mathf.Abs(textAreaRect.offsetMin.x) + Mathf.Abs(textAreaRect.offsetMax.x); }
@@ -269,7 +240,7 @@ namespace AtomosZ.UI
 			get { return Mathf.Abs(textAreaRect.offsetMin.y) + Mathf.Abs(textAreaRect.offsetMax.y); }
 		}
 
-		public IUIBehavior GetControl(string controlRefName)
+		public UIMonoBehaviour GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
 				return this;
@@ -376,37 +347,6 @@ namespace AtomosZ.UI
 				UpdateBackingData();
 			var rect = GetComponent<RectTransform>();
 			return rect.sizeDelta;
-		}
-
-		public void Clicked(Vector3 mouseWorldPos, Keyboard.ModifierKey keyInput, ref UIDesignObject currentlySelectedObject)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Deselect()
-		{
-			throw new System.NotImplementedException();
-		}
-
-
-		public void ResetToLastPosition()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public UIDesignObject Select()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void SetHover(bool isHover)
-		{
-
-		}
-
-		public void UpdateHover(Vector3 posOfHover)
-		{
-
 		}
 	}
 }

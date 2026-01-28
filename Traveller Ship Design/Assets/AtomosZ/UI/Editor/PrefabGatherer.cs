@@ -1,10 +1,9 @@
 using System;
-
 using UnityEditor;
-
 using UnityEngine;
-
 using static AtomosZ.UI.UIPrefabProvider;
+
+
 namespace AtomosZ.UI.EditorZ
 {
 	[CustomEditor(typeof(UIPrefabProvider))]
@@ -17,18 +16,13 @@ namespace AtomosZ.UI.EditorZ
 		void OnEnable()
 		{
 			provider = (UIPrefabProvider)target;
-			provider.uiPrefabs.Clear();
-			foreach (UIPrefabType prefabType in Enum.GetValues(typeof(UIPrefabType)))
+
+			provider.DestroyPools();
+			foreach (UIPrefabType type in Enum.GetValues(typeof(UIPrefabType)))
 			{
-				string prefabName = prefabType.ToString();
-				if (prefabType != UIPrefabType.MagicWindow)
-					prefabName = "UI" + prefabName;
-				var prefab = AssetDatabase.LoadAssetAtPath<UIDesignObject>($"Assets/AtomosZ/UI/BaseUIPrefabs/{prefabName}.prefab");
-				if (prefab == null)
-					Debug.LogWarning("No prefab found for " + prefabType);
-				else
-					provider.uiPrefabs.Add(prefabType, prefab);
+				CreatePool(type, provider.poolDict);
 			}
+
 
 			if (provider.checkBoxScriptObj == null)
 				provider.checkBoxScriptObj = AssetDatabase.LoadAssetAtPath<UICheckBoxScriptableObject>(DEFAULT_SO_FOLDER_PATH + "UICheckBoxData.asset");
@@ -55,6 +49,23 @@ namespace AtomosZ.UI.EditorZ
 				provider.titleBarWindowScriptObj = AssetDatabase.LoadAssetAtPath<UITabControlScriptableObject>(DEFAULT_SO_FOLDER_PATH + "TabControlData_TitleBar.asset");
 			if (provider.contextMenuWindowScriptObj == null)
 				provider.contextMenuWindowScriptObj = AssetDatabase.LoadAssetAtPath<UITabControlScriptableObject>(DEFAULT_SO_FOLDER_PATH + "TabControlData_ContextMenu.asset");
+		}
+
+
+		private void CreatePool(UIPrefabType type, CustomDictionary<UIPrefabType, ObjectForge.ObjectPool<UIMonoBehaviour>> dict)
+		{
+			if (dict.TryGetValue(type, out var pool))
+				return;
+			var prefabName = type.ToString();
+			if (type != UIPrefabType.MagicWindow)
+				prefabName = "UI" + prefabName;
+			var prefabFilepath = $"Assets/AtomosZ/UI/BaseUIPrefabs/{prefabName}.prefab";
+			var asset = AssetDatabase.LoadAssetAtPath<UIMonoBehaviour>(prefabFilepath);
+			if (asset == null)
+				Debug.LogException(new Exception($"could not find prefab {prefabFilepath}"));
+			pool = new ObjectForge.ObjectPool<UIMonoBehaviour>(asset, 0);
+			pool.sleepTransform = provider.poolTransform;
+			dict.Add(type, pool);
 		}
 	}
 }

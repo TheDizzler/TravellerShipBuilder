@@ -51,6 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 312a8c77bcfb75340ae365a841aebb04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: modalClickBlocker
+  _interactable: 0
 --- !u!114 &5244242127661738069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,12 +65,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverCursorMode: 13
-  moveCursorMode: 13
-  isHoverable: 1
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 0
   hasUpdatableBackingData: 0
   tooltip: []
