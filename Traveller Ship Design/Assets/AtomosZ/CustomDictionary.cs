@@ -21,6 +21,7 @@ namespace AtomosZ
 		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
 		public TValue this[TKey key]
 		{
+			[System.Diagnostics.DebuggerStepThrough]
 			get
 			{
 				var index = keys.IndexOf(key);
@@ -43,6 +44,7 @@ namespace AtomosZ
 
 		public TKey this[TValue tValue]
 		{
+			[System.Diagnostics.DebuggerStepThrough]
 			get
 			{
 				var index = values.IndexOf(tValue);
@@ -55,6 +57,7 @@ namespace AtomosZ
 
 		public KeyValuePair<TKey, TValue> this[int index]
 		{
+			[System.Diagnostics.DebuggerStepThrough]
 			get
 			{
 				if (index == -1 || index >= keys.Count)

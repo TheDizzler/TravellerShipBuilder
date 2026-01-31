@@ -1,4 +1,5 @@
 using System;
+using AtomosZ.EditorZ;
 using UnityEditor;
 using UnityEngine;
 using static AtomosZ.UI.UIPrefabProvider;
@@ -7,7 +8,7 @@ using static AtomosZ.UI.UIPrefabProvider;
 namespace AtomosZ.UI.EditorZ
 {
 	[CustomEditor(typeof(UIPrefabProvider))]
-	public class PrefabGatherer : Editor
+	public class PrefabGatherer : EditorEx
 	{
 		private const string DEFAULT_SO_FOLDER_PATH = "Assets/AtomosZ/UI/BaseUIPrefabs/DefaultScriptableObjects/";
 
@@ -17,11 +18,7 @@ namespace AtomosZ.UI.EditorZ
 		{
 			provider = (UIPrefabProvider)target;
 
-			provider.DestroyPools();
-			foreach (UIPrefabType type in Enum.GetValues(typeof(UIPrefabType)))
-			{
-				CreatePool(type, provider.poolDict);
-			}
+			CreateNewPools();
 
 
 			if (provider.checkBoxScriptObj == null)
@@ -51,6 +48,13 @@ namespace AtomosZ.UI.EditorZ
 				provider.contextMenuWindowScriptObj = AssetDatabase.LoadAssetAtPath<UITabControlScriptableObject>(DEFAULT_SO_FOLDER_PATH + "TabControlData_ContextMenu.asset");
 		}
 
+		private void CreateNewPools()
+		{
+			foreach (UIPrefabType type in Enum.GetValues(typeof(UIPrefabType)))
+			{
+				CreatePool(type, provider.poolDict);
+			}
+		}
 
 		private void CreatePool(UIPrefabType type, CustomDictionary<UIPrefabType, ObjectForge.ObjectPool<UIMonoBehaviour>> dict)
 		{
@@ -64,8 +68,23 @@ namespace AtomosZ.UI.EditorZ
 			if (asset == null)
 				Debug.LogException(new Exception($"could not find prefab {prefabFilepath}"));
 			pool = new ObjectForge.ObjectPool<UIMonoBehaviour>(asset, 0);
-			pool.sleepTransform = provider.poolTransform;
+
 			dict.Add(type, pool);
 		}
+		public override void OnInspectorGUI()
+		{
+			EditorGUI.BeginChangeCheck();
+			base.OnInspectorGUI();
+
+			if (Button("Empty Pools"))
+			{
+				provider.DestroyPools();
+				CreateNewPools();
+			}
+
+
+			EndChangeCheck();
+		}
+
 	}
 }

@@ -63,7 +63,6 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[Min(1)]
 		[SerializeField] private int _columnCount = 1;
 		public int columnCount
 		{

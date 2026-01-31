@@ -277,6 +277,8 @@ namespace AtomosZ.UI
 #if DEBUG
 		public List<UIMonoBehaviour> GetControlsFromTransform_DEBUG()
 		{
+			if (uiControls == null)
+				uiControls = new(); // why does this happen?
 			uiControls.Clear();
 			foreach (Transform child in transform)
 			{

@@ -94,8 +94,6 @@ namespace AtomosZ
 		[Serializable]
 		public class ObjectPool<T> where T : MonoBehaviour, IPooledObject<T>
 		{
-			public Transform sleepTransform = ObjectForge.instance.sleepingPooledObjects;
-
 			[SerializeField] private List<T> pool = new();
 			/// <summary>
 			/// Optional. The function to call when a new object of this type gets constructed.
@@ -127,12 +125,22 @@ namespace AtomosZ
 				{
 					CreateNew += () =>
 					{
-						var result = Instantiate(prefab, sleepTransform);
+						var result = Instantiate(prefab, ObjectForge.instance.sleepingPooledObjects);
 						return result;
 					};
 				}
 
-				for (int i = 0; i < initialSize; ++i)
+				var allObjects = ObjectForge.instance.sleepingPooledObjects.GetComponentsInChildren<T>(true);
+
+				int objectCount = 0;
+				// collect all existing (and sleeping) objects of this type in the pool
+				foreach (var objOfType in allObjects)
+				{
+					Return(objOfType);
+					++objectCount;
+				}
+
+				for (; objectCount < initialSize; ++objectCount)
 				{
 					T result = CreateNew();
 					pool.Add(result);
@@ -148,9 +156,19 @@ namespace AtomosZ
 				if (CreateNew == null)
 					CreateNew += () =>
 				{
-					var result = Instantiate(prefab, sleepTransform);
+					var result = Instantiate(prefab, ObjectForge.instance.sleepingPooledObjects);
 					return result;
 				};
+
+				if (!Application.isPlaying)
+				{
+					var t = prefab.GetType();
+					var allObjects = ObjectForge.instance.sleepingPooledObjects.GetComponentsInChildren(t, true);
+					foreach (T objOfType in allObjects)
+					{
+						Return(objOfType);
+					}
+				}
 #endif
 
 
@@ -208,13 +226,18 @@ namespace AtomosZ
 			public void Return(T sleepObject)
 			{
 				sleepObject.gameObject.SetActive(false);
-				sleepObject.transform.SetParent(sleepTransform);
+				sleepObject.isLive = false;
+
+#if UNITY_EDITOR
+				if (ObjectForge.instance.sleepingPooledObjects == null)
+					Debug.LogError("Daduf");
+#endif
+				sleepObject.transform.SetParent(ObjectForge.instance.sleepingPooledObjects);
 
 				foreach (var obj in pool)
 				{
 					if (obj == sleepObject)
 					{
-						obj.isLive = false;
 						return;
 					}
 				}
@@ -241,7 +264,7 @@ namespace AtomosZ
 			}
 
 			/// <summary>
-			/// Destroys all gameobjects in pool.
+			/// Destroys all gameobjects in pool, unless they are alive.
 			/// </summary>
 			public void Clear()
 			{
@@ -254,14 +277,17 @@ namespace AtomosZ
 					{
 						if (pool[i] == null)
 							continue;
+
 						pool[i].pool = null;
-						DestroyImmediate(pool[i].gameObject);
+						if (!pool[i].isLive)
+							DestroyImmediate(pool[i].gameObject);
 						continue;
 					}
 
 #else
 					pool[i].pool = null;
-					Destroy(pool[i].gameObject);
+					if (!pool[i].isLive)
+						Destroy(pool[i].gameObject);
 #endif
 				}
 

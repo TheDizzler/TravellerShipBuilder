@@ -79,12 +79,13 @@ namespace AtomosZ.UI
 			control.referenceName = referenceName + $"_{prefabType}";
 			control.rect.anchorMin = new Vector2(.5f, .5f);
 			control.rect.anchorMax = new Vector2(.5f, .5f);
+			control.rect.anchoredPosition = Vector3.zero;
 			// @TODO(Tristan): should set min and max size of control instead
 			//control.enabled = false; // this prevents the UI control from autosizing itself
-			
+
 			//control.fitToParent = true; // implement this!
 
-			if (control.TryGetComponent<TextMeshProUGUI>( out var tmp))
+			if (control.TryGetComponent<TextMeshProUGUI>(out var tmp))
 			{
 				tmp.enableAutoSizing = true;
 				tmp.fontSizeMin = 3;

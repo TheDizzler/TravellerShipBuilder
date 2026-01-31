@@ -59,6 +59,7 @@ namespace AtomosZ.UI
 		public bool isLive { get; set; }
 		public ObjectPool<UIMonoBehaviour> pool { get; set; }
 
+		[System.Diagnostics.DebuggerStepThrough]
 		public UIControlType GetDataType() { return iUIBehavior.dataType; }
 
 		void OnDestroy()

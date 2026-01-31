@@ -12,6 +12,7 @@ namespace AtomosZ.UI
 		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
 		public static UIPrefabProvider instance
 		{
+			[System.Diagnostics.DebuggerStepThrough]
 			get
 			{
 				if (_instance == null)
@@ -98,8 +99,6 @@ namespace AtomosZ.UI
 
 
 		[SerializeField] private TMP_FontAsset defaultFont;
-
-		public Transform poolTransform;
 
 		public CustomDictionary<UIPrefabType, ObjectForge.ObjectPool<UIMonoBehaviour>> poolDict = new();
 

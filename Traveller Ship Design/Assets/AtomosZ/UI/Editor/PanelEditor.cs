@@ -627,8 +627,6 @@ namespace AtomosZ.UI.EditorZ
 						continue;
 					}
 
-					var data = uiControl.iUIBehavior.GetBackingData();
-
 					SerializedObject uiSO = null;
 					string referenceName = null;
 					switch (uiControl.iUIBehavior.dataType)
