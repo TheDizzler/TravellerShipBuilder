@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using static AtomosZ.UI.MagicWindow;
-using static UnityEngine.UI.GridLayoutGroup;
+
 
 namespace AtomosZ.UI
 {
@@ -37,22 +37,46 @@ namespace AtomosZ.UI
 
 		public UIDataRow headerRow;
 
-		[SerializeField] private UIMenuDivider headerLine;
-		[Min(0)]
-		[SerializeField] private int _borderThickness;
-		public int borderThickness
+		[SerializeField] private RectOffset _borderMargins;
+		public RectOffset borderMargins
 		{
-			get { return _borderThickness; }
+			get { return _borderMargins; }
 			set
 			{
-				if (_borderThickness == value)
+				_borderMargins = value;
+				layout.padding = _borderMargins;
+				columnDividerMask.padding = new Vector4(borderMargins.left, borderMargins.bottom, borderMargins.right, borderMargins.top);
+				this.SetDirty();
+			}
+		}
+
+		[Min(0)]
+		[SerializeField] private int _gridThickness;
+		public int gridThickness
+		{
+			get { return _gridThickness; }
+			set
+			{
+				if (_gridThickness == value)
 					return;
-				_borderThickness = value;
+				_gridThickness = value;
+				if (headerRow != null)
+				{
+					headerRow.gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value);
+					headerRow.SetDirty();
+				}
+				foreach (var row in rows)
+				{
+					row.gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value);
+					row.SetDirty();
+				}
 				foreach (var border in columnDividers)
 					border.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value);
 			}
 		}
-		[SerializeField] private UIDataRow[] rows;
+
+		[HideInInspector]
+		[SerializeField] public UIDataRow[] rows;
 
 		[SerializeField] private Vector2 _layoutSpacing;
 		public Vector2 layoutSpacing
@@ -89,7 +113,7 @@ namespace AtomosZ.UI
 					headerRow.cellWidths = value;
 				}
 
-				for (int row = 0; row < rowCount; ++row)
+				for (int row = 0; row < rows.Length; ++row)
 				{
 					rows[row].cellWidths = value;
 				}
@@ -99,34 +123,39 @@ namespace AtomosZ.UI
 			}
 		}
 
-
-
-		[SerializeField] private float _rowHeight;
-		public float rowHeight
+		[Min(1)]
+		[SerializeField] private float _rowMinHeight;
+		public float rowMinHeight
 		{
-			get { return _rowHeight; }
+			get { return _rowMinHeight; }
 			set
 			{
-				_rowHeight = value;
-				for (int i = 0; i < rowCount; ++i)
-					rows[i].cellHeight = value;
+				if (_rowMinHeight == value)
+					return;
+				_rowMinHeight = value;
+				for (int i = 0; i < rows.Length; ++i)
+					rows[i].minDimensions = new Vector2(-1, value);
 			}
 		}
 
+		[Min(0)]
 		[SerializeField] private float _headerHeight;
 		public float headerHeight
 		{
 			get
 			{
 				if (headerRow != null)
-					_headerHeight = headerRow.cellHeight;
+					_headerHeight = headerRow.minDimensions.y;
 				return _headerHeight;
 			}
 			set
 			{
+				if (_headerHeight == value)
+					return;
 				if (headerRow == null)
 					return;
-				_headerHeight = headerRow.cellHeight = value;
+				headerRow.minDimensions = new Vector2(headerRow.minDimensions.x, value);
+				_headerHeight = value;
 				this.SetDirty();
 			}
 		}
@@ -137,137 +166,57 @@ namespace AtomosZ.UI
 			get { return _rowColors; }
 			set
 			{
+				if (_rowColors == value)
+					return;
 				_rowColors = value;
-				this.SetDirty();
-			}
-		}
 
-		//[Min(1)]
-		[SerializeField] private int _rowCount;
-		public int rowCount
-		{
-			get { return _rowCount = rows.Length; }
-			set
-			{
-				if (rows.Length == value)
-					return;
-				_rowCount = value;
-
-				var newRows = new UIDataRow[value];
-				for (int i = 0; i < value; ++i)
+				if (_rowColors.Length == 0)
 				{
-					if (i < rows.Length)
-						newRows[i] = rows[i];
-					else
-						newRows[i] = NewRow(i);
-					RenameRow(newRows[i], i);
-					newRows[i].columnCount = columnCount;
-				}
-
-				for (int i = value; i < rows.Length; ++i)
-				{
-					rows[i].ReturnToPool();
-				}
-
-				rows = newRows;
-				this.SetDirty();
-			}
-		}
-
-		[SerializeField] private int _columnCount;
-		public int columnCount
-		{
-			get
-			{
-				if (headerRow != null)
-					_columnCount = headerRow.columnCount;
-				return _columnCount;
-			}
-			set
-			{
-				if (_columnCount == value)
-					return;
-
-				if (headerRow != null)
-					headerRow.columnCount = value;
-				_columnCount = value;
-
-				var newColumnWidths = new float[value];
-
-
-				for (int i = 0; i < _columnCount; ++i)
-				{
-					if (_columnWidths.Length > i)
-						newColumnWidths[i] = _columnWidths[i];
-					else
-						newColumnWidths[i] = 128;
-					SetHeader(i);
-				}
-
-				if (value == 0)
-				{
-					for (int i = 0; i < columnDividers.Length; ++i)
+					var zeroAlpha = new Color(0, 0, 0, 0);
+					for (int row = 0; row < rows.Length; ++row)
 					{
-						if (columnDividers[i] != null)
-							columnDividers[i].ReturnToPool();
+						rows[row].SetBackgroundColor(UIDataRow.zeroAlpha);
 					}
-
-					columnDividers = new UIMenuDivider[0];
 				}
 				else
 				{
-					var newColumnDividers = new UIMenuDivider[value + 1];
-
-					if (columnDividers.Length > 0 && columnDividers[0] != null)
-						newColumnDividers[0] = columnDividers[0];
-					else
+					int colorIndex = 0;
+					for (int row = 0; row < rows.Length; ++row)
 					{
-						newColumnDividers[0] = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.VerticalDivider, transform);
-						newColumnDividers[0].rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 4);
-						newColumnDividers[0].rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, headerHeight + 4);
+						if (colorIndex >= _rowColors.Length)
+							colorIndex = 0;
+						rows[row].SetBackgroundColor(_rowColors[colorIndex++]);
 					}
-
-					for (int i = 0; i < _columnCount; ++i)
-					{
-						if (columnDividers.Length > i + 1 && columnDividers[i + 1] != null)
-							newColumnDividers[i + 1] = columnDividers[i + 1];
-						else
-						{
-							newColumnDividers[i + 1] = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.VerticalDivider, transform);
-							//newColumnDividers[i + 1].transform.rotation = Quaternion.Euler(0, 0, 90);
-							//newColumnDividers[i + 1].rect.anchorMin = new Vector2(0, 1);
-							//newColumnDividers[i + 1].rect.anchorMax = new Vector2(0, 1);
-							//newColumnDividers[i + 1].rect.pivot = new Vector2(0, .5f);
-							newColumnDividers[i + 1].rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 4);
-							newColumnDividers[i + 1].rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, headerHeight + 4);
-						}
-					}
-
-					for (int i = newColumnDividers.Length; i < columnDividers.Length; ++i)
-					{
-						if (columnDividers[i] != null)
-							columnDividers[i].ReturnToPool();
-					}
-
-					columnDividers = newColumnDividers;
 				}
-
-				for (int i = 0; i < rows.Length; ++i)
-				{
-					rows[i].columnCount = value;
-				}
+			}
+		}
 
 
-				columnWidths = newColumnWidths;
+		[HideInInspector]
+		[SerializeField] private int columnCount;
 
+
+		[SerializeField] private Vector2 _minDimensions;
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions; }
+			set
+			{
+				_minDimensions = value;
 				this.SetDirty();
 			}
 		}
 
+		public Vector2 maxDimensions { get; set; }
+
 		/// <summary>
-		/// There are columnCount +1 dividers in a table.
+		/// There are columnCount -1 dividers in a table.
 		/// </summary>
+		[HideInInspector]
 		[SerializeField] private UIMenuDivider[] columnDividers;
+		//[HideInInspector]
+		//[SerializeField] private UIMenuDivider[] rowDividers;
+		[SerializeField] private RectMask2D columnDividerMask;
 
 		/// <summary>
 		/// Called when waking up/constructed.
@@ -275,28 +224,24 @@ namespace AtomosZ.UI
 		public void Init(int startingColCount, int startingRowCount)
 		{
 			if (headerRow == null)
-				ConstructHeaderRow();
-			headerRow.Init(startingColCount);
-			columnWidths = new float[startingColCount];
-			for (int i = 0; i < startingColCount; ++i)
-			{
-				columnWidths[i] = 128;
-			}
+				CreateHeaderRow();
 
-			_columnCount = -1;
-			columnCount = startingColCount;
-			_rowCount = -1;
-			rowCount = startingRowCount;
-			rowHeight = 64;
+			rowMinHeight = 64;
 			headerHeight = 64;
 			layoutSpacing = new Vector2(32, 0);
+
+			for (int i = 0; i < startingColCount; ++i)
+			{
+				AddColumn();
+			}
+
+			for (int i = 0; i < startingRowCount; ++i)
+				AddRow();
 		}
 
 		[System.Diagnostics.Conditional("UNITY_EDITOR")]
 		public void UpdateBackingData_EDITOR()
 		{
-			//if (headerRow == null)
-			//	ConstructHeaderRow();
 			referenceName = _referenceName;
 			interactable = _interactable;
 
@@ -304,30 +249,35 @@ namespace AtomosZ.UI
 
 			columnWidths = _columnWidths;
 
-			var r = _rowCount;
-			_rowCount = 0;
-
-			var c = _columnCount;
-			_columnCount = 0;
-			columnCount = c;
-
-			rowCount = r;
-
 			layoutSpacing = _layoutSpacing;
-			headerHeight = _headerHeight;
+
+			if (_headerHeight != headerHeight)
+			{
+				var hh = _headerHeight;
+				_headerHeight = -1;
+				headerHeight = hh;
+			}
+
 			rowColors = _rowColors;
 
-			var bt = _borderThickness;
-			_borderThickness = -1;
-			borderThickness = bt;
-			this.SetDirty();
+			borderMargins = _borderMargins;
+
+			var gt = _gridThickness;
+			_gridThickness = -1;
+			gridThickness = gt;
+
+			//if (_rowMinHeight != rowMinHeight)
+			{
+				var rmh = _rowMinHeight;
+				_rowMinHeight = -1;
+				rowMinHeight = rmh;
+			}
 		}
 
-		public void ConstructHeaderRow()
+		public void CreateHeaderRow()
 		{
 #if UNITY_EDITOR
 			var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
-
 #endif
 			if (headerRow != null)
 			{
@@ -355,18 +305,14 @@ namespace AtomosZ.UI
 #endif
 
 			headerRow.transform.SetAsFirstSibling();
-			headerRow.columnCount = _columnCount;
+			headerRow.gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
+			headerRow.columnCount = columnCount;
 			headerRow.layout.spacing = layoutSpacing.x;
 			headerRow.cellWidths = _columnWidths;
-			headerRow.cellHeight = _headerHeight;
-			for (int i = 0; i < _columnCount; ++i)
+			headerRow.minDimensions = new Vector2(0, _headerHeight);
+			for (int i = 0; i < columnCount; ++i)
 			{
 				SetHeader(i);
-			}
-
-			if (headerLine == null)
-			{
-				headerLine = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.MenuDivider, transform);
 			}
 		}
 
@@ -385,7 +331,8 @@ namespace AtomosZ.UI
 			headerLabel.color = Color.black;
 			headerLabel.fontStyles = TMPro.FontStyles.Bold;
 			headerLabel.alignmentOptions = TMPro.TextAlignmentOptions.Bottom;
-			headerLabel.fitToParent = true;
+			headerLabel.fillParentHorizontal = true;
+			headerLabel.fillParentVertical = true;
 			headerLabel.enabled = true;
 		}
 
@@ -414,8 +361,6 @@ namespace AtomosZ.UI
 				headerRow = null;
 			}
 
-			headerLine = null;
-
 			for (int i = 0; i < rows.Length; ++i)
 			{
 				if (rows[i] == null)
@@ -423,10 +368,6 @@ namespace AtomosZ.UI
 				rows[i].ReturnToPool();
 			}
 
-
-			_rowCount = -1;
-			rowCount = 0;
-			_columnCount = -1;
 			columnCount = 0;
 		}
 
@@ -451,17 +392,6 @@ namespace AtomosZ.UI
 			}
 
 			rows = foundRows.ToArray();
-			if (rows.Length > 0)
-				_columnWidths = rows[0].cellWidths;
-			else if (headerRow != null)
-				_columnWidths = headerRow.cellWidths;
-			else
-			{
-				_columnWidths = new float[_columnCount];
-				for (int i = 0; i < _columnCount; ++i)
-					_columnWidths[i] = 128;
-			}
-
 			if (headerRow == null)
 			{
 				foreach (var row in GetComponentsInChildren<UIDataRow>())
@@ -473,6 +403,38 @@ namespace AtomosZ.UI
 					}
 				}
 			}
+
+			if (headerRow != null)
+				columnCount = headerRow.columnCount;
+			else if (rows.Length > 0)
+				columnCount = rows[0].columnCount;
+			else
+				columnCount = 0;
+
+			if (_columnWidths == null || _columnWidths.Length != columnCount)
+			{
+				var columnWidthList = new float[columnCount];
+				for (int i = 0; i < columnCount; ++i)
+				{
+					if (i < _columnWidths.Length)
+						columnWidthList[i] = _columnWidths[i];
+					else
+						columnWidthList[i] = 128;
+				}
+
+				_columnWidths = columnWidthList;
+			}
+
+			var foundVerticalDividers = new List<UIMenuDivider>();
+			foreach (UIMenuDivider child in columnDividerMask.GetComponentsInChildren<UIMenuDivider>())
+			{
+				if (foundVerticalDividers.Count < columnCount - 1)
+					foundVerticalDividers.Add(child);
+				else
+					child.ReturnToPool();
+			}
+
+			columnDividers = foundVerticalDividers.ToArray();
 		}
 
 
@@ -487,14 +449,64 @@ namespace AtomosZ.UI
 			return headerRow.GetControl(controlRefName);
 		}
 
+		public void AddColumn()
+		{
+			++columnCount;
+			if (columnCount >= 2)
+			{
+				var dividerList = new List<UIMenuDivider>(columnDividers);
+				var newDivider = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.MenuDivider, transform);
+				newDivider.layout.enabled = false;
+				newDivider.rect.rotation = Quaternion.Euler(0, 0, 270);
+				newDivider.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
+				newDivider.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, headerHeight + 4);
+				dividerList.Add(newDivider);
+				columnDividers = dividerList.ToArray();
+			}
+
+			var columnWidthList = new List<float>(_columnWidths);
+			columnWidthList.Add(128);
+			_columnWidths = columnWidthList.ToArray();
+
+			if (headerRow != null)
+			{
+				headerRow.columnCount = columnCount;
+				headerRow.cellWidths = _columnWidths;
+				SetHeader(columnCount - 1);
+			}
+
+			foreach (var row in rows)
+			{
+				row.columnCount = columnCount;
+				row.cellWidths = _columnWidths;
+			}
+
+			this.SetDirty();
+		}
+
+
+		public UIDataRow AddRow()
+		{
+			rows[rows.Length - 1].ShowGridLine(true);
+			rows[rows.Length - 1].gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
+			var newRows = new List<UIDataRow>(rows);
+			var newRow = NewRow(rows.Length);
+			newRows.Add(newRow);
+			rows = newRows.ToArray();
+
+			this.SetDirty();
+			return newRow;
+		}
 
 		private UIDataRow NewRow(int index)
 		{
 			var newRow = (UIDataRow)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.DataRow, transform);
-			newRow.columnCount = _columnCount;
+			newRow.columnCount = columnCount;
 			newRow.cellWidths = _columnWidths;
-			newRow.cellHeight = _rowHeight;
+			newRow.minDimensions = new Vector2(0, _rowMinHeight);
 			newRow.layout.spacing = layoutSpacing.x;
+			newRow.CreateGridLine();
+			newRow.gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
 			RenameRow(newRow, index);
 			return newRow;
 		}
@@ -508,16 +520,81 @@ namespace AtomosZ.UI
 #endif
 		}
 
-		public UIDataRow AddRow()
+		public void RemoveRow(int rowIndex)
 		{
-			var newRows = new List<UIDataRow>(rows);
-			var newRow = NewRow(rows.Length);
-			newRows.Add(newRow);
-			rows = newRows.ToArray();
+			var rowList = new UIDataRow[rows.Length - 1];
+			for (int i = 0; i < rowIndex; ++i)
+				rowList[i] = rows[i];
+			rows[rowIndex].ReturnToPool();
+			for (int i = rowIndex + 1; i < rows.Length; ++i)
+				rowList[i - 1] = rows[i];
+			rows = rowList;
 
 			this.SetDirty();
-			return newRow;
 		}
+
+
+		void Update()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+		}
+
+		public void RecalculateDimensions()
+		{
+			float width = 0;
+			for (int i = 0; i < columnCount; ++i)
+			{
+				width += _columnWidths[i];
+			}
+
+			width += _layoutSpacing.x * Mathf.Max(0, (columnCount - 1));
+
+			float height = layout.padding.vertical;
+			if (headerRow != null)
+			{
+				height += headerRow.GetDrawnDimensions().y;
+				headerRow.gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
+			}
+
+			for (int i = 0; i < rows.Length; ++i)
+			{
+				if (i == rows.Length - 1)
+					rows[i].ShowGridLine(false);
+				height += rows[i].GetDrawnDimensions().y;
+			}
+
+			height += Mathf.Max(0, rows.Length - 1) * (layoutSpacing.y/* + gridThickness*/);
+
+
+			float dividerX = borderMargins.left;
+			for (int i = 0; i < columnDividers.Length; ++i)
+			{
+				var columnWidth = columnWidths[i];
+				var columnDivider = columnDividers[i];
+
+				dividerX += columnWidth + (layoutSpacing.x) * .5f;
+				columnDivider.rect.anchoredPosition = new Vector3(dividerX, 0, 0);
+				columnDivider.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, height);
+				columnDivider.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _gridThickness);
+				dividerX += (layoutSpacing.x) * .5f;
+			}
+
+			columnDividerMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(minDimensions.y, height));
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Max(minDimensions.x, width + layout.padding.right));
+
+			isDirty = false;
+		}
+
+		public Vector2 GetDrawnDimensions()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return GetComponent<RectTransform>().sizeDelta;
+		}
+
 
 
 		public ScriptableObject GetBackingData()
@@ -528,91 +605,6 @@ namespace AtomosZ.UI
 		public void UpdateBackingData(ScriptableObject backingData)
 		{
 			throw new System.NotImplementedException();
-		}
-
-
-		void Update()
-		{
-			if (isDirty)
-				UpdateBackingData();
-		}
-
-		public void UpdateBackingData()
-		{
-			layout.padding.left = layout.padding.right = Mathf.RoundToInt(borderThickness * .5f);
-			float width = layout.padding.horizontal;
-			for (int i = 0; i < columnCount; ++i)
-			{
-				width += _columnWidths[i];
-			}
-
-			width += _layoutSpacing.x * (columnCount - 1);
-
-			float height = layout.padding.vertical;
-			height += headerHeight;
-			height += rowCount * rowHeight + Mathf.Max(0, rowCount - 1) * layoutSpacing.y;
-
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
-
-			if (headerLine != null)
-				headerLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
-
-			if (columnDividers.Length > 0)
-			{
-				float x = 0;
-				var divider = columnDividers[0];
-				divider.rect.anchoredPosition = new Vector3(x, 0, 0);
-				divider.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, height);
-
-				x += borderThickness *.5f;
-				for (int i = 0; i < columnCount - 1; ++i)
-				{
-					x += _columnWidths[i];
-					x += layoutSpacing.x * .5f;
-
-					divider = columnDividers[i + 1];
-					divider.rect.anchoredPosition = new Vector3(x, 0, 0);
-					divider.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, height);
-					x += (layoutSpacing.x) * .5f;
-				}
-
-				divider = columnDividers[columnDividers.Length - 1];
-				divider.rect.anchoredPosition = new Vector3(width + (borderThickness) * .5f, 0, 0);
-				divider.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, height);
-			}
-
-
-			if (_rowColors.Length == 0)
-			{
-				var zeroAlpha = new Color(0, 0, 0, 0);
-				for (int row = 0; row < rowCount; ++row)
-				{
-					rows[row].UpdateBackingData();
-					rows[row].SetBackgroundColor(UIDataRow.zeroAlpha);
-				}
-			}
-			else
-			{
-				int colorIndex = 0;
-				for (int row = 0; row < rowCount; ++row)
-				{
-					if (colorIndex >= _rowColors.Length)
-						colorIndex = 0;
-					rows[row].UpdateBackingData();
-					rows[row].SetBackgroundColor(_rowColors[colorIndex++]);
-				}
-			}
-
-
-			isDirty = false;
-		}
-
-		public Vector2 GetMinDimensions()
-		{
-			if (isDirty)
-				UpdateBackingData();
-			return GetComponent<RectTransform>().sizeDelta;
 		}
 
 	}

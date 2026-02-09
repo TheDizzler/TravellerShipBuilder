@@ -130,6 +130,14 @@ namespace AtomosZ.UI
 			}
 		}
 
+		[SerializeField] private Vector2 _minDimensions;
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions; }
+			set { _minDimensions = value; }
+		}
+
+		public Vector2 maxDimensions { get; set; }
 
 		public void ClearControls()
 		{
@@ -256,7 +264,7 @@ namespace AtomosZ.UI
 
 			tabLabel.text = tabText;
 
-			GetMinDimensions();
+			GetDrawnDimensions();
 
 			return newTabPanel;
 		}
@@ -366,13 +374,13 @@ namespace AtomosZ.UI
 		void Update()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
 		/// <summary>
 		/// "Please get rid of this, or atleast change to a better name. And keep it private."
 		/// </summary>
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			if (tabPanels.Count == 0)
 			{
@@ -437,13 +445,13 @@ namespace AtomosZ.UI
 			tabLabel.alignmentOptions = tabControlData.tabTextAlignment;
 			tabLabel.fontSize = tabControlData.titleBarFontSize;
 
-			tabLabel.UpdateBackingData();
+			tabLabel.RecalculateDimensions();
 			//var tabRect = tab.GetComponent<RectTransform>();
 
 			var panel = tabPanel.panel;
 			panel.gameObject.SetActive(true);
-			var panelDimens = panel.GetMinDimensions();
-			var tabDimens = tabLabel.GetMinDimensions();
+			var panelDimens = panel.GetDrawnDimensions();
+			var tabDimens = tabLabel.GetDrawnDimensions();
 			var newUIControlHeight = tabDimens.y + panelDimens.y;
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newUIControlHeight);
 
@@ -517,9 +525,9 @@ namespace AtomosZ.UI
 				var labelMinSize = tabControlData.titleBarMinSize;
 				labelMinSize.x -= tabControlData.titleTextMargin.x + tabControlData.titleTextMargin.z;
 				labelMinSize.y -= tabControlData.titleTextMargin.y + tabControlData.titleTextMargin.w;
-				tabPanel.tabLabel.minLabelDimensions = labelMinSize;
+				tabPanel.tabLabel.minDimensions = labelMinSize;
 
-				largestTabHeight = Mathf.Max(largestTabHeight, tabPanel.tabLabel.GetMinDimensions().y);
+				largestTabHeight = Mathf.Max(largestTabHeight, tabPanel.tabLabel.GetDrawnDimensions().y);
 
 				++i;
 			}
@@ -542,7 +550,7 @@ namespace AtomosZ.UI
 				if (i == selectedTabIndex)
 				{
 					panel.gameObject.SetActive(true);
-					var panelMinDimens = panel.GetMinDimensions();
+					var panelMinDimens = panel.GetDrawnDimensions();
 
 					newPanelWidth = panelMinDimens.x;
 
@@ -596,10 +604,10 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 			return GetComponent<RectTransform>().sizeDelta;
 			//UIPanel panel = SelectedPanel();
 			//GameObject tab = SelectedTab();

@@ -34,7 +34,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: -43.41}
-  m_SizeDelta: {x: 285.96, y: 0}
+  m_SizeDelta: {x: 275.96, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1446057733472547327
 GameObject:
@@ -73,7 +73,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 285.96, y: 86.41}
+  m_SizeDelta: {x: 275.96, y: 86.41}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4400289810483429264
 MonoBehaviour:
@@ -88,7 +88,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TabControl
   _referenceName: rootTabControl
-  _designObject: {fileID: 2560098995760729520}
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   tabPanels:
   - tabLabel: {fileID: 6361666675946949519}
     panel: {fileID: 4966230734555878253}
@@ -97,6 +99,7 @@ MonoBehaviour:
   tabItemPrefab: {fileID: 7330561272148096184, guid: 6c6e9b2b017284540a216890c7bf0be3, type: 3}
   panelPrefab: {fileID: 5821347800241209384, guid: 6a46ce684b853da42969c871a2750070, type: 3}
   panelsTransform: {fileID: 7525724327870039334}
+  _minDimensions: {x: 0, y: 0}
 --- !u!114 &2560098995760729520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,7 +114,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
@@ -150,7 +152,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 285.96, y: 54.41}
+  m_SizeDelta: {x: 275.96, y: 54.41}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8816971246287878466
 MonoBehaviour:
@@ -303,9 +305,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 609c63b92ee8b3e44b9dee1c7b856bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPanel
-  panelData: {fileID: 0}
   _referenceName: panel_00
-  _designObject: {fileID: 4744660158183157174}
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
+  panelData: {fileID: 0}
   _sprite: {fileID: 21300000, guid: 8d2a9c7a5c887bf45b947d6445d62561, type: 3}
   _layoutPadding:
     m_Left: 32
@@ -317,7 +321,6 @@ MonoBehaviour:
   _minDimensions: {x: 0, y: 0}
   tabLabel: {fileID: 6361666675946949519}
   uiControls: []
-  rect: {fileID: 7316720326687756132}
   minDim: {x: 64, y: 32}
 --- !u!114 &4744660158183157174
 MonoBehaviour:
@@ -333,7 +336,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
@@ -451,6 +453,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44db41ee97a257499dd5427cbb63bc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MagicWindow
+  _referenceName: magicWindow_00
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   windowStyle: 2
   windowStyleDatas:
     keys: 000000000200000001000000
@@ -458,8 +464,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 6ad28b677fe12a3458672ec0448d5ca0, type: 2}
     - {fileID: 11400000, guid: 790f7b4bb9b710b49911cc030f5756f2, type: 2}
     - {fileID: 11400000, guid: 0027f5f71500d714f8d2ed0bfb2b42d4, type: 2}
-  _referenceName: magicWindow_00
-  _designObject: {fileID: 4508516794867129895}
   rootTabControl: {fileID: 4400289810483429264}
   panelScriptObj: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
   horizontalPanelScriptObj: {fileID: 11400000, guid: ce1eba15204d2244a8afb65cdc2be026, type: 2}
@@ -474,9 +478,11 @@ MonoBehaviour:
   result: 0
   isDragging: 0
   _showCloseButton: 0
+  isModal: 0
   modalClickBlocker: {fileID: 0}
   currentType: 0
   cursors: {fileID: 0}
+  _minDimensions: {x: 0, y: 0}
 --- !u!114 &4508516794867129895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,7 +497,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
   isMoveable: 0
   isModal: 0
-  isSelectable: 1
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
@@ -535,7 +540,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 285.96, y: 54.41}
+  m_SizeDelta: {x: 275.96, y: 54.41}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6361666675946949519
 MonoBehaviour:
@@ -549,22 +554,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabel
+  _referenceName: titlebar
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   labelData: {fileID: 0}
   textLabel: {fileID: 8816971246287878466}
   image: {fileID: 7202355980860598498}
-  _designObject: {fileID: 4198941472097476559}
-  _referenceName: titlebar
-  _interactable: 1
   _text: Magic Window
   _color: {r: 0, g: 0, b: 0, a: 1}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 36
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 514
   _margin: {x: 12, y: 8, z: 12, w: 4}
-  _minLabelDimensions: {x: 54.41, y: 32}
-  _maxLabelDimensions: {x: 1025, y: 256}
+  _minDimensions: {x: 64, y: 10}
+  _maxDimensions: {x: 1025, y: 256}
 --- !u!114 &6888745483806320589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -577,6 +582,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abe9b77780cd6634091d0e8fe0464eec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: 
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
 --- !u!114 &7454371189811727880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -668,7 +677,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []

@@ -163,8 +163,8 @@ namespace AtomosZ
 				if (!Application.isPlaying)
 				{
 					var t = prefab.GetType();
-					var allObjects = ObjectForge.instance.sleepingPooledObjects.GetComponentsInChildren(t, true);
-					foreach (T objOfType in allObjects)
+					var allObjectsOfType = ObjectForge.instance.sleepingPooledObjects.GetComponentsInChildren(t, true);
+					foreach (T objOfType in allObjectsOfType)
 					{
 						Return(objOfType);
 					}
@@ -247,6 +247,11 @@ namespace AtomosZ
 				// I think adding it to the pool now should not be a problem.
 
 				pool.Add(sleepObject);
+
+#if UNITY_EDITOR
+				var allObjects = ObjectForge.instance.sleepingPooledObjects.GetComponentsInChildren<MonoBehaviour>(true);
+				ObjectForge.instance.sleepingPooledObjects.name = $"ObjectPool ({allObjects.Length})";
+#endif
 			}
 
 

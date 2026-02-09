@@ -44,6 +44,19 @@ namespace AtomosZ.UI
 			set { _interactable = label.interactable = button.interactable = value; }
 		}
 
+		[SerializeField] private Vector2 _minDimensions;
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions; }
+			set
+			{
+				_minDimensions = value;
+				this.SetDirty();
+			}
+		}
+
+		public Vector2 maxDimensions { get; set; }
+
 		public ScriptableObject GetBackingData()
 		{
 			throw new System.NotImplementedException();
@@ -56,7 +69,7 @@ namespace AtomosZ.UI
 			return null;
 		}
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			return rect.sizeDelta;
 		}
@@ -66,7 +79,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			throw new System.NotImplementedException();
 		}

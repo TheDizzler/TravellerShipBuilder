@@ -19,16 +19,30 @@ namespace AtomosZ.UI
 		[SerializeField] public TextMeshProUGUI placeholderText;
 		[SerializeField] public TextMeshProUGUI text;
 
-		[SerializeField] private Vector2 _minDimen = new Vector2(64, 32);
+		[SerializeField] private Vector2 _minInputFieldDimensions = new Vector2(64, 32);
 		public Vector2 minInputFieldDimensions
 		{
-			get { return _minDimen; }
+			get { return _minInputFieldDimensions; }
 			set
 			{
-				_minDimen = value;
+				_minInputFieldDimensions = value;
 				this.SetDirty();
 			}
 		}
+
+		[SerializeField] private Vector2 _minDimensions;
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions; }
+			set
+			{
+				_minDimensions = value;
+				this.SetDirty();
+			}
+		}
+
+		public Vector2 maxDimensions { get; set; }
+
 
 		[SerializeField] private int _minValue = int.MinValue;
 		public int minValue
@@ -186,16 +200,16 @@ namespace AtomosZ.UI
 		/// <param name="backingData"></param>
 		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			UpdateBackingData();
+			RecalculateDimensions();
 		}
 
 		void Update()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			// calculate min dimension for input field give max&min
 			text.ForceMeshUpdate(false, true);
@@ -208,10 +222,10 @@ namespace AtomosZ.UI
 			maxSize.x += -textAreaRect.offsetMax.x + textAreaRect.offsetMin.x;
 			maxSize.y += -textAreaRect.offsetMax.y + textAreaRect.offsetMin.y;
 
-			if (maxSize.x < _minDimen.x)
-				maxSize.x = _minDimen.x;
-			if (maxSize.y < _minDimen.y)
-				maxSize.y = _minDimen.y;
+			if (maxSize.x < _minInputFieldDimensions.x)
+				maxSize.x = _minInputFieldDimensions.x;
+			if (maxSize.y < _minInputFieldDimensions.y)
+				maxSize.y = _minInputFieldDimensions.y;
 			var inputRect = inputField.GetComponent<RectTransform>();
 			inputRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, maxSize.x);
 			inputRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, maxSize.y);
@@ -223,7 +237,8 @@ namespace AtomosZ.UI
 			totalDimens.x += buttonRect.sizeDelta.x * 2 + inputRect.sizeDelta.x;
 			totalDimens.y = Mathf.Max(buttonRect.sizeDelta.y, inputRect.sizeDelta.y);
 
-
+			totalDimens.x = Mathf.Max(_minDimensions.x, totalDimens.x);
+			totalDimens.y = Mathf.Max(_minDimensions.y, totalDimens.y);
 			baseRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, totalDimens.x);
 			baseRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, totalDimens.y);
 
@@ -235,10 +250,10 @@ namespace AtomosZ.UI
 		}
 
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 			return baseRect.sizeDelta;
 		}
 

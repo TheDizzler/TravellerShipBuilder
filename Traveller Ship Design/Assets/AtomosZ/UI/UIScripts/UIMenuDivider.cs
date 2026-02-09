@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
@@ -7,6 +8,11 @@ namespace AtomosZ.UI
 	{
 		public UIControlType dataType { get { return UIControlType.MenuDivider; } }
 		public bool interactable { get; set; }
+
+		public Vector2 minDimensions { get; set; }
+		public Vector2 maxDimensions { get; set; }
+
+		public LayoutElement layout;
 
 		public ScriptableObject GetBackingData()
 		{
@@ -20,7 +26,7 @@ namespace AtomosZ.UI
 			return null;
 		}
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			return rect.sizeDelta;
 		}
@@ -30,7 +36,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			throw new System.NotImplementedException();
 		}

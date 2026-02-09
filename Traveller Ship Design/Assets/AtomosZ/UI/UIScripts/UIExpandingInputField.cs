@@ -149,16 +149,6 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[SerializeField] private bool _fillParentHorizontal = false;
-		public bool fillParentHorizontal
-		{
-			get { return _fillParentHorizontal; }
-			set
-			{
-				_fillParentHorizontal = value;
-				this.SetDirty();
-			}
-		}
 
 		[SerializeField] private Vector2 _minDimensions = new Vector2(64, 10);
 		public Vector2 minDimensions
@@ -198,7 +188,7 @@ namespace AtomosZ.UI
 					value.y = 5;
 				_maxDimensions = value;
 				value.x -= verticalTextAreaOffsets;
-				textLabel.maxLabelDimensions = value;
+				textLabel.maxDimensions = value;
 				this.SetDirty();
 			}
 		}
@@ -295,13 +285,13 @@ namespace AtomosZ.UI
 		void Update()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			placeholderLabel.ForceMeshUpdate();
-			textLabel.UpdateBackingData();
+			textLabel.RecalculateDimensions();
 
 			var rect = GetComponent<RectTransform>();
 			var layoutElement = GetComponent<LayoutElement>();
@@ -341,10 +331,10 @@ namespace AtomosZ.UI
 		}
 
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 			var rect = GetComponent<RectTransform>();
 			return rect.sizeDelta;
 		}

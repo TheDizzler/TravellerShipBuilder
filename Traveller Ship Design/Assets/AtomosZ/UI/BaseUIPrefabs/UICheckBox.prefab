@@ -85,7 +85,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3849094672880733284}
   - component: {fileID: 24937739969009248}
-  - component: {fileID: -1038418384538945441}
   - component: {fileID: 4613445078176205474}
   - component: {fileID: 4332647557573541685}
   m_Layer: 5
@@ -128,14 +127,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0729e869ffa9ac43bded5cdf7e217e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: checkbox
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   checkBoxData: {fileID: 11400000, guid: b07b814d0d2387741a590f0e97184b34, type: 2}
   backgroundRect: {fileID: 377748177167822696}
   boxImage: {fileID: 4751154145943114303}
   checkImage: {fileID: 4927640585714093458}
   textLabel: {fileID: 7618200045658159183}
   toggle: {fileID: 4613445078176205474}
-  _referenceName: checkbox
-  _interactable: 1
+  _minDimensions: {x: 0, y: 0}
   _text: CheckBoxxxxx2222
   _fontColor: {r: 0, g: 0, b: 0, a: 1}
   _disabledFontColor: {r: 0.408805, g: 0.408805, b: 0.408805, a: 1}
@@ -149,27 +151,6 @@ MonoBehaviour:
       m_Calls: []
   _boxSprite: {fileID: 21300000, guid: 8ec9c06b7b6fd4444a7053837c8c5470, type: 3}
   _checkSprite: {fileID: 21300000, guid: 29e51e76a182a2247998fdb43e627a3e, type: 3}
---- !u!114 &-1038418384538945441
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2389516391876734822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 1
-  tooltip: []
 --- !u!114 &4613445078176205474
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -75,58 +75,5 @@ namespace AtomosZ.UI
 				|| hasUpdatableBackingData)
 				throw new Exception("UIDesignObject MUST have a IUIBehavior if any options are enabled!");
 		}
-
-
-		public Vector2 GetMinDimensions()
-		{
-			if (hasCustomDimensions)
-			{
-				if (uiBehavior == null)
-					SearchForDesignObject();
-				return uiBehavior.GetMinDimensions();
-			}
-
-			return GetComponent<RectTransform>().sizeDelta;
-		}
-
-
-		public ScriptableObject GetBackingData()
-		{
-			if (hasUpdatableBackingData)
-			{
-				if (uiBehavior == null)
-					SearchForDesignObject();
-				return uiBehavior.GetBackingData();
-			}
-
-			return null;
-		}
-
-		public void UpdateBackingData()
-		{
-			if (hasUpdatableBackingData)
-			{
-				if (uiBehavior == null)
-					SearchForDesignObject();
-				uiBehavior.UpdateBackingData();
-			}
-		}
-
-		public void UpdateBackingData(ScriptableObject backingData)
-		{
-			if (hasUpdatableBackingData)
-			{
-				if (uiBehavior == null)
-					SearchForDesignObject();
-				uiBehavior.UpdateBackingData(backingData);
-			}
-		}
-
-		public IUIBehavior GetUIBehavior()
-		{
-			if (uiBehavior == null)
-				SearchForDesignObject();
-			return uiBehavior;
-		}
 	}
 }

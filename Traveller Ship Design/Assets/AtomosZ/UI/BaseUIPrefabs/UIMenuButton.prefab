@@ -147,7 +147,6 @@ GameObject:
   - component: {fileID: 414486777796183355}
   - component: {fileID: 7781875202460886259}
   - component: {fileID: 7123490620038347527}
-  - component: {fileID: 5761179207979531042}
   - component: {fileID: 3171321435051314732}
   - component: {fileID: 7490356970785544225}
   m_Layer: 5
@@ -175,7 +174,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 435.94, y: 42.41}
+  m_SizeDelta: {x: 425.94, y: 42.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7781875202460886259
 MonoBehaviour:
@@ -191,8 +190,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIMenuButton
   _referenceName: menuButton
   _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   label: {fileID: 7123490620038347527}
   button: {fileID: 3171321435051314732}
+  _minDimensions: {x: 0, y: 0}
 --- !u!114 &7123490620038347527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,37 +209,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: 
   _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   labelData: {fileID: 0}
   textLabel: {fileID: 2099621496068818944}
   image: {fileID: 0}
-  _designObject: {fileID: 0}
   _text: Context Menu Control #1
   _color: {r: 0, g: 0, b: 0, a: 0}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 0
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 0
   _margin: {x: 0, y: 0, z: 0, w: 0}
-  _minLabelDimensions: {x: 64, y: 10}
-  _maxLabelDimensions: {x: 1025, y: 256}
---- !u!114 &5761179207979531042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4347121808040595726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isMoveable: 0
-  isModal: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 0
-  tooltip: []
+  _minDimensions: {x: 64, y: 10}
+  _maxDimensions: {x: 1025, y: 256}
 --- !u!114 &3171321435051314732
 MonoBehaviour:
   m_ObjectHideFlags: 0

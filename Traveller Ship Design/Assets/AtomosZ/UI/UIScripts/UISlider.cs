@@ -292,22 +292,6 @@ namespace AtomosZ.UI
 		}
 
 
-		[SerializeField] private bool _fillParentHorizontal;
-		public bool fillParentHorizontal
-		{
-			get { return _fillParentHorizontal; }
-			set
-			{
-				_fillParentHorizontal = value;
-				var layout = GetComponent<LayoutElement>();
-				if (_fillParentHorizontal)
-					layout.flexibleWidth = 1;
-				else
-					layout.flexibleWidth = 0;
-				this.SetDirty();
-			}
-		}
-
 		[Tooltip("Viewing for debugging")]
 		[SerializeField] internal Vector2 size = Vector2.zero;
 
@@ -355,12 +339,18 @@ namespace AtomosZ.UI
 		void Update()
 		{
 			if (isDirty || lastWidth != rectTransform.sizeDelta.x)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
 		private float lastWidth = -1;
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
+			var layout = GetComponent<LayoutElement>();
+			if (fillParentHorizontal)
+				layout.flexibleWidth = 1;
+			else
+				layout.flexibleWidth = 0;
+
 			Canvas.ForceUpdateCanvases();
 			var slider = GetComponent<SliderCustom>();
 			slider.UpdateSlider();
@@ -377,10 +367,10 @@ namespace AtomosZ.UI
 			isDirty = false;
 		}
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty || lastWidth != rectTransform.sizeDelta.x)
-				UpdateBackingData();
+				RecalculateDimensions();
 			return rectTransform.sizeDelta;
 		}
 	}

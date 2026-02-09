@@ -48,6 +48,18 @@ namespace AtomosZ.UI
 			}
 		}
 
+		[SerializeField] private Vector2 _minDimensions;
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions; }
+			set
+			{
+				_minDimensions = value;
+				this.SetDirty();
+			}
+		}
+
+		public Vector2 maxDimensions { get; set; }
 
 		[SerializeField] private string _text = "CheckBox";
 		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
@@ -107,10 +119,10 @@ namespace AtomosZ.UI
 		[SerializeField] private Vector2 _minLabelDimensions = new Vector2(64, 10);
 		public Vector2 minLabelDimensions
 		{
-			get { return _minLabelDimensions = textLabel.minLabelDimensions; }
+			get { return _minLabelDimensions = textLabel.minDimensions; }
 			set
 			{
-				_minLabelDimensions = textLabel.minLabelDimensions = value;
+				_minLabelDimensions = textLabel.minDimensions = value;
 				// textLabel will set this to dirty if needed.
 			}
 		}
@@ -121,10 +133,10 @@ namespace AtomosZ.UI
 		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
 		public Vector2 maxLabelDimensions
 		{
-			get { return _maxLabelDimensions = textLabel.maxLabelDimensions; }
+			get { return _maxLabelDimensions = textLabel.maxDimensions; }
 			set
 			{
-				_maxLabelDimensions = textLabel.maxLabelDimensions = value;
+				_maxLabelDimensions = textLabel.maxDimensions = value;
 				// textLabel will set this to dirty if needed.
 			}
 		}
@@ -196,12 +208,12 @@ namespace AtomosZ.UI
 		void Update()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
 		public void UpdateBackingData(UICheckBoxScriptableObject backingData)
 		{
-			
+
 		}
 
 		public void UpdateBackingData(ScriptableObject backingData)
@@ -223,9 +235,9 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
-			var minDim = textLabel.GetMinDimensions();
+			var minDim = textLabel.GetDrawnDimensions();
 			var layout = GetComponent<HorizontalLayoutGroup>();
 			var space = layout.spacing;
 			var imageDim = backgroundRect.sizeDelta;
@@ -240,10 +252,10 @@ namespace AtomosZ.UI
 		}
 
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 			return GetComponent<RectTransform>().sizeDelta;
 		}
 	}

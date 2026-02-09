@@ -9,7 +9,7 @@ using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
+	[ExecuteInEditMode]
 	public class UIExpandingLabel : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Text; } }
@@ -103,6 +103,8 @@ namespace AtomosZ.UI
 			get { return textLabel.fontSizeMin; }
 			set
 			{
+				if (textLabel.fontSizeMin == value)
+					return;
 				textLabel.fontSizeMin = value;
 				this.SetDirty();
 			}
@@ -113,6 +115,8 @@ namespace AtomosZ.UI
 			get { return textLabel.fontSizeMax; }
 			set
 			{
+				if (textLabel.fontSizeMax == value)
+					return;
 				textLabel.fontSizeMax = value;
 				this.SetDirty();
 			}
@@ -232,49 +236,122 @@ namespace AtomosZ.UI
 			}
 		}
 
+		//		public new bool fillParentHorizontal
+		//		{
+		//			get { return _fillParentHorizontal; }
+		//			set
+		//			{
+		//#if UNITY_EDITOR
+		//				if (transform.parent == null)
+		//				{
+		//					_fillParentHorizontal = false;
+		//					return;
+		//				}
+		//#endif
+		//				_fillParentHorizontal = value;
+		//				var parentSize = transform.parent.GetComponent<RectTransform>().sizeDelta;
+		//				_minDimensions = new Vector2(parentSize.x, _minDimensions.y);
+		//				_maxDimensions = new Vector2(parentSize.x, _maxDimensions.y);
+		//				this.SetDirty();
+		//			}
+		//		}
 
-		public bool fitToParent;
+		//		public new bool fillParentVertical
+		//		{
+		//			get { return _fillParentVertical; }
+		//			set
+		//			{
+		//#if UNITY_EDITOR
+		//				if (transform.parent == null)
+		//				{
+		//					_fillParentVertical = false;
+		//					return;
+		//				}
+		//#endif
+		//				_fillParentVertical = value;
+		//				var parentSize = transform.parent.GetComponent<RectTransform>().sizeDelta;
+		//				_minDimensions = new Vector2(_minDimensions.x, parentSize.y);
+		//				_maxDimensions = new Vector2(_maxDimensions.x, parentSize.y);
+		//				this.SetDirty();
+		//			}
+		//		}
 
-		[SerializeField] private Vector2 _minLabelDimensions = new Vector2(64, 10);
-		public Vector2 minLabelDimensions
+		[SerializeField] private Vector2 _minDimensions = new Vector2(64, 10);
+		[Tooltip("NOTE: this is the min dimensions of the text ONLY, not any image that it may be attached to.")]
+		public Vector2 minDimensions
 		{
-			get { return _minLabelDimensions; }
+			get { return _minDimensions; }
 			set
 			{
-				if (value.x > maxLabelDimensions.x)
-					value.x = maxLabelDimensions.x;
-				if (value.y > maxLabelDimensions.y)
-					value.y = maxLabelDimensions.y;
-				if (value.x < 5)
-					value.x = 5;
-				if (value.y < 5)
-					value.y = 5;
-				_minLabelDimensions = value;
+				if (_fillParentHorizontal)
+				{
+#if UNITY_EDITOR
+					if (transform.parent == null)
+					{
+						_fillParentHorizontal = false;
+						return;
+					}
+#endif
+					var parentSize = transform.parent.GetComponent<RectTransform>().sizeDelta;
+					_minDimensions = new Vector2(parentSize.x, _minDimensions.y);
+					_maxDimensions = new Vector2(parentSize.x, _maxDimensions.y);
+				}
+				else
+				{
+					if (value.x > maxDimensions.x)
+						value.x = maxDimensions.x;
+					if (value.y > maxDimensions.y)
+						value.y = maxDimensions.y;
+					if (value.x < 5)
+						value.x = 5;
+					if (value.y < 5)
+						value.y = 5;
+					_minDimensions = value;
+				}
+
 				this.SetDirty();
 			}
 		}
 
 
 		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
-		[SerializeField] private Vector2 _maxLabelDimensions = new Vector2(1025, 256);
+		[SerializeField] private Vector2 _maxDimensions = new Vector2(1025, 256);
 		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
-		public Vector2 maxLabelDimensions
+		public Vector2 maxDimensions
 		{
-			get { return _maxLabelDimensions; }
+			get { return _maxDimensions; }
 			set
 			{
-				if (value.x < minLabelDimensions.x)
-					value.x = minLabelDimensions.x;
-				if (value.y < minLabelDimensions.y)
-					value.y = minLabelDimensions.y;
-				if (value.x < 5)
-					value.x = 5;
-				if (value.y < 5)
-					value.y = 5;
-				_maxLabelDimensions = value;
+				if (_fillParentVertical)
+				{
+#if UNITY_EDITOR
+					if (transform.parent == null)
+					{
+						_fillParentVertical = false;
+						return;
+					}
+#endif
+					var parentSize = transform.parent.GetComponent<RectTransform>().sizeDelta;
+					_minDimensions = new Vector2(_minDimensions.x, parentSize.y);
+					_maxDimensions = new Vector2(_maxDimensions.y, parentSize.y);
+				}
+				else
+				{
+					if (value.x < minDimensions.x)
+						value.x = minDimensions.x;
+					if (value.y < minDimensions.y)
+						value.y = minDimensions.y;
+					if (value.x < 5)
+						value.x = 5;
+					if (value.y < 5)
+						value.y = 5;
+					_maxDimensions = value;
+				}
+
 				this.SetDirty();
 			}
 		}
+
 
 
 		/// <summary>
@@ -285,18 +362,18 @@ namespace AtomosZ.UI
 		/// <param name="newWidth"></param>
 		public void SetWidth(float newWidth)
 		{
-			var labelDims = minLabelDimensions;
+			var labelDims = minDimensions;
 			if (labelDims.x > newWidth)
 			{
 				labelDims.x = newWidth;
-				minLabelDimensions = labelDims;
+				minDimensions = labelDims;
 			}
 
-			labelDims = maxLabelDimensions;
+			labelDims = maxDimensions;
 			if (labelDims.x < newWidth)
 			{
 				labelDims.x = newWidth;
-				maxLabelDimensions = labelDims;
+				maxDimensions = labelDims;
 			}
 
 			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
@@ -310,18 +387,18 @@ namespace AtomosZ.UI
 		/// <param name="newHeight"></param>
 		public void SetHeight(float newHeight)
 		{
-			var newDims = minLabelDimensions;
+			var newDims = minDimensions;
 			if (newDims.y > newHeight)
 			{
 				newDims.y = newHeight;
-				minLabelDimensions = newDims;
+				minDimensions = newDims;
 			}
 
-			newDims = maxLabelDimensions;
+			newDims = maxDimensions;
 			if (newDims.y < newHeight)
 			{
 				newDims.y = newHeight;
-				minLabelDimensions = newDims;
+				minDimensions = newDims;
 			}
 
 			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
@@ -343,7 +420,10 @@ namespace AtomosZ.UI
 			fontStyles = _fontStyles;
 			alignmentOptions = _alignmentOptions;
 			margin = _margin;
-			UpdateBackingData();
+			fillParentHorizontal = _fillParentHorizontal;
+			fillParentVertical = _fillParentVertical;
+
+			RecalculateDimensions();
 		}
 
 		[Conditional("UNITY_EDITOR")]
@@ -369,7 +449,8 @@ namespace AtomosZ.UI
 		public override void ReturnToPool()
 		{
 			autoSizeFont = false;
-			fitToParent = false;
+			fillParentHorizontal = false;
+			fillParentVertical = false;
 			image = null;
 			color = Color.black;
 			fontAsset = null;
@@ -378,6 +459,7 @@ namespace AtomosZ.UI
 
 			base.ReturnToPool();
 		}
+
 		public ScriptableObject GetBackingData()
 		{
 			return labelData;
@@ -404,15 +486,15 @@ namespace AtomosZ.UI
 		void Update()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			textLabel.ForceMeshUpdate(false, true);
 
-			if (fitToParent)
+			if (fillParentHorizontal && fillParentVertical)
 			{
 				var parent = transform.parent.GetComponent<UIMonoBehaviour>();
 				rect.sizeDelta = parent.rect.sizeDelta;
@@ -420,20 +502,15 @@ namespace AtomosZ.UI
 				return;
 			}
 
-
-			//if (name == "UIExpandingText (TMP)")
-			//	name = name;
-
-			//var rect = textLabel.transform.GetComponent<RectTransform>();
-
 			var prefTextSize = textLabel.GetPreferredValues(text);
 			var singleLineTextHeight = prefTextSize.y; // this is the height of a single line, assuming no linefeed
 			var singleLineTextWidth = prefTextSize.x; // this is the width if the text was on a single line
 
-			var actualMaxWidth = maxLabelDimensions.x - (margin.x + margin.z);
-			var actualMaxHeight = maxLabelDimensions.y - (margin.y + margin.w);
-			var newWidth = Mathf.Max(5, minLabelDimensions.x - (margin.x + margin.z));
-			var newHeight = Mathf.Max(5, minLabelDimensions.y - (margin.y + margin.w));
+
+			var actualMaxWidth = maxDimensions.x - (margin.x + margin.z);
+			var actualMaxHeight = maxDimensions.y - (margin.y + margin.w);
+			var newWidth = Mathf.Max(5, minDimensions.x - (margin.x + margin.z));
+			var newHeight = Mathf.Max(5, minDimensions.y - (margin.y + margin.w));
 			if (singleLineTextWidth <= actualMaxWidth)
 			{
 				newWidth = Mathf.Max(newWidth, singleLineTextWidth);
@@ -462,40 +539,11 @@ namespace AtomosZ.UI
 
 				if (newHeight <= singleLineTextHeight)
 				{
-					//int nextCharIndex = 0;
-					//bool moreChars = true;
-					//string growString = textLabel.text[nextCharIndex] + "";
-					//while (moreChars)
-					//{
-					//	var growStringValues = textLabel.GetPreferredValues(growString, actualMaxWidth, 0);
-					//	while (growStringValues.x < actualMaxWidth)
-					//	{
-					//		if (nextCharIndex >= textLabel.text.Length - 1)
-					//		{
-					//			break;
-					//		}
-
-					//		growString += textLabel.text[++nextCharIndex] + "";
-					//		growStringValues = textLabel.GetPreferredValues(growString, actualMaxWidth, 0);
-					//	}
-
-					//	if (nextCharIndex >= textLabel.text.Length - 1)
-					//		break;
-					//	growString = growString.Insert(nextCharIndex, System.Environment.NewLine);
-
-					//	if (nextCharIndex > 100000)
-					//		break;
-
-					//}
-
-					//text = growString;
-
-
-					Debug.LogWarning("what the hell???");
+					Debug.LogWarning("If this happening, then container is probably too small for the text. If that's not the case....PANIC!");
 				}
 			}
 
-			newWidth += 10;
+			//newWidth += 10;
 			if (image != null)
 			{
 				var imageLabelSize = new Vector2(newWidth, newHeight);
@@ -514,10 +562,10 @@ namespace AtomosZ.UI
 
 
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 
 			return textLabel.rectTransform.sizeDelta;
 		}

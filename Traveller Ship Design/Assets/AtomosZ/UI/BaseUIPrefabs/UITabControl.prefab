@@ -69,8 +69,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abe9b77780cd6634091d0e8fe0464eec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panel: {fileID: 0}
-  panelRect: {fileID: 0}
+  _referenceName: 
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
 --- !u!114 &5903272807644409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83,22 +85,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabel
+  _referenceName: tab_00
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   labelData: {fileID: 0}
   textLabel: {fileID: 5173254359219320061}
   image: {fileID: 4218109932728982835}
-  _designObject: {fileID: 3032698706458115880}
-  _referenceName: tab_00
-  _interactable: 1
   _text: TabItem_00
   _color: {r: 1, g: 0, b: 0, a: 1}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 36
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 514
   _margin: {x: 12, y: 8, z: 46, w: 16}
-  _minLabelDimensions: {x: 6, y: 40}
-  _maxLabelDimensions: {x: 1025, y: 256}
+  _minDimensions: {x: 6, y: 40}
+  _maxDimensions: {x: 1025, y: 256}
 --- !u!114 &6190012053124711725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,12 +202,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
@@ -280,7 +278,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 10.794998}
   m_SizeDelta: {x: 261.91998, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6802176632660099937
@@ -471,9 +469,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 609c63b92ee8b3e44b9dee1c7b856bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPanel
-  panelData: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
   _referenceName: panel_00
-  _designObject: {fileID: 1739579125012481604}
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
+  panelData: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
   _sprite: {fileID: 21300000, guid: 8d2a9c7a5c887bf45b947d6445d62561, type: 3}
   _layoutPadding:
     m_Left: 32
@@ -485,7 +485,7 @@ MonoBehaviour:
   _minDimensions: {x: 96, y: 64}
   tabLabel: {fileID: 5903272807644409}
   uiControls: []
-  rect: {fileID: 6504397689124944063}
+  minDim: {x: 64, y: 64}
 --- !u!114 &1739579125012481604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -498,12 +498,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 1
   tooltip: []
@@ -581,7 +577,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1584388010940848954}
   - component: {fileID: 4227826753104343404}
-  - component: {fileID: 974002178803776813}
   m_Layer: 5
   m_Name: UITabControl
   m_TagString: Untagged
@@ -623,7 +618,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TabControl
   _referenceName: tabControl
-  _designObject: {fileID: 974002178803776813}
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   tabPanels:
   - tabLabel: {fileID: 5903272807644409}
     panel: {fileID: 3268617321723321184}
@@ -632,24 +629,4 @@ MonoBehaviour:
   tabItemPrefab: {fileID: 7330561272148096184, guid: 9e1419143d4c4d049b64bd10b16201e5, type: 3}
   panelPrefab: {fileID: 5821347800241209384, guid: 6a46ce684b853da42969c871a2750070, type: 3}
   panelsTransform: {fileID: 3996579989143371206}
---- !u!114 &974002178803776813
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8766142843371981667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 0
-  tooltip: []
+  _minDimensions: {x: 0, y: 0}

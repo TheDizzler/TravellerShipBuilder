@@ -31,7 +31,6 @@ namespace AtomosZ.UI
 			Button,
 			MenuButton,
 			MenuDivider,
-			VerticalDivider,
 			ExpandingLabel,
 			InputField,
 			ButtonPanel,

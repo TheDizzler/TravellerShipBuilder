@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8386187384837662049}
   - component: {fileID: 6023651199371198233}
-  - component: {fileID: 5244242127661738069}
   - component: {fileID: 3385879847874351131}
   - component: {fileID: 8124556399261973386}
   m_Layer: 5
@@ -53,23 +52,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: modalClickBlocker
   _interactable: 0
---- !u!114 &5244242127661738069
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3912343033089499237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isMoveable: 0
-  isModal: 0
-  hasCustomDimensions: 0
-  hasUpdatableBackingData: 0
-  tooltip: []
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
 --- !u!114 &3385879847874351131
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,6 +16,9 @@ namespace AtomosZ.UI
 			set { _interactable = value; }
 		}
 
+		public Vector2 minDimensions { get; set; }
+		public Vector2 maxDimensions { get; set; }
+
 		public UIMonoBehaviour GetControl(string controlRefName)
 		{
 			if (referenceName == controlRefName)
@@ -28,7 +31,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			return rect.sizeDelta;
 		}
@@ -38,7 +41,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			throw new System.NotImplementedException();
 		}

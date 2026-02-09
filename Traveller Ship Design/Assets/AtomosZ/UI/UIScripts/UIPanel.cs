@@ -116,6 +116,7 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public Vector2 maxDimensions { get; set; }
 
 		[Tooltip("The tab associated with this panel (if context menu, this tab will be inactive).")]
 		public UIExpandingLabel tabLabel;
@@ -172,11 +173,11 @@ namespace AtomosZ.UI
 		void Update()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
 		[SerializeField] private Vector2 minDim;
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			minDim = new Vector2(0, layoutPadding.top);
 			var vertLayout = GetComponent<VerticalLayoutGroup>();
@@ -197,7 +198,7 @@ namespace AtomosZ.UI
 						continue;
 
 					++activeChildren;
-					var childMinDim = child.iUIBehavior.GetMinDimensions();
+					var childMinDim = child.iUIBehavior.GetDrawnDimensions();
 					minDim.y += childMinDim.y;
 					minDim.x = Mathf.Max(minDim.x, childMinDim.x);
 				}
@@ -220,7 +221,7 @@ namespace AtomosZ.UI
 						continue;
 
 					++activeChildren;
-					var childMinDim = child.iUIBehavior.GetMinDimensions();
+					var childMinDim = child.iUIBehavior.GetDrawnDimensions();
 					minDim.x += childMinDim.x;
 					if (minDim.y < childMinDim.y)
 						minDim.y = childMinDim.y;
@@ -242,16 +243,10 @@ namespace AtomosZ.UI
 		}
 
 
-		public void RecalculateDimensions()
-		{
-			UpdateBackingData();
-		}
-
-
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 
 			return minDim;
 		}

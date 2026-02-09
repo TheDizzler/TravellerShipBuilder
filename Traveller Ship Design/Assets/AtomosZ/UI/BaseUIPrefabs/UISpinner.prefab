@@ -444,7 +444,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8556591651280235360}
   - component: {fileID: 5510448638398286670}
-  - component: {fileID: 4757135074788766894}
   - component: {fileID: 6356617554248680144}
   m_Layer: 5
   m_Name: UISpinner
@@ -485,45 +484,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d128770f88302be42bc7dee2ccf73be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UISpinner
-  _designObject: {fileID: 4757135074788766894}
   _referenceName: spinner
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   baseRect: {fileID: 8452378152979384316}
   leftButton: {fileID: 1235193089066278624}
   rightButton: {fileID: 1557797902595757912}
   inputField: {fileID: 9001186272795223577}
   placeholderText: {fileID: 3263253268650655812}
   text: {fileID: 766313760740194883}
-  _minDimen: {x: 64, y: 64}
+  _minInputFieldDimensions: {x: 64, y: 32}
+  _minDimensions: {x: 0, y: 0}
   _minValue: -1
   _maxValue: 100
   _value: -1
   _fontSize: 34.8
   _alignmentOptions: 514
-  _interactable: 1
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4757135074788766894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5135703248830815077}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 0
-  tooltip: []
 --- !u!222 &6356617554248680144
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -853,7 +833,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 80.869995, y: 64}
+  m_SizeDelta: {x: 80.869995, y: 63}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9001186272795223577
 MonoBehaviour:

@@ -773,6 +773,7 @@ namespace AtomosZ.UI.EditorZ
 					{
 						++EditorGUI.indentLevel;
 						uiControl.gameObject.SetActive(EditorGUILayout.Toggle("Is Visible", uiControl.gameObject.activeSelf));
+
 						switch (uiControl.iUIBehavior.dataType)
 						{
 							case UIControlType.TabControl:
@@ -915,6 +916,7 @@ namespace AtomosZ.UI.EditorZ
 				panel.layoutSpacing = spacingProp.floatValue;
 				panel.borderless = borderlessProp.boolValue;
 				lastSize = rect.sizeDelta;
+				panel.RecordPrefabInstances();
 			}
 
 			//EditorGUILayout.Vector2Field("debug size:", panel.GetMinDimensions());
@@ -1345,6 +1347,32 @@ namespace AtomosZ.UI.EditorZ
 		}
 	}
 
+
+
+	[CustomEditor(typeof(UIDataCell))]
+	public class UIDataCellEditor : EditorEx
+	{
+		private UIDataCell cell;
+
+		private void OnEnable()
+		{
+			cell = (UIDataCell)target;
+		}
+
+		public override void OnInspectorGUI()
+		{
+			EditorGUI.BeginChangeCheck();
+			base.OnInspectorGUI();
+
+			serializedObject.ApplyModifiedProperties();
+			if (EditorGUI.EndChangeCheck())
+			{
+				cell.UpdateBackingData_EDITOR();
+			}
+		}
+
+	}
+
 	[CustomEditor(typeof(UIDataRow))]
 	public class UIDataRowEditor : EditorEx
 	{
@@ -1372,21 +1400,27 @@ namespace AtomosZ.UI.EditorZ
 		{
 			EditorGUI.BeginChangeCheck();
 			base.OnInspectorGUI();
-			Property("_interactable");
 
 			for (int i = 0; i < row.cells.Length; ++i)
 			{
+				GUILayout.Box(GUIContent.none, GUILayout.Width(Screen.width), GUILayout.Height(2));
 				if (row.cells[i].control != null)
 				{
-					//BeginHorizontal();
-					//currentType = (UICellDataTypes)EditorGUILayout.EnumPopup("UI Control Type to add", currentType);
-					//EndHorizontal();
-
 					if (!foldOuts.TryGetValue(row.cells[i].control, out bool isFoldOut))
 						foldOuts.Add(row.cells[i].control, true);
+
+					EditorGUILayout.BeginHorizontal();
+					{
 					isFoldOut = this.CreateFoldout(ref isFoldOut,
 						$"Cell {i}: {row.cells[i].control.iUIBehavior.dataType} - {row.cells[i].control.referenceName}");
 					foldOuts[row.cells[i].control] = isFoldOut;
+						if (Button("Select"))
+						{
+							Selection.objects = new Object[] { row.cells[i].control.gameObject };
+						}
+					}
+					EditorGUILayout.EndHorizontal();
+
 					if (isFoldOut)
 					{
 						GUILayout.Box(GUIContent.none, GUILayout.Width(Screen.width), GUILayout.Height(2));
@@ -1477,13 +1511,28 @@ namespace AtomosZ.UI.EditorZ
 
 						GUILayout.Box(GUIContent.none, GUILayout.Width(Screen.width), GUILayout.Height(2));
 
+						GUILayout.BeginHorizontal();
+						GUILayout.FlexibleSpace();
+						GUIStyle delButtonStyle = new GUIStyle(GUI.skin.button);
+						delButtonStyle.normal.textColor = Color.red;
+						delButtonStyle.stretchWidth = false;
+						delButtonStyle.fontStyle = FontStyle.BoldAndItalic;
+						if (GUILayout.Button("Remove " + uiControl.referenceName + " from " + target.name, delButtonStyle))
+						{
+							foldOuts.Remove(row.cells[i].control);
+							row.RemoveControl(i);
+							EditorUtility.SetDirty(row);
+						}
+						GUILayout.EndHorizontal();
+						GUILayout.Box(GUIContent.none, GUILayout.Width(Screen.width), GUILayout.Height(2));
+
 						--indentLevel;
 					}
 				}
 				else
 				{
 					BeginHorizontal();
-					currentType = (UICellDataTypes)EditorGUILayout.EnumPopup("UI Control Type to add", currentType);
+					currentType = (UICellDataTypes)EditorGUILayout.EnumPopup($"Cell {i}: Select Control to add", currentType);
 
 
 					if (GUILayout.Button($"Add {currentType} to {row.cells[i].referenceName}"))
@@ -1497,7 +1546,6 @@ namespace AtomosZ.UI.EditorZ
 					}
 
 					EndHorizontal();
-					GUILayout.Box(GUIContent.none, GUILayout.Width(Screen.width), GUILayout.Height(2));
 				}
 			}
 
@@ -1513,21 +1561,64 @@ namespace AtomosZ.UI.EditorZ
 	public class UITableEditor : EditorEx
 	{
 		private UITable table;
+		private Editor dataRowEditor;
+		private bool isRowsFoldout;
+		private Dictionary<int, bool> rowFoldouts = new();
+
 		private void OnEnable()
 		{
 			table = (UITable)target;
 			table.RefreshControlsFormTransform_DEBUG();
 
-			var b = table.columnCount;
 			var d = table.headerHeight;
 		}
 
 		public override void OnInspectorGUI()
 		{
+			GUIStyle delButtonStyle = new GUIStyle(GUI.skin.button);
+			delButtonStyle.normal.textColor = Color.red;
+			delButtonStyle.stretchWidth = false;
+			delButtonStyle.fontStyle = FontStyle.BoldAndItalic;
+
 			EditorGUI.BeginChangeCheck();
 			if (Button("Create Header"))
-				table.ConstructHeaderRow();
+				table.CreateHeaderRow();
 			base.OnInspectorGUI();
+
+			this.CreateLabel($"Rows ({table.rows.Length})");
+			{
+				this.CreateBorder(2);
+				++indentLevel;
+				for (int i = 0; i < table.rows.Length; ++i)
+				{
+					var row = table.rows[i];
+
+					if (!rowFoldouts.TryGetValue(i, out bool isRowFoldout))
+					{
+						rowFoldouts.Add(i, true);
+						isRowFoldout = i == 0 ? true : false;
+					}
+
+					if (rowFoldouts[i] = this.CreateFoldout(ref isRowFoldout, $"Row {i}"))
+					{
+						++indentLevel;
+						Editor.CreateCachedEditor(row, typeof(UIDataRowEditor), ref dataRowEditor);
+						dataRowEditor.OnInspectorGUI();
+
+						if (GUILayout.Button("Remove " + row.referenceName + " from " + target.name, delButtonStyle))
+						{
+							table.RemoveRow(i);
+						}
+						--indentLevel;
+					}
+
+				}
+				--indentLevel;
+			}
+
+
+			if (Button("Add Row"))
+				table.AddRow();
 
 			serializedObject.ApplyModifiedProperties();
 			if (EditorGUI.EndChangeCheck())
@@ -1651,16 +1742,24 @@ namespace AtomosZ.UI.EditorZ
 	{
 		private UIDropdown dropdown;
 		private Editor dropboxDataEditor;
+		private SerializedProperty optionsProp;
+		private SerializedProperty arrowProp;
+		private SerializedProperty fontColorProp;
 
 		private void OnEnable()
 		{
 			dropdown = (UIDropdown)target;
 			var _ = dropdown.arrowSprite; // this is required to show the sprite in the editor properly
+
+			optionsProp = serializedObject.FindProperty("_options");
+			arrowProp = serializedObject.FindProperty("_arrowSprite");
+			fontColorProp = serializedObject.FindProperty("_fontColor");
 		}
 
 		public override void OnInspectorGUI()
 		{
 			EditorGUI.BeginChangeCheck();
+			base.OnInspectorGUI();
 
 			EditorGUILayout.PropertyField(serializedObject.FindProperty("arrow"));
 
@@ -1910,7 +2009,7 @@ namespace AtomosZ.UI.EditorZ
 			unitSpanProp = serializedObject.FindProperty("_unitSpan");
 
 			if (slider.transform.parent != null)
-				slider.UpdateBackingData();
+				slider.RecalculateDimensions();
 		}
 
 
@@ -2050,7 +2149,7 @@ namespace AtomosZ.UI.EditorZ
 			showUnitsProp.boolValue = sliderData.showUnits;
 			unitSpanProp.floatValue = sliderData.unitSpan;
 			EditorUtility.SetDirty(slider);
-			slider.UpdateBackingData();
+			slider.RecalculateDimensions();
 			slider.RecordPrefabInstances();
 
 		}
@@ -2060,7 +2159,7 @@ namespace AtomosZ.UI.EditorZ
 			var size = rect.sizeDelta;
 			if (size != lastSize)
 			{
-				slider.UpdateBackingData();
+				slider.RecalculateDimensions();
 				lastSize = size;
 			}
 		}
@@ -2190,7 +2289,7 @@ namespace AtomosZ.UI.EditorZ
 			var newValue = EditorGUILayout.IntField("Value", valueProp.intValue);
 
 
-			var minDimenProp = serializedObject.FindProperty("_minDimen");
+			var minDimenProp = serializedObject.FindProperty("_minDimensions");
 			EditorGUILayout.PropertyField(minDimenProp);
 
 			EditorGUILayout.PropertyField(serializedObject.FindProperty("onValueChanged"));
@@ -2293,13 +2392,11 @@ namespace AtomosZ.UI.EditorZ
 			if (label.autoSizeFont)
 			{
 				var orgWidth = EditorGUIUtility.labelWidth;
-				BeginHorizontal();
-				EditorGUIUtility.labelWidth = 77;
 				EditorGUILayout.LabelField("Auto size options");
-				EditorGUIUtility.labelWidth = 40;
+				++indentLevel;
 				label.fontSizeMin = EditorGUILayout.FloatField("min", label.fontSizeMin);
 				label.fontSizeMax = EditorGUILayout.FloatField("max", label.fontSizeMax);
-				EndHorizontal();
+				--indentLevel;
 
 				EditorGUIUtility.labelWidth = orgWidth;
 			}
@@ -2313,11 +2410,12 @@ namespace AtomosZ.UI.EditorZ
 
 			EditorGUILayout.PropertyField(marginProp);
 
-			var fit = this.Property("fitToParent").boolValue;
-			if (fit)
+			var fitHorz = this.Property("_fillParentHorizontal").boolValue;
+			var fitVert = this.Property("_fillParentVertical").boolValue;
+			if (fitHorz && fitVert)
 				GUI.enabled = false;
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("_minLabelDimensions"));
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("_maxLabelDimensions"));
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("_minDimensions"));
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("_maxDimensions"));
 			GUI.enabled = true;
 
 			EditorGUILayout.PropertyField(textLabel);
@@ -2366,7 +2464,7 @@ namespace AtomosZ.UI.EditorZ
 			disabledColorProp.colorValue = labelData.disabledColor;
 			marginProp.vector4Value = labelData.textMargin;
 			EditorUtility.SetDirty(label);
-			label.UpdateBackingData();
+			label.RecalculateDimensions();
 			label.RecordPrefabInstances();
 		}
 	}

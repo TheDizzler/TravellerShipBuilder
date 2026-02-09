@@ -45,13 +45,14 @@ namespace AtomosZ.UI
 		}
 
 
-		public UIDataCell[] cells;
+		[HideInInspector] public UIDataCell[] cells;
 
 		public UIDataCell this[int i]
 		{
 			get { return cells[i]; }
 		}
 
+		[HideInInspector]
 		[SerializeField] private HorizontalLayoutGroup _layout;
 		public HorizontalLayoutGroup layout
 		{
@@ -63,6 +64,7 @@ namespace AtomosZ.UI
 			}
 		}
 
+		[HideInInspector]
 		[SerializeField] private int _columnCount = 1;
 		public int columnCount
 		{
@@ -91,7 +93,7 @@ namespace AtomosZ.UI
 						newWidths[i] = 32;
 
 					if (newCtrls[i].control != null)
-						newCtrls[i].control.rect.sizeDelta = new Vector2(newWidths[i], _cellHeight);
+						newCtrls[i].control.rect.sizeDelta = new Vector2(newWidths[i], _minDimensions.y);
 					SetCellName(newCtrls[i], i);
 					newCtrls[i].gameObject.SetActive(true);
 				}
@@ -108,25 +110,27 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[Min(1)]
-		[SerializeField] private float _cellHeight;
-		public float cellHeight
+		public UIMenuDivider gridLine;
+
+		[SerializeField] private Vector2 _minDimensions;
+		public Vector2 minDimensions
 		{
-			get { return _cellHeight; }
+			get { return _minDimensions; }
 			set
 			{
-				_cellHeight = value;
+				_minDimensions = value;
 				for (int i = 0; i < columnCount; ++i)
 				{
-					cells[i].rect.sizeDelta = new Vector2(_cellWidths[i], _cellHeight);
-					if (cells[i].control != null)
-						cells[i].control.rect.sizeDelta = new Vector2(_cellWidths[i], _cellHeight);
+					cells[i].minDimensions = new Vector2(cellWidths[i], value.y);
 				}
 
 				this.SetDirty();
 			}
 		}
 
+		public Vector2 maxDimensions { get; set; }
+
+		[HideInInspector]
 		[SerializeField] private float[] _cellWidths;
 		internal float[] cellWidths
 		{
@@ -148,20 +152,11 @@ namespace AtomosZ.UI
 		public void SetCellWidth(int index, float newWidth)
 		{
 			_cellWidths[index] = newWidth;
-			//for (int i = 0; i < columnCount; ++i)
-			{
-				cells[index].rect.sizeDelta = new Vector2(_cellWidths[index], _cellHeight);
-				if (cells[index].control != null)
-					cells[index].control.rect.sizeDelta = new Vector2(_cellWidths[index], _cellHeight);
-			}
-
+			cells[index].minDimensions = new Vector2(_cellWidths[index], _minDimensions.y);
 			this.SetDirty();
 		}
 
-		public void Init(int startingColCount)
-		{
-			columnCount = startingColCount;
-		}
+
 
 		[System.Diagnostics.Conditional("UNITY_EDITOR")]
 		public void UpdateBackingData_EDITOR()
@@ -185,7 +180,7 @@ namespace AtomosZ.UI
 					cell.ReturnToPool();
 					continue;
 				}
-					
+
 				cells[cell.transform.GetSiblingIndex()] = cell;
 			}
 
@@ -210,7 +205,28 @@ namespace AtomosZ.UI
 			}
 
 			cellWidths = newWidths.ToArray();
-			cellHeight = _cellHeight;
+			minDimensions = _minDimensions;
+
+			CreateGridLine();
+		}
+
+		public void CreateGridLine()
+		{
+			gridLine = GetComponentInChildren<UIMenuDivider>();
+			if (gridLine == null)
+				gridLine = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.MenuDivider, transform);
+			gridLine.referenceName = referenceName + "_Row Divider";
+			gridLine.layout.enabled = true;
+			gridLine.layout.ignoreLayout = true;
+			gridLine.rect.rotation = Quaternion.Euler(0, 0, 0);
+			gridLine.rect.pivot = new Vector2(0, 0);
+			gridLine.rect.anchoredPosition = new Vector2(0, 0);
+		}
+
+		public void ShowGridLine(bool show)
+		{
+			gridLine.gameObject.SetActive(show);
+			this.SetDirty();
 		}
 
 		private void SetCellName(UIDataCell uIDataCell, int i)
@@ -236,13 +252,20 @@ namespace AtomosZ.UI
 			return null;
 		}
 
-		public UIMonoBehaviour SetControl(int i, UICellDataTypes controlType)
+		public UIMonoBehaviour SetControl(int cellIndex, UICellDataTypes controlType)
 		{
-			//if (i >= cells.Length)
-			//	columnCount = i;
-			cells[i].SetControl(controlType);
-			cells[i].control.rect.sizeDelta = new Vector2(_cellWidths[i], _cellHeight);
-			return cells[i].control;
+			cells[cellIndex].SetControl(controlType);
+			cells[cellIndex].control.rect.sizeDelta = new Vector2(_cellWidths[cellIndex], _minDimensions.y);
+			return cells[cellIndex].control;
+		}
+
+		/// <summary>
+		/// Removes and sends the control back to its pool.
+		/// </summary>
+		/// <param name="i"></param>
+		public void RemoveControl(int cellIndex)
+		{
+			cells[cellIndex].RemoveControl();
 		}
 
 
@@ -284,10 +307,10 @@ namespace AtomosZ.UI
 		void Update()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			float width = layout.padding.horizontal;
 			for (int i = 0; i < columnCount; ++i)
@@ -297,17 +320,41 @@ namespace AtomosZ.UI
 
 			width += layout.spacing * (columnCount - 1);
 
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, cellHeight);
+			var height = _minDimensions.y;
+			for (int i = 0; i < cells.Length; ++i)
+			{
+				var controlHeight = cells[i].GetDrawnDimensions().y;
+				height = Mathf.Max(height, controlHeight);
+			}
+
+
+			if (height != _minDimensions.y)
+			{   // set all height of cells in row to this height for consistency
+				for (int i = 0; i < cells.Length; ++i)
+				{
+					cells[i].rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+					cells[i].minDimensions = new Vector2(cellWidths[i], height);
+					cells[i].RecalculateDimensions();
+				}
+			}
+
+			if (gridLine.gameObject.activeSelf)
+			{
+				height = height + gridLine.rect.sizeDelta.y;
+				gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+			}
+
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
 
 			isDirty = false;
 		}
 
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 			return rect.sizeDelta;
 		}
 

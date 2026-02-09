@@ -31,22 +31,9 @@ namespace AtomosZ.UI
 		public bool interactable
 		{
 			get { return _interactable; }
-			set
-			{
-				_interactable = dropdown.interactable = value;
-			}
+			set { _interactable = dropdown.interactable = value; }
 		}
 
-		[SerializeField] private bool _fillParentHorizontal = false;
-		public bool fillParentHorizontal
-		{
-			get { return _fillParentHorizontal; }
-			set
-			{
-				_fillParentHorizontal = value;
-				this.SetDirty();
-			}
-		}
 
 		[SerializeField] private Vector2 _minDimensions = new Vector2(64, 10);
 		public Vector2 minDimensions
@@ -58,6 +45,8 @@ namespace AtomosZ.UI
 				this.SetDirty();
 			}
 		}
+
+		public Vector2 maxDimensions { get; set; }
 
 		[SerializeField] private Sprite _arrowSprite;
 		public Sprite arrowSprite
@@ -235,6 +224,21 @@ namespace AtomosZ.UI
 			}
 		}
 
+		[System.Diagnostics.Conditional("UNITY_EDITOR")]
+		public void UpdateBackingData_EDITOR()
+		{
+			referenceName = _referenceName;
+			interactable = _interactable;
+
+
+			optionsDelegate = _optionsDelegate;
+
+			minDimensions = _minDimensions;
+			fillParentHorizontal = _fillParentHorizontal;
+
+			isMultiSelect = _isMultiSelect ;
+		}
+
 		[Conditional("UNITY_EDITOR")]
 		public void UpdateOptionsDelegate()
 		{
@@ -288,13 +292,6 @@ namespace AtomosZ.UI
 		}
 
 
-
-		void Update()
-		{
-			if (isDirty)
-				UpdateBackingData();
-		}
-
 		public ScriptableObject GetBackingData()
 		{
 			return dropdownData;
@@ -317,7 +314,13 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public void UpdateBackingData()
+		void Update()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+		}
+
+		public void RecalculateDimensions()
 		{
 			var layout = GetComponent<LayoutElement>();
 			if (fillParentHorizontal)
@@ -325,18 +328,28 @@ namespace AtomosZ.UI
 			else
 				layout.flexibleWidth = -1;
 
+			var height = minDimensions.y;
 			float arrowWidth = 0;
 			if (arrow != null)
+			{
 				arrowWidth = arrow.rectTransform.sizeDelta.x;
+				height = Mathf.Max(height, arrowWidth);
+			}
+
 			var minWidth = minDimensions.x;
 			var textLabel = dropdown.captionText;
 			textLabel.ForceMeshUpdate(false, true);
-			var labelOffset = textLabel.margin.x + textLabel.margin.z + arrowWidth - textLabel.rectTransform.offsetMax.x;
+			var horzLabelOffset = textLabel.margin.x + textLabel.margin.z
+				+ arrowWidth - textLabel.rectTransform.offsetMax.x;
+			var vertLabelOffset = textLabel.margin.y + textLabel.margin.w;
 			foreach (var option in options)
 			{
 				var dimens = dropdown.captionText.GetPreferredValues(option.text);
-				minWidth = Mathf.Max(minWidth, dimens.x + labelOffset);
+				minWidth = Mathf.Max(minWidth, dimens.x + horzLabelOffset);
+				height = Mathf.Max(height, dimens.y + vertLabelOffset);
 			}
+
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 
 			layout.minWidth = minWidth;
 			layout.minHeight = minDimensions.y;
@@ -345,12 +358,11 @@ namespace AtomosZ.UI
 		}
 
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
-			var sDelta = GetComponent<RectTransform>().sizeDelta;
-			return sDelta;
+				RecalculateDimensions();
+			return GetComponent<RectTransform>().sizeDelta;
 		}
 	}
 }

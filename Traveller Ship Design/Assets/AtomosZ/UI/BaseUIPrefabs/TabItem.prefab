@@ -149,7 +149,6 @@ GameObject:
   - component: {fileID: 2781322499687730756}
   - component: {fileID: 6865870055718975944}
   - component: {fileID: 5345713545006296892}
-  - component: {fileID: 229116233281735944}
   - component: {fileID: 2426340941609388716}
   - component: {fileID: 3126946103031920126}
   m_Layer: 5
@@ -191,6 +190,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0820bacee9a077643a00fd49d32211fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  panel: {fileID: 0}
+  panelRect: {fileID: 0}
 --- !u!114 &2781322499687730756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,8 +204,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abe9b77780cd6634091d0e8fe0464eec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panel: {fileID: 0}
-  panelRect: {fileID: 0}
+  _referenceName: 
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
 --- !u!114 &6865870055718975944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,22 +220,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabel
+  _referenceName: 
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   labelData: {fileID: 0}
   textLabel: {fileID: 7298350520420406968}
   image: {fileID: 2426340941609388716}
-  _designObject: {fileID: 229116233281735944}
-  _referenceName: 
-  _interactable: 1
   _text: This got prefabed without permission
   _color: {r: 0, g: 0, b: 0, a: 0}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 0
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 513
   _margin: {x: 12, y: 8, z: 46, w: 16}
-  _minLabelDimensions: {x: 64, y: 10}
-  _maxLabelDimensions: {x: 1025, y: 256}
+  _minDimensions: {x: 64, y: 10}
+  _maxDimensions: {x: 1025, y: 256}
 --- !u!114 &5345713545006296892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,27 +325,6 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
---- !u!114 &229116233281735944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7330561272148096184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 0
-  tooltip: []
 --- !u!114 &2426340941609388716
 MonoBehaviour:
   m_ObjectHideFlags: 0

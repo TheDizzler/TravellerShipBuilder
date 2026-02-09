@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2216728987713972511}
   - component: {fileID: 3714226641704735600}
-  - component: {fileID: 3451710294960635019}
   - component: {fileID: 4747009652071960255}
   - component: {fileID: 7221397167034544767}
   - component: {fileID: 3997567427778128451}
@@ -54,37 +53,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18b9e3b48b9278643821235b3924df63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: UIImageView
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   image: {fileID: 1932646406951213162}
   captionLabel: {fileID: 9009999419601499641}
   imageData: {fileID: 11400000, guid: 04ca78633c910a242b8446e33520c341, type: 2}
-  _referenceName: UIImageView
-  _interactable: 1
   _sprite: {fileID: 2420301657204973463, guid: 42144bbdcc437ee4bbcb02fddb490d3b, type: 3}
   _text: Caption #00aaaaaa
   _minDimensions: {x: 250, y: 250}
   _showImage: 1
   _showCaption: 1
---- !u!114 &3451710294960635019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5242155249800386746}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 1
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 1
-  tooltip: []
 --- !u!114 &4747009652071960255
 MonoBehaviour:
   m_ObjectHideFlags: 0

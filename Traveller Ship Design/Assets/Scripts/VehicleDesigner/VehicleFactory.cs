@@ -147,22 +147,22 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			var label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
 			label.referenceName = techRowPanel.referenceName + "_tl_label";
 			label.fontStyles = FontStyles.Bold;
-			var labelDimen = label.minLabelDimensions;
+			var labelDimen = label.minDimensions;
 			labelDimen.x = labelWidth;
-			label.minLabelDimensions = labelDimen;
+			label.minDimensions = labelDimen;
 			label.text = "TL";
 
 			label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
 			label.referenceName = techRowPanel.referenceName + "_speed_label";
 			label.fontStyles = FontStyles.Bold;
-			label.minLabelDimensions = labelDimen;
+			label.minDimensions = labelDimen;
 			label.text = "SPEED";
 
 			label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
 			label.referenceName = techRowPanel.referenceName + "_range_label";
 			label.fontStyles = FontStyles.Bold;
 			label.alignmentOptions = TextAlignmentOptions.TopRight;
-			label.minLabelDimensions = labelDimen;
+			label.minDimensions = labelDimen;
 			label.text = "RANGE";
 
 
@@ -177,7 +177,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 
 				var techRow = chassis.techTable[row];
 				label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
-				label.minLabelDimensions = labelDimen;
+				label.minDimensions = labelDimen;
 				var minLevel = techRow.techLevel;
 				var maxLevel = minLevel;
 
@@ -198,16 +198,16 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 
 				label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
 				label.referenceName = techRowPanel.referenceName + "_speed_label_row_" + row;
-				label.minLabelDimensions = labelDimen;
+				label.minDimensions = labelDimen;
 				label.text = techRow.speed.ToString().Replace('_', ' ');
 
 				label = ((UIExpandingLabel)techRowPanel.AddText(techTableScriptObj));
-				label.minLabelDimensions = labelDimen;
+				label.minDimensions = labelDimen;
 				label.alignmentOptions = TextAlignmentOptions.TopRight;
 				label.text = techRow.range + "";
 			}
 
-			techTableWindow.GetMinDimensions();
+			techTableWindow.GetDrawnDimensions();
 
 			/// Update DataSheet
 			var skillLabel = (UIExpandingLabel)dataSheetWindow.GetControl("skill_label");
@@ -264,7 +264,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 			foreach (var ctrl in ctrls)
 			{
 				ctrl.UpdateBackingData(dataSheetLabelScriptObj);
-				ctrl.minLabelDimensions = new Vector2(120, 10);
+				ctrl.minDimensions = new Vector2(120, 10);
 				ctrl.alignmentOptions = TextAlignmentOptions.Left;
 			}
 

@@ -71,6 +71,7 @@ namespace AtomosZ.UI.EditorZ
 
 			dict.Add(type, pool);
 		}
+
 		public override void OnInspectorGUI()
 		{
 			EditorGUI.BeginChangeCheck();
@@ -82,9 +83,7 @@ namespace AtomosZ.UI.EditorZ
 				CreateNewPools();
 			}
 
-
 			EndChangeCheck();
 		}
-
 	}
 }

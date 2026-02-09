@@ -432,7 +432,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4055350152107424683}
   - component: {fileID: 3132597873559246341}
-  - component: {fileID: 3898854370579401519}
   - component: {fileID: 947029655043986366}
   - component: {fileID: 9155688087169936532}
   - component: {fileID: 351424338598274322}
@@ -478,14 +477,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02bd580c2e947ca4d92866b9474bcb4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropdown: {fileID: 351424338598274322}
-  arrow: {fileID: 7042341699860270575}
-  dropdownData: {fileID: 11400000, guid: 9dc0573a54af75d4e8ecad2090d58a11, type: 2}
   _referenceName: dropdown
   _interactable: 1
   _fillParentHorizontal: 0
+  _fillParentVertical: 0
+  dropdown: {fileID: 351424338598274322}
+  arrow: {fileID: 7042341699860270575}
+  dropdownData: {fileID: 11400000, guid: 9dc0573a54af75d4e8ecad2090d58a11, type: 2}
   _minDimensions: {x: 100, y: 10}
-  _arrowSprite: {fileID: 0}
+  _arrowSprite: {fileID: 21300000, guid: 445f3c3a06f60474d8ab38a263cb59a9, type: 3}
   _fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   _fontSize: 14
   _fontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 1}
@@ -495,31 +495,22 @@ MonoBehaviour:
       m_Calls: []
   _value: 0
   _isMultiSelect: 0
-  _options: []
+  _options:
+  - m_Text: Option 1
+    m_Image: {fileID: 0}
+    m_Color: {r: 1, g: 1, b: 1, a: 1}
+  - m_Text: Option 2
+    m_Image: {fileID: 0}
+    m_Color: {r: 1, g: 1, b: 1, a: 1}
+  - m_Text: Option 3
+    m_Image: {fileID: 0}
+    m_Color: {r: 1, g: 1, b: 1, a: 1}
+  - m_Text: Option 4
+    m_Image: {fileID: 0}
+    m_Color: {r: 1, g: 1, b: 1, a: 1}
   _optionsDelegate:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3898854370579401519
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3595655409325189416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 1
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 1
-  tooltip: []
 --- !u!114 &947029655043986366
 MonoBehaviour:
   m_ObjectHideFlags: 0

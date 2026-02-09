@@ -163,6 +163,20 @@ namespace AtomosZ.UI
 			}
 		}
 
+		[SerializeField] private Vector2 _minDimensions;
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions; }
+			set
+			{
+				_minDimensions = value;
+				this.SetDirty();
+			}
+		}
+
+		public Vector2 maxDimensions { get; set; }
+
+
 		[Conditional("UNITY_EDITOR")]
 		public new void RecordPrefabInstances()
 		{
@@ -369,18 +383,18 @@ namespace AtomosZ.UI
 
 		public void Refresh()
 		{
-			GetMinDimensions();
+			GetDrawnDimensions();
 		}
 
 		public void RecalculateDimensions()
 		{
-			GetMinDimensions();
+			GetDrawnDimensions();
 		}
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			isDirty = false;
-			return rootTabControl.GetMinDimensions();
+			return rootTabControl.GetDrawnDimensions();
 		}
 
 		public void SetTitle(string titleText)
@@ -570,11 +584,6 @@ namespace AtomosZ.UI
 		}
 
 		public ScriptableObject GetBackingData()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void UpdateBackingData()
 		{
 			throw new System.NotImplementedException();
 		}

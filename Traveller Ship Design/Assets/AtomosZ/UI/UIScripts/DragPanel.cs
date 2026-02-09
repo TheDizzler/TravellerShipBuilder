@@ -11,6 +11,9 @@ namespace AtomosZ.UI
 	{
 		public UIControlType dataType { get; }
 
+		public Vector2 minDimensions { get; set; }
+		public Vector2 maxDimensions { get; set; }
+
 		private MagicWindow window;
 		private RectTransform windowRect;
 		private Vector2 startDragPos;
@@ -39,7 +42,7 @@ namespace AtomosZ.UI
 		}
 
 		/// <summary>
-		/// TODO(Tristan): Check for windows bounds!
+		/// @TODO(Tristan): Check for windows bounds!
 		/// </summary>
 		public void MouseDrag()
 		{
@@ -64,7 +67,7 @@ namespace AtomosZ.UI
 			window.SelectTab(transform.GetSiblingIndex());
 		}
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			throw new System.NotImplementedException();
 		}
@@ -79,7 +82,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			throw new System.NotImplementedException();
 		}

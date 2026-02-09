@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 255.46, y: 66.41}
+  m_SizeDelta: {x: 245.46, y: 66.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4235460900820515980
 MonoBehaviour:
@@ -51,22 +51,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: buttonLabel
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   labelData: {fileID: 11400000, guid: 0411457bc1c393a4bbbe7c7779619bfd, type: 2}
   textLabel: {fileID: 2671208435322713224}
   image: {fileID: 4770955567978397481}
-  _designObject: {fileID: 2567496053062629612}
-  _referenceName: buttonLabel
-  _interactable: 1
   _text: Button Text
   _color: {r: 0, g: 0, b: 0, a: 1}
   _disabledColor: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
-  _fontSize: 36
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 257
   _margin: {x: 26, y: 8, z: 26, w: 16}
-  _minLabelDimensions: {x: 64, y: 10}
-  _maxLabelDimensions: {x: 1025, y: 256}
+  _minDimensions: {x: 64, y: 10}
+  _maxDimensions: {x: 1025, y: 256}
 --- !u!114 &2567496053062629612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,7 +81,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDesignObject
   isMoveable: 0
   isModal: 0
-  isSelectable: 0
   hasCustomDimensions: 1
   hasUpdatableBackingData: 0
   tooltip: []
@@ -194,7 +193,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7796280320740207736}
   - component: {fileID: 1978944217387945199}
-  - component: {fileID: 6311154708473013455}
   - component: {fileID: 4183874405391670221}
   - component: {fileID: 4770955567978397481}
   - component: {fileID: 6902153215532748074}
@@ -224,7 +222,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 255.46, y: 66.41}
+  m_SizeDelta: {x: 297.46002, y: 66.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1978944217387945199
 MonoBehaviour:
@@ -238,39 +236,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6ebc21a77d911343936683f76b64830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: button
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   buttonData: {fileID: 11400000, guid: a308899491cf25a459f2ecb401b6aa67, type: 2}
   textLabel: {fileID: 4235460900820515980}
   image: {fileID: 4770955567978397481}
-  _referenceName: button
-  _designObject: {fileID: 6311154708473013455}
-  _interactable: 1
+  _minDimensions: {x: 0, y: 0}
+  _hideText: 0
   _text: Button Text
   _fontColor: {r: 0, g: 0, b: 0, a: 0}
   _disabledFontColor: {r: 0, g: 0, b: 0, a: 0}
   _fontStyles: 0
-  _sprite: {fileID: 0}
-  _fillParentHorizontal: 0
+  _spriteIsBackground: 1
+  _sprite: {fileID: 21300000, guid: ae46f276474e7d444b6a815d7fda1cdc, type: 3}
+  _spriteColor: {r: 1, g: 1, b: 1, a: 1}
+  _minButtonSize: {x: 10, y: 10}
   onClickedEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6311154708473013455
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5027443682642349068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 1
-  tooltip: []
 --- !u!114 &4183874405391670221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,8 +271,8 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: 116
   m_MinHeight: -1
-  m_PreferredWidth: 307.46002
-  m_PreferredHeight: -1
+  m_PreferredWidth: 297.46002
+  m_PreferredHeight: 90.41
   m_FlexibleWidth: 0
   m_FlexibleHeight: -1
   m_LayoutPriority: 1

@@ -56,17 +56,17 @@ namespace AtomosZ.UI
 			}
 		}
 
-
-		[SerializeField] private bool _fillParentHorizontal = false;
-		public bool fillParentHorizontal
+		[SerializeField] private Vector2 _minDimensions;
+		public Vector2 minDimensions
 		{
-			get { return _fillParentHorizontal; }
+			get { return _minDimensions; }
 			set
 			{
-				_fillParentHorizontal = value;
+				_minDimensions = value;
 				this.SetDirty();
 			}
 		}
+		public Vector2 maxDimensions { get; set; }
 
 
 		[SerializeField] private DialogButton _buttons = DialogButton.OK;
@@ -183,16 +183,16 @@ namespace AtomosZ.UI
 		void Update()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			var horzLayout = GetComponent<HorizontalLayoutGroup>();
 			if (horzLayout == null)
 				Debug.LogException(new Exception("No layout group found on panel"));
 
-			horzLayout.childForceExpandWidth = _fillParentHorizontal;
+			horzLayout.childForceExpandWidth = fillParentHorizontal;
 
 			//Vector2 minDim = new Vector2(minButtonWidth[_buttons], 10);
 			Vector2 minDim = new Vector2(horzLayout.padding.horizontal, horzLayout.padding.vertical);
@@ -209,7 +209,7 @@ namespace AtomosZ.UI
 					continue;
 
 				++activeChildren;
-				var childMinDim = child.GetMinDimensions();
+				var childMinDim = child.GetDrawnDimensions();
 				minDim.x += childMinDim.x;
 				if (minDim.y < childMinDim.y)
 					minDim.y = childMinDim.y;
@@ -227,10 +227,10 @@ namespace AtomosZ.UI
 
 
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 
 			return GetComponent<RectTransform>().sizeDelta;
 		}

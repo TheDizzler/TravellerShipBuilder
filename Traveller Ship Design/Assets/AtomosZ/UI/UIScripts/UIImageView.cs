@@ -78,6 +78,8 @@ namespace AtomosZ.UI
 			}
 		}
 
+		public Vector2 maxDimensions { get; set; }
+
 		/// <summary>
 		/// If either x or y is <= 0, sets image to native size.
 		/// </summary>
@@ -85,6 +87,7 @@ namespace AtomosZ.UI
 		public void SetSize(Vector2 imageSize)
 		{
 			minDimensions = imageSize;
+
 		}
 
 		[SerializeField] private bool _showImage = true;
@@ -133,16 +136,16 @@ namespace AtomosZ.UI
 				showCaption = imageData.isCaptionHidden;
 			}
 
-			UpdateBackingData();
+			RecalculateDimensions();
 		}
 
 		void Update()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			float height = 0;
 			float width = 0;
@@ -154,10 +157,10 @@ namespace AtomosZ.UI
 
 			if (showCaption)
 			{
-				captionLabel.UpdateBackingData();
+				captionLabel.RecalculateDimensions();
 
 				var layout = GetComponent<VerticalLayoutGroup>();
-				var textSize = captionLabel.GetMinDimensions();
+				var textSize = captionLabel.GetDrawnDimensions();
 				height += textSize.y;
 				height += layout.spacing;
 				width = MathF.Max(textSize.x, width);
@@ -169,10 +172,10 @@ namespace AtomosZ.UI
 			isDirty = false;
 		}
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 			return GetComponent<RectTransform>().sizeDelta;
 		}
 	}

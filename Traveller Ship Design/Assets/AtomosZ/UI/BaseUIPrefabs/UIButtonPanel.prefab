@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8581739949491361681}
   - component: {fileID: 8320262676998505760}
-  - component: {fileID: -7266102065753428195}
   - component: {fileID: 7899581285383477695}
   - component: {fileID: 2229494213494269531}
   - component: {fileID: 5022085412885239388}
@@ -42,7 +41,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 36.28}
+  m_SizeDelta: {x: 0, y: 44.28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8320262676998505760
 MonoBehaviour:
@@ -56,42 +55,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 339e43106b8b73748af4bd934d896ee3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: buttonPanel
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   okButton: {fileID: 104374926187278035}
   yesButton: {fileID: 4066357127763818192}
   noButton: {fileID: 2465359610918080959}
   cancelButton: {fileID: 1712294518062390921}
-  minButtonWidth:
-    keys: 01000000020000000300000004000000
-    values:
-    - 150
-    - 300
-    - 450
-    - 300
   buttonPanelData: {fileID: 11400000, guid: 56557aa7b7c6fad48b93d20458c100fb, type: 2}
-  _referenceName: buttonPanel
-  _interactable: 1
+  _minDimensions: {x: 0, y: 0}
   _buttons: 3
---- !u!114 &-7266102065753428195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7444229185118074003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 1
-  tooltip: []
 --- !u!114 &7899581285383477695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,7 +85,7 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 1
   m_Spacing: 12
-  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
@@ -220,6 +194,10 @@ PrefabInstance:
       propertyPath: m_PreferredWidth
       value: 136.45999
       objectReference: {fileID: 0}
+    - target: {fileID: 4183874405391670221, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: m_PreferredHeight
+      value: 44.28
+      objectReference: {fileID: 0}
     - target: {fileID: 4235460900820515980, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: _text
       value: Cancel
@@ -290,7 +268,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 104.46
+      value: 136.45999
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.y
@@ -658,6 +636,10 @@ PrefabInstance:
       propertyPath: m_PreferredWidth
       value: 132.98999
       objectReference: {fileID: 0}
+    - target: {fileID: 4183874405391670221, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: m_PreferredHeight
+      value: 44.28
+      objectReference: {fileID: 0}
     - target: {fileID: 4235460900820515980, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: _text
       value: Yes
@@ -732,7 +714,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 84.99
+      value: 132.98999
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.y
@@ -875,6 +857,10 @@ PrefabInstance:
       propertyPath: m_PreferredWidth
       value: 129.01001
       objectReference: {fileID: 0}
+    - target: {fileID: 4183874405391670221, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+      propertyPath: m_PreferredHeight
+      value: 44.28
+      objectReference: {fileID: 0}
     - target: {fileID: 4235460900820515980, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: _text
       value: No
@@ -949,7 +935,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 81.01
+      value: 129.01001
       objectReference: {fileID: 0}
     - target: {fileID: 7796280320740207736, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
       propertyPath: m_SizeDelta.y

@@ -29,6 +29,20 @@ namespace AtomosZ.UI
 			set { _interactable = textLabel.interactable = GetComponent<Button>().interactable = value; }
 		}
 
+		[SerializeField] private Vector2 _minDimensions;
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions; }
+			set
+			{
+				_minDimensions = value;
+				this.SetDirty();
+			}
+		}
+
+		public Vector2 maxDimensions { get; set; }
+
+
 		[SerializeField] private bool _hideText = false;
 		public bool hideText
 		{
@@ -138,16 +152,6 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[SerializeField] private bool _fillParentHorizontal = false;
-		public bool fillParentHorizontal
-		{
-			get { return _fillParentHorizontal; }
-			set
-			{
-				_fillParentHorizontal = value;
-				this.SetDirty();
-			}
-		}
 
 		public UnityEvent<UIButton> onClickedEvent = null;
 
@@ -203,10 +207,10 @@ namespace AtomosZ.UI
 		void Update()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 		}
 
-		public void UpdateBackingData()
+		public void RecalculateDimensions()
 		{
 			var layout = GetComponent<LayoutElement>();
 			var vertLayout = transform.parent.GetComponent<VerticalLayoutGroup>();
@@ -225,8 +229,8 @@ namespace AtomosZ.UI
 					var labelHorzMargins = textLabel.margin.x + textLabel.margin.z;
 					var labelVertMargins = textLabel.margin.y + textLabel.margin.w;
 
-					layout.minWidth = this.textLabel.minLabelDimensions.x + labelHorzMargins;
-					var labelDim = this.textLabel.GetMinDimensions();
+					layout.minWidth = this.textLabel.minDimensions.x + labelHorzMargins;
+					var labelDim = this.textLabel.GetDrawnDimensions();
 					preferredWidth = Mathf.Max(preferredWidth, labelDim.x + labelHorzMargins);
 					preferredHeight = Mathf.Max(preferredHeight, labelDim.y + labelVertMargins);
 				}
@@ -262,10 +266,10 @@ namespace AtomosZ.UI
 		}
 
 
-		public Vector2 GetMinDimensions()
+		public Vector2 GetDrawnDimensions()
 		{
 			if (isDirty)
-				UpdateBackingData();
+				RecalculateDimensions();
 			var layout = GetComponent<LayoutElement>();
 			return new Vector2(layout.preferredWidth, layout.preferredHeight);
 		}

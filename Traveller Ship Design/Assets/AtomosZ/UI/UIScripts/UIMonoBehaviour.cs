@@ -41,13 +41,14 @@ namespace AtomosZ.UI
 		}
 
 		public UIMonoBehaviour uIMonoBehaviour { get { return this; } }
-		public bool isDirty;
+		protected bool isDirty;
 
 		[SerializeField] protected bool _interactable = true;
 
 		private IUIBehavior _iUIBehavior;
 		public IUIBehavior iUIBehavior
 		{
+			[System.Diagnostics.DebuggerStepThrough]
 			get
 			{
 				if (_iUIBehavior == null)
@@ -56,8 +57,69 @@ namespace AtomosZ.UI
 			}
 		}
 
+		//[Min(1)] // this doesn't actually work, does it.
+		//[SerializeField] protected Vector2 _minDimensions = new Vector2(64, 64);
+
+		//[Min(1)]
+		//[SerializeField] protected Vector2 _maxDimensions = new Vector2(512, 512);
+
+
+		[SerializeField] protected bool _fillParentHorizontal = false;
+		public bool fillParentHorizontal
+		{
+			[System.Diagnostics.DebuggerStepThrough]
+			get { return _fillParentHorizontal; }
+			set
+			{
+				_fillParentHorizontal = value;
+				if (value)
+				{
+#if UNITY_EDITOR
+					if (transform.parent == null)
+					{
+						_fillParentHorizontal = false;
+						return;
+					}
+#endif
+					// this may be unneccessary as layout.flexibleWidth = 1 does the same thing (but only on Vertical Layout?)
+					var parentSize = transform.parent.GetComponent<RectTransform>().sizeDelta;
+					iUIBehavior.minDimensions = new Vector2(parentSize.x, iUIBehavior.minDimensions.y);
+					iUIBehavior.maxDimensions = new Vector2(parentSize.x, iUIBehavior.maxDimensions.y);
+				}
+
+				this.SetDirty();
+			}
+		}
+
+		[SerializeField] protected bool _fillParentVertical = false;
+		public bool fillParentVertical
+		{
+			[System.Diagnostics.DebuggerStepThrough]
+			get { return _fillParentVertical; }
+			set
+			{
+				_fillParentVertical = value;
+				if (_fillParentVertical)
+				{
+#if UNITY_EDITOR
+					if (transform.parent == null)
+					{
+						_fillParentVertical = false;
+						return;
+					}
+#endif
+					var parentSize = transform.parent.GetComponent<RectTransform>().sizeDelta;
+					iUIBehavior.minDimensions = new Vector2(iUIBehavior.minDimensions.x, parentSize.y);
+					iUIBehavior.maxDimensions = new Vector2(iUIBehavior.maxDimensions.x, parentSize.y);
+				}
+				this.SetDirty();
+			}
+		}
+
+		// Object pool variables
 		public bool isLive { get; set; }
 		public ObjectPool<UIMonoBehaviour> pool { get; set; }
+		//
 
 		[System.Diagnostics.DebuggerStepThrough]
 		public UIControlType GetDataType() { return iUIBehavior.dataType; }
@@ -78,7 +140,7 @@ namespace AtomosZ.UI
 				var parent = transform.parent.GetComponentInParent<UIMonoBehaviour>();
 				if (parent == null)
 				{   // assume this is the root and start to refresh (only in edit mode?)
-					//uIBehavior.GetMinDimensions();
+					//uIBehavior.GetDrawnDimensions();
 					return;
 				}
 

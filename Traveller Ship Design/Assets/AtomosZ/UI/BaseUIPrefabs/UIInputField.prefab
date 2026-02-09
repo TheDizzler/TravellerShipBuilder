@@ -63,7 +63,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1595113892155119500}
   - component: {fileID: 5491177040660267407}
-  - component: {fileID: 1539801037540959411}
   - component: {fileID: 3977754091619178117}
   - component: {fileID: 8896555636307659968}
   - component: {fileID: 1972607263114436877}
@@ -108,44 +107,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2ab9b6d7b25365408152ccb7ea29d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: inputField
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   inputFieldData: {fileID: 11400000, guid: 9ca31f4b689e8ea44acd3ffbc1c18147, type: 2}
   placeholderLabel: {fileID: 2593393334513619801}
   textLabel: {fileID: 6898024357478461591}
   inputFieldTMP: {fileID: 8896555636307659968}
   textAreaRect: {fileID: 1584774236722177586}
   image: {fileID: 1972607263114436877}
-  _referenceName: inputField
   _fontAsset: {fileID: 0}
   _fontSize: 36
   _placeholderFontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 0.5}
   _fontColor: {r: 0, g: 0, b: 0, a: 1}
   _alignmentOptions: 257
-  _fillParentHorizontal: 0
   _minDimensions: {x: 300, y: 64}
   _maxDimensions: {x: 512, y: 256}
   _text: 
   _placeholderText: enter text here
---- !u!114 &1539801037540959411
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1719049388968032361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverCursorMode: 11
-  moveCursorMode: 9
-  isHoverable: 1
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 1
-  tooltip: []
 --- !u!114 &3977754091619178117
 MonoBehaviour:
   m_ObjectHideFlags: 0

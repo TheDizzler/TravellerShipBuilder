@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 778371616326191649}
   - component: {fileID: 2644291506069405767}
-  - component: {fileID: 6170590193817473966}
   - component: {fileID: 46845985781952030}
   - component: {fileID: 7324103980625293524}
   m_Layer: 5
@@ -51,43 +50,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _referenceName: label
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   labelData: {fileID: 11400000, guid: 602ee890f7215c84e86858806d8cd97f, type: 2}
   textLabel: {fileID: 46845985781952030}
   image: {fileID: 0}
-  _designObject: {fileID: 6170590193817473966}
-  _referenceName: label
-  _interactable: 1
   _text: Label Text!
   _color: {r: 1, g: 1, b: 1, a: 1}
   _disabledColor: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
-  _fontSize: 34
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 257
   _margin: {x: 0, y: 0, z: 0, w: 0}
-  _minLabelDimensions: {x: 64, y: 10}
-  _maxLabelDimensions: {x: 1025, y: 256}
---- !u!114 &6170590193817473966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3705265916941669611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverCursorMode: 9
-  moveCursorMode: 9
-  isHoverable: 0
-  isMoveable: 0
-  isModal: 0
-  isSelectable: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 1
-  tooltip: []
+  _minDimensions: {x: 64, y: 10}
+  _maxDimensions: {x: 1025, y: 256}
 --- !u!114 &46845985781952030
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,11 +18,34 @@ namespace AtomosZ.UI
 
 		public UIMonoBehaviour control;
 
-
-		public void UpdateBackingData()
+		[SerializeField] private Vector2 _minDimensions;
+		public Vector2 minDimensions
 		{
-			if (control != null)
-				control.iUIBehavior.UpdateBackingData();
+			get { return _minDimensions; }
+			set
+			{
+				_minDimensions = value;
+				// set size here so control can set size to it
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value.x);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value.y);
+				if (control != null)
+				{
+					control.iUIBehavior.minDimensions = new Vector2(value.x, value.y);
+					control.fillParentHorizontal = true;
+				}
+
+				this.SetDirty();
+			}
+		}
+
+		public Vector2 maxDimensions { get; set; }
+
+
+		[System.Diagnostics.Conditional("UNITY_EDITOR")]
+		public void UpdateBackingData_EDITOR()
+		{
+			referenceName = _referenceName;
+			interactable = _interactable;
 		}
 
 		public UIMonoBehaviour GetControl(string controlRefName)
@@ -35,20 +58,33 @@ namespace AtomosZ.UI
 		}
 
 
-		public override void ReturnToPool()
+		void Update()
 		{
-			if (control != null)
-			{
-				control.ReturnToPool();
-				control = null;
-			}
-
-			GetComponent<Image>().enabled = false;
-			base.ReturnToPool();
+			if (isDirty)
+				RecalculateDimensions();
 		}
 
-		public Vector2 GetMinDimensions()
+		public void RecalculateDimensions()
 		{
+			var height = _minDimensions.y;
+			if (control != null)
+			{
+				var ctrlSize = control.iUIBehavior.GetDrawnDimensions();
+				height = Mathf.Max(height, ctrlSize.y);
+			}
+
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+
+			isDirty = false;
+		}
+
+
+
+		public Vector2 GetDrawnDimensions()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+
 			return rect.sizeDelta;
 		}
 
@@ -64,12 +100,7 @@ namespace AtomosZ.UI
 
 		internal void SetControl(UICellDataTypes controlType)
 		{
-			if (control != null)
-			{
-				if (control.pool == null)
-					control.pool = UIPrefabProvider.GetPoolOfType(control.iUIBehavior.dataType);
-				control.ReturnToPool();
-			}
+			RemoveControl();
 
 			var parent = GetComponentInParent<UIDataRow>();
 
@@ -80,17 +111,40 @@ namespace AtomosZ.UI
 			control.rect.anchorMin = new Vector2(.5f, .5f);
 			control.rect.anchorMax = new Vector2(.5f, .5f);
 			control.rect.anchoredPosition = Vector3.zero;
-			// @TODO(Tristan): should set min and max size of control instead
-			//control.enabled = false; // this prevents the UI control from autosizing itself
+			// @TODO?(Tristan): should set min and max size of control instead ?
+			control.iUIBehavior.minDimensions = minDimensions;
 
 			//control.fitToParent = true; // implement this!
 
-			if (control.TryGetComponent<TextMeshProUGUI>(out var tmp))
+			control.fillParentHorizontal = true;
+			if (control.TryGetComponent<UIExpandingLabel>(out var label))
 			{
-				tmp.enableAutoSizing = true;
-				tmp.fontSizeMin = 3;
+				label.autoSizeFont = true;
+				label.fontSizeMin = 3;
+				label.text = "Cell Text";
 			}
 
+		}
+
+		internal void RemoveControl()
+		{
+			if (control == null)
+				return;
+			control.ReturnToPool();
+			control = null;
+		}
+
+
+		public override void ReturnToPool()
+		{
+			if (control != null)
+			{
+				control.ReturnToPool();
+				control = null;
+			}
+
+			GetComponent<Image>().enabled = false;
+			base.ReturnToPool();
 		}
 
 

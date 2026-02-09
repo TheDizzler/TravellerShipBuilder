@@ -87,6 +87,11 @@ namespace AtomosZ.EditorZ
 			return EditorGUILayout.PropertyField(labelDataProp, options);
 		}
 
+		public void CreateLabel(string labelText)
+		{
+			EditorGUILayout.LabelField(labelText);
+		}
+
 		public void CreateBorder(float height)
 		{
 			GUILayout.Box(GUIContent.none, GUILayout.Width(Screen.width), GUILayout.Height(height));
@@ -164,7 +169,7 @@ namespace AtomosZ.EditorZ
 						updateBackingData(newValue);
 
 						EditorUtility.SetDirty(dataOwner.uIMonoBehaviour);
-						dataOwner.UpdateBackingData();
+						dataOwner.RecalculateDimensions();
 						dataOwner.uIMonoBehaviour.RecordPrefabInstances();
 					}
 					EditorGUILayout.EndHorizontal();
