@@ -330,7 +330,11 @@ namespace AtomosZ
 		}
 
 #if UNITY_EDITOR
-		public static bool IsPrefabStage()
+		/// <summary>
+		/// Don't call this in non-debug code or you're going to have a bad time.
+		/// </summary>
+		/// <returns></returns>
+		public static bool IsPrefabStage_EDITOR()
 		{
 			var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
 			return stage != null;

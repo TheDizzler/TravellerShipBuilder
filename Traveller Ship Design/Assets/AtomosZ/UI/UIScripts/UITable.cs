@@ -27,6 +27,7 @@ namespace AtomosZ.UI
 		private VerticalLayoutGroup _layout;
 		private VerticalLayoutGroup layout
 		{
+			[DebuggerStepThrough]
 			get
 			{
 				if (_layout == null)
@@ -81,10 +82,7 @@ namespace AtomosZ.UI
 		[SerializeField] private Vector2 _layoutSpacing;
 		public Vector2 layoutSpacing
 		{
-			get
-			{
-				return _layoutSpacing;
-			}
+			get { return _layoutSpacing; }
 			set
 			{
 				_layoutSpacing = value;
@@ -306,7 +304,8 @@ namespace AtomosZ.UI
 
 			headerRow.transform.SetAsFirstSibling();
 			headerRow.gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
-			headerRow.columnCount = columnCount;
+			for (int i = 0; i < columnCount; ++i)
+				headerRow.AddCell();
 			headerRow.layout.spacing = layoutSpacing.x;
 			headerRow.cellWidths = _columnWidths;
 			headerRow.minDimensions = new Vector2(0, _headerHeight);
@@ -325,7 +324,7 @@ namespace AtomosZ.UI
 				headerLabel = (UIExpandingLabel)headerRow[i].control;
 			headerLabel.text = headerLabel.referenceName = "Header " + i;
 #if UNITY_EDITOR
-			if (Helpers.IsPrefabStage())
+			if (Helpers.IsPrefabStage_EDITOR())
 				headerLabel.name = headerLabel.referenceName;
 #endif
 			headerLabel.color = Color.black;
@@ -405,9 +404,9 @@ namespace AtomosZ.UI
 			}
 
 			if (headerRow != null)
-				columnCount = headerRow.columnCount;
+				columnCount = headerRow.cells.Length;
 			else if (rows.Length > 0)
-				columnCount = rows[0].columnCount;
+				columnCount = rows[0].cells.Length;
 			else
 				columnCount = 0;
 
@@ -451,15 +450,18 @@ namespace AtomosZ.UI
 
 		public void AddColumn()
 		{
-			++columnCount;
-			if (columnCount >= 2)
+			if (++columnCount > 1)
 			{
 				var dividerList = new List<UIMenuDivider>(columnDividers);
-				var newDivider = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.MenuDivider, transform);
-				newDivider.layout.enabled = false;
+				var newDivider = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(
+					UIPrefabProvider.UIPrefabType.MenuDivider, columnDividerMask.transform);
+				newDivider.layoutElement.enabled = false;
+				newDivider.rect.pivot = new Vector2(0, .5f);
+				newDivider.rect.anchorMin = new Vector2(0, 1);
+				newDivider.rect.anchorMax = new Vector2(0, 1);
 				newDivider.rect.rotation = Quaternion.Euler(0, 0, 270);
 				newDivider.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
-				newDivider.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, headerHeight + 4);
+				//newDivider.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, headerHeight);
 				dividerList.Add(newDivider);
 				columnDividers = dividerList.ToArray();
 			}
@@ -470,15 +472,15 @@ namespace AtomosZ.UI
 
 			if (headerRow != null)
 			{
-				headerRow.columnCount = columnCount;
-				headerRow.cellWidths = _columnWidths;
+				headerRow.AddCell();
+				headerRow.cellWidths[columnCount - 1] = _columnWidths[columnCount - 1];
 				SetHeader(columnCount - 1);
 			}
 
 			foreach (var row in rows)
 			{
-				row.columnCount = columnCount;
-				row.cellWidths = _columnWidths;
+				row.AddCell();
+				row.cellWidths[columnCount - 1] = _columnWidths[columnCount - 1];
 			}
 
 			this.SetDirty();
@@ -487,8 +489,12 @@ namespace AtomosZ.UI
 
 		public UIDataRow AddRow()
 		{
-			rows[rows.Length - 1].ShowGridLine(true);
-			rows[rows.Length - 1].gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
+			if (rows.Length > 0)
+			{
+				rows[rows.Length - 1].ShowGridLine(true);
+				rows[rows.Length - 1].gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
+			}
+
 			var newRows = new List<UIDataRow>(rows);
 			var newRow = NewRow(rows.Length);
 			newRows.Add(newRow);
@@ -501,7 +507,9 @@ namespace AtomosZ.UI
 		private UIDataRow NewRow(int index)
 		{
 			var newRow = (UIDataRow)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.DataRow, transform);
-			newRow.columnCount = columnCount;
+			newRow.Clear();
+			for (int i = 0; i < columnCount; ++i)
+				newRow.AddCell();
 			newRow.cellWidths = _columnWidths;
 			newRow.minDimensions = new Vector2(0, _rowMinHeight);
 			newRow.layout.spacing = layoutSpacing.x;
@@ -515,7 +523,7 @@ namespace AtomosZ.UI
 		{
 			newRow.referenceName = $"{referenceName}_row_{index.ToString("00")}";
 #if UNITY_EDITOR
-			if (Helpers.IsPrefabStage())
+			if (Helpers.IsPrefabStage_EDITOR())
 				newRow.name = newRow.referenceName;
 #endif
 		}
@@ -550,7 +558,7 @@ namespace AtomosZ.UI
 
 			width += _layoutSpacing.x * Mathf.Max(0, (columnCount - 1));
 
-			float height = layout.padding.vertical;
+			float height = layout.padding.top;
 			if (headerRow != null)
 			{
 				height += headerRow.GetDrawnDimensions().y;
@@ -564,7 +572,7 @@ namespace AtomosZ.UI
 				height += rows[i].GetDrawnDimensions().y;
 			}
 
-			height += Mathf.Max(0, rows.Length - 1) * (layoutSpacing.y/* + gridThickness*/);
+			height += Mathf.Max(0, rows.Length - 1) * (layoutSpacing.y);
 
 
 			float dividerX = borderMargins.left;
@@ -580,6 +588,7 @@ namespace AtomosZ.UI
 				dividerX += (layoutSpacing.x) * .5f;
 			}
 
+			columnDividerMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width + layout.padding.right);
 			columnDividerMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(minDimensions.y, height));

@@ -1620,6 +1620,9 @@ namespace AtomosZ.UI.EditorZ
 			if (Button("Add Row"))
 				table.AddRow();
 
+			if (Button("Add column"))
+				table.AddColumn();
+
 			serializedObject.ApplyModifiedProperties();
 			if (EditorGUI.EndChangeCheck())
 			{

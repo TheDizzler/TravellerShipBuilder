@@ -53,7 +53,7 @@ namespace AtomosZ.UI
 			Button,
 			ButtonPanel,
 			Image,
-			
+
 			Dropdown,
 			TabControl,
 			Panel,
@@ -187,7 +187,7 @@ namespace AtomosZ.UI
 		[Conditional("UNITY_EDITOR")]
 		public void CreateRootTabControl()
 		{
-			var rootTabControl = (UITabControl)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.TabControl, transform);
+			rootTabControl = (UITabControl)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.TabControl, transform);
 			rootTabControl.referenceName = "rootTabControl";
 			rootTabControl.tabPanels[0].panel.tabLabel.referenceName = "panel_00";
 			rootTabControl.tabPanels[0].tabLabel.referenceName = "tab_00";

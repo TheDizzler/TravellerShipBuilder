@@ -23,7 +23,7 @@ namespace AtomosZ
 		internal static void Return<T>(this IPooledObject<T> pooledObject) where T : MonoBehaviour, IPooledObject<T>
 		{
 #if UNITY_EDITOR
-			if (Helpers.IsPrefabStage())
+			if (Helpers.IsPrefabStage_EDITOR())
 			{ // this may or may not work, depending if the transform is on the base prefab (?)
 			  //GameObject.DestroyImmediate((MonoBehaviour)pooledObject);
 			  //GameObject.Destroy((MonoBehaviour)pooledObject);
@@ -250,7 +250,10 @@ namespace AtomosZ
 
 #if UNITY_EDITOR
 				var allObjects = ObjectForge.instance.sleepingPooledObjects.GetComponentsInChildren<MonoBehaviour>(true);
-				ObjectForge.instance.sleepingPooledObjects.name = $"ObjectPool ({allObjects.Length})";
+				var unique = new HashSet<GameObject>();
+				foreach (var obj in allObjects)
+					unique.Add(obj.gameObject);
+				ObjectForge.instance.sleepingPooledObjects.name = $"ObjectPool ({unique.Count})";
 #endif
 			}
 

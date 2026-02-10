@@ -448,6 +448,13 @@ namespace AtomosZ.UI
 			tabLabel.RecalculateDimensions();
 			//var tabRect = tab.GetComponent<RectTransform>();
 
+#if UNITY_EDITOR
+			if (tabPanel.panel == null)
+			{
+				tabPanel.panel = (UIPanel)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.Panel, panelsTransform);
+			}
+#endif
+
 			var panel = tabPanel.panel;
 			panel.gameObject.SetActive(true);
 			var panelDimens = panel.GetDrawnDimensions();

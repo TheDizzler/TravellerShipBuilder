@@ -105,7 +105,7 @@ namespace AtomosZ.UI
 			MagicWindow.UIControlType dataType)
 		{
 #if UNITY_EDITOR
-			if (Helpers.IsPrefabStage())
+			if (Helpers.IsPrefabStage_EDITOR())
 			{
 				return null;
 			}

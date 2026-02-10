@@ -12,7 +12,17 @@ namespace AtomosZ.UI
 		public Vector2 minDimensions { get; set; }
 		public Vector2 maxDimensions { get; set; }
 
-		public LayoutElement layout;
+		[SerializeField] private LayoutElement _layoutElement;
+		public LayoutElement layoutElement
+		{
+			get
+			{
+				if (_layoutElement == null)
+					_layoutElement = GetComponent<LayoutElement>();
+				return _layoutElement;
+			}
+		}
+
 
 		public ScriptableObject GetBackingData()
 		{

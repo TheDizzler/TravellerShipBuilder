@@ -154,7 +154,7 @@ namespace AtomosZ.UI
 				referenceName = gameObject.name;
 #if UNITY_EDITOR
 			// Prefabs need to maintain their prefab name
-			if (!Helpers.IsPrefabStage())
+			if (!Helpers.IsPrefabStage_EDITOR())
 				gameObject.name = referenceName;
 #else
 			if (gameObject.scene.IsValid()) // this line is probably unnecessary

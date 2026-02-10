@@ -45,7 +45,7 @@ namespace AtomosZ.UI
 		}
 
 
-		[HideInInspector] public UIDataCell[] cells;
+		public UIDataCell[] cells;
 
 		public UIDataCell this[int i]
 		{
@@ -64,52 +64,11 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[HideInInspector]
-		[SerializeField] private int _columnCount = 1;
-		public int columnCount
-		{
-			get { return _columnCount; }
-			set
-			{
-				_columnCount = value;
-				var newCtrls = new UIDataCell[value];
-				var newWidths = new float[value];
 
-				for (int i = 0; i < value; ++i)
-				{
-					if (i < cells.Length)
-					{
-						newCtrls[i] = cells[i];
-					}
 
-					if (newCtrls[i] == null)
-					{
-						newCtrls[i] = (UIDataCell)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.DataCell, transform);
-					}
 
-					if (cellWidths.Length > i)
-						newWidths[i] = cellWidths[i];
-					else
-						newWidths[i] = 32;
 
-					if (newCtrls[i].control != null)
-						newCtrls[i].control.rect.sizeDelta = new Vector2(newWidths[i], _minDimensions.y);
-					SetCellName(newCtrls[i], i);
-					newCtrls[i].gameObject.SetActive(true);
-				}
-
-				for (int i = value; i < cells.Length; ++i)
-				{
-					if (cells[i] != null)
-						cells[i].ReturnToPool();
-				}
-
-				_cellWidths = newWidths;
-				cells = newCtrls;
-				this.SetDirty();
-			}
-		}
-
+		public RectMask2D rectMask;
 		public UIMenuDivider gridLine;
 
 		[SerializeField] private Vector2 _minDimensions;
@@ -119,7 +78,7 @@ namespace AtomosZ.UI
 			set
 			{
 				_minDimensions = value;
-				for (int i = 0; i < columnCount; ++i)
+				for (int i = 0; i < cells.Length; ++i)
 				{
 					cells[i].minDimensions = new Vector2(cellWidths[i], value.y);
 				}
@@ -138,7 +97,7 @@ namespace AtomosZ.UI
 			set
 			{
 				_cellWidths = value;
-				for (int i = 0; i < columnCount; ++i)
+				for (int i = 0; i < cells.Length; ++i)
 				{
 #if UNITY_EDITOR
 					if (i >= value.Length)
@@ -170,54 +129,38 @@ namespace AtomosZ.UI
 		[System.Diagnostics.Conditional("UNITY_EDITOR")]
 		public void RefreshControlsFormTransform_DEBUG()
 		{
-			cells = new UIDataCell[columnCount];
+			var cellList = new List<UIDataCell>();
 
 
 			foreach (var cell in GetComponentsInChildren<UIDataCell>())
 			{
-				if (cell.transform.GetSiblingIndex() >= cells.Length)
-				{
-					cell.ReturnToPool();
-					continue;
-				}
-
-				cells[cell.transform.GetSiblingIndex()] = cell;
+				cellList.Add(cell);
+				if (cell.transform.GetSiblingIndex() != cellList.Count)
+					Debug.LogError($"{referenceName} cells out of order!");
 			}
 
-			var newWidths = new List<float>(_cellWidths);
-			//float newHeight = Mathf.Max(16, _cellHeight);
-			for (int i = 0; i < columnCount; ++i)
+			cells = cellList.ToArray();
+
+			if (cells.Length != _cellWidths.Length)
 			{
-				if (cells[i] == null)
-				{
-					cells[i] = (UIDataCell)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.DataCell, transform);
-					SetCellName(cells[i], i);
-					cells[i].gameObject.SetActive(true);
-				}
-
-				if (newWidths.Count <= i)
-					//newWidths.Add(Mathf.Max(Mathf.Max(32, cellWidths[i]), cells[i].rect.sizeDelta.x));
-					newWidths.Add(Mathf.Max(32, cellWidths[i]));
-				else
-					//newWidths[i] = Mathf.Max(Mathf.Max(32, cellWidths[i]), cells[i].rect.sizeDelta.x);
-					newWidths[i] = Mathf.Max(32, cellWidths[i]);
-				//newHeight = Mathf.Max(newHeight, cells[i].rect.sizeDelta.y);
+				Debug.LogError($"{referenceName} cells and widths out of sync!");
+				cellWidths = new float[cells.Length];
 			}
 
-			cellWidths = newWidths.ToArray();
 			minDimensions = _minDimensions;
 
-			CreateGridLine();
+			if (!Helpers.IsPrefabStage_EDITOR())
+				CreateGridLine();
 		}
 
 		public void CreateGridLine()
 		{
 			gridLine = GetComponentInChildren<UIMenuDivider>();
 			if (gridLine == null)
-				gridLine = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.MenuDivider, transform);
-			gridLine.referenceName = referenceName + "_Row Divider";
-			gridLine.layout.enabled = true;
-			gridLine.layout.ignoreLayout = true;
+				gridLine = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.MenuDivider, rectMask.transform);
+			gridLine.referenceName = referenceName + "_RowDivider";
+			gridLine.layoutElement.enabled = true;
+			gridLine.layoutElement.ignoreLayout = true;
 			gridLine.rect.rotation = Quaternion.Euler(0, 0, 0);
 			gridLine.rect.pivot = new Vector2(0, 0);
 			gridLine.rect.anchoredPosition = new Vector2(0, 0);
@@ -234,7 +177,7 @@ namespace AtomosZ.UI
 			uIDataCell.referenceName = $"{referenceName}_dataCell_{i.ToString("00")}";
 
 #if UNITY_EDITOR
-			if (Helpers.IsPrefabStage())
+			if (Helpers.IsPrefabStage_EDITOR())
 			{
 				uIDataCell.name = uIDataCell.referenceName;
 			}
@@ -313,12 +256,12 @@ namespace AtomosZ.UI
 		public void RecalculateDimensions()
 		{
 			float width = layout.padding.horizontal;
-			for (int i = 0; i < columnCount; ++i)
+			for (int i = 0; i < cells.Length; ++i)
 			{
 				width += _cellWidths[i];
 			}
 
-			width += layout.spacing * (columnCount - 1);
+			width += layout.spacing * (cells.Length - 1);
 
 			var height = _minDimensions.y;
 			for (int i = 0; i < cells.Length; ++i)
@@ -338,9 +281,12 @@ namespace AtomosZ.UI
 				}
 			}
 
-			if (gridLine.gameObject.activeSelf)
+			if (rectMask.gameObject.activeSelf)
 			{
 				height = height + gridLine.rect.sizeDelta.y;
+				rectMask.rectTransform.anchoredPosition = new Vector2(0, 0);
+				rectMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+				rectMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 				gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
 			}
 
@@ -360,22 +306,37 @@ namespace AtomosZ.UI
 
 		internal void Clear()
 		{
-			for (int i = 0; i < cells.Length; ++i)
-			{
-#if DEBUG
-				if (cells[i] == null)
-				{
-					Log.Warning("I really wish stuff wouldn't just disappear like this");
-					continue;
-				}
-#endif
+			for (int i = cells.Length - 1; i >= 0; --i)
+				RemoveCell(i);
+		}
 
-				cells[i].ReturnToPool();
-				cells[i] = null;
-			}
+		public void RemoveCell(int i)
+		{
+			cells[i].ReturnToPool();
 
-			_columnCount = -1;
-			columnCount = 0;
+			var cellList = new List<UIDataCell>(cells);
+			cellList.RemoveAt(i);
+
+			var widthList = new List<float>(cellWidths);
+			widthList.RemoveAt(i);
+
+			cells = cellList.ToArray();
+			cellWidths = widthList.ToArray();
+			this.SetDirty();
+		}
+
+		public void AddCell()
+		{
+			var newCtrls = new List<UIDataCell>(cells);
+			var newWidths = new List<float>(cellWidths);
+
+			newCtrls.Add((UIDataCell)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.DataCell, transform));
+			newWidths.Add(128);
+
+			cells = newCtrls.ToArray();
+			cellWidths = newWidths.ToArray();
+
+			this.SetDirty();
 		}
 
 		public override void ReturnToPool()
