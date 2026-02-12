@@ -12,8 +12,8 @@ using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
-	public class UIDropdown : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UIDropdown : UIPooledMonoBehaviour<UIDropdown>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Dropdown; } }
 

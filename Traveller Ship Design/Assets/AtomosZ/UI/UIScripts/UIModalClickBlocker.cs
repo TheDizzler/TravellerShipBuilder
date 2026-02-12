@@ -6,7 +6,7 @@ namespace AtomosZ.UI
 	/// <summary>
 	/// A simple class to block any clicks from being registered when a modal dialog box is open.
 	/// </summary>
-	public class ModalClickBlocker : UIMonoBehaviour, IUIBehavior
+	public class UIModalClickBlocker : UIPooledMonoBehaviour<UIModalClickBlocker>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.ModalClickBlocker; } }
 

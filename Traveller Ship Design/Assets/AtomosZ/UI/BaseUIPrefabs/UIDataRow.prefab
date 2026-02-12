@@ -172,7 +172,7 @@ MonoBehaviour:
   _fillParentVertical: 0
   cells: []
   _layout: {fileID: 8278195214133853700}
-  rectMask: {fileID: 6062329396893969755}
+  gridMask: {fileID: 6062329396893969755}
   gridLine: {fileID: 133847351860572971}
   _minDimensions: {x: 0, y: 0}
   _cellWidths: []

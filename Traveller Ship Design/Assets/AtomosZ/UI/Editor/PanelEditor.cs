@@ -300,8 +300,6 @@ namespace AtomosZ.UI.EditorZ
 			{
 				++EditorGUI.indentLevel;
 
-				EditorGUILayout.PropertyField(serializedObject.FindProperty("panelPrefab"));// this is sometimes null if the foldout is closed?
-
 				var selectedPanel = selectedTabPanel.panel;
 				Editor.CreateCachedEditor(selectedPanel, typeof(UIPanelEditor), ref panelEditor);
 				panelEditor.OnInspectorGUI();
@@ -312,8 +310,6 @@ namespace AtomosZ.UI.EditorZ
 			if (isTabEditFoldout = EditorGUILayout.Foldout(isTabEditFoldout, "Tab Control Settings", true))
 			{
 				++EditorGUI.indentLevel;
-
-				EditorGUILayout.PropertyField(serializedObject.FindProperty("tabItemPrefab")); // this is sometimes null if the foldout is closed?
 
 				EditorGUILayout.PropertyField(tabConData);
 
@@ -690,7 +686,7 @@ namespace AtomosZ.UI.EditorZ
 
 						case UIControlType.InputField:
 						{
-							var uiCtrl = (UIExpandingInputField)uiControl;
+							var uiCtrl = (UIInputField)uiControl;
 							uiSO = new SerializedObject(uiCtrl);
 							referenceName = uiCtrl.referenceName;
 						}
@@ -834,7 +830,7 @@ namespace AtomosZ.UI.EditorZ
 
 							case UIControlType.InputField:
 							{
-								Editor.CreateCachedEditor((UIExpandingInputField)uiControl, typeof(UIExpandingInputFieldEditor), ref inputEditor);
+								Editor.CreateCachedEditor((UIInputField)uiControl, typeof(UIExpandingInputFieldEditor), ref inputEditor);
 								inputEditor.OnInspectorGUI();
 							}
 							break;
@@ -1235,10 +1231,10 @@ namespace AtomosZ.UI.EditorZ
 	}
 
 
-	[CustomEditor(typeof(UIExpandingInputField))]
+	[CustomEditor(typeof(UIInputField))]
 	public class UIExpandingInputFieldEditor : EditorEx
 	{
-		private UIExpandingInputField inputField;
+		private UIInputField inputField;
 		private SerializedProperty fontAssetProp;
 		private SerializedProperty fontColorProp;
 		private SerializedProperty placeholderFontColorProp;
@@ -1255,7 +1251,7 @@ namespace AtomosZ.UI.EditorZ
 
 		private void OnEnable()
 		{
-			inputField = (UIExpandingInputField)target;
+			inputField = (UIInputField)target;
 
 			fontAssetProp = serializedObject.FindProperty("_fontAsset");
 			fontColorProp = serializedObject.FindProperty("_fontColor");
@@ -1478,7 +1474,7 @@ namespace AtomosZ.UI.EditorZ
 
 							case UIControlType.InputField:
 							{
-								Editor.CreateCachedEditor((UIExpandingInputField)uiControl, typeof(UIExpandingInputFieldEditor), ref inputEditor);
+								Editor.CreateCachedEditor((UIInputField)uiControl, typeof(UIExpandingInputFieldEditor), ref inputEditor);
 								inputEditor.OnInspectorGUI();
 							}
 							break;
@@ -1564,6 +1560,7 @@ namespace AtomosZ.UI.EditorZ
 		private Editor dataRowEditor;
 		private bool isRowsFoldout;
 		private Dictionary<int, bool> rowFoldouts = new();
+		private int columnSelect;
 
 		private void OnEnable()
 		{
@@ -1620,8 +1617,14 @@ namespace AtomosZ.UI.EditorZ
 			if (Button("Add Row"))
 				table.AddRow();
 
-			if (Button("Add column"))
+			if (Button("Add Column"))
 				table.AddColumn();
+
+			BeginHorizontal();
+			columnSelect = EditorGUILayout.IntSlider(columnSelect, 0, table.columnWidths.Length - 1);
+			if (Button("Remove Column"))
+				table.RemoveColumn(columnSelect);
+			EndHorizontal();
 
 			serializedObject.ApplyModifiedProperties();
 			if (EditorGUI.EndChangeCheck())
@@ -1764,19 +1767,10 @@ namespace AtomosZ.UI.EditorZ
 			EditorGUI.BeginChangeCheck();
 			base.OnInspectorGUI();
 
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("arrow"));
 
-			var refNameProp = serializedObject.FindProperty("_referenceName");
-			EditorGUILayout.PropertyField(refNameProp);
 
-			var activateProp = serializedObject.FindProperty("_interactable");
-			EditorGUILayout.PropertyField(activateProp);
 
-			var optionsDelegateProp = serializedObject.FindProperty("_optionsDelegate");
-			EditorGUILayout.PropertyField(optionsDelegateProp);
 
-			var optionsProp = serializedObject.FindProperty("_options");
-			EditorGUILayout.PropertyField(optionsProp);
 
 			var valueProp = serializedObject.FindProperty("_value");
 			var oldValue = valueProp.intValue;
@@ -1785,7 +1779,8 @@ namespace AtomosZ.UI.EditorZ
 			int newValue;
 
 			var isMultiSelectProp = serializedObject.FindProperty("_isMultiSelect");
-			var newMultiValue = EditorGUILayout.Toggle("Multiselect", isMultiSelectProp.boolValue);
+			isMultiSelectProp.boolValue = EditorGUILayout.Toggle("Multiselect", isMultiSelectProp.boolValue);
+
 			if (isMultiSelectProp.boolValue)
 			{
 				newValue = EditorGUILayout.IntField(valueProp.intValue);
@@ -1809,22 +1804,12 @@ namespace AtomosZ.UI.EditorZ
 				newValue = EditorGUILayout.IntSlider("Selection", valueProp.intValue, 0, optionsProp.arraySize - 1);
 			}
 
-			var arrowProp = serializedObject.FindProperty("_arrowSprite");
-			EditorGUILayout.PropertyField(arrowProp);
 
 
-			var fontColorProp = serializedObject.FindProperty("_fontColor");
-			EditorGUILayout.PropertyField(fontColorProp);
-
-			var alignmentProp = serializedObject.FindProperty("_alignmentOptions");
-			EditorGUILayout.PropertyField(alignmentProp);
 
 
-			var fillProp = serializedObject.FindProperty("_fillParentHorizontal");
-			EditorGUILayout.PropertyField(fillProp);
 
-			var minDimenProp = serializedObject.FindProperty("_minDimensions");
-			EditorGUILayout.PropertyField(minDimenProp);
+
 
 			var dataProp = serializedObject.FindProperty("dropdownData");
 			var oldData = dataProp.boxedValue;
@@ -1869,16 +1854,11 @@ namespace AtomosZ.UI.EditorZ
 			serializedObject.ApplyModifiedProperties();
 			if (EditorGUI.EndChangeCheck())
 			{
-				dropdown.interactable = activateProp.boolValue;
+				dropdown.UpdateBackingData_EDITOR();
 				dropdown.UpdateOptionsDelegate();
-				dropdown.referenceName = refNameProp.stringValue;
-				dropdown.minDimensions = minDimenProp.vector2Value;
-				dropdown.fillParentHorizontal = fillProp.boolValue;
 				dropdown.value = newValue;
 				valueProp.intValue = newValue;
 
-				dropdown.isMultiSelect = newMultiValue;
-				isMultiSelectProp.boolValue = newMultiValue;
 			}
 		}
 	}

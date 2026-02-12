@@ -50,27 +50,40 @@ namespace AtomosZ.UI.EditorZ
 
 		private void CreateNewPools()
 		{
-			foreach (UIPrefabType type in Enum.GetValues(typeof(UIPrefabType)))
-			{
-				CreatePool(type, provider.poolDict);
-			}
+
+			CreatePool("MagicWindow", ref provider.magicWindowPool);
+			CreatePool("UIButton", ref provider.buttonPool);
+			CreatePool("UIButtonPanel", ref provider.buttonPanelPool);
+			CreatePool("UIDataCell", ref provider.cellPool);
+			CreatePool("UICheckBox", ref provider.checkBoxPool);
+			CreatePool("UIModalClickBlocker", ref provider.clickBlockerPool);
+			CreatePool("UIDropdown", ref provider.dropdownPool);
+			CreatePool("UIImageView", ref provider.imageViewPool);
+			CreatePool("UIInputField", ref provider.inputFieldPool);
+			CreatePool("UIExpandingLabel", ref provider.labelPool);
+			CreatePool("UIMenuButton", ref provider.menuButtonPool);
+			CreatePool("UIMenuDivider", ref provider.menuDividerPool);
+			CreatePool("UIPanel", ref provider.panelPool);
+			CreatePool("UIDataRow", ref provider.rowPool);
+			CreatePool("UISlider", ref provider.sliderPool);
+			CreatePool("UISpinner", ref provider.spinnerPool);
+			CreatePool("UITabControl", ref provider.tabControlPool);
+			CreatePool("UITabItem", ref provider.tabItemPool);
+			CreatePool("UITable", ref provider.tablePool);
 		}
 
-		private void CreatePool(UIPrefabType type, CustomDictionary<UIPrefabType, ObjectForge.ObjectPool<UIMonoBehaviour>> dict)
+		private void CreatePool<T>(string prefabName, ref ObjectForge.ObjectPool<T> pool) where T : MonoBehaviour, ObjectForge.IPooledObject<T>
 		{
-			if (dict.TryGetValue(type, out var pool))
+			if (pool != null && pool.Count() > 0)
 				return;
-			var prefabName = type.ToString();
-			if (type != UIPrefabType.MagicWindow)
-				prefabName = "UI" + prefabName;
 			var prefabFilepath = $"Assets/AtomosZ/UI/BaseUIPrefabs/{prefabName}.prefab";
-			var asset = AssetDatabase.LoadAssetAtPath<UIMonoBehaviour>(prefabFilepath);
+			var asset = AssetDatabase.LoadAssetAtPath<T>(prefabFilepath);
 			if (asset == null)
 				Debug.LogException(new Exception($"could not find prefab {prefabFilepath}"));
-			pool = new ObjectForge.ObjectPool<UIMonoBehaviour>(asset, 0);
+			pool = new ObjectForge.ObjectPool<T>(asset, 0);
 
-			dict.Add(type, pool);
 		}
+
 
 		public override void OnInspectorGUI()
 		{

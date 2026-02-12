@@ -13,8 +13,8 @@ namespace AtomosZ.UI
 	/// @TODO(Tristan): Text still gets screwy when the max dimensions are exceeded.
 	/// Should create scrollbar.
 	/// </summary>
-	[ExecuteAlways]
-	public class UIExpandingInputField : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UIInputField : UIPooledMonoBehaviour<UIInputField>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.InputField; } }
 

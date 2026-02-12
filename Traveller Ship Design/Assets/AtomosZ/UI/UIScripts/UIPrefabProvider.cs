@@ -48,12 +48,34 @@ namespace AtomosZ.UI
 			DataRow,
 			DataCell,
 			Table,
-			
+			TabItem,
 			/// <summary>
 			/// this is not a base UI prefab.
 			/// </summary>
 			//GeomorphDisplayPanel,
 		}
+
+		public ObjectPool<MagicWindow> magicWindowPool;
+		public ObjectPool<UIButton> buttonPool;
+		public ObjectPool<UIButtonPanel> buttonPanelPool;
+		public ObjectPool<UICheckBox> checkBoxPool;
+		public ObjectPool<UIDataCell> cellPool;
+		public ObjectPool<UIDataRow> rowPool;
+		public ObjectPool<UIDropdown> dropdownPool;
+		public ObjectPool<UIExpandingLabel> labelPool;
+		public ObjectPool<UIImageView> imageViewPool;
+		public ObjectPool<UIInputField> inputFieldPool;
+		public ObjectPool<UIMenuButton> menuButtonPool;
+		public ObjectPool<UIMenuDivider> menuDividerPool;
+		public ObjectPool<UIModalClickBlocker> clickBlockerPool;
+		public ObjectPool<UIPanel> panelPool;
+		public ObjectPool<UISlider> sliderPool;
+		public ObjectPool<UISpinner> spinnerPool;
+		public ObjectPool<UITabControl> tabControlPool;
+		public ObjectPool<UITable> tablePool;
+		public ObjectPool<UITabItem> tabItemPool;
+
+		public CustomDictionary<UIPrefabType, IObjectPool> poolDict;
 
 		private Dictionary<UIControlType, UIPrefabType> typeLinkage = new()
 		{
@@ -80,6 +102,7 @@ namespace AtomosZ.UI
 			//[UIControlType. ] = UIPrefabType.,
 		};
 
+
 		[SerializeField] public UIPanelScriptableObject panelScriptObj;
 		[SerializeField] public UIPanelScriptableObject horizontalPanelScriptObj;
 		[SerializeField] public UIExpandingLabelScriptableObject textScriptObj;
@@ -99,27 +122,59 @@ namespace AtomosZ.UI
 
 		[SerializeField] private TMP_FontAsset defaultFont;
 
-		public CustomDictionary<UIPrefabType, ObjectForge.ObjectPool<UIMonoBehaviour>> poolDict = new();
+		void Awake()
+		{
+			instance.RecreatePoolDict();
+		}
 
-		internal static ObjectForge.ObjectPool<UIMonoBehaviour> GetPoolOfType(
-			MagicWindow.UIControlType dataType)
+		private void RecreatePoolDict()
+		{
+			poolDict = new()
+			{
+				[UIPrefabType.MagicWindow] = magicWindowPool,
+				[UIPrefabType.Button] = buttonPool,
+				[UIPrefabType.ButtonPanel] = buttonPanelPool,
+				[UIPrefabType.CheckBox] = checkBoxPool,
+				[UIPrefabType.DataCell] = cellPool,
+				[UIPrefabType.DataRow] = rowPool,
+				[UIPrefabType.Dropdown] = dropdownPool,
+				[UIPrefabType.ExpandingLabel] = labelPool,
+				[UIPrefabType.HorizontalPanel] = panelPool,
+				[UIPrefabType.ImageView] = imageViewPool,
+				[UIPrefabType.InputField] = inputFieldPool,
+				[UIPrefabType.MenuButton] = menuButtonPool,
+				[UIPrefabType.MenuDivider] = menuDividerPool,
+				[UIPrefabType.ModalClickBlocker] = clickBlockerPool,
+				[UIPrefabType.Panel] = panelPool,
+				[UIPrefabType.Slider] = sliderPool,
+				[UIPrefabType.Spinner] = spinnerPool,
+				[UIPrefabType.TabControl] = tabControlPool,
+				[UIPrefabType.TabItem] = tabItemPool,
+				[UIPrefabType.Table] = tablePool,
+			};
+		}
+
+		internal static IObjectPool GetPoolOfType(UIControlType dataType)
 		{
 #if UNITY_EDITOR
 			if (Helpers.IsPrefabStage_EDITOR())
 			{
 				return null;
 			}
-#endif
-			if (!instance.poolDict.TryGetValue(instance.typeLinkage[dataType], out var pool))
-			{
-				return null;
-			}
 
-			return pool;
+			instance.RecreatePoolDict();
+#endif
+			if (instance.poolDict.TryGetValue(instance.typeLinkage[dataType], out var pool))
+				return pool;
+				return null;
+
 		}
 
 		public void DestroyPools()
 		{
+#if UNITY_EDITOR
+			RecreatePoolDict();
+#endif
 			foreach (var pool in poolDict)
 			{
 				pool.Value.Clear();
@@ -131,7 +186,94 @@ namespace AtomosZ.UI
 
 		public static UIMonoBehaviour GetMagicUIControl(UIPrefabType prefabType, Transform parent)
 		{
-			var obj = instance.poolDict[prefabType].GetNext();
+			var objPool = GetPool(prefabType);
+			UIMonoBehaviour obj = null;
+			switch (prefabType)
+			{
+				case UIPrefabType.Button:
+					obj = instance.buttonPool.GetNext();
+					break;
+
+				case UIPrefabType.ButtonPanel:
+					obj = instance.buttonPanelPool.GetNext();
+					break;
+
+				case UIPrefabType.CheckBox:
+					obj = instance.checkBoxPool.GetNext();
+					break;
+
+				case UIPrefabType.DataCell:
+					obj = instance.cellPool.GetNext();
+					break;
+
+				case UIPrefabType.DataRow:
+					obj = instance.rowPool.GetNext();
+					break;
+
+				case UIPrefabType.Dropdown:
+					obj = instance.dropdownPool.GetNext();
+					break;
+
+				case UIPrefabType.HorizontalPanel:
+					obj = instance.panelPool.GetNext();
+					break;
+
+				case UIPrefabType.ImageView:
+					obj = instance.imageViewPool.GetNext();
+					break;
+
+				//case UIPrefabType.ImagePanel:
+				//obj = instance.Pool.GetNext();break;
+
+				case UIPrefabType.InputField:
+					obj = instance.inputFieldPool.GetNext();
+					break;
+
+				case UIPrefabType.MenuButton:
+					obj = instance.menuButtonPool.GetNext();
+					break;
+
+				case UIPrefabType.MenuDivider:
+					obj = instance.menuDividerPool.GetNext();
+					break;
+
+				case UIPrefabType.ModalClickBlocker:
+					obj = instance.clickBlockerPool.GetNext();
+					break;
+
+				case UIPrefabType.Panel:
+					obj = instance.panelPool.GetNext();
+					break;
+
+				case UIPrefabType.Slider:
+					obj = instance.sliderPool.GetNext();
+					break;
+
+				case UIPrefabType.Spinner:
+					obj = instance.spinnerPool.GetNext();
+					break;
+
+				case UIPrefabType.TabControl:
+					obj = instance.tabControlPool.GetNext();
+					break;
+
+				case UIPrefabType.Table:
+					obj = instance.tablePool.GetNext();
+					break;
+
+				case UIPrefabType.ExpandingLabel:
+					obj = instance.labelPool.GetNext();
+					break;
+
+				case UIPrefabType.MagicWindow:
+					obj = instance.magicWindowPool.GetNext();
+					break;
+
+				default:
+					Debug.LogError($"{prefabType} does not a have a pool.");
+					return null;
+			}
+
 			if (parent != null)
 			{
 				obj.transform.SetParent(parent, false);
@@ -142,6 +284,78 @@ namespace AtomosZ.UI
 			}
 
 			return obj;
+		}
+
+		public static IObjectPool GetPool(UIPrefabType prefabType)
+		{
+			switch (prefabType)
+			{
+				case UIPrefabType.Button:
+					return instance.buttonPool;
+
+				case UIPrefabType.ButtonPanel:
+					return instance.buttonPanelPool;
+
+				case UIPrefabType.CheckBox:
+					return instance.checkBoxPool;
+
+				case UIPrefabType.DataCell:
+					return instance.cellPool;
+
+				case UIPrefabType.DataRow:
+					return instance.rowPool;
+
+				case UIPrefabType.Dropdown:
+					return instance.dropdownPool;
+
+				case UIPrefabType.HorizontalPanel:
+					return instance.panelPool;
+
+				case UIPrefabType.ImageView:
+					return instance.imageViewPool;
+
+				//case UIPrefabType.ImagePanel:
+				//return instance.Pool;
+
+				case UIPrefabType.InputField:
+					return instance.inputFieldPool;
+
+				case UIPrefabType.MenuButton:
+					return instance.menuButtonPool;
+
+				case UIPrefabType.MenuDivider:
+					return instance.menuDividerPool;
+
+				case UIPrefabType.ModalClickBlocker:
+					return instance.clickBlockerPool;
+
+				case UIPrefabType.Panel:
+					return instance.panelPool;
+
+				case UIPrefabType.Slider:
+					return instance.sliderPool;
+
+				case UIPrefabType.Spinner:
+					return instance.spinnerPool;
+
+				case UIPrefabType.TabControl:
+					return instance.tabControlPool;
+
+				case UIPrefabType.Table:
+					return instance.tablePool;
+
+				case UIPrefabType.ExpandingLabel:
+					return instance.labelPool;
+
+				case UIPrefabType.MagicWindow:
+					return instance.magicWindowPool;
+
+				//case UIPrefabType.:
+				//return instance.Pool;
+
+				default:
+					return null;
+			}
 		}
 
 

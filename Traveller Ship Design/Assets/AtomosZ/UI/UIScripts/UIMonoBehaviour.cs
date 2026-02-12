@@ -6,11 +6,39 @@ using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
+	public class UIPooledMonoBehaviour<T> : UIMonoBehaviour, IPooledObject<T> where T : MonoBehaviour, IPooledObject<T>
+	{
+		public bool isLive { get; set; }
+		public ObjectPool<T> pool { get; set; }
+
+		void OnDestroy()
+		{
+			this.OnDestroyPooledObject();
+		}
+
+		public virtual void ReturnToPool()
+		{
+			if (pool == null)
+				pool = (ObjectPool<T>)UIPrefabProvider.GetPoolOfType(iUIBehavior.dataType);
+
+
+			foreach (var pooledChild in transform.GetComponentsInChildren<IPooledObject>(true))
+			{
+				var baseUIMono = (UIMonoBehaviour)pooledChild;
+				if (baseUIMono == this)
+					continue;
+				pooledChild.ReturnToPool();
+			}
+
+			this.Return();
+		}
+	}
+
+	[ExecuteInEditMode]
 	/// <summary>
 	/// This class is here to allow for simple serialization of our UI controls.
 	/// </summary>
-	public class UIMonoBehaviour : MonoBehaviour, IPooledObject<UIMonoBehaviour>
+	public class UIMonoBehaviour : MonoBehaviour
 	{
 		[SerializeField] protected string _referenceName;// = "no reference name yet";
 		/// <summary>
@@ -116,18 +144,11 @@ namespace AtomosZ.UI
 			}
 		}
 
-		// Object pool variables
-		public bool isLive { get; set; }
-		public ObjectPool<UIMonoBehaviour> pool { get; set; }
-		//
 
 		[System.Diagnostics.DebuggerStepThrough]
 		public UIControlType GetDataType() { return iUIBehavior.dataType; }
 
-		void OnDestroy()
-		{
-			this.OnDestroyPooledObject();
-		}
+
 
 
 		public void SetDirty()
@@ -166,22 +187,6 @@ namespace AtomosZ.UI
 		public void RecordPrefabInstances()
 		{
 			UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(gameObject);
-		}
-
-		public virtual void ReturnToPool()
-		{
-			if (pool == null)
-				pool = UIPrefabProvider.GetPoolOfType(iUIBehavior.dataType);
-
-
-			foreach (var pooledChild in transform.GetComponentsInChildren<UIMonoBehaviour>())
-			{
-				if (pooledChild == this)
-					continue;
-				pooledChild.ReturnToPool();
-			}
-
-			this.Return();
 		}
 	}
 }

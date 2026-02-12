@@ -82,17 +82,28 @@ namespace AtomosZ
 
 		public Transform sleepingPooledObjects;
 
-
-		public interface IPooledObject<T> where T : MonoBehaviour, IPooledObject<T>
+		/// <summary>
+		/// Implement IPooledObject&lt;T> unless you want to have a bad time.
+		/// </summary>
+		public interface IPooledObject
 		{
 			public bool isLive { get; set; }
-			public ObjectPool<T> pool { get; set; }
 			public void ReturnToPool();
 		}
 
+		public interface IPooledObject<T> : IPooledObject where T : MonoBehaviour, IPooledObject<T>
+		{
+			public ObjectPool<T> pool { get; set; }
+		}
+
+		public interface IObjectPool
+		{
+			public int Count();
+			public void Clear();
+		}
 
 		[Serializable]
-		public class ObjectPool<T> where T : MonoBehaviour, IPooledObject<T>
+		public class ObjectPool<T> : IObjectPool where T : MonoBehaviour, IPooledObject<T>
 		{
 			[SerializeField] private List<T> pool = new();
 			/// <summary>
@@ -100,10 +111,12 @@ namespace AtomosZ
 			/// </summary>
 			/// <returns></returns>
 			public delegate T CreateNewDelegate();
+			public delegate void OnAwakeDelegate(T t);
 			/// <summary>
 			/// Optional. The function to call when a new object of this type gets constructed.
 			/// </summary>
 			public CreateNewDelegate CreateNew;
+			public OnAwakeDelegate OnAwake;
 			public T prefab;
 
 
@@ -149,6 +162,10 @@ namespace AtomosZ
 				}
 			}
 
+			public int Count()
+			{
+				return pool.Count;
+			}
 
 			public T GetNext()
 			{
@@ -165,8 +182,9 @@ namespace AtomosZ
 					var t = prefab.GetType();
 					var allObjectsOfType = ObjectForge.instance.sleepingPooledObjects.GetComponentsInChildren(t, true);
 					foreach (T objOfType in allObjectsOfType)
-					{
-						Return(objOfType);
+					{   // make sure we don't pick up children of pooled objects that we want to keep together
+						if (objOfType.transform.parent == ObjectForge.instance.sleepingPooledObjects)
+							Return(objOfType);
 					}
 				}
 #endif
@@ -190,6 +208,8 @@ namespace AtomosZ
 							p.pool = this;
 						}
 
+						if (OnAwake != null)
+							OnAwake(p);
 						return p;
 					}
 				}
@@ -199,6 +219,8 @@ namespace AtomosZ
 				pool.Add(result);
 				result.pool = this;
 				result.isLive = true;
+				if (OnAwake != null)
+					OnAwake(result);
 				return result;
 			}
 

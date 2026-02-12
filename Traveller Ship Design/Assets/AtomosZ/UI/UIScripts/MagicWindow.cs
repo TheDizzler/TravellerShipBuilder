@@ -12,7 +12,7 @@ using Debug = UnityEngine.Debug;
 namespace AtomosZ.UI
 {
 	[ExecuteAlways]
-	public class MagicWindow : UIMonoBehaviour, IUIBehavior
+	public class MagicWindow : UIPooledMonoBehaviour<MagicWindow>, IUIBehavior
 	{
 		public UIControlType dataType { get; }
 		public enum UIControlType
@@ -510,7 +510,7 @@ namespace AtomosZ.UI
 			return panel.AddText_(text);
 		}
 
-		public UIExpandingInputField AddInputField()
+		public UIInputField AddInputField()
 		{
 			return panel.AddInputField(null);
 		}

@@ -33,7 +33,8 @@ namespace AtomosZ.UI
 		}
 	}
 
-	public class UIMenuButton : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UIMenuButton : UIPooledMonoBehaviour<UIMenuButton>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.MenuButton; } }
 		[SerializeField] private UIExpandingLabel label;

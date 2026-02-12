@@ -7,7 +7,7 @@ using static AtomosZ.UI.MagicWindow;
 namespace AtomosZ.UI
 {
 	[ExecuteAlways]
-	public class UIImageView : UIMonoBehaviour, IUIBehavior
+	public class UIImageView : UIPooledMonoBehaviour<UIImageView>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Image; } }
 		[SerializeField] private Image image;

@@ -24,8 +24,8 @@ namespace AtomosZ.UI
 	}
 
 
-	[ExecuteAlways]
-	public class UITabControl : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UITabControl : UIPooledMonoBehaviour<UITabControl>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.TabControl; } }
 
@@ -66,9 +66,6 @@ namespace AtomosZ.UI
 
 		[Min(0)]
 		public int selectedTabIndex;
-
-		public GameObject tabItemPrefab;
-		public UIPanel panelPrefab;
 
 		public RectTransform panelsTransform;
 
@@ -188,10 +185,10 @@ namespace AtomosZ.UI
 
 		public TabPanel AddTab(string tabText = null, UIPanelScriptableObject overridePanelData = null)
 		{
-			var tabItem = Instantiate(tabItemPrefab, this.transform);
+			var tabItem = UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.TabItem, transform);
 			var tabLabel = tabItem.GetComponent<UIExpandingLabel>();
 			var tabRect = tabItem.GetComponent<RectTransform>();
-			var panel = Instantiate(panelPrefab, panelsTransform);
+			var panel = (UIPanel)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.Panel, panelsTransform);
 			panel.parentPanel = this;
 			panel.tabLabel = tabLabel;
 

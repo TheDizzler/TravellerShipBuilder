@@ -6,8 +6,8 @@ using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
-	public class UISlider : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UISlider : UIPooledMonoBehaviour<UISlider>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Slider; } }
 
@@ -135,6 +135,7 @@ namespace AtomosZ.UI
 			}
 		}
 
+		[Min(1)]
 		[SerializeField] private float _fontSize = 18;
 		public float fontSize
 		{
@@ -204,20 +205,19 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[SerializeField] private UIExpandingLabelScriptableObject _labelData;
+
 		public UIExpandingLabelScriptableObject labelData
 		{
-			get { return _labelData; }
+			get { return slider.labelData; }
 			set
 			{
 				if (value == null)
 				{
 					if (sliderData != null)
-						labelData = sliderData.labelData;
+						slider.labelData = sliderData.labelData;
 				}
 				else
-					_labelData = value;
-
+					slider.labelData = value;
 				this.SetDirty();
 			}
 		}
@@ -372,6 +372,13 @@ namespace AtomosZ.UI
 			if (isDirty || lastWidth != rectTransform.sizeDelta.x)
 				RecalculateDimensions();
 			return rectTransform.sizeDelta;
+		}
+
+		public override void ReturnToPool()
+		{
+			if (pool == null)
+				pool = (ObjectForge.ObjectPool<UISlider>)UIPrefabProvider.GetPoolOfType(iUIBehavior.dataType);
+			slider.ReturnToPool();
 		}
 	}
 }

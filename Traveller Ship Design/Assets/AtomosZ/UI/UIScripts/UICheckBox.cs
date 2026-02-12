@@ -10,8 +10,8 @@ using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
-	public class UICheckBox : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UICheckBox : UIPooledMonoBehaviour<UICheckBox>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.CheckBox; } }
 

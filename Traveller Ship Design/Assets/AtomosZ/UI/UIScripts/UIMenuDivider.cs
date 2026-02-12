@@ -4,7 +4,8 @@ using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	public class UIMenuDivider : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UIMenuDivider : UIPooledMonoBehaviour<UIMenuDivider>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.MenuDivider; } }
 		public bool interactable { get; set; }

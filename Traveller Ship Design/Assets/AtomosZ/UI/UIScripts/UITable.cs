@@ -11,7 +11,7 @@ using static AtomosZ.UI.MagicWindow;
 namespace AtomosZ.UI
 {
 	[ExecuteInEditMode]
-	public class UITable : UIMonoBehaviour, IUIBehavior
+	public class UITable : UIPooledMonoBehaviour<UITable>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Table; } }
 
@@ -221,12 +221,15 @@ namespace AtomosZ.UI
 		/// </summary>
 		public void Init(int startingColCount, int startingRowCount)
 		{
-			if (headerRow == null)
-				CreateHeaderRow();
+			layoutSpacing = new Vector2(32, 0);
+			borderMargins = new RectOffset(16, 16, 16, 16);
+			gridThickness = 4;
 
 			rowMinHeight = 64;
 			headerHeight = 64;
-			layoutSpacing = new Vector2(32, 0);
+
+			if (headerRow == null)
+				CreateHeaderRow();
 
 			for (int i = 0; i < startingColCount; ++i)
 			{
@@ -486,6 +489,29 @@ namespace AtomosZ.UI
 			this.SetDirty();
 		}
 
+		public void RemoveColumn(int columnIndex)
+		{
+			if (columnIndex >= columnCount)
+			{
+				UnityEngine.Debug.LogWarning($"Index {columnIndex} is out of bounds for table {referenceName} (only has {columnCount} columns)");
+				return;
+			}
+
+			var columnWidthList = new List<float>(_columnWidths);
+			columnWidthList.RemoveAt(columnIndex);
+			_columnWidths = columnWidthList.ToArray();
+
+			if (headerRow != null)
+			{
+				headerRow.RemoveCell(columnIndex);
+			}
+
+			for (int i = 0; i < rows.Length; ++i)
+				rows[i].RemoveCell(i);
+
+			--columnCount;
+			this.SetDirty();
+		}
 
 		public UIDataRow AddRow()
 		{
@@ -500,6 +526,7 @@ namespace AtomosZ.UI
 			newRows.Add(newRow);
 			rows = newRows.ToArray();
 
+			columnDividerMask.transform.SetAsLastSibling();
 			this.SetDirty();
 			return newRow;
 		}
@@ -530,6 +557,12 @@ namespace AtomosZ.UI
 
 		public void RemoveRow(int rowIndex)
 		{
+			if (rowIndex >= rows.Length)
+			{
+				UnityEngine.Debug.LogWarning($"Index {rowIndex} is out of bounds for table {referenceName} (only has {rows.Length} rows)");
+				return;
+			}
+
 			var rowList = new UIDataRow[rows.Length - 1];
 			for (int i = 0; i < rowIndex; ++i)
 				rowList[i] = rows[i];
@@ -567,13 +600,12 @@ namespace AtomosZ.UI
 
 			for (int i = 0; i < rows.Length; ++i)
 			{
-				if (i == rows.Length - 1)
-					rows[i].ShowGridLine(false);
+				rows[i].ShowGridLine(i != rows.Length - 1);
 				height += rows[i].GetDrawnDimensions().y;
 			}
 
 			height += Mathf.Max(0, rows.Length - 1) * (layoutSpacing.y);
-
+			height += borderMargins.bottom;
 
 			float dividerX = borderMargins.left;
 			for (int i = 0; i < columnDividers.Length; ++i)
@@ -588,11 +620,11 @@ namespace AtomosZ.UI
 				dividerX += (layoutSpacing.x) * .5f;
 			}
 
-			columnDividerMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width + layout.padding.right);
+			columnDividerMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width + borderMargins.horizontal);
 			columnDividerMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(minDimensions.y, height));
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Max(minDimensions.x, width + layout.padding.right));
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Max(minDimensions.x, width + borderMargins.horizontal));
 
 			isDirty = false;
 		}

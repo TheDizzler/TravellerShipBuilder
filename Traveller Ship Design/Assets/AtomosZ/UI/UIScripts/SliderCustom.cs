@@ -12,6 +12,18 @@ namespace AtomosZ.UI
 	{
 		[SerializeField] private UISlider slider;
 
+		[SerializeField] private UIExpandingLabelScriptableObject _labelData;
+		internal UIExpandingLabelScriptableObject labelData
+		{
+			get { return _labelData; }
+			set
+			{
+				_labelData = value;
+				minUnit.UpdateBackingData(_labelData);
+				maxUnit.UpdateBackingData(_labelData);
+			}
+		}
+
 		[SerializeField] private Image emptyStartCap;
 		[SerializeField] private Image emptyEndCap;
 		[SerializeField] private Image fillStartCap;
@@ -25,12 +37,11 @@ namespace AtomosZ.UI
 		[SerializeField] private RectTransform handle;
 		[SerializeField] private RectTransform handlePanel;
 		[SerializeField] private RectTransform handleSlideArea;
-		//[SerializeField] private RectTransform baseRect;
+
 		[SerializeField] private RectTransform units;
 		[SerializeField] private RectTransform panelRect;
 		[SerializeField] private RectTransform bgRect;
 
-		[SerializeField] private UIExpandingLabel sliderUnitPrefab;
 		[SerializeField] private UIExpandingLabel minUnit;
 		[SerializeField] private UIExpandingLabel maxUnit;
 
@@ -64,7 +75,7 @@ namespace AtomosZ.UI
 		public void ShowUnits(bool show)
 		{
 			units.gameObject.SetActive(show);
-			Resize();
+			RecalculateDimensions();
 		}
 
 		public void SetFontSize(float newFontSize)
@@ -74,7 +85,7 @@ namespace AtomosZ.UI
 			foreach (var unit in unitLabels)
 				unit.fontSize = newFontSize;
 
-			Resize();
+			RecalculateDimensions();
 		}
 
 		public void SetFontColor(Color newColor)
@@ -133,12 +144,12 @@ namespace AtomosZ.UI
 				ClearLabels();
 			}
 
-			Resize();
+			RecalculateDimensions();
 		}
 
 		private float showHandleUnitOffset = 42.0f;
 		private float hideHandleUnitOffset = 32.0f;
-		
+
 		internal void CreateUnitLabels()
 		{
 			units.gameObject.SetActive(true);
@@ -151,7 +162,6 @@ namespace AtomosZ.UI
 			float nextUnit = slider.minValue;
 
 
-			var labelData = minUnit.GetBackingData();
 			minUnit.text = nextUnit.ToString();
 			minUnit.UpdateBackingData(labelData);
 
@@ -167,13 +177,23 @@ namespace AtomosZ.UI
 				float range = (slider.maxValue - slider.minValue);
 				float distDiff = Mathf.Lerp(0, units.rect.width, unitDiff / range);
 				float nextPos = 0;
+				int count = 0;
 				while ((nextUnit += unitDiff) < slider.maxValue)
 				{
 					nextPos += distDiff;
 
-					var newLabel = Instantiate(sliderUnitPrefab, units.transform, false);
-					newLabel.GetComponent<RectTransform>().anchoredPosition = new Vector2(nextPos, 0);
+					var newLabel = (UIExpandingLabel)UIPrefabProvider.GetMagicUIControl(
+						UIPrefabProvider.UIPrefabType.ExpandingLabel, units.transform);
+					newLabel.referenceName = "unit_" + (count++).ToString("00");
+					newLabel.rect.anchorMin = new Vector2(0, 1);
+					newLabel.rect.anchorMax = new Vector2(0, 1);
+					newLabel.rect.pivot = new Vector2(0.5f, 0);
+					newLabel.rect.rotation = Quaternion.identity;
+					newLabel.rect.anchoredPosition = new Vector2(nextPos, 0);
 					newLabel.text = nextUnit.ToString();
+					newLabel.fontSize = slider.fontSize;
+					newLabel.color = slider.fontColor;
+					
 					newLabel.UpdateBackingData(labelData);
 					unitLabels.Add(newLabel);
 				}
@@ -211,21 +231,15 @@ namespace AtomosZ.UI
 		}
 
 
-		private void Resize()
+		private void RecalculateDimensions()
 		{
 			var sizeData = GetHeightAndLeftUnitOverhang(slider.showHandle, slider.showUnits);
 			if (sizeData.y < slider.minDimensions.y)
 				sizeData.y = slider.minDimensions.y;
 			panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, sizeData.y);
-			//if (boundingBox.width > baseRect.rect.width) // this creates an infinite growth
-			//panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, boundingBox.width);
+
 			slider.size.x = Math.Min(sizeData.x, handleHorzOverhang);
 			slider.size.y = sizeData.y;
-
-			//var mainPos = slider.GetComponent<RectTransform>().anchoredPosition;
-			//mainPos.x += slider.size.x;
-			//mainPos.y += panelRect.rect.height;
-			//panelRect.anchoredPosition = mainPos;
 
 			panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,
 				slider.GetComponent<RectTransform>().rect.width + slider.size.x);
@@ -300,30 +314,28 @@ namespace AtomosZ.UI
 			//return new Rect(minPosX, minPosY, 0, height);
 		}
 
-		public Vector2 GetMinDimensions()
-		{
-			Resize();
-			return slider.size;
-		}
 
 
 		private void ClearLabels()
 		{
 			foreach (var label in unitLabels)
 			{
+#if UNITY_EDITOR
 				if (label == null)
-					continue;
-#if DEBUG
-				if (!Application.isPlaying)
-					DestroyImmediate(label.gameObject);
-				else
-					Destroy(label.gameObject);
-#else
-				Destroy(label.gameObject);
+				{
+					Debug.LogError($"GD labels disappearing on {slider.referenceName}!");
+					continue; // this shouldn't happen, right??
+				}
 #endif
+				label.ReturnToPool();
 			}
 
 			unitLabels.Clear();
+		}
+
+		internal void ReturnToPool()
+		{
+			ClearLabels();
 		}
 	}
 }

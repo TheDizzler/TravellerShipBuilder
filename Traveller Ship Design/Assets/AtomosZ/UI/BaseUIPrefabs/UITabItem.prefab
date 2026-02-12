@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 2426340941609388716}
   - component: {fileID: 3126946103031920126}
   m_Layer: 5
-  m_Name: TabItem
+  m_Name: UITabItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -187,9 +187,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7330561272148096184}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0820bacee9a077643a00fd49d32211fb, type: 3}
+  m_Script: {fileID: 11500000, guid: 438a2ec89a7a5d343849b2133ef85b63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  _referenceName: TabItem
+  _interactable: 1
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   panel: {fileID: 0}
   panelRect: {fileID: 0}
 --- !u!114 &2781322499687730756

@@ -8,8 +8,8 @@ using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
-	public class UIButtonPanel : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UIButtonPanel : UIPooledMonoBehaviour<UIButtonPanel>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.ButtonPanel; } }
 

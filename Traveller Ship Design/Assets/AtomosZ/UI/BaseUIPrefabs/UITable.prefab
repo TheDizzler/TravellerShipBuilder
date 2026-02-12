@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
-  m_Padding: {x: 4, y: 0, z: 0, w: 0}
+  m_Padding: {x: 16, y: 16, z: 16, w: 16}
   m_Softness: {x: 0, y: 0}
 --- !u!114 &4726012259414387207
 MonoBehaviour:
@@ -128,13 +128,12 @@ MonoBehaviour:
   _fillParentHorizontal: 0
   _fillParentVertical: 0
   headerRow: {fileID: 0}
-  headerLine: {fileID: 0}
   _borderMargins:
-    m_Left: 4
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  _gridThickness: 0
+    m_Left: 16
+    m_Right: 16
+    m_Top: 16
+    m_Bottom: 16
+  _gridThickness: 4
   rows: []
   _layoutSpacing: {x: 32, y: 0}
   _columnWidths: []
@@ -158,10 +157,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
   m_Padding:
-    m_Left: 4
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
+    m_Left: 16
+    m_Right: 16
+    m_Top: 16
+    m_Bottom: 16
   m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 0

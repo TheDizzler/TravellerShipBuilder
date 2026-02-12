@@ -10,7 +10,7 @@ using Debug = UnityEngine.Debug;
 namespace AtomosZ.UI
 {
 	[ExecuteInEditMode]
-	public class UIExpandingLabel : UIMonoBehaviour, IUIBehavior
+	public class UIExpandingLabel : UIPooledMonoBehaviour<UIExpandingLabel>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Text; } }
 		[SerializeField] private UIExpandingLabelScriptableObject labelData;
@@ -123,11 +123,10 @@ namespace AtomosZ.UI
 		}
 
 
-		//[SerializeField] private float _fontSize;
 		[Tooltip("A value of <= 0 will set the fontSize to the scriptable object value, if it exists")]
 		public float fontSize
 		{
-			get { return /*_fontSize = */textLabel.fontSize; }
+			get { return textLabel.fontSize; }
 			set
 			{
 				if (value < 1)
@@ -141,7 +140,6 @@ namespace AtomosZ.UI
 				if (value == fontSize)
 					return;
 
-				/*_fontSize = */
 				textLabel.fontSize = value;
 				this.SetDirty();
 			}

@@ -6,8 +6,8 @@ using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
-	public class UIDataRow : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UIDataRow : UIPooledMonoBehaviour<UIDataRow>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.DataRow; } }
 		public static Color zeroAlpha = new Color(0, 0, 0, 0);
@@ -68,7 +68,20 @@ namespace AtomosZ.UI
 
 
 
-		public RectMask2D rectMask;
+		[SerializeField] private RectMask2D _gridMask;
+		public RectMask2D gridMask
+		{
+			get
+			{
+				if (_gridMask == null)
+				{
+					_gridMask = GetComponentInChildren<RectMask2D>();
+				}
+
+				return _gridMask;
+			}
+		}
+
 		public UIMenuDivider gridLine;
 
 		[SerializeField] private Vector2 _minDimensions;
@@ -155,12 +168,11 @@ namespace AtomosZ.UI
 
 		public void CreateGridLine()
 		{
-			gridLine = GetComponentInChildren<UIMenuDivider>();
+			gridLine = gridMask.GetComponentInChildren<UIMenuDivider>(true);
 			if (gridLine == null)
-				gridLine = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.MenuDivider, rectMask.transform);
+				gridLine = (UIMenuDivider)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.MenuDivider, gridMask.transform);
 			gridLine.referenceName = referenceName + "_RowDivider";
-			gridLine.layoutElement.enabled = true;
-			gridLine.layoutElement.ignoreLayout = true;
+			gridLine.layoutElement.enabled = false;
 			gridLine.rect.rotation = Quaternion.Euler(0, 0, 0);
 			gridLine.rect.pivot = new Vector2(0, 0);
 			gridLine.rect.anchoredPosition = new Vector2(0, 0);
@@ -168,6 +180,8 @@ namespace AtomosZ.UI
 
 		public void ShowGridLine(bool show)
 		{
+			if (gridLine.gameObject.activeSelf == show)
+				return;
 			gridLine.gameObject.SetActive(show);
 			this.SetDirty();
 		}
@@ -281,14 +295,24 @@ namespace AtomosZ.UI
 				}
 			}
 
-			if (rectMask.gameObject.activeSelf)
+			if (gridMask.gameObject.activeSelf)
 			{
 				height = height + gridLine.rect.sizeDelta.y;
-				rectMask.rectTransform.anchoredPosition = new Vector2(0, 0);
-				rectMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
-				rectMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
-				gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+				gridMask.rectTransform.anchoredPosition = new Vector2(0, 0);
+				gridMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+				gridMask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+				var table = transform.parent.GetComponent<UITable>();
+#if UNITY_EDITOR
+				if (!Helpers.IsPrefabStage_EDITOR())
+				{
+#endif
+					gridLine.rect.anchoredPosition = new Vector2(-table.borderMargins.left, 0);
+					gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width + table.borderMargins.horizontal);
+#if UNITY_EDITOR
+				}
+#endif
 			}
+
 
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
@@ -304,21 +328,22 @@ namespace AtomosZ.UI
 			return rect.sizeDelta;
 		}
 
-		internal void Clear()
-		{
-			for (int i = cells.Length - 1; i >= 0; --i)
-				RemoveCell(i);
-		}
 
-		public void RemoveCell(int i)
+		public void RemoveCell(int cellIndex)
 		{
-			cells[i].ReturnToPool();
+			if (cellIndex >= cells.Length)
+			{
+				UnityEngine.Debug.LogWarning($"Index {cellIndex} is out of bounds for row {referenceName} (only has {cells.Length} cells)");
+				return;
+			}
+
+			cells[cellIndex].ReturnToPool();
 
 			var cellList = new List<UIDataCell>(cells);
-			cellList.RemoveAt(i);
+			cellList.RemoveAt(cellIndex);
 
 			var widthList = new List<float>(cellWidths);
-			widthList.RemoveAt(i);
+			widthList.RemoveAt(cellIndex);
 
 			cells = cellList.ToArray();
 			cellWidths = widthList.ToArray();
@@ -328,21 +353,32 @@ namespace AtomosZ.UI
 		public void AddCell()
 		{
 			var newCtrls = new List<UIDataCell>(cells);
-			var newWidths = new List<float>(cellWidths);
-
 			newCtrls.Add((UIDataCell)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.DataCell, transform));
-			newWidths.Add(128);
-
 			cells = newCtrls.ToArray();
-			cellWidths = newWidths.ToArray();
+
+			var newWidths = new float[cells.Length];
+			for (int i = 0; i < cells.Length; ++i)
+			{
+				if (i < cellWidths.Length)
+					newWidths[i] = cellWidths[i];
+				else
+					newWidths[i] = 128;
+			}
+
+			cellWidths = newWidths;
 
 			this.SetDirty();
 		}
 
+
+		internal void Clear()
+		{
+			for (int i = cells.Length - 1; i >= 0; --i)
+				RemoveCell(i);
+		}
+
 		public override void ReturnToPool()
 		{
-			Clear();
-
 			base.ReturnToPool();
 		}
 

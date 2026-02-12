@@ -3,12 +3,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static AtomosZ.ObjectForge;
 using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
-	public class UIButton : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UIButton : UIPooledMonoBehaviour<UIButton>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Button; } }
 

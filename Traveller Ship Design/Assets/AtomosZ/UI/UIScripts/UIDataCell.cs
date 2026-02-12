@@ -7,11 +7,11 @@ using static AtomosZ.UI.UIPrefabProvider;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
+	[ExecuteInEditMode]
 	/// <summary>
 	/// A placeholder control to fill grid cells.
 	/// </summary>
-	public class UIDataCell : UIMonoBehaviour, IUIBehavior
+	public class UIDataCell : UIPooledMonoBehaviour<UIDataCell>, IUIBehavior
 	{
 		public MagicWindow.UIControlType dataType { get { return MagicWindow.UIControlType.DataCell; } }
 		public bool interactable { get; set; }
@@ -130,7 +130,7 @@ namespace AtomosZ.UI
 		{
 			if (control == null)
 				return;
-			control.ReturnToPool();
+			((ObjectForge.IPooledObject)control).ReturnToPool();
 			control = null;
 		}
 
@@ -139,7 +139,7 @@ namespace AtomosZ.UI
 		{
 			if (control != null)
 			{
-				control.ReturnToPool();
+				((ObjectForge.IPooledObject)control).ReturnToPool();
 				control = null;
 			}
 

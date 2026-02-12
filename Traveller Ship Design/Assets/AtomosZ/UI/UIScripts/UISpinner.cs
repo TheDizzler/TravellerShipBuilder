@@ -7,8 +7,8 @@ using static AtomosZ.UI.MagicWindow;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
-	public class UISpinner : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UISpinner : UIPooledMonoBehaviour<UISpinner>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Spinner; } }
 

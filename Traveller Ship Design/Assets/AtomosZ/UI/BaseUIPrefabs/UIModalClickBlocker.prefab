@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8386187384837662049}
-  - component: {fileID: 6023651199371198233}
+  - component: {fileID: 3299959705645607991}
   - component: {fileID: 3385879847874351131}
   - component: {fileID: 8124556399261973386}
   m_Layer: 5
@@ -38,7 +38,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6023651199371198233
+--- !u!114 &3299959705645607991
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,11 +47,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3912343033089499237}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 312a8c77bcfb75340ae365a841aebb04, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ec29b8ce8364b943ac6328a9446dfd3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  _referenceName: modalClickBlocker
-  _interactable: 0
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIModalClickBlocker
+  _referenceName: ClickBlocker
+  _interactable: 1
   _fillParentHorizontal: 0
   _fillParentVertical: 0
 --- !u!114 &3385879847874351131

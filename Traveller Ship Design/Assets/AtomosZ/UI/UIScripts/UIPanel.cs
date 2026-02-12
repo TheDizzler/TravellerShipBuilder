@@ -11,8 +11,8 @@ using static AtomosZ.UI.UIPrefabProvider;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
-	public class UIPanel : UIMonoBehaviour, IUIBehavior
+	[ExecuteInEditMode]
+	public class UIPanel : UIPooledMonoBehaviour<UIPanel>, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Panel; } }
 
@@ -480,9 +480,9 @@ namespace AtomosZ.UI
 			return checkBox;
 		}
 
-		public UIExpandingInputField AddInputField(UIExpandingInputFieldScriptableObject dataEx)
+		public UIInputField AddInputField(UIExpandingInputFieldScriptableObject dataEx)
 		{
-			var inputField = (UIExpandingInputField)GetMagicUIControl(UIPrefabType.InputField, transform);
+			var inputField = (UIInputField)GetMagicUIControl(UIPrefabType.InputField, transform);
 			var inputRect = inputField.GetComponent<RectTransform>();
 
 			SetReferenceNameAndAddControl(UIPrefabType.InputField, inputField);
@@ -572,26 +572,19 @@ namespace AtomosZ.UI
 
 		public void RemoveControl(UIMonoBehaviour control)
 		{
-			this.SetDirty();
 			uiControls.Remove(control);
-			if (control.pool == null)
-			{
-				control.pool = UIPrefabProvider.GetPoolOfType(control.GetDataType());
-				if (control.pool == null)
-					return; // pool was purposefully not created?
-			}
-
-			control.ReturnToPool();
+			((ObjectForge.IPooledObject)control).ReturnToPool();
+			this.SetDirty();
 		}
 
 
 		public void ClearControls()
 		{
-			this.SetDirty();
 			foreach (var ctrl in uiControls)
 				RemoveControl(ctrl);
 
 			uiControls.Clear();
+			this.SetDirty();
 		}
 
 
