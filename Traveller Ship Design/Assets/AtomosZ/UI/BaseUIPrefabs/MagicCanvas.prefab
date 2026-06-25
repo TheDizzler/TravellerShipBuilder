@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 547093501571894003}
   - component: {fileID: 4853516221206667452}
   - component: {fileID: 3041107909327488043}
+  - component: {fileID: 4679376733625471575}
   m_Layer: 5
   m_Name: MagicCanvas
   m_TagString: Untagged
@@ -98,7 +99,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!114 &9126061725450410503
 MonoBehaviour:
@@ -152,6 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83cd86452f6511548990a98ac5af366c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPrefabProvider
+  objectForge: {fileID: 3041107909327488043}
   panelScriptObj: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
   horizontalPanelScriptObj: {fileID: 11400000, guid: ce1eba15204d2244a8afb65cdc2be026, type: 2}
   textScriptObj: {fileID: 11400000, guid: 602ee890f7215c84e86858806d8cd97f, type: 2}
@@ -162,142 +164,10 @@ MonoBehaviour:
   buttonScriptObj: {fileID: 11400000, guid: a308899491cf25a459f2ecb401b6aa67, type: 2}
   buttonPanelScriptObj: {fileID: 11400000, guid: 56557aa7b7c6fad48b93d20458c100fb, type: 2}
   imageViewScriptObj: {fileID: 11400000, guid: 04ca78633c910a242b8446e33520c341, type: 2}
-  tabbedWindowScriptObj: {fileID: 11400000, guid: 0027f5f71500d714f8d2ed0bfb2b42d4, type: 2}
-  titleBarWindowScriptObj: {fileID: 11400000, guid: 790f7b4bb9b710b49911cc030f5756f2, type: 2}
+  tabControlScriptObj: {fileID: 11400000, guid: 0027f5f71500d714f8d2ed0bfb2b42d4, type: 2}
+  magicWindowScriptObj: {fileID: 11400000, guid: 9487abdf415ea47419d2c32492539e4c, type: 2}
   contextMenuWindowScriptObj: {fileID: 11400000, guid: 6ad28b677fe12a3458672ec0448d5ca0, type: 2}
-  uiPrefabs:
-    keys: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f00000010000000
-    values:
-    - {fileID: 4508516794867129895, guid: 99330988dda5a284da54227583121a4b, type: 3}
-    - {fileID: 6311154708473013455, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
-    - {fileID: 5761179207979531042, guid: 53db565345bf96f45b685e5078f6c6b5, type: 3}
-    - {fileID: 5773319279418712064, guid: cc31ca90912907a4092621913b28ee88, type: 3}
-    - {fileID: 6170590193817473966, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
-    - {fileID: 1539801037540959411, guid: af17185d5eed67240bdf46ec9a3a9140, type: 3}
-    - {fileID: -7266102065753428195, guid: 30e4041be43a7cd41ab5c5333fd8325e, type: 3}
-    - {fileID: -1038418384538945441, guid: caa289a349874634fa001d0715dbcb64, type: 3}
-    - {fileID: 1238105260594487142, guid: 9b20b3d456fea444899398985fd36ad5, type: 3}
-    - {fileID: 5244242127661738069, guid: 3688c577606f99c4ba09ca0e55c5bf1d, type: 3}
-    - {fileID: 3451710294960635019, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
-    - {fileID: 2237528456814338375, guid: 108c35f0d8a52ad4996cd45bbca125ae, type: 3}
-    - {fileID: 3898854370579401519, guid: 3952e60ed4b030b4d8fed2b3b8f576f4, type: 3}
-    - {fileID: 974002178803776813, guid: caf2293ad686bcd46a573eca466e4a7d, type: 3}
-    - {fileID: 4757135074788766894, guid: ff5b9d9e845249241834e9a163305104, type: 3}
-    - {fileID: 1551854222198439915, guid: 1ec87a869128d7e46b5bf60283125fae, type: 3}
-    - {fileID: 1551854222198439915, guid: 6a46ce684b853da42969c871a2750070, type: 3}
   defaultFont: {fileID: 0}
-  labelPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
-  buttonPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 1978944217387945199, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
-  buttonPanelPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 8320262676998505760, guid: 30e4041be43a7cd41ab5c5333fd8325e, type: 3}
-  checkBoxPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 24937739969009248, guid: caa289a349874634fa001d0715dbcb64, type: 3}
-  dropdownPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 3132597873559246341, guid: 3952e60ed4b030b4d8fed2b3b8f576f4, type: 3}
-  panelPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 5821347800241209384, guid: 6a46ce684b853da42969c871a2750070, type: 3}
-  horizontalPanelPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 5821347800241209384, guid: 1ec87a869128d7e46b5bf60283125fae, type: 3}
-  imagePool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 3714226641704735600, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
-  inputPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 5491177040660267407, guid: af17185d5eed67240bdf46ec9a3a9140, type: 3}
-  sliderPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 7859329702581079375, guid: 9b20b3d456fea444899398985fd36ad5, type: 3}
-  spinnerPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 5510448638398286670, guid: ff5b9d9e845249241834e9a163305104, type: 3}
-  tabPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 4227826753104343404, guid: caf2293ad686bcd46a573eca466e4a7d, type: 3}
-  windowPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 7179497505382077658, guid: 99330988dda5a284da54227583121a4b, type: 3}
-  menuDividerPool:
-    sleepTransform: {fileID: 0}
-    pool:
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    - monoBehaviour: {fileID: 0}
-      isLive: 0
-    prefab: {fileID: 6677089725284709947, guid: cc31ca90912907a4092621913b28ee88, type: 3}
 --- !u!114 &4853516221206667452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,4 +201,88 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f989177930f00b4eb5b86af0b1687cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.ObjectForge
-  sleepingPooledObjects: {fileID: 3496880337326275063}
+  sleepingPooledObjectsParentTransform: {fileID: 3496880337326275063}
+  pooledPrefabDatas:
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 3203274502999260367, guid: 99330988dda5a284da54227583121a4b, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 881649572895638481, guid: f3fbd55a129465b43b763d37a0619189, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 458621023750270211, guid: 30e4041be43a7cd41ab5c5333fd8325e, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 924296253289138827, guid: caa289a349874634fa001d0715dbcb64, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 420618448315270366, guid: 506d47f883995d743b291c734c987b84, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 1048221196357235226, guid: 627bdea338c612c439ef6d22ff04dcd5, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 7535132959828825029, guid: 3952e60ed4b030b4d8fed2b3b8f576f4, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 1740357333058825987, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 6230244567952599187, guid: 1ec87a869128d7e46b5bf60283125fae, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 1320486436992198963, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 4874692423407829269, guid: af17185d5eed67240bdf46ec9a3a9140, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 808249659462875444, guid: 53db565345bf96f45b685e5078f6c6b5, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 8020472755144919891, guid: cc31ca90912907a4092621913b28ee88, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 2452679959533058996, guid: 3688c577606f99c4ba09ca0e55c5bf1d, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 5953904790542714899, guid: 6a46ce684b853da42969c871a2750070, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 8079757193101029075, guid: 9b20b3d456fea444899398985fd36ad5, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 2214050865056977033, guid: ff5b9d9e845249241834e9a163305104, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 8164810017644984998, guid: caf2293ad686bcd46a573eca466e4a7d, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 1902962469123166488, guid: 9e1419143d4c4d049b64bd10b16201e5, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 357614724748456992, guid: c20ed3c43cfd6734296dea1240b515ad, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 8548814979387817305, guid: 967258b3acc2523438991e6c19e17b19, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 4404782685973434131, guid: f3153725ccf286b45b0bceb5d262526e, type: 3}
+  - initialPoolSize: 0
+    pooledObjectsSleepingParentTransform: {fileID: 0}
+    pooledObject: {fileID: 3203274502999260367, guid: ee2a6017d3bb3f3448b094e74ce8d228, type: 3}
+--- !u!114 &4679376733625471575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7267853904252274131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef3f56fea2d2c9d4c9fbc6008d9d88e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIInput
+  uiCanvas: {fileID: 8024209317848153593}
+  uiCamera: {fileID: 0}

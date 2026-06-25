@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e67901f71c4f9d4ab8950690f8e91de, type: 3}
   m_Name: UIDropdownData
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIDropdownScriptableObject
-  labelData: {fileID: 0}
-  arrowSprite: {fileID: 0}
+  labelData: {fileID: 11400000, guid: a22e1f16cdb147547b5d6c8222d55958, type: 2}
+  arrowSprite: {fileID: 21300000, guid: 445f3c3a06f60474d8ab38a263cb59a9, type: 3}

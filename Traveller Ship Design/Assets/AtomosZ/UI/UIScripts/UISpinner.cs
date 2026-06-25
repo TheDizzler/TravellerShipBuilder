@@ -2,13 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 
 namespace AtomosZ.UI
 {
-	[ExecuteInEditMode]
-	public class UISpinner : UIPooledMonoBehaviour<UISpinner>, IUIBehavior
+	public class UISpinner : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Spinner; } }
 
@@ -30,18 +29,6 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[SerializeField] private Vector2 _minDimensions;
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				this.SetDirty();
-			}
-		}
-
-		public Vector2 maxDimensions { get; set; }
 
 
 		[SerializeField] private int _minValue = int.MinValue;
@@ -169,7 +156,7 @@ namespace AtomosZ.UI
 			return value;
 		}
 
-		void OnEnable()
+		void Start()
 		{
 			this.SetDirty();
 		}
@@ -188,7 +175,7 @@ namespace AtomosZ.UI
 
 		public ScriptableObject GetBackingData()
 		{
-			return null;
+			return new UISpinnerScriptableObject();
 		}
 
 
@@ -209,7 +196,7 @@ namespace AtomosZ.UI
 				RecalculateDimensions();
 		}
 
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
 			// calculate min dimension for input field give max&min
 			text.ForceMeshUpdate(false, true);
@@ -246,15 +233,24 @@ namespace AtomosZ.UI
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, totalDimens.x);
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, totalDimens.y);
 
+			preferredSize = totalDimens;
 			isDirty = false;
 		}
 
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
 			return baseRect.sizeDelta;
+		}
+
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
 		}
 
 

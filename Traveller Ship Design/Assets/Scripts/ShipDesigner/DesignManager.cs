@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 using static AtomosZ.Keyboard;
 using static AtomosZ.MG2eTraveller.Ship.DesignerCustomCursor;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 using static AtomosZ.UI.UIPrefabProvider;
 
 namespace AtomosZ.MG2eTraveller.Ship
@@ -34,6 +34,17 @@ namespace AtomosZ.MG2eTraveller.Ship
 		public static DesignObject GetPrefab(PrefabType prefabType)
 		{
 			return instance.prefabs[prefabType];
+		}
+
+		public static MagicContextMenu GetContextMenu()
+		{
+			return instance._GetContextMenu();
+		}
+
+		private MagicContextMenu _GetContextMenu()
+		{
+			var window = (MagicContextMenu)GetMagicUIControl(UIPrefabType.MagicContextMenu, uiCanvas.transform);
+			return window;
 		}
 
 		public static MagicWindow GetMagicWindow()
@@ -163,7 +174,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		/// serialized for debugging
 		/// </summary>
 		[SerializeField]
-		private LinkedList<MagicWindow> dialogStack = new();
+		private LinkedList<MagicWindowBase> dialogStack = new();
 
 		void Awake()
 		{
@@ -286,7 +297,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		private void ToggleUI(bool enableUI)
 		{
 			//uiCanvas.enabled = enableUI;
-			objectPicker.SetActive(enableUI);
+			objectPicker.Show();
 		}
 
 
@@ -309,10 +320,46 @@ namespace AtomosZ.MG2eTraveller.Ship
 			}
 		}
 
+		public UIExpandingLabel inputCoordsLabel;
+		public UIExpandingLabel gridCoordsLabel;
+		public UIExpandingLabel mainCamUICoordsLabel;
+		public UIExpandingLabel uiCoordsLabel;
+		public UIExpandingLabel viewportCoordsLabel;
+
 		void Update()
 		{
+			var mousePos = Mouse.pos;
+#if UNITY_EDITOR
+			// input
+			inputCoordsLabel.text = $"x:{mousePos.x.ToString("000.0")} y:{mousePos.y.ToString("000.0")}";
+
+			// grid
+			Vector3 mouseWorldPos = Helpers.GetMouseWorldPos();
+			gridCoordsLabel.text = $"x:{mouseWorldPos.x.ToString("000.0")} y:{mouseWorldPos.y.ToString("000.0")}";
+
+			// ui cam
+			var uiCoords = uiInput.GetUICoordinatesFromMousePos();
+			uiCoordsLabel.text = $"x:{uiCoords.x.ToString("000.0")} y:{uiCoords.y.ToString("000.0")}";
+
+			// main cam
+			var manCamUICoords = uiInput.GetMainCameraUICoordinatesFromMousePos();
+			mainCamUICoordsLabel.text = $"x:{manCamUICoords.x.ToString("000.0")} y:{manCamUICoords.y.ToString("000.0")}";
+
+			// viewport coords
+			var viewPortCoords = Helpers.camera.WorldToViewportPoint(mouseWorldPos);
+			viewportCoordsLabel.text = $"x:{viewPortCoords.x.ToString("0.0000")} y:{viewPortCoords.y.ToString("0.0000")}";
+
+
+
+			if (Mouse.GetMouseButtonDown(1))
+			{
+				var contextMenu = DesignManager.GetContextMenu();
+				contextMenu.Show(manCamUICoords);
+			}
+#endif
+
 			Rect screenRect = new Rect(0, 0, Screen.width, Screen.height);
-			if (!screenRect.Contains(Input.mousePosition))
+			if (!screenRect.Contains(mousePos))
 				return;
 
 			if (isUIUpdate)
@@ -341,7 +388,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 			//		this is to prevent fast dragging movements from flickering the mousecursor
 			// 
 
-			MagicWindow topDialog = null;
+			MagicWindowBase topDialog = null;
 			if (dialogStack.Count != 0)
 			{
 				topDialog = dialogStack.Last.Value;
@@ -367,8 +414,8 @@ namespace AtomosZ.MG2eTraveller.Ship
 					return;
 				}
 
-				if (topDialog.windowStyle == WindowStyle.ContextMenu &&
-					Input.GetMouseButtonDown(1))
+				if (topDialog.dataType == UIControlType.ContextMenu &&
+					Mouse.GetMouseButtonDown(1))
 				{
 					topDialog.Close();
 					return;
@@ -414,10 +461,10 @@ namespace AtomosZ.MG2eTraveller.Ship
 				var topDialog = dialogStack.Last.Value;
 				//if (topDialog.designObject.isModal)
 				//return;
-				if (topDialog.windowStyle == WindowStyle.ContextMenu)
+				if (topDialog.dataType == UIControlType.ContextMenu)
 				{
 					if ((modifierKeys & ModifierKey.Esc) == ModifierKey.Esc
-						|| Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+						|| Mouse.GetMouseButtonDown(0) || Mouse.GetMouseButtonDown(1))
 					{
 						topDialog.Close();
 						return;
@@ -425,7 +472,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 				}
 			}
 
-			if (Input.mouseScrollDelta != Vector2.zero)
+			if (Mouse.scrollDelta != Vector2.zero)
 			{
 				if ((modifierKeys & ModifierKey.Ctrl) == ModifierKey.Ctrl)
 				{

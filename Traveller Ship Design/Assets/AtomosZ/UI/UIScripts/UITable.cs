@@ -1,17 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 
 namespace AtomosZ.UI
 {
 	[ExecuteInEditMode]
-	public class UITable : UIPooledMonoBehaviour<UITable>, IUIBehavior
+	public class UITable : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Table; } }
 
@@ -24,15 +22,15 @@ namespace AtomosZ.UI
 			}
 		}
 
-		private VerticalLayoutGroup _layout;
-		private VerticalLayoutGroup layout
+		private VerticalLayoutGroup _layoutGroup;
+		private VerticalLayoutGroup layoutGroup
 		{
 			[DebuggerStepThrough]
 			get
 			{
-				if (_layout == null)
-					_layout = GetComponent<VerticalLayoutGroup>();
-				return _layout;
+				if (_layoutGroup == null)
+					_layoutGroup = GetComponent<VerticalLayoutGroup>();
+				return _layoutGroup;
 			}
 		}
 
@@ -45,7 +43,7 @@ namespace AtomosZ.UI
 			set
 			{
 				_borderMargins = value;
-				layout.padding = _borderMargins;
+				layoutGroup.padding = _borderMargins;
 				columnDividerMask.padding = new Vector4(borderMargins.left, borderMargins.bottom, borderMargins.right, borderMargins.top);
 				this.SetDirty();
 			}
@@ -86,12 +84,12 @@ namespace AtomosZ.UI
 			set
 			{
 				_layoutSpacing = value;
-				layout.spacing = value.y;
+				layoutGroup.spacing = value.y;
 				if (headerRow != null)
-					headerRow.layout.spacing = value.x;
+					headerRow.layoutGroup.spacing = value.x;
 				foreach (var row in rows)
 				{
-					row.layout.spacing = value.x;
+					row.layoutGroup.spacing = value.x;
 				}
 
 				this.SetDirty();
@@ -194,19 +192,6 @@ namespace AtomosZ.UI
 		[SerializeField] private int columnCount;
 
 
-		[SerializeField] private Vector2 _minDimensions;
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				this.SetDirty();
-			}
-		}
-
-		public Vector2 maxDimensions { get; set; }
-
 		/// <summary>
 		/// There are columnCount -1 dividers in a table.
 		/// </summary>
@@ -282,18 +267,7 @@ namespace AtomosZ.UI
 #endif
 			if (headerRow != null)
 			{
-#if UNITY_EDITOR
-				if (stage != null && stage.assetPath.Contains("UITable.prefab"))
-				{ // this is prefab stage and you cannot destroy objects on the prefab stage apparently
-
-				}
-				else
-				{
-					headerRow.ReturnToPool();
-				}
-#else
-				headerRow.ClearAndReturnToPool();
-#endif
+				headerRow.ReturnToPool();
 				headerRow = null;
 			}
 
@@ -309,23 +283,24 @@ namespace AtomosZ.UI
 			headerRow.gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
 			for (int i = 0; i < columnCount; ++i)
 				headerRow.AddCell();
-			headerRow.layout.spacing = layoutSpacing.x;
+			headerRow.layoutGroup.spacing = layoutSpacing.x;
 			headerRow.cellWidths = _columnWidths;
 			headerRow.minDimensions = new Vector2(0, _headerHeight);
 			for (int i = 0; i < columnCount; ++i)
 			{
-				SetHeader(i);
+				SetHeader(i, "Header " + i);
 			}
 		}
 
-		private void SetHeader(int i)
+		private void SetHeader(int i, string headerText)
 		{
 			UIExpandingLabel headerLabel;
 			if (headerRow[i].control == null)
 				headerLabel = (UIExpandingLabel)headerRow.SetControl(i, UIDataRow.UICellDataTypes.Text);
 			else
 				headerLabel = (UIExpandingLabel)headerRow[i].control;
-			headerLabel.text = headerLabel.referenceName = "Header " + i;
+			headerLabel.text = headerText;
+			headerLabel.referenceName = "Header " + i;
 #if UNITY_EDITOR
 			if (Helpers.IsPrefabStage_EDITOR())
 				headerLabel.name = headerLabel.referenceName;
@@ -359,7 +334,7 @@ namespace AtomosZ.UI
 		{
 			if (headerRow != null)
 			{
-				headerRow.ReturnToPool();
+				headerRow.pooledObject.ReturnToPool();
 				headerRow = null;
 			}
 
@@ -367,17 +342,10 @@ namespace AtomosZ.UI
 			{
 				if (rows[i] == null)
 					continue;
-				rows[i].ReturnToPool();
+				headerRow.pooledObject.ReturnToPool();
 			}
 
 			columnCount = 0;
-		}
-
-		public override void ReturnToPool()
-		{
-			Clear();
-
-			base.ReturnToPool();
 		}
 
 
@@ -451,6 +419,23 @@ namespace AtomosZ.UI
 			return headerRow.GetControl(controlRefName);
 		}
 
+		public void AddColumn(string headerText, bool expandColumnToFitText)
+		{
+			AddColumn();
+			var headerLabel = (UIExpandingLabel)headerRow[columnCount - 1].control;
+			headerLabel.text = headerText;
+			if (expandColumnToFitText)
+			{
+				headerLabel.autoSizeFont = false;
+				headerLabel.fontSize = 18;
+				headerLabel.fillParentHorizontal = false;
+				headerLabel.fillParentVertical = true;
+				headerLabel.maxDimensions = new Vector2(500.0f, headerHeight);
+				var dimensions = headerLabel.GetDrawnSize();
+				columnWidths[columnCount - 1] = dimensions.x;
+			}
+		}
+
 		public void AddColumn()
 		{
 			if (++columnCount > 1)
@@ -469,15 +454,22 @@ namespace AtomosZ.UI
 				columnDividers = dividerList.ToArray();
 			}
 
-			var columnWidthList = new List<float>(_columnWidths);
-			columnWidthList.Add(128);
-			_columnWidths = columnWidthList.ToArray();
+			var columnWidthList = new float[columnCount];
+			for (int i = 0; i < columnCount; ++i)
+			{
+				if (i < _columnWidths.Length)
+					columnWidthList[i] = _columnWidths[i];
+				else
+					columnWidthList[i] = 128;
+			}
+
+			_columnWidths = columnWidthList;
 
 			if (headerRow != null)
 			{
 				headerRow.AddCell();
 				headerRow.cellWidths[columnCount - 1] = _columnWidths[columnCount - 1];
-				SetHeader(columnCount - 1);
+				SetHeader(columnCount - 1, "Header " + (columnCount - 1));
 			}
 
 			foreach (var row in rows)
@@ -488,6 +480,7 @@ namespace AtomosZ.UI
 
 			this.SetDirty();
 		}
+
 
 		public void RemoveColumn(int columnIndex)
 		{
@@ -539,7 +532,7 @@ namespace AtomosZ.UI
 				newRow.AddCell();
 			newRow.cellWidths = _columnWidths;
 			newRow.minDimensions = new Vector2(0, _rowMinHeight);
-			newRow.layout.spacing = layoutSpacing.x;
+			newRow.layoutGroup.spacing = layoutSpacing.x;
 			newRow.CreateGridLine();
 			newRow.gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
 			RenameRow(newRow, index);
@@ -581,7 +574,7 @@ namespace AtomosZ.UI
 				RecalculateDimensions();
 		}
 
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
 			float width = 0;
 			for (int i = 0; i < columnCount; ++i)
@@ -591,17 +584,17 @@ namespace AtomosZ.UI
 
 			width += _layoutSpacing.x * Mathf.Max(0, (columnCount - 1));
 
-			float height = layout.padding.top;
+			float height = layoutGroup.padding.top;
 			if (headerRow != null)
 			{
-				height += headerRow.GetDrawnDimensions().y;
+				height += headerRow.GetDrawnSize().y;
 				headerRow.gridLine.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, gridThickness);
 			}
 
 			for (int i = 0; i < rows.Length; ++i)
 			{
 				rows[i].ShowGridLine(i != rows.Length - 1);
-				height += rows[i].GetDrawnDimensions().y;
+				height += rows[i].GetDrawnSize().y;
 			}
 
 			height += Mathf.Max(0, rows.Length - 1) * (layoutSpacing.y);
@@ -626,16 +619,24 @@ namespace AtomosZ.UI
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(minDimensions.y, height));
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Max(minDimensions.x, width + borderMargins.horizontal));
 
+			preferredSize = minDimensions;
 			isDirty = false;
 		}
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
-			return GetComponent<RectTransform>().sizeDelta;
+			return rect.sizeDelta;
 		}
 
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
+		}
 
 
 		public ScriptableObject GetBackingData()
@@ -645,7 +646,7 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			throw new System.NotImplementedException();
+			this.SetDirty();
 		}
 
 	}

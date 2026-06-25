@@ -1,17 +1,13 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 
 namespace AtomosZ.UI
 {
-	[ExecuteInEditMode]
-	public class UICheckBox : UIPooledMonoBehaviour<UICheckBox>, IUIBehavior
+	public class UICheckBox : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.CheckBox; } }
 
@@ -48,18 +44,7 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[SerializeField] private Vector2 _minDimensions;
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				this.SetDirty();
-			}
-		}
-
-		public Vector2 maxDimensions { get; set; }
+		
 
 		[SerializeField] private string _text = "CheckBox";
 		[Tooltip("NOTE(Tristan): textmeshpro adds a mystery whitespace to the end of EVERY string, even if it's \"empty\", so the length will NEVER equal zero!")]
@@ -235,28 +220,36 @@ namespace AtomosZ.UI
 			}
 		}
 
-		public void RecalculateDimensions()
+		
+		public override void RecalculateDimensions()
 		{
-			var minDim = textLabel.GetDrawnDimensions();
+			var minDim = textLabel.GetPreferredSize();
 			var layout = GetComponent<HorizontalLayoutGroup>();
 			var space = layout.spacing;
 			var imageDim = backgroundRect.sizeDelta;
 			minDim.x += imageDim.x + space;
 			if (minDim.y < imageDim.y)
 				minDim.y = imageDim.y;
-			var rect = GetComponent<RectTransform>();
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, minDim.x);
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDim.y);
-
+			preferredSize = minDim;
 			isDirty = false;
 		}
 
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
-			return GetComponent<RectTransform>().sizeDelta;
+			return rect.sizeDelta;
+		}
+
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
 		}
 	}
 }

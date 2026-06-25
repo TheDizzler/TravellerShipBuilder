@@ -170,6 +170,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -444,6 +445,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8556591651280235360}
   - component: {fileID: 5510448638398286670}
+  - component: {fileID: 7106992099089564049}
+  - component: {fileID: 2214050865056977033}
   - component: {fileID: 6356617554248680144}
   m_Layer: 5
   m_Name: UISpinner
@@ -486,6 +489,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UISpinner
   _referenceName: spinner
   _interactable: 1
+  _minDimensions: {x: 0, y: 0}
+  _maxDimensions: {x: 1025, y: 256}
   _fillParentHorizontal: 0
   _fillParentVertical: 0
   baseRect: {fileID: 8452378152979384316}
@@ -495,7 +500,6 @@ MonoBehaviour:
   placeholderText: {fileID: 3263253268650655812}
   text: {fileID: 766313760740194883}
   _minInputFieldDimensions: {x: 64, y: 32}
-  _minDimensions: {x: 0, y: 0}
   _minValue: -1
   _maxValue: 100
   _value: -1
@@ -504,6 +508,41 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7106992099089564049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135703248830815077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &2214050865056977033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135703248830815077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 1
+  prefabID: Spinner
 --- !u!222 &6356617554248680144
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -660,6 +699,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2216728987713972511}
   - component: {fileID: 3714226641704735600}
   - component: {fileID: 4747009652071960255}
+  - component: {fileID: 6968406951748957705}
+  - component: {fileID: 1320486436992198963}
   - component: {fileID: 7221397167034544767}
   - component: {fileID: 3997567427778128451}
   m_Layer: 5
@@ -55,6 +57,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: UIImageView
   _interactable: 1
+  _minDimensions: {x: 250, y: 250}
+  _maxDimensions: {x: 1025, y: 256}
   _fillParentHorizontal: 0
   _fillParentVertical: 0
   image: {fileID: 1932646406951213162}
@@ -62,7 +66,6 @@ MonoBehaviour:
   imageData: {fileID: 11400000, guid: 04ca78633c910a242b8446e33520c341, type: 2}
   _sprite: {fileID: 2420301657204973463, guid: 42144bbdcc437ee4bbcb02fddb490d3b, type: 3}
   _text: Caption #00aaaaaa
-  _minDimensions: {x: 250, y: 250}
   _showImage: 1
   _showCaption: 1
 --- !u!114 &4747009652071960255
@@ -91,6 +94,41 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &6968406951748957705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5242155249800386746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &1320486436992198963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5242155249800386746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 1
+  prefabID: ImageView
 --- !u!114 &7221397167034544767
 MonoBehaviour:
   m_ObjectHideFlags: 0

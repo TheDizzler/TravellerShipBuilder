@@ -11,7 +11,7 @@ namespace AtomosZ.UI
 		public Sprite backgroundSprite;
 		public Vector2 minDimensions = new Vector2(96, 64);
 
-		public RectOffset layoutPadding;
+		public RectOffset layoutPadding = new RectOffset();
 		public float layoutSpacing = 8;
 	}
 }

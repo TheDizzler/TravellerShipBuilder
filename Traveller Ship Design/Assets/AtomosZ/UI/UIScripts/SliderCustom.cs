@@ -45,6 +45,7 @@ namespace AtomosZ.UI
 		[SerializeField] private UIExpandingLabel minUnit;
 		[SerializeField] private UIExpandingLabel maxUnit;
 
+		[Tooltip("Holds created unit labels, NOT minUnit and maxUnit")]
 		[SerializeField] private List<UIExpandingLabel> unitLabels;
 
 
@@ -183,12 +184,12 @@ namespace AtomosZ.UI
 					nextPos += distDiff;
 
 					var newLabel = (UIExpandingLabel)UIPrefabProvider.GetMagicUIControl(
-						UIPrefabProvider.UIPrefabType.ExpandingLabel, units.transform);
+						UIPrefabProvider.UIPrefabType.SliderUnit, units.transform);
 					newLabel.referenceName = "unit_" + (count++).ToString("00");
-					newLabel.rect.anchorMin = new Vector2(0, 1);
-					newLabel.rect.anchorMax = new Vector2(0, 1);
-					newLabel.rect.pivot = new Vector2(0.5f, 0);
-					newLabel.rect.rotation = Quaternion.identity;
+					//newLabel.rect.anchorMin = new Vector2(0, 1);
+					//newLabel.rect.anchorMax = new Vector2(0, 1);
+					//newLabel.rect.pivot = new Vector2(0.5f, 0);
+					//newLabel.rect.rotation = Quaternion.identity;
 					newLabel.rect.anchoredPosition = new Vector2(nextPos, 0);
 					newLabel.text = nextUnit.ToString();
 					newLabel.fontSize = slider.fontSize;

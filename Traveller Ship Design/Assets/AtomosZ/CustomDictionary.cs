@@ -102,7 +102,7 @@ namespace AtomosZ
 		}
 
 		/// <summary>
-		///
+		/// If key already exists, updates value with input. Otherwise, adds the key.
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="value"></param>
@@ -110,7 +110,6 @@ namespace AtomosZ
 		{
 			if (keys.Contains(key))
 			{
-				Debug.Log($"CustomDictionary exception: key {key} already exists in collection");
 				this[key] = value;
 			}
 			else
@@ -121,12 +120,14 @@ namespace AtomosZ
 			DEBUG_CheckIntegrity();
 		}
 
-
+		/// <summary>
+		///  If key already exists, updates value with input. Otherwise, adds the key.
+		/// </summary>
+		/// <param name="item"></param>
 		public void Add(KeyValuePair<TKey, TValue> item)
 		{
 			if (keys.Contains(item.Key))
 			{
-				Debug.Log(($"CustomDictionary exception: key {item.Key} already exists in collection"));
 				this[item.Key] = item.Value;
 			}
 			else

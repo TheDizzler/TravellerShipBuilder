@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7124551369287100554}
   - component: {fileID: 8144733222131200461}
   - component: {fileID: 7646363213820406160}
+  - component: {fileID: 4404782685973434131}
   - component: {fileID: 3829187710266693670}
   m_Layer: 5
   m_Name: SliderUnit (TMP)
@@ -52,11 +53,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: unit
   _interactable: 1
+  _minDimensions: {x: 64, y: 10}
+  _maxDimensions: {x: 1025, y: 256}
   _fillParentHorizontal: 0
   _fillParentVertical: 0
   labelData: {fileID: 0}
   textLabel: {fileID: 7646363213820406160}
-  image: {fileID: 0}
   _text: 0
   _color: {r: 0, g: 0, b: 0, a: 0}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
@@ -64,8 +66,6 @@ MonoBehaviour:
   _fontStyles: 0
   _alignmentOptions: 258
   _margin: {x: 0, y: 0, z: 0, w: 0}
-  _minDimensions: {x: 64, y: 10}
-  _maxDimensions: {x: 1025, y: 256}
 --- !u!114 &7646363213820406160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,6 +124,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -157,6 +158,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4404782685973434131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022562231297575193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 0
+  prefabID: SliderUnit
 --- !u!222 &3829187710266693670
 CanvasRenderer:
   m_ObjectHideFlags: 0

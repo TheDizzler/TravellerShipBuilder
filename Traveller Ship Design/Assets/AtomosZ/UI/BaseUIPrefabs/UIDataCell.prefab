@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 802380275330774281}
   - component: {fileID: 8211280293798124331}
+  - component: {fileID: 8142057208826511522}
+  - component: {fileID: 420618448315270366}
   - component: {fileID: 2209987158605277273}
   - component: {fileID: 6287579151347295920}
   m_Layer: 5
@@ -50,9 +52,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7d4a25b091cdd478dd3ff417db4e92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIEmptyDataCell
-  _referenceName: empty cell
+  _referenceName: DataCell
   _interactable: 1
+  _minDimensions: {x: 0, y: 0}
+  _maxDimensions: {x: 1025, y: 256}
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   control: {fileID: 0}
+--- !u!114 &8142057208826511522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6128532944401396868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &420618448315270366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6128532944401396868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 0
+  prefabID: DataCell
 --- !u!114 &2209987158605277273
 MonoBehaviour:
   m_ObjectHideFlags: 0

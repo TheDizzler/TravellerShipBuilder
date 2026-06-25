@@ -2,12 +2,12 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 namespace AtomosZ.UI
 {
 	[ExecuteInEditMode]
-	public class UISlider : UIPooledMonoBehaviour<UISlider>, IUIBehavior
+	public class UISlider : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Slider; } }
 
@@ -266,31 +266,6 @@ namespace AtomosZ.UI
 		}
 
 
-		[SerializeField] private Vector2 _minDimensions = new Vector2(128, 32);
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				var layout = GetComponent<LayoutElement>();
-				layout.minWidth = minDimensions.x;
-				layout.minHeight = minDimensions.y;
-				this.SetDirty();
-			}
-		}
-
-		[SerializeField] private Vector2 _maxDimensions;
-		public Vector2 maxDimensions
-		{
-			get { return _maxDimensions; }
-			set
-			{
-				_maxDimensions = value;
-				this.SetDirty();
-			}
-		}
-
 
 		[Tooltip("Viewing for debugging")]
 		[SerializeField] internal Vector2 size = Vector2.zero;
@@ -343,13 +318,13 @@ namespace AtomosZ.UI
 		}
 
 		private float lastWidth = -1;
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
 			var layout = GetComponent<LayoutElement>();
-			if (fillParentHorizontal)
-				layout.flexibleWidth = 1;
-			else
-				layout.flexibleWidth = 0;
+			//if (fillParentHorizontal)
+			//	layout.flexibleWidth = 1;
+			//else
+			//	layout.flexibleWidth = -1;
 
 			Canvas.ForceUpdateCanvases();
 			var slider = GetComponent<SliderCustom>();
@@ -363,22 +338,30 @@ namespace AtomosZ.UI
 			rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
 
 			lastWidth = rectTransform.sizeDelta.x;
+			preferredSize = rectTransform.sizeDelta;
 
 			isDirty = false;
 		}
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty || lastWidth != rectTransform.sizeDelta.x)
 				RecalculateDimensions();
 			return rectTransform.sizeDelta;
 		}
 
-		public override void ReturnToPool()
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
 		{
-			if (pool == null)
-				pool = (ObjectForge.ObjectPool<UISlider>)UIPrefabProvider.GetPoolOfType(iUIBehavior.dataType);
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
+		}
+
+		internal void ReturnToPool()
+		{
 			slider.ReturnToPool();
+			pooledObject.ReturnToPool();
 		}
 	}
 }

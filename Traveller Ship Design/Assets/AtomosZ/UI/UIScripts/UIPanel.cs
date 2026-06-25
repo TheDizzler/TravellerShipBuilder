@@ -1,18 +1,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 using static AtomosZ.UI.UIButtonPanel;
 using static AtomosZ.UI.UIPrefabProvider;
+using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
-	[ExecuteInEditMode]
-	public class UIPanel : UIPooledMonoBehaviour<UIPanel>, IUIBehavior
+	/// <summary>
+	/// From now on, (vertical) UIPanels have their width set by the parent.
+	/// Then the resulting height of all the contaned controls is returned to the parent.
+	/// </summary>
+	public class UIPanel : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Panel; } }
 
@@ -30,10 +35,7 @@ namespace AtomosZ.UI
 		[SerializeField] private Sprite _sprite;
 		public Sprite sprite
 		{
-			get
-			{
-				return _sprite = GetComponent<Image>().sprite;
-			}
+			get { return _sprite = GetComponent<Image>().sprite; }
 
 			set
 			{
@@ -51,23 +53,26 @@ namespace AtomosZ.UI
 		}
 
 		[SerializeField] private RectOffset _layoutPadding;
-		[Tooltip("A value of null will set the padding to the scriptable object values, if it exists.")]
+		[Tooltip("A value of null will set the padding to the scriptable object values, if it exists, or all 0 if it doesn't.")]
 		public RectOffset layoutPadding
 		{
 			get { return _layoutPadding = GetComponent<HorizontalOrVerticalLayoutGroup>().padding; }
 			set
 			{
+				var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
 				if (value == null)
 				{
 					if (panelData != null)
 					{
-						var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
-						_layoutPadding = layout.padding = panelData.layoutPadding;
+						_layoutPadding = layout.padding = new RectOffset(
+							panelData.layoutPadding.left, panelData.layoutPadding.right,
+							panelData.layoutPadding.top, panelData.layoutPadding.bottom);
 					}
+					else
+						_layoutPadding = layout.padding = new RectOffset(0, 0, 0, 0);
 				}
 				else
 				{
-					var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
 					_layoutPadding = layout.padding = value;
 				}
 
@@ -99,32 +104,32 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[SerializeField] private Vector2 _minDimensions;
-		[Tooltip("A value of Vector2.zero will reset min dimensions to scriptable object value, if it exists")]
-		public Vector2 minDimensions
+
+		[Tooltip("The tab associated with this panel (if context menu, this will be inactive).")]
+		public UITabItem tabItem;
+		[SerializeField] public List<UIMonoBehaviour> uiControls;
+		[SerializeField] internal int tabIndex;
+
+
+		[Conditional("UNITY_EDITOR")]
+		public void UpdateBackingData_EDITOR()
 		{
-			get { return _minDimensions; }
-			set
-			{
-				if (value == Vector2.zero && panelData != null)
-					_minDimensions = panelData.minDimensions;
-
-				else
-					_minDimensions = value;
-
+			isDirty = true;
+			referenceName = _referenceName;
+			minDimensions = _minDimensions;
+			maxDimensions = _maxDimensions;
+			layoutSpacing = _layoutSpacing;
+			layoutPadding = _layoutPadding;
+			sprite = _sprite;
+			borderless = _borderless;
+			isDirty = false;
+			if (Helpers.IsPrefabStage_EDITOR() && transform.parent.name == "Canvas (Environment)")
+				RecalculateDimensions();
+			else
 				this.SetDirty();
-			}
 		}
 
-		public Vector2 maxDimensions { get; set; }
-
-		[Tooltip("The tab associated with this panel (if context menu, this tab will be inactive).")]
-		public UIExpandingLabel tabLabel;
-		public IUIBehavior parentPanel;
-		[SerializeField] public List<UIMonoBehaviour> uiControls;
-
-
-		[System.Diagnostics.Conditional("DEBUG")]
+		[Conditional("DEBUG")]
 		public new void RecordPrefabInstances()
 		{
 			PrefabUtility.RecordPrefabInstancePropertyModifications(this);
@@ -133,10 +138,10 @@ namespace AtomosZ.UI
 
 		void Awake()
 		{
-			if (transform.parent != null)
-				this.SetDirty();
+			//if (transform.parent != null)
+			//this.SetDirty();
 
-			GetControlsFromTransform_DEBUG();
+			//GetControlsFromTransform_DEBUG();
 		}
 
 		public bool IsHorizontal()
@@ -154,11 +159,20 @@ namespace AtomosZ.UI
 			panelData = backingData;
 			if (backingData != null)
 			{
+#if UNITY_EDITOR
+				if (Helpers.IsPrefabStage_EDITOR())
+					isDirty = true;
+#endif
 				minDimensions = backingData.minDimensions;
-				layoutPadding = backingData.layoutPadding;
+				layoutPadding = new RectOffset(
+					backingData.layoutPadding.left, backingData.layoutPadding.right,
+					backingData.layoutPadding.top, backingData.layoutPadding.bottom);
 				layoutSpacing = backingData.layoutSpacing;
 				if (backingData.backgroundSprite != null)
 					sprite = backingData.backgroundSprite;
+#if UNITY_EDITOR
+				isDirty = false;
+#endif
 			}
 
 			this.SetDirty();
@@ -166,20 +180,44 @@ namespace AtomosZ.UI
 
 		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			panelData = ((UIPanelScriptableObject)backingData);
-			this.SetDirty();
+			UpdateBackingData((UIPanelScriptableObject)backingData);
 		}
 
-		void Update()
+
+		[Tooltip("Serialized for debugging. The minimum requested dimensions of the panel.")]
+		[SerializeField] private Vector2 preferredSize;
+
+		public void RecalculateAllChildren()
 		{
-			if (isDirty)
-				RecalculateDimensions();
+			foreach (var child in uiControls)
+			{
+#if UNITY_EDITOR
+				if (child == null || child.gameObject == null)
+				{
+					GetControlsFromTransform_DEBUG();
+					return;
+				}
+#endif
+
+				if (!child.gameObject.activeSelf)
+					continue;
+
+				child.RecalculateDimensions();
+			}
 		}
 
-		[SerializeField] private Vector2 minDim;
-		public void RecalculateDimensions()
+		/// <summary>
+		/// The panel attempts to create itself in the smallest possible dimensions,
+		/// saves the value in minDimensionsRequest, then sets it's own height using this value. The panel owner is responsible for setting the width.
+		/// 
+		/// </summary>
+		public override void RecalculateDimensions()
 		{
-			minDim = new Vector2(0, layoutPadding.top);
+			isDirty = false;
+			preferredSize = new Vector2(0, layoutPadding.top);
+
+			//var minChildRequest = new Vector2(minDimensions.x, minDimensions.y);
+			//var maxChildRequest = new Vector2(maxDimensions.x, maxDimensions.y);
 			var vertLayout = GetComponent<VerticalLayoutGroup>();
 			if (vertLayout != null)
 			{
@@ -198,21 +236,22 @@ namespace AtomosZ.UI
 						continue;
 
 					++activeChildren;
-					var childMinDim = child.iUIBehavior.GetDrawnDimensions();
-					minDim.y += childMinDim.y;
-					minDim.x = Mathf.Max(minDim.x, childMinDim.x);
+
+					//child.maxDimensions = new Vector2(Mathf.Min(child.maxDimensions.x, maxDimensions.x), Mathf.Min(child.maxDimensions.y, maxDimensions.y));
+					var childMinDim = child.iUIBehavior.GetPreferredSize();
+					preferredSize.y += childMinDim.y;
+					preferredSize.x = Mathf.Max(preferredSize.x, childMinDim.x);
 				}
 
 				if (activeChildren > 0)
-					minDim.y += vertLayout.spacing * (activeChildren - 1);
+					preferredSize.y += vertLayout.spacing * (activeChildren - 1);
+				preferredSize.x += layoutPadding.horizontal;
 			}
 			else
 			{
 				var horzLayout = GetComponent<HorizontalLayoutGroup>();
 				if (horzLayout == null)
 					Debug.LogException(new Exception("No layout group found on panel"));
-
-				minDim.x = Mathf.Max(minDim.x, horzLayout.padding.left + horzLayout.padding.right);
 
 				var activeChildren = 0;
 				foreach (var child in uiControls)
@@ -221,34 +260,56 @@ namespace AtomosZ.UI
 						continue;
 
 					++activeChildren;
-					var childMinDim = child.iUIBehavior.GetDrawnDimensions();
-					minDim.x += childMinDim.x;
-					if (minDim.y < childMinDim.y)
-						minDim.y = childMinDim.y;
+					var childMinDim = child.iUIBehavior.GetPreferredSize();
+					preferredSize.x += childMinDim.x;
+					if (preferredSize.y < childMinDim.y)
+					{
+						//if (preferredSize.y > layoutPadding.top)
+						//	this.SetDirty(); // refresh child controls
+						preferredSize.y = childMinDim.y;
+					}
 				}
 
 				if (activeChildren > 0)
-					minDim.x += horzLayout.spacing * (activeChildren - 1);
+					preferredSize.x += horzLayout.spacing * (activeChildren - 1);
+
+				preferredSize.x += layoutPadding.horizontal;
+				preferredSize.x = Mathf.Max(preferredSize.x, minDimensions.x);
+				preferredSize.x = Mathf.Min(preferredSize.x, maxDimensions.x);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, preferredSize.x);
 			}
 
-			minDim.x += layoutPadding.horizontal;
-			minDim.y += layoutPadding.bottom;
-			minDim.y = Mathf.Max(minDim.y, minDimensions.y);
 
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDim.y);
-			//rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, minDim.x); // this gets set by tabcontrol
+			preferredSize.y += layoutPadding.bottom;
+			preferredSize.y = Mathf.Max(preferredSize.y, minDimensions.y);
+			preferredSize.y = Mathf.Min(preferredSize.y, maxDimensions.y);
 
 
-			isDirty = false;
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredSize.y);
+
+#if UNITY_EDITOR
+			if (transform.parent.name == "Canvas (Environment)")
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Max(minDimensions.x, preferredSize.x)); // this usually gets set by parent 
+#endif
 		}
 
-
-		public Vector2 GetDrawnDimensions()
+		/// <summary>
+		/// Gets the minimum requested size of the panel.
+		/// </summary>
+		/// <returns></returns>
+		public Vector2 GetPreferredSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
+			return preferredSize;
+		}
 
-			return minDim;
+
+		public Vector2 GetDrawnSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return rect.sizeDelta;
 		}
 
 		/// <summary>
@@ -280,6 +341,10 @@ namespace AtomosZ.UI
 				uiControls.Add(child.GetComponent<UIMonoBehaviour>());
 			}
 
+			if (Helpers.IsPrefabStage_EDITOR() && transform.parent.name == "Canvas (Environment)")
+				RecalculateDimensions();
+			else
+				this.SetDirty();
 			return uiControls;
 		}
 #endif
@@ -290,7 +355,9 @@ namespace AtomosZ.UI
 				return this;
 			foreach (var control in uiControls)
 			{
-				return control.iUIBehavior.GetControl(controlRefName);
+				var controlFound = control.iUIBehavior.GetControl(controlRefName);
+				if (controlFound != null)
+					return controlFound;
 			}
 
 			return null;
@@ -313,51 +380,85 @@ namespace AtomosZ.UI
 			return (DialogButton)(-1);
 		}
 
-		public UITabControl AddTabControl()
+		public UITabControl AddTabControl(UITabControlScriptableObject dataEx)
 		{
 			var prefabType = UIPrefabType.TabControl;
 			var tabControl = (UITabControl)UIPrefabProvider.GetMagicUIControl(prefabType, transform);
-
 			SetReferenceNameAndAddControl(prefabType, tabControl);
+
+#if UNITY_EDITOR
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return tabControl;
+				else
+				{
+					var window = GetComponentInParent<MagicWindowBase>();
+					dataEx = window.tabControlData;
+				}
+			}
+#endif
+			tabControl.UpdateBackingData(dataEx);
 			return tabControl;
 		}
 
 		public UITable AddTable()
 		{
 			var prefabType = UIPrefabType.Table;
-			var ctrl = (UITable)UIPrefabProvider.GetMagicUIControl(prefabType, transform);
+			UITable ctrl = (UITable)UIPrefabProvider.GetMagicUIControl(prefabType, transform);
 			SetReferenceNameAndAddControl(prefabType, ctrl);
-			ctrl.Init(2, 1);
+#if UNITY_EDITOR
+			if (!Application.isPlaying)
+				ctrl.Init(2, 1);
+#endif
+
+			ctrl.UpdateBackingData(null);
 			return ctrl;
 		}
 
-		public UIPanel AddPanel(UIPanelScriptableObject panelData)
+		public UIPanel AddPanel(UIPanelScriptableObject dataEx)
 		{
 			var prefabType = UIPrefabType.Panel;
 			var panel = (UIPanel)GetMagicUIControl(prefabType, transform);
 
 			SetReferenceNameAndAddControl(prefabType, panel);
 #if UNITY_EDITOR
-			if (panelData == null && transform.parent.name == "Canvas (Environment)")
-				return panel;
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return panel;
+				else
+				{
+					var window = GetComponentInParent<MagicWindowBase>();
+					dataEx = window.panelScriptObj;
+				}
+			}
 #endif
-			panel.UpdateBackingData(panelData);
+			panel.UpdateBackingData(dataEx);
 			return panel;
 		}
 
 
 
-		public UIPanel AddHorizontalPanel(UIPanelScriptableObject panelData)
+		public UIPanel AddHorizontalPanel(UIPanelScriptableObject dataEx)
 		{
 			var prefabType = UIPrefabType.HorizontalPanel;
 			var panel = (UIPanel)GetMagicUIControl(prefabType, transform);
 
 			SetReferenceNameAndAddControl(prefabType, panel);
 #if UNITY_EDITOR
-			if (panelData == null && transform.parent.name == "Canvas (Environment)")
-				return panel;
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return panel;
+				else
+				{
+					var window = GetComponentInParent<MagicWindowBase>();
+					dataEx = window.horizontalPanelScriptObj;
+				}
+			}
 #endif
-			panel.UpdateBackingData(panelData);
+			panel.UpdateBackingData(dataEx);
 			return panel;
 		}
 
@@ -369,8 +470,16 @@ namespace AtomosZ.UI
 
 			SetReferenceNameAndAddControl(prefabType, uiSpinner);
 #if UNITY_EDITOR
-			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
-				return uiSpinner;
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return uiSpinner;
+				//else
+				//{
+				//	var window = GetComponentInParent<MagicWindowBase>();
+				//	dataEx = window.spinnerScriptObj;
+				//}
+			}
 #endif
 			uiSpinner.UpdateBackingData(dataEx);
 
@@ -384,11 +493,19 @@ namespace AtomosZ.UI
 
 			SetReferenceNameAndAddControl(prefabType, uiButton);
 #if UNITY_EDITOR
-			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
-				return uiButton;
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return uiButton;
+				else
+				{
+					var window = GetComponentInParent<MagicWindowBase>();
+					dataEx = window.buttonScriptObj;
+				}
+			}
+
 #endif
 			uiButton.UpdateBackingData(dataEx);
-
 			return uiButton;
 		}
 
@@ -401,6 +518,13 @@ namespace AtomosZ.UI
 		/// <returns></returns>
 		public UIButtonPanel AddButtonPanel(UIButtonPanelScriptableObject dataEx)
 		{
+			var magicWindow = GetComponentInParent<MagicWindow>();
+			if (magicWindow == null)
+			{
+				Log.Error("Only a MagicWindow may have a DialogResult, therefore only a MagicWindow may have a ButtonPanel.");
+				return null;
+			}
+
 			UIButtonPanel buttonPanel = GetComponentInChildren<UIButtonPanel>();
 			if (buttonPanel == null)
 			{
@@ -408,7 +532,7 @@ namespace AtomosZ.UI
 				SetReferenceNameAndAddControl(UIPrefabType.ButtonPanel, buttonPanel);
 			}
 
-			var magicWindow = GetComponentInParent<MagicWindow>();
+
 			buttonPanel.SetResultListeners(magicWindow);
 
 #if UNITY_EDITOR
@@ -428,8 +552,16 @@ namespace AtomosZ.UI
 
 			SetReferenceNameAndAddControl(prefabType, dropdown);
 #if UNITY_EDITOR
-			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
-				return dropdown;
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return dropdown;
+				else
+				{
+					var window = GetComponentInParent<MagicWindowBase>();
+					dataEx = window.dropdownScriptObj;
+				}
+			}
 #endif
 			dropdown.UpdateBackingData(dataEx);
 
@@ -444,8 +576,16 @@ namespace AtomosZ.UI
 
 			SetReferenceNameAndAddControl(UIPrefabType.ImageView, image);
 #if UNITY_EDITOR
-			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
-				return image;
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return image;
+				else
+				{
+					var window = GetComponentInParent<MagicWindowBase>();
+					dataEx = window.imageViewScriptObj;
+				}
+			}
 #endif
 			image.UpdateBackingData(dataEx);
 
@@ -458,22 +598,55 @@ namespace AtomosZ.UI
 
 			SetReferenceNameAndAddControl(UIPrefabType.Slider, slider);
 #if UNITY_EDITOR
-			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
-				return slider;
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return slider;
+				else
+				{
+					var window = GetComponentInParent<MagicWindowBase>();
+					dataEx = window.sliderScriptObj;
+				}
+			}
 #endif
 			slider.UpdateBackingData(dataEx);
 
 			return slider;
 		}
 
+		private void SetLayoutOfControl(UIMonoBehaviour ctrl)
+		{
+			var vertLayout = GetComponent<VerticalLayoutGroup>();
+			if (vertLayout == null)
+			{
+				ctrl.layoutElement.flexibleWidth = -1;
+				ctrl.layoutElement.flexibleHeight = 1;
+			}
+			else
+			{
+				ctrl.layoutElement.flexibleWidth = 1;
+				ctrl.layoutElement.flexibleHeight = -1;
+			}
+		}
+
 		public UICheckBox AddCheckBox(UICheckBoxScriptableObject dataEx)
 		{
 			var checkBox = (UICheckBox)GetMagicUIControl(UIPrefabType.CheckBox, transform);
 
+			SetLayoutOfControl(checkBox);
+
 			SetReferenceNameAndAddControl(UIPrefabType.CheckBox, checkBox);
 #if UNITY_EDITOR
-			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
-				return checkBox;
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return checkBox;
+				else
+				{
+					var window = GetComponentInParent<MagicWindowBase>();
+					dataEx = window.checkBoxScriptObj;
+				}
+			}
 #endif
 			checkBox.UpdateBackingData(dataEx);
 
@@ -489,9 +662,19 @@ namespace AtomosZ.UI
 			var inputTMP = inputField.GetComponent<TMP_InputField>();
 			inputTMP.onSubmit.AddListener(SetDialogResult);
 
+			SetLayoutOfControl(inputField);
+
 #if UNITY_EDITOR
-			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
-				return inputField;
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return inputField;
+				else
+				{
+					var window = GetComponentInParent<MagicWindowBase>();
+					dataEx = window.inputFieldScriptObj;
+				}
+			}
 #endif
 			inputField.UpdateBackingData(dataEx);
 
@@ -511,9 +694,18 @@ namespace AtomosZ.UI
 			label.referenceName = null;
 			SetReferenceNameAndAddControl(UIPrefabType.ExpandingLabel, label);
 			label.alignmentOptions = label.alignmentOptions;
+			SetLayoutOfControl(label);
 #if UNITY_EDITOR
-			if (dataEx == null && transform.parent.name == "Canvas (Environment)")
-				return label;
+			if (dataEx == null)
+			{
+				if (transform.parent.name == "Canvas (Environment)")
+					return label;
+				else
+				{
+					var window = GetComponentInParent<MagicWindowBase>();
+					dataEx = window.textScriptObj;
+				}
+			}
 #endif
 			label.text = "New Label";
 			label.UpdateBackingData(dataEx);
@@ -533,8 +725,6 @@ namespace AtomosZ.UI
 		/// <param name="uiBeh"></param>
 		private void SetReferenceNameAndAddControl(UIPrefabType prefabType, UIMonoBehaviour uiBeh)
 		{
-			this.SetDirty();
-
 			int count = 0;
 			var controlName = $"{prefabType}_{count.ToString("00")}_{referenceName}";
 			while (GetControl(controlName) != null)
@@ -549,21 +739,27 @@ namespace AtomosZ.UI
 
 
 
-
+		[Conditional("UNITY_EDITOR")]
 		/// <summary>
 		/// Editor script to keep anyone from tampering with the size!
 		/// </summary>
 		public void SetToParentSize()
 		{
 			var magicWindow = GetComponentInParent<MagicWindow>();
-#if DEBUG
-			if (magicWindow == null)
-			{   // Are we in prefab edit mode?
-				return;
+			if (magicWindow != null)
+			{
+				magicWindow.RecalculateDimensions();
 			}
-#endif
+			else
+			{
+				var tabWindow = GetComponentInParent<MagicTabbedWindow>();
+				if (tabWindow == null)
+				{   // Are we in prefab edit mode?
+					return;
+				}
 
-			magicWindow.Refresh();
+				tabWindow.RecalculateDimensions();
+			}
 
 			var rect = GetComponent<RectTransform>();
 			rect.sizeDelta = new Vector2(0, rect.sizeDelta.y);
@@ -573,15 +769,27 @@ namespace AtomosZ.UI
 		public void RemoveControl(UIMonoBehaviour control)
 		{
 			uiControls.Remove(control);
-			((ObjectForge.IPooledObject)control).ReturnToPool();
+#if UNITY_EDITOR
+			if (!Application.isPlaying)
+			{
+				DestroyImmediate(control.gameObject);
+				this.SetDirty();
+				return;
+			}
+#endif
+
+			if (control.TryGetComponent(out PooledObject pooledObject))
+				pooledObject.ReturnToPool();
+			else
+				((ObjectForge.IPooledObject)control).ReturnToPool();
 			this.SetDirty();
 		}
 
 
 		public void ClearControls()
 		{
-			foreach (var ctrl in uiControls)
-				RemoveControl(ctrl);
+			for (int i = uiControls.Count - 1; i >= 0; --i)
+				RemoveControl(uiControls[i]);
 
 			uiControls.Clear();
 			this.SetDirty();
@@ -601,9 +809,9 @@ namespace AtomosZ.UI
 		/// <param name="clickActions"></param>
 		public void SetContextMenuActions(List<UIMenuAction> clickActions)
 		{
-			var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
-			layout.spacing = 12;
-			layout.padding = new RectOffset(layout.padding.left, layout.padding.right, layout.padding.top, 0);
+			//var layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
+			//layout.spacing = 12;
+			//layout.padding = new RectOffset(layout.padding.left, layout.padding.right, layout.padding.top, 0);
 			ClearControls();
 			foreach (var action in clickActions)
 			{
@@ -625,29 +833,35 @@ namespace AtomosZ.UI
 
 			var divider = UIPrefabProvider.GetMagicUIControl(UIPrefabType.MenuDivider, transform);
 			SetReferenceNameAndAddControl(UIPrefabType.MenuDivider, divider);
+
+			this.SetDirty();
 			return divider;
 		}
 
-		private void AddMenuControl(UIMenuAction clickAction)
+		private UIMenuButton AddMenuControl(UIMenuAction clickAction)
 		{
-			//	clickAction += parentPanel.Close;
-			//	var menuControl = Instantiate(UIPrefabProvider.GetPrefab(UIPrefabType.MenuControlButton), transform);
+			UIMenuButton menuControl = (UIMenuButton)UIPrefabProvider.GetMagicUIControl(UIPrefabType.MenuButton, transform);
+			SetReferenceNameAndAddControl(UIPrefabType.MenuButton, menuControl);
 
-			//	var button = menuControl.GetComponent<Button>();
-			//	button.onClick.AddListener(clickAction.action);
-			//	button.interactable = clickAction.enabled;
-			//	menuControl.GetComponentInChildren<UIExpandingLabel>().SetText(clickAction.buttonText, false);
+			var button = menuControl.GetComponent<Button>();
+			button.onClick.AddListener(clickAction.action);
+			button.interactable = clickAction.enabled;
+			menuControl.text = clickAction.buttonText;
 
-			//	AddControl(UIPrefabType.MenuControlButton, menuControl);
+			this.SetDirty();
+			return menuControl;
 		}
 
 
 
 		private void SetDialogResult(string currentText)
 		{
-			var parentPanel = GetComponentInParent<MagicWindow>();
-			if (parentPanel != null)
-				parentPanel.SetDialogResultOK();
+			var magicWindow = GetComponentInParent<MagicWindow>();
+			if (magicWindow != null)
+			{
+				magicWindow.SetDialogResultOK();
+				return;
+			}
 		}
 	}
 }

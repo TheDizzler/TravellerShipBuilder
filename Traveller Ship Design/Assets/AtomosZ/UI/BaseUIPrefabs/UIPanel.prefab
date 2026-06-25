@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2538911062827000086}
   - component: {fileID: 5821347800241209384}
+  - component: {fileID: 1097008487643288540}
   - component: {fileID: 1563887213791054955}
+  - component: {fileID: 5953904790542714899}
   - component: {fileID: 2670291787708451422}
   - component: {fileID: 1588480160714053004}
   m_Layer: 5
@@ -35,9 +37,9 @@ RectTransform:
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 64}
+  m_SizeDelta: {x: 128, y: 42}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5821347800241209384
 MonoBehaviour:
@@ -53,6 +55,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPanel
   _referenceName: panel
   _interactable: 1
+  _minDimensions: {x: 128, y: 42}
+  _maxDimensions: {x: 1024, y: 2048}
   _fillParentHorizontal: 0
   _fillParentVertical: 0
   panelData: {fileID: 11400000, guid: 67b330f5fba2c294990e332bf29485e5, type: 2}
@@ -64,10 +68,30 @@ MonoBehaviour:
     m_Bottom: 16
   _layoutSpacing: 8
   _borderless: 0
-  _minDimensions: {x: 250, y: 64}
-  tabLabel: {fileID: 0}
+  tabItem: {fileID: 0}
   uiControls: []
-  minDim: {x: 64, y: 64}
+  tabIndex: 0
+  minDimensionsRequest: {x: 64, y: 42}
+--- !u!114 &1097008487643288540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3033124803599760031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: 128
+  m_MinHeight: 42
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &1563887213791054955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,6 +118,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
+--- !u!114 &5953904790542714899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3033124803599760031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 0
+  prefabID: Panel
 --- !u!114 &2670291787708451422
 MonoBehaviour:
   m_ObjectHideFlags: 0

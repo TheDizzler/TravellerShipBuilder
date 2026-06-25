@@ -1,34 +1,25 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 namespace AtomosZ.UI
 {
 	[ExecuteInEditMode]
-	public class UIMenuDivider : UIPooledMonoBehaviour<UIMenuDivider>, IUIBehavior
+	public class UIMenuDivider : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.MenuDivider; } }
 		public bool interactable { get; set; }
 
-		public Vector2 minDimensions { get; set; }
-		public Vector2 maxDimensions { get; set; }
 
-		[SerializeField] private LayoutElement _layoutElement;
-		public LayoutElement layoutElement
+		
+
+
+		internal void ReturnToPool()
 		{
-			get
-			{
-				if (_layoutElement == null)
-					_layoutElement = GetComponent<LayoutElement>();
-				return _layoutElement;
-			}
+			pooledObject.ReturnToPool();
 		}
 
-
-		public ScriptableObject GetBackingData()
-		{
-			return null;
-		}
 
 		public UIMonoBehaviour GetControl(string controlRefName)
 		{
@@ -37,9 +28,39 @@ namespace AtomosZ.UI
 			return null;
 		}
 
-		public Vector2 GetDrawnDimensions()
+		void Update()
 		{
+			if (isDirty)
+				RecalculateDimensions();
+		}
+
+		public override void RecalculateDimensions()
+		{
+			isDirty = false;
+		}
+
+		/// <summary>
+		/// This intentionally returns width of 0 if _fillParentHorizontal to prevent confusion of parent panel.
+		/// </summary>
+		/// <returns></returns>
+		public Vector2 GetDrawnSize()
+		{
+			RecalculateDimensions();
+			if (_fillParentHorizontal)
+				return new Vector2(0, rect.sizeDelta.y);
 			return rect.sizeDelta;
+		}
+
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return minDimensions;
+		}
+
+		public ScriptableObject GetBackingData()
+		{
+			return null;
 		}
 
 		public void UpdateBackingData(ScriptableObject backingData)
@@ -47,9 +68,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void RecalculateDimensions()
-		{
-			throw new System.NotImplementedException();
-		}
+
+
 	}
 }

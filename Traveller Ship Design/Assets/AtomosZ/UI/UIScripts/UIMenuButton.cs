@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 
 namespace AtomosZ.UI
@@ -33,8 +33,7 @@ namespace AtomosZ.UI
 		}
 	}
 
-	[ExecuteInEditMode]
-	public class UIMenuButton : UIPooledMonoBehaviour<UIMenuButton>, IUIBehavior
+	public class UIMenuButton : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.MenuButton; } }
 		[SerializeField] private UIExpandingLabel label;
@@ -45,20 +44,18 @@ namespace AtomosZ.UI
 			set { _interactable = label.interactable = button.interactable = value; }
 		}
 
-		[SerializeField] private Vector2 _minDimensions;
-		public Vector2 minDimensions
+		public string text
 		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				this.SetDirty();
-			}
+			get { return label.text; }
+			set { label.text = value; }
 		}
 
-		public Vector2 maxDimensions { get; set; }
-
 		public ScriptableObject GetBackingData()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public void UpdateBackingData(ScriptableObject backingData)
 		{
 			throw new System.NotImplementedException();
 		}
@@ -70,19 +67,26 @@ namespace AtomosZ.UI
 			return null;
 		}
 
-		public Vector2 GetDrawnDimensions()
+		public override void RecalculateDimensions()
 		{
+			label.RecalculateDimensions();
+			preferredSize = label.rect.sizeDelta;
+			isDirty = false;
+		}
+
+		public Vector2 GetDrawnSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
 			return rect.sizeDelta;
 		}
 
-		public void UpdateBackingData(ScriptableObject backingData)
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
 		{
-			throw new System.NotImplementedException();
-		}
-
-		public void RecalculateDimensions()
-		{
-			throw new System.NotImplementedException();
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
 		}
 	}
 }

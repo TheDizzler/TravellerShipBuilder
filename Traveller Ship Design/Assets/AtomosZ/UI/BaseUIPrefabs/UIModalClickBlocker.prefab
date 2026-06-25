@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8386187384837662049}
   - component: {fileID: 3299959705645607991}
+  - component: {fileID: 2452679959533058996}
   - component: {fileID: 3385879847874351131}
   - component: {fileID: 8124556399261973386}
   m_Layer: 5
@@ -54,6 +55,21 @@ MonoBehaviour:
   _interactable: 1
   _fillParentHorizontal: 0
   _fillParentVertical: 0
+--- !u!114 &2452679959533058996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3912343033089499237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 1
+  prefabID: ClickBlocker
 --- !u!114 &3385879847874351131
 MonoBehaviour:
   m_ObjectHideFlags: 0

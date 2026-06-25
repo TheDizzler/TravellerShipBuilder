@@ -1,49 +1,21 @@
 using System;
+using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 using static AtomosZ.ObjectForge;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
+using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
-	public class UIPooledMonoBehaviour<T> : UIMonoBehaviour, IPooledObject<T> where T : MonoBehaviour, IPooledObject<T>
-	{
-		public bool isLive { get; set; }
-		public ObjectPool<T> pool { get; set; }
-
-		void OnDestroy()
-		{
-			this.OnDestroyPooledObject();
-		}
-
-		public virtual void ReturnToPool()
-		{
-			if (pool == null)
-				pool = (ObjectPool<T>)UIPrefabProvider.GetPoolOfType(iUIBehavior.dataType);
-
-
-			foreach (var pooledChild in transform.GetComponentsInChildren<IPooledObject>(true))
-			{
-				var baseUIMono = (UIMonoBehaviour)pooledChild;
-				if (baseUIMono == this)
-					continue;
-				pooledChild.ReturnToPool();
-			}
-
-			this.Return();
-		}
-	}
-
-	[ExecuteInEditMode]
 	/// <summary>
 	/// This class is here to allow for simple serialization of our UI controls.
 	/// </summary>
-	public class UIMonoBehaviour : MonoBehaviour
+	public abstract class UIMonoBehaviour : MonoBehaviour
 	{
 		[SerializeField] protected string _referenceName;// = "no reference name yet";
-		/// <summary>
-		/// TODO(Tristan): let's tokenize (hash?) this so were are not performing a string lookup on every control.
-		/// </summary>
+		[Tooltip("TODO(Tristan): let's tokenize (hash?) this so were are not performing a string lookup on every control.")]
 		public string referenceName
 		{
 			get { return _referenceName; }
@@ -54,7 +26,20 @@ namespace AtomosZ.UI
 			}
 		}
 
+		private PooledObject _pooledObject;
+		public PooledObject pooledObject
+		{
+			get
+			{
+				if (_pooledObject == null)
+				{
+					if (!TryGetComponent<PooledObject>(out _pooledObject))
+						Debug.LogError(name + " has no pooled object!");
+				}
 
+				return _pooledObject;
+			}
+		}
 		private RectTransform _rect;
 
 		public RectTransform rect
@@ -85,22 +70,102 @@ namespace AtomosZ.UI
 			}
 		}
 
-		//[Min(1)] // this doesn't actually work, does it.
-		//[SerializeField] protected Vector2 _minDimensions = new Vector2(64, 64);
 
-		//[Min(1)]
-		//[SerializeField] protected Vector2 _maxDimensions = new Vector2(512, 512);
+		[SerializeField] protected Vector2 _minDimensions = new Vector2(64, 16);
+		public Vector2 minDimensions
+		{
+			get { return _minDimensions; }
+			set
+			{
+				//value.x = Mathf.Min(value.x, maxDimensions.x);
+				//value.y = Mathf.Min(value.y, maxDimensions.y);
+				value.x = Mathf.Max(value.x, 8);
+				value.y = Mathf.Max(value.y, 8);
+				_minDimensions = value;
+				if (layoutElement == null)
+				{
+					Debug.LogError(name + " does not have a LayoutElement yet");
+				}
+				else
+				{
+					layoutElement.minWidth = minDimensions.x;
+					layoutElement.minHeight = minDimensions.y;
+				}
+				this.SetDirty();
+			}
+		}
 
+
+		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
+		[SerializeField] protected Vector2 _maxDimensions = new Vector2(1025, 256);
+
+
+		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
+		public Vector2 maxDimensions
+		{
+			get { return _maxDimensions; }
+			set
+			{
+				//				if (_fillParentVertical)
+				//				{
+				//#if UNITY_EDITOR
+				//					if (transform.parent == null)
+				//					{
+				//						_fillParentVertical = false;
+				//						return;
+				//					}
+				//#endif
+				//					var parentSize = transform.parent.GetComponent<RectTransform>().sizeDelta;
+				//					_minDimensions = new Vector2(_minDimensions.x, parentSize.y);
+				//					_maxDimensions = new Vector2(_maxDimensions.x, parentSize.y);
+				//				}
+				//				else
+				//				{
+				value.x = Mathf.Max(value.x, minDimensions.x);
+				value.y = Mathf.Max(value.y, minDimensions.y);
+				value.x = Mathf.Max(value.x, 8);
+				value.y = Mathf.Max(value.y, 8);
+				_maxDimensions = value;
+				//if (layoutElement == null)
+				//	Debug.LogError(name + " has no LayoutElement");
+				//else
+				//{
+				//	if (!fillParentHorizontal)
+				//		layoutElement.preferredWidth = value.x;
+				//	else
+				//		layoutElement.preferredWidth = -1;
+				//}
+
+				this.SetDirty();
+			}
+		}
+
+
+		private LayoutElement _layoutElement;
+		public LayoutElement layoutElement
+		{
+			get
+			{
+				if (_layoutElement == null)
+					_layoutElement = GetComponent<LayoutElement>();
+				return _layoutElement;
+			}
+		}
 
 		[SerializeField] protected bool _fillParentHorizontal = false;
 		public bool fillParentHorizontal
 		{
 			[System.Diagnostics.DebuggerStepThrough]
-			get { return _fillParentHorizontal; }
+			get
+			{
+				if (layoutElement == null)     // @TODO(Tristan): add layout to all UIMonoBehaviours then remove this check
+					return _fillParentHorizontal;
+				return _fillParentHorizontal = layoutElement.flexibleWidth > 0;
+			}
 			set
 			{
 				_fillParentHorizontal = value;
-				if (value)
+				if (layoutElement == null)
 				{
 #if UNITY_EDITOR
 					if (transform.parent == null)
@@ -109,17 +174,31 @@ namespace AtomosZ.UI
 						return;
 					}
 #endif
-					// this may be unneccessary as layout.flexibleWidth = 1 does the same thing (but only on Vertical Layout?)
-					var parentSize = transform.parent.GetComponent<RectTransform>().sizeDelta;
-					iUIBehavior.minDimensions = new Vector2(parentSize.x, iUIBehavior.minDimensions.y);
-					iUIBehavior.maxDimensions = new Vector2(parentSize.x, iUIBehavior.maxDimensions.y);
+
+					//// this may be unneccessary as layout.flexibleWidth = 1 does the same thing (but only on Vertical Layout?)
+					//var parentSize = transform.parent.GetComponent<RectTransform>().sizeDelta;
+					//iUIBehavior.minDimensions = new Vector2(parentSize.x, iUIBehavior.minDimensions.y);
+					//iUIBehavior.maxDimensions = new Vector2(parentSize.x, iUIBehavior.maxDimensions.y);
+				}
+				else
+				{
+					if (_fillParentHorizontal)
+					{
+						layoutElement.flexibleWidth = 1;
+					}
+					else
+					{
+						layoutElement.preferredWidth = -1;
+						layoutElement.flexibleWidth = -1;
+					}
 				}
 
 				this.SetDirty();
 			}
 		}
 
-		[SerializeField] protected bool _fillParentVertical = false;
+		[SerializeField]
+		protected bool _fillParentVertical = false;
 		public bool fillParentVertical
 		{
 			[System.Diagnostics.DebuggerStepThrough]
@@ -149,7 +228,20 @@ namespace AtomosZ.UI
 		public UIControlType GetDataType() { return iUIBehavior.dataType; }
 
 
+		public abstract void RecalculateDimensions();
 
+		[Conditional("UNITY_EDITOR")]
+		public void SetDirty_Editor()
+		{
+			SetDirty();
+			foreach (Transform child in transform)
+			{
+				if (child.TryGetComponent<UIMonoBehaviour>(out UIMonoBehaviour childUI))
+				{
+					childUI.SetDirty_Editor();
+				}
+			}
+		}
 
 		public void SetDirty()
 		{
@@ -161,7 +253,10 @@ namespace AtomosZ.UI
 				var parent = transform.parent.GetComponentInParent<UIMonoBehaviour>();
 				if (parent == null)
 				{   // assume this is the root and start to refresh (only in edit mode?)
-					//uIBehavior.GetDrawnDimensions();
+#if UNITY_EDITOR
+					if (Helpers.IsPrefabStage_EDITOR() && transform.parent.name == "Canvas (Environment)")
+						RecalculateDimensions();
+#endif
 					return;
 				}
 
@@ -176,9 +271,6 @@ namespace AtomosZ.UI
 #if UNITY_EDITOR
 			// Prefabs need to maintain their prefab name
 			if (!Helpers.IsPrefabStage_EDITOR())
-				gameObject.name = referenceName;
-#else
-			if (gameObject.scene.IsValid()) // this line is probably unnecessary
 				gameObject.name = referenceName;
 #endif
 		}

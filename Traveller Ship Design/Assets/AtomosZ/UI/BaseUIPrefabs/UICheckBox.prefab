@@ -85,8 +85,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3849094672880733284}
   - component: {fileID: 24937739969009248}
-  - component: {fileID: 4613445078176205474}
+  - component: {fileID: 1305391478090062653}
   - component: {fileID: 4332647557573541685}
+  - component: {fileID: 924296253289138827}
+  - component: {fileID: 4613445078176205474}
   m_Layer: 5
   m_Name: UICheckBox
   m_TagString: Untagged
@@ -112,8 +114,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 183.28, y: 37.7}
+  m_AnchoredPosition: {x: 0, y: 131.7492}
+  m_SizeDelta: {x: 250, y: 37.7}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &24937739969009248
 MonoBehaviour:
@@ -129,6 +131,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: checkbox
   _interactable: 1
+  _minDimensions: {x: 0, y: 0}
+  _maxDimensions: {x: 1025, y: 256}
   _fillParentHorizontal: 0
   _fillParentVertical: 0
   checkBoxData: {fileID: 11400000, guid: b07b814d0d2387741a590f0e97184b34, type: 2}
@@ -137,8 +141,7 @@ MonoBehaviour:
   checkImage: {fileID: 4927640585714093458}
   textLabel: {fileID: 7618200045658159183}
   toggle: {fileID: 4613445078176205474}
-  _minDimensions: {x: 0, y: 0}
-  _text: CheckBoxxxxx2222
+  _text: CheckBox
   _fontColor: {r: 0, g: 0, b: 0, a: 1}
   _disabledFontColor: {r: 0.408805, g: 0.408805, b: 0.408805, a: 1}
   _fontStyles: 0
@@ -151,6 +154,67 @@ MonoBehaviour:
       m_Calls: []
   _boxSprite: {fileID: 21300000, guid: 8ec9c06b7b6fd4444a7053837c8c5470, type: 3}
   _checkSprite: {fileID: 21300000, guid: 29e51e76a182a2247998fdb43e627a3e, type: 3}
+--- !u!114 &1305391478090062653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2389516391876734822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &4332647557573541685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2389516391876734822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 38
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 6
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 1
+  m_ChildScaleHeight: 1
+  m_ReverseArrangement: 0
+--- !u!114 &924296253289138827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2389516391876734822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 1
+  prefabID: CheckBox
 --- !u!114 &4613445078176205474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,32 +275,6 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   m_IsOn: 1
---- !u!114 &4332647557573541685
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2389516391876734822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 3
-  m_Spacing: 6
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 1
-  m_ChildScaleHeight: 1
-  m_ReverseArrangement: 0
 --- !u!1 &7179919718553687629
 GameObject:
   m_ObjectHideFlags: 0
@@ -248,6 +286,7 @@ GameObject:
   - component: {fileID: 377748177167822696}
   - component: {fileID: 4751154145943114303}
   - component: {fileID: 8706057827675526494}
+  - component: {fileID: 2466720596219219563}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -270,8 +309,8 @@ RectTransform:
   - {fileID: 6900150094157803934}
   m_Father: {fileID: 3849094672880733284}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0, y: 0.5}
@@ -297,7 +336,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 8ec9c06b7b6fd4444a7053837c8c5470, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -313,6 +352,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7179919718553687629}
   m_CullTransparentMesh: 1
+--- !u!114 &2466720596219219563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7179919718553687629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 1
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1001 &5551567839041173512
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -391,7 +450,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 778371616326191649, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 778371616326191649, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: m_AnchorMax.x
@@ -411,7 +470,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 778371616326191649, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 145.28
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 778371616326191649, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: m_SizeDelta.y
@@ -510,10 +569,6 @@ PrefabInstance:
       value: CheckBox
       objectReference: {fileID: 0}
     - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
-      propertyPath: _designObject
-      value: 
-      objectReference: {fileID: 1777081956676660134}
-    - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: _interactable
       value: 1
       objectReference: {fileID: 0}
@@ -528,6 +583,10 @@ PrefabInstance:
     - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: _disabledColor.r
       value: 0.408805
+      objectReference: {fileID: 0}
+    - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+      propertyPath: _maxDimensions.x
+      value: 299.86
       objectReference: {fileID: 0}
     - target: {fileID: 2644291506069405767, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
       propertyPath: labelEx.fontSize
@@ -601,22 +660,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIExpandingText (TMP)
       objectReference: {fileID: 0}
+    - target: {fileID: 5520579619855590377, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+      propertyPath: m_MinWidth
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5520579619855590377, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+      propertyPath: m_MinHeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5520579619855590377, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
+      propertyPath: m_FlexibleWidth
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
---- !u!114 &1777081956676660134 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6170590193817473966, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}
-  m_PrefabInstance: {fileID: 5551567839041173512}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &5171950230800085545 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 778371616326191649, guid: a9dbc2205fb9ecb48ac1b5a3832dbbb9, type: 3}

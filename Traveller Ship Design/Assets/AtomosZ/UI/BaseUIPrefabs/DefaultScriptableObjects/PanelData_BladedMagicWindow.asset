@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 924d64d1e78bbc645841d9cd7eb0f793, type: 3}
-  m_Name: UIPanelData
+  m_Name: PanelData_BladedMagicWindow
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIPanelScriptableObject
-  backgroundSprite: {fileID: 21300000, guid: 8d2a9c7a5c887bf45b947d6445d62561, type: 3}
+  backgroundSprite: {fileID: 21300000, guid: e6e949acc92e32044ba1efbc86825b9e, type: 3}
   minDimensions: {x: 96, y: 64}
   layoutPadding:
     m_Left: 32
     m_Right: 32
-    m_Top: 16
-    m_Bottom: 16
+    m_Top: 0
+    m_Bottom: 8
   layoutSpacing: 8

@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 namespace AtomosZ.UI
 {
 	[ExecuteInEditMode]
-	public class UIDataRow : UIPooledMonoBehaviour<UIDataRow>, IUIBehavior
+	public class UIDataRow : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.DataRow; } }
 		public static Color zeroAlpha = new Color(0, 0, 0, 0);
@@ -53,14 +53,14 @@ namespace AtomosZ.UI
 		}
 
 		[HideInInspector]
-		[SerializeField] private HorizontalLayoutGroup _layout;
-		public HorizontalLayoutGroup layout
+		[SerializeField] private HorizontalLayoutGroup _layoutGroup;
+		public HorizontalLayoutGroup layoutGroup
 		{
 			get
 			{
-				if (_layout == null)
-					_layout = GetComponent<HorizontalLayoutGroup>();
-				return _layout;
+				if (_layoutGroup == null)
+					_layoutGroup = GetComponent<HorizontalLayoutGroup>();
+				return _layoutGroup;
 			}
 		}
 
@@ -84,23 +84,7 @@ namespace AtomosZ.UI
 
 		public UIMenuDivider gridLine;
 
-		[SerializeField] private Vector2 _minDimensions;
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				for (int i = 0; i < cells.Length; ++i)
-				{
-					cells[i].minDimensions = new Vector2(cellWidths[i], value.y);
-				}
 
-				this.SetDirty();
-			}
-		}
-
-		public Vector2 maxDimensions { get; set; }
 
 		[HideInInspector]
 		[SerializeField] private float[] _cellWidths;
@@ -267,20 +251,20 @@ namespace AtomosZ.UI
 				RecalculateDimensions();
 		}
 
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
-			float width = layout.padding.horizontal;
+			float width = layoutGroup.padding.horizontal;
 			for (int i = 0; i < cells.Length; ++i)
 			{
 				width += _cellWidths[i];
 			}
 
-			width += layout.spacing * (cells.Length - 1);
+			width += layoutGroup.spacing * (cells.Length - 1);
 
 			var height = _minDimensions.y;
 			for (int i = 0; i < cells.Length; ++i)
 			{
-				var controlHeight = cells[i].GetDrawnDimensions().y;
+				var controlHeight = cells[i].GetDrawnSize().y;
 				height = Mathf.Max(height, controlHeight);
 			}
 
@@ -317,17 +301,41 @@ namespace AtomosZ.UI
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
 
+			preferredSize.x = width;
+			preferredSize.y = height;
+
 			isDirty = false;
 		}
 
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
 			return rect.sizeDelta;
 		}
 
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
+		}
+
+		public void ReturnToPool()
+		{
+			Clear();
+#if UNITY_EDITOR
+			if (!Application.isPlaying)
+			{
+				DestroyImmediate(gameObject);
+				return;
+			}
+#endif
+
+			GetComponent<PooledObject>().ReturnToPool();
+		}
 
 		public void RemoveCell(int cellIndex)
 		{
@@ -376,13 +384,6 @@ namespace AtomosZ.UI
 			for (int i = cells.Length - 1; i >= 0; --i)
 				RemoveCell(i);
 		}
-
-		public override void ReturnToPool()
-		{
-			base.ReturnToPool();
-		}
-
-
 
 		public ScriptableObject GetBackingData()
 		{

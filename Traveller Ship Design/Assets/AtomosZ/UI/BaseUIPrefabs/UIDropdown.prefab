@@ -103,6 +103,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -170,7 +171,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -7.500061, y: -0.5}
+  m_AnchoredPosition: {x: -7.500061, y: -0.5000038}
   m_SizeDelta: {x: -35, y: -13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1562520756750204633
@@ -193,7 +194,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Option 1
+  m_text: Option 4
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_sharedMaterial: {fileID: -5212590573181050906, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
@@ -203,7 +204,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4281479730
-  m_fontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 1}
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -220,10 +221,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 39.8
+  m_fontSizeBase: 26
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -231,6 +232,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -433,6 +435,7 @@ GameObject:
   - component: {fileID: 4055350152107424683}
   - component: {fileID: 3132597873559246341}
   - component: {fileID: 947029655043986366}
+  - component: {fileID: 7535132959828825029}
   - component: {fileID: 9155688087169936532}
   - component: {fileID: 351424338598274322}
   - component: {fileID: 8129282478058831701}
@@ -462,8 +465,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 30, y: 0}
-  m_SizeDelta: {x: 100, y: 30}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 199.15, y: 84.82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3132597873559246341
 MonoBehaviour:
@@ -479,27 +482,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: dropdown
   _interactable: 1
-  _fillParentHorizontal: 0
+  _minDimensions: {x: 100, y: 10}
+  _maxDimensions: {x: 1025, y: 256}
+  _fillParentHorizontal: 1
   _fillParentVertical: 0
   dropdown: {fileID: 351424338598274322}
   arrow: {fileID: 7042341699860270575}
   dropdownData: {fileID: 11400000, guid: 9dc0573a54af75d4e8ecad2090d58a11, type: 2}
-  _minDimensions: {x: 100, y: 10}
   _arrowSprite: {fileID: 21300000, guid: 445f3c3a06f60474d8ab38a263cb59a9, type: 3}
-  _fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
-  _fontSize: 14
-  _fontColor: {r: 0.1953125, g: 0.1953125, b: 0.1953125, a: 1}
-  _alignmentOptions: 0
+  _fontAsset: {fileID: 0}
+  _fontSize: 26
+  _fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  _alignmentOptions: 257
   onValueChangedAction:
     m_PersistentCalls:
       m_Calls: []
-  _value: 0
+  _value: 3
   _isMultiSelect: 0
   _options:
   - m_Text: Option 1
     m_Image: {fileID: 0}
     m_Color: {r: 1, g: 1, b: 1, a: 1}
-  - m_Text: Option 2
+  - m_Text: Option 20000
     m_Image: {fileID: 0}
     m_Color: {r: 1, g: 1, b: 1, a: 1}
   - m_Text: Option 3
@@ -524,13 +528,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
-  m_MinWidth: 102.74007
+  m_MinWidth: 509.83005
   m_MinHeight: 10
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: -1
+  m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7535132959828825029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3595655409325189416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 1
+  prefabID: Dropdown
 --- !u!114 &9155688087169936532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,14 +627,14 @@ MonoBehaviour:
   m_Placeholder: {fileID: 0}
   m_ItemText: {fileID: 3188929240628655101}
   m_ItemImage: {fileID: 0}
-  m_Value: 0
+  m_Value: 3
   m_MultiSelect: 0
   m_Options:
     m_Options:
     - m_Text: Option 1
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: Option 2
+    - m_Text: Option 20000
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: Option 3

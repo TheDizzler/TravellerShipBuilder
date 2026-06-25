@@ -8,12 +8,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 namespace AtomosZ.UI
 {
-	[ExecuteInEditMode]
-	public class UIDropdown : UIPooledMonoBehaviour<UIDropdown>, IUIBehavior
+	public class UIDropdown : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Dropdown; } }
 
@@ -35,18 +34,6 @@ namespace AtomosZ.UI
 		}
 
 
-		[SerializeField] private Vector2 _minDimensions = new Vector2(64, 10);
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				this.SetDirty();
-			}
-		}
-
-		public Vector2 maxDimensions { get; set; }
 
 		[SerializeField] private Sprite _arrowSprite;
 		public Sprite arrowSprite
@@ -230,13 +217,15 @@ namespace AtomosZ.UI
 			referenceName = _referenceName;
 			interactable = _interactable;
 
-
+			fontSize = _fontSize;
 			optionsDelegate = _optionsDelegate;
-
+			options = _options;
 			minDimensions = _minDimensions;
 			fillParentHorizontal = _fillParentHorizontal;
 
-			isMultiSelect = _isMultiSelect ;
+			isMultiSelect = _isMultiSelect;
+
+			RecalculateDimensions();
 		}
 
 		[Conditional("UNITY_EDITOR")]
@@ -314,13 +303,8 @@ namespace AtomosZ.UI
 			}
 		}
 
-		void Update()
-		{
-			if (isDirty)
-				RecalculateDimensions();
-		}
 
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
 			var layout = GetComponent<LayoutElement>();
 			if (fillParentHorizontal)
@@ -351,18 +335,29 @@ namespace AtomosZ.UI
 
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 
-			layout.minWidth = minWidth;
+			layout.minWidth =  minWidth;
 			layout.minHeight = minDimensions.y;
+
+			preferredSize.x = minWidth;
+			preferredSize.y = height;
 
 			isDirty = false;
 		}
 
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
-			return GetComponent<RectTransform>().sizeDelta;
+			return rect.sizeDelta;
+		}
+
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
 		}
 	}
 }

@@ -1,12 +1,12 @@
 using UnityEngine;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 namespace AtomosZ.UI
 {
 	/// <summary>
 	/// A simple class to block any clicks from being registered when a modal dialog box is open.
 	/// </summary>
-	public class UIModalClickBlocker : UIPooledMonoBehaviour<UIModalClickBlocker>, IUIBehavior
+	public class UIModalClickBlocker : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.ModalClickBlocker; } }
 
@@ -15,9 +15,6 @@ namespace AtomosZ.UI
 			get { return _interactable; }
 			set { _interactable = value; }
 		}
-
-		public Vector2 minDimensions { get; set; }
-		public Vector2 maxDimensions { get; set; }
 
 		public UIMonoBehaviour GetControl(string controlRefName)
 		{
@@ -31,8 +28,15 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
+			return rect.sizeDelta;
+		}
+
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
 			return rect.sizeDelta;
 		}
 
@@ -41,7 +45,7 @@ namespace AtomosZ.UI
 			throw new System.NotImplementedException();
 		}
 
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
 			throw new System.NotImplementedException();
 		}

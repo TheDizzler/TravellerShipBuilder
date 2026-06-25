@@ -33,10 +33,27 @@ namespace AtomosZ
 			}
 		}
 
+		/// <summary>
+		/// Converts mouse screen space coordinates to world space coordinates (using main camera).
+		/// </summary>
+		/// <returns></returns>
 		public static Vector3 GetMouseWorldPos()
 		{
-			var mousePos = Input.mousePosition;
+			Vector3 mousePos = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
 			mousePos.z = -camera.transform.position.z;
+			var result = camera.ScreenToWorldPoint(mousePos);
+			result.z = 0;
+			return result;
+		}
+
+		/// <summary>
+		/// Does not invert the camera Z coordinate before ScreenToWorldPoint conversion.
+		/// Not sure if this is useful at all.
+		/// </summary>
+		/// <returns></returns>
+		public static Vector3 GetMouseWorldPosNoCameraZNegate()
+		{
+			Vector3 mousePos = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
 			var result = camera.ScreenToWorldPoint(mousePos);
 			result.z = 0;
 			return result;
@@ -249,7 +266,7 @@ namespace AtomosZ
 		public static List<RaycastResult> GetUIRaycasts()
 		{
 			PointerEventData eventDataCurrentPos = new PointerEventData(EventSystem.current);
-			eventDataCurrentPos.position = Input.mousePosition;
+			eventDataCurrentPos.position = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
 			List<RaycastResult> raycastResults = new List<RaycastResult>();
 			EventSystem.current.RaycastAll(eventDataCurrentPos, raycastResults);
 			return raycastResults;
@@ -266,18 +283,29 @@ namespace AtomosZ
 			return result;
 		}
 
+		public static void SafeDelete(this GameObject g)
+		{
+#if UNITY_EDITOR
+			if (!Application.isPlaying)
+			{
+				Object.DestroyImmediate(g);
+				return;
+			}
+#endif
+			Object.Destroy(g);
+		}
+
 		public static void DeleteChildren(this Transform t)
 		{
+			List<Transform> children = new List<Transform>();
 			foreach (Transform child in t)
 			{
-#if UNITY_EDITOR
-				if (Application.isPlaying)
-					Object.Destroy(child.gameObject);
-				else
-					Object.DestroyImmediate(child.gameObject);
-#else
-				Object.Destroy(child.gameObject);
-#endif
+				children.Add(child);
+			}
+
+			foreach (var child in children)
+			{
+				SafeDelete(child.gameObject);
 			}
 		}
 
@@ -324,7 +352,7 @@ namespace AtomosZ
 			return _expectedWidth;
 		}
 
-		public static T GetSingleTon<T>() where T : MonoBehaviour
+		public static T GetSingleton<T>() where T : MonoBehaviour
 		{
 			return GameObject.FindAnyObjectByType<T>();
 		}
@@ -339,6 +367,16 @@ namespace AtomosZ
 			var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
 			return stage != null;
 		}
+
+		/// <summary>
+		/// False when object is selected in project browser.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public static bool IsSceneValid(MonoBehaviour target)
+		{
+			return target.gameObject.scene.IsValid();
+		}
 #endif
 	}
 
@@ -351,10 +389,14 @@ namespace AtomosZ
 		{
 			Debug.LogWarning(msg);
 		}
+		[System.Diagnostics.DebuggerStepThrough]
+		[HideInCallstack]
 		public static void Error(string msg)
 		{
 			Debug.LogError(msg);
 		}
+		[System.Diagnostics.DebuggerStepThrough]
+		[HideInCallstack]
 		public static void Exception(string msg)
 		{
 			Debug.LogException(new Exception(msg));

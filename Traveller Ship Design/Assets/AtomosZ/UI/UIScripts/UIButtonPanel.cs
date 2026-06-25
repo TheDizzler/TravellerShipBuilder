@@ -3,13 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 
 namespace AtomosZ.UI
 {
-	[ExecuteInEditMode]
-	public class UIButtonPanel : UIPooledMonoBehaviour<UIButtonPanel>, IUIBehavior
+	public class UIButtonPanel : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.ButtonPanel; } }
 
@@ -56,17 +55,6 @@ namespace AtomosZ.UI
 			}
 		}
 
-		[SerializeField] private Vector2 _minDimensions;
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				this.SetDirty();
-			}
-		}
-		public Vector2 maxDimensions { get; set; }
 
 
 		[SerializeField] private DialogButton _buttons = DialogButton.OK;
@@ -180,13 +168,8 @@ namespace AtomosZ.UI
 		}
 
 
-		void Update()
-		{
-			if (isDirty)
-				RecalculateDimensions();
-		}
 
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
 			var horzLayout = GetComponent<HorizontalLayoutGroup>();
 			if (horzLayout == null)
@@ -209,7 +192,7 @@ namespace AtomosZ.UI
 					continue;
 
 				++activeChildren;
-				var childMinDim = child.GetDrawnDimensions();
+				var childMinDim = child.GetDrawnSize();
 				minDim.x += childMinDim.x;
 				if (minDim.y < childMinDim.y)
 					minDim.y = childMinDim.y;
@@ -219,20 +202,28 @@ namespace AtomosZ.UI
 			minDim.x += horzLayout.spacing * (activeChildren - 1);
 			minDim.y += horzLayout.padding.top + horzLayout.padding.bottom;
 
-			var rect = GetComponent<RectTransform>();
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDim.y);
+
+			preferredSize.x = minDim.x;
+			preferredSize.y = minDim.y;
 
 			isDirty = false;
 		}
 
-
-
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
 
 			return GetComponent<RectTransform>().sizeDelta;
+		}
+
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
 		}
 	}
 }

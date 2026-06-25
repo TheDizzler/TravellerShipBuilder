@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 230662985735286932}
-  - component: {fileID: 9139544722843291066}
   - component: {fileID: 2099621496068818944}
+  - component: {fileID: 9139544722843291066}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -37,14 +37,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 42.41}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &9139544722843291066
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1032432787686227566}
-  m_CullTransparentMesh: 1
 --- !u!114 &2099621496068818944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,6 +95,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -136,6 +129,14 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &9139544722843291066
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032432787686227566}
+  m_CullTransparentMesh: 1
 --- !u!1 &4347121808040595726
 GameObject:
   m_ObjectHideFlags: 0
@@ -146,6 +147,8 @@ GameObject:
   m_Component:
   - component: {fileID: 414486777796183355}
   - component: {fileID: 7781875202460886259}
+  - component: {fileID: 27050250233896754}
+  - component: {fileID: 808249659462875444}
   - component: {fileID: 7123490620038347527}
   - component: {fileID: 3171321435051314732}
   - component: {fileID: 7490356970785544225}
@@ -190,11 +193,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIMenuButton
   _referenceName: menuButton
   _interactable: 1
+  _minDimensions: {x: 32, y: 16}
+  _maxDimensions: {x: 1025, y: 256}
   _fillParentHorizontal: 0
   _fillParentVertical: 0
   label: {fileID: 7123490620038347527}
   button: {fileID: 3171321435051314732}
-  _minDimensions: {x: 0, y: 0}
+--- !u!114 &27050250233896754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347121808040595726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &808249659462875444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347121808040595726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 1
+  prefabID: MenuButton
 --- !u!114 &7123490620038347527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,11 +248,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: 
   _interactable: 1
+  _minDimensions: {x: 64, y: 10}
+  _maxDimensions: {x: 1025, y: 256}
   _fillParentHorizontal: 0
   _fillParentVertical: 0
   labelData: {fileID: 0}
   textLabel: {fileID: 2099621496068818944}
-  image: {fileID: 0}
   _text: Context Menu Control #1
   _color: {r: 0, g: 0, b: 0, a: 0}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
@@ -221,8 +261,6 @@ MonoBehaviour:
   _fontStyles: 0
   _alignmentOptions: 0
   _margin: {x: 0, y: 0, z: 0, w: 0}
-  _minDimensions: {x: 64, y: 10}
-  _maxDimensions: {x: 1025, y: 256}
 --- !u!114 &3171321435051314732
 MonoBehaviour:
   m_ObjectHideFlags: 0

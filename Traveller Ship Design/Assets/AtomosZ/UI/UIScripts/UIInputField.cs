@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 
 namespace AtomosZ.UI
@@ -14,7 +14,7 @@ namespace AtomosZ.UI
 	/// Should create scrollbar.
 	/// </summary>
 	[ExecuteInEditMode]
-	public class UIInputField : UIPooledMonoBehaviour<UIInputField>, IUIBehavior
+	public class UIInputField : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.InputField; } }
 
@@ -150,49 +150,6 @@ namespace AtomosZ.UI
 		}
 
 
-		[SerializeField] private Vector2 _minDimensions = new Vector2(64, 10);
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				if (value.x > maxDimensions.x)
-					value.x = maxDimensions.x;
-				if (value.y > maxDimensions.y)
-					value.y = maxDimensions.y;
-				if (value.x < 5)
-					value.x = 5;
-				if (value.y < 5)
-					value.y = 5;
-				_minDimensions = value;
-				this.SetDirty();
-			}
-		}
-
-
-		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
-		[SerializeField] private Vector2 _maxDimensions = new Vector2(1025, 256);
-		[Tooltip("Max height may cause issues with reported height when TextWrappingMode is set to Normal.")]
-		public Vector2 maxDimensions
-		{
-			get { return _maxDimensions; }
-			set
-			{
-				if (value.x < minDimensions.x)
-					value.x = minDimensions.x;
-				if (value.y < minDimensions.y)
-					value.y = minDimensions.y;
-				if (value.x < 5)
-					value.x = 5;
-				if (value.y < 5)
-					value.y = 5;
-				_maxDimensions = value;
-				value.x -= verticalTextAreaOffsets;
-				textLabel.maxDimensions = value;
-				this.SetDirty();
-			}
-		}
-
 
 		[SerializeField] private string _text;
 		public string text
@@ -255,13 +212,30 @@ namespace AtomosZ.UI
 		}
 
 
-		void OnEnable()
+		void Start()
 		{
-			this.SetDirty();
 			if (textLabel == null)
 				textLabel = GetComponentInChildren<UIExpandingLabel>();
+			this.SetDirty();
 		}
 
+
+		[System.Diagnostics.Conditional("UNITY_EDITOR")]
+		public void UpdateBackingData_EDITOR()
+		{
+			referenceName = _referenceName;
+			interactable = _interactable;
+			placeholderText = _placeholderText;
+			text = _text;
+			fontColor = _fontColor;
+			placeholderFontColor = _placeholderFontColor;
+			fontSize = _fontSize;
+
+			if (Helpers.IsPrefabStage_EDITOR() && transform.parent.name == "Canvas (Environment)")
+				RecalculateDimensions();
+			else
+				this.SetDirty();
+		}
 
 		public ScriptableObject GetBackingData()
 		{
@@ -282,36 +256,24 @@ namespace AtomosZ.UI
 			this.SetDirty();
 		}
 
-		void Update()
-		{
-			if (isDirty)
-				RecalculateDimensions();
-		}
 
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
 			placeholderLabel.ForceMeshUpdate();
 			textLabel.RecalculateDimensions();
 
-			var rect = GetComponent<RectTransform>();
-			var layoutElement = GetComponent<LayoutElement>();
-			if (fillParentHorizontal)
-			{
-				layoutElement.flexibleWidth = 1;
-			}
-			else
-			{
-				layoutElement.flexibleWidth = 0;
-			}
+			var childMax = _maxDimensions;
+			childMax.x -= verticalTextAreaOffsets;
+			textLabel.maxDimensions = childMax;
 
-			var prefTextSize = placeholderLabel.GetPreferredValues("Text to measure font height");
+			var prefTextSize = placeholderLabel.GetPreferredValues("ABCDEFGHIJKLMNOPQRSTUVWXYZ"); // Text to measure font height
 			var textHeight = prefTextSize.y + verticalTextAreaOffsets; // this should be the preferred height of a single line, right?
 
 			var fieldDimensions = minDimensions;
 			fieldDimensions.x = Mathf.Max(fieldDimensions.x, textHeight);
 			fieldDimensions.y = Mathf.Max(fieldDimensions.y, textHeight);
 
-			var labelSize = textLabel.GetComponent<RectTransform>().rect;
+			var labelSize = textLabel.rect.rect;
 			//var label = textLabel.GetComponent<TextMeshProUGUI>();
 			//var prefSize = label.GetPreferredValues();
 			labelSize.width += horizontalTextAreaOffsets;
@@ -321,22 +283,31 @@ namespace AtomosZ.UI
 			fieldDimensions.y = Mathf.Max(fieldDimensions.y, labelSize.height);
 
 			var maxWidth = Mathf.Min(fieldDimensions.x, maxDimensions.x);
-			layoutElement.minWidth = maxWidth;
+			//layoutElement.minWidth = maxWidth;
 			layoutElement.minHeight = fieldDimensions.y;
 
 			//rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, maxWidth);
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, fieldDimensions.y);
 
+			preferredSize = rect.sizeDelta;
+
 			isDirty = false;
 		}
 
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
-			var rect = GetComponent<RectTransform>();
 			return rect.sizeDelta;
+		}
+
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
 		}
 	}
 }

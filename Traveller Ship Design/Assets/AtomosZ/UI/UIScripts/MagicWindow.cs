@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Pool;
+using UnityEngine.UI;
 using static AtomosZ.Keyboard;
 using static AtomosZ.UI.UIButtonPanel;
 using static AtomosZ.UI.UICursors;
@@ -11,36 +13,112 @@ using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
-	[ExecuteAlways]
-	public class MagicWindow : UIPooledMonoBehaviour<MagicWindow>, IUIBehavior
+	public abstract class MagicWindowBase : UIMonoBehaviour
 	{
-		public UIControlType dataType { get; }
+		public abstract UIControlType dataType { get; }
+		public enum DialogResult
+		{
+			None,
+			OK,
+			Cancel,
+			Yes,
+			No,
+		}
+		public DialogResult result;
 		public enum UIControlType
 		{
+			/// <summary>
+			/// UIExpandingLabel
+			/// </summary>
 			Text,
+			/// <summary>
+			/// UIInputField
+			/// </summary>
 			InputField,
+			/// <summary>
+			/// UICheckBox
+			/// </summary>
 			CheckBox,
+			/// <summary>
+			/// UISlider
+			/// </summary>
 			Slider,
+			/// <summary>
+			/// UIButton
+			/// </summary>
 			Button,
+			/// <summary>
+			/// UIButtonPanel
+			/// </summary>
 			ButtonPanel,
+			/// <summary>
+			/// UIImageView
+			/// </summary>
 			Image,
+			/// <summary>
+			/// UIImagePanel (currently disabled)
+			/// </summary>
 			ImagePanel,
+			/// <summary>
+			/// UIDropdown
+			/// </summary>
 			Dropdown,
+			/// <summary>
+			/// UITabControl
+			/// </summary>
 			TabControl,
+			/// <summary>
+			/// UIPanel
+			/// </summary>
 			Panel,
+			/// <summary>
+			/// UIHorizontalPanel
+			/// </summary>
 			HorizontalPanel,
+			/// <summary>
+			/// UISpinner
+			/// </summary>
 			Spinner,
+			/// <summary>
+			/// UITable
+			/// </summary>
 			Table,
 
+			/// <summary>
+			/// UIMenuDivider
+			/// </summary>
 			MenuDivider,
+			/// <summary>
+			/// UIMenuButton
+			/// </summary>
 			MenuButton,
 
+			/// <summary>
+			/// UIDataRow
+			/// </summary>
 			DataRow,
+			/// <summary>
+			/// UIDataCell
+			/// </summary>
 			DataCell,
 
+			/// <summary>
+			/// UIModalClickBlocker
+			/// </summary>
 			ModalClickBlocker,
 
+			/// <summary>
+			/// MagicWindow
+			/// </summary>
 			Window,
+			/// <summary>
+			/// MagicTabbedWindow
+			/// </summary>
+			TabbedWindow,
+			/// <summary>
+			/// MagicContextMenu
+			/// </summary>
+			ContextMenu,
 		}
 
 		[Tooltip("Controls that can be added directly to a panel.")]
@@ -64,57 +142,16 @@ namespace AtomosZ.UI
 			MenuDivider,
 		}
 
-		public enum DialogResult
-		{
-			None,
-			OK,
-			Cancel,
-			Yes,
-			No,
-		}
+		public abstract UIPanel panel { get; protected set; }
+		public bool isDragging;
+		public UICursors cursors;
 
-		public enum WindowStyle
-		{
-			/// <summary>
-			/// No title bar. Modal. Not movable. Disappears when focus lost.
-			/// </summary>
-			ContextMenu,
-			/// <summary>
-			/// A tabbed title bar that can be multi or single tabbed. Modal or non-modal. Probably not movable? Optional Close control per tab.
-			/// </summary>
-			Tabbed,
-			/// <summary>
-			/// A single title bar. Modal or non-modal. Movable optional. Minimize, Maximize (maybe?), and Close controls optional.
-			/// </summary>
-			TitleBar,
-		}
-		public WindowStyle windowStyle;
+		public bool shrinkToContents;
 
-		[SerializeField]
-		public CustomDictionary<WindowStyle, UITabControlScriptableObject> windowStyleDatas;
+		public UnityAction<MagicWindowBase> OnClose;
 
-		public UIExpandingLabel titlebar { get { return rootTabControl.tabPanels[0].tabLabel; } }
-
-		public UITabControl rootTabControl;
-
-		/// <summary>
-		/// If this is a tabbed window, gets the currently selected panel, otherwise the main (root) panel.
-		/// </summary>
-		public UIPanel panel
-		{
-			get
-			{
-#if DEBUG
-				if (rootTabControl == null)
-				{
-					Debug.Log("rootTabControl is null and this is fucked");
-					rootTabControl = GetComponentInChildren<UITabControl>();
-				}
-#endif
-
-				return rootTabControl.SelectedPanel();
-			}
-		}
+		public bool isModal = false;
+		[SerializeField] protected UIMonoBehaviour modalClickBlocker;
 
 
 		[SerializeField] public UIPanelScriptableObject panelScriptObj;
@@ -127,328 +164,12 @@ namespace AtomosZ.UI
 		[SerializeField] public UIButtonScriptableObject buttonScriptObj;
 		[SerializeField] public UIButtonPanelScriptableObject buttonPanelScriptObj;
 		[SerializeField] public UIImageViewScriptableObject imageViewScriptObj;
+		[SerializeField] public UITabControlScriptableObject tabControlData;
 		//[SerializeField] public UIImageViewPanelScriptableObject imageViewPanelScriptObj;
 
-		public DialogResult result;
-		public UnityAction<MagicWindow> OnClose;
 
-		public bool isDragging;
-
-		//[SerializeField] private Button minimizeButton;
-		//[SerializeField] private Button maximizeButton;
-		//[SerializeField] private Button closeButton;
-		//[SerializeField] public bool showMinimizeButton;
-		//[SerializeField] public bool showMaximizeButton;
-		[SerializeField] public bool _showCloseButton;
-		public bool showCloseButton
-		{
-			get { return _showCloseButton; }
-			set { Debug.LogWarning("Close button has not yet been implemented"); }
-		}
-
-		public bool isModal = false;
-		[SerializeField] private UIMonoBehaviour modalClickBlocker;
-#if UNITY_EDITOR
-		[SerializeField] public UIControlType currentType;
-
-		public UICursors cursors;
-
-
-		public bool interactable
-		{
-			get { return _interactable; }
-			set
-			{
-				_interactable = value;
-			}
-		}
-
-		[SerializeField] private Vector2 _minDimensions;
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				this.SetDirty();
-			}
-		}
-
-		public Vector2 maxDimensions { get; set; }
-
-
-		[Conditional("UNITY_EDITOR")]
-		public new void RecordPrefabInstances()
-		{
-			UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(gameObject);
-			rootTabControl.RecordPrefabInstances();
-		}
-
-		[Conditional("UNITY_EDITOR")]
-		public void CreateRootTabControl()
-		{
-			rootTabControl = (UITabControl)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.TabControl, transform);
-			rootTabControl.referenceName = "rootTabControl";
-			rootTabControl.tabPanels[0].panel.tabLabel.referenceName = "panel_00";
-			rootTabControl.tabPanels[0].tabLabel.referenceName = "tab_00";
-			rootTabControl.UpdateBackingData(GetStyleData(windowStyle));
-		}
-#endif
-
-		public void ClearControls()
-		{
-			rootTabControl.ClearControls();
-			this.SetDirty();
-		}
-
-		public void SetCursor(UICursorMode cursorMode)
-		{
-			cursors.SetCursor(cursorMode);
-		}
-
-
-		void Start()
-		{
-			cursors = GetComponentInParent<UICursors>();
-			UIPrefabProvider uiProvider = GetComponentInParent<UIPrefabProvider>();
-			if (panelScriptObj == null)
-				panelScriptObj = uiProvider.panelScriptObj;
-			if (horizontalPanelScriptObj == null)
-				horizontalPanelScriptObj = uiProvider.horizontalPanelScriptObj;
-			if (textScriptObj == null)
-				textScriptObj = uiProvider.textScriptObj;
-			if (dropdownScriptObj == null)
-				dropdownScriptObj = uiProvider.dropdownScriptObj;
-			if (checkBoxScriptObj == null)
-				checkBoxScriptObj = uiProvider.checkBoxScriptObj;
-			if (inputFieldScriptObj == null)
-				inputFieldScriptObj = uiProvider.inputFieldScriptObj;
-			if (sliderScriptObj == null)
-				sliderScriptObj = uiProvider.sliderScriptObj;
-			if (buttonScriptObj == null)
-				buttonScriptObj = uiProvider.buttonScriptObj;
-			if (buttonPanelScriptObj == null)
-				buttonPanelScriptObj = uiProvider.buttonPanelScriptObj;
-			if (imageViewScriptObj == null)
-				imageViewScriptObj = uiProvider.imageViewScriptObj;
-			//if (imageViewPanelScriptObj == null)
-			//	imageViewPanelScriptObj = uiProvider.imageViewPanelScriptObj;
-
-			FindStyleData();
-		}
-
-		private void FindStyleData()
-		{
-			UIPrefabProvider uiProvider = UIPrefabProvider.instance;
-
-			if (uiProvider == null)
-				return;
-
-			if (!windowStyleDatas.TryGetValue(WindowStyle.Tabbed, out var tabbedSO))
-			{
-				tabbedSO = uiProvider.tabbedWindowScriptObj;
-				windowStyleDatas.Add(WindowStyle.Tabbed, tabbedSO);
-			}
-			else if (tabbedSO == null)
-			{
-				tabbedSO = uiProvider.tabbedWindowScriptObj;
-				windowStyleDatas[WindowStyle.Tabbed] = tabbedSO;
-			}
-
-			if (!windowStyleDatas.TryGetValue(WindowStyle.TitleBar, out var titleBarSO))
-			{
-				titleBarSO = uiProvider.titleBarWindowScriptObj;
-				windowStyleDatas.Add(WindowStyle.TitleBar, titleBarSO);
-			}
-			else if (titleBarSO == null)
-			{
-				titleBarSO = uiProvider.titleBarWindowScriptObj;
-				windowStyleDatas[WindowStyle.TitleBar] = titleBarSO;
-			}
-
-			if (!windowStyleDatas.TryGetValue(WindowStyle.ContextMenu, out var contextMenuSO))
-			{
-				contextMenuSO = uiProvider.contextMenuWindowScriptObj;
-				windowStyleDatas.Add(WindowStyle.ContextMenu, contextMenuSO);
-			}
-			else if (contextMenuSO == null)
-			{
-				contextMenuSO = uiProvider.contextMenuWindowScriptObj;
-				windowStyleDatas[WindowStyle.ContextMenu] = contextMenuSO;
-			}
-		}
-
-		private UITabControlScriptableObject GetStyleData(WindowStyle windowStyle)
-		{
-			if (!windowStyleDatas.TryGetValue(windowStyle, out var styleSO)
-				|| styleSO == null)
-				FindStyleData();
-			return windowStyleDatas[windowStyle];
-		}
-
-		public UIMonoBehaviour GetControl(string referenceName)
-		{
-			return rootTabControl.GetControl(referenceName);
-		}
-
-		public bool EnableTab(string tabName, bool enable)
-		{
-			return rootTabControl.EnableTab(tabName, enable);
-		}
-
-		public List<UIMonoBehaviour> GetControls()
-		{
-			return panel.GetControls();
-		}
-
-#if DEBUG
-		public List<UIMonoBehaviour> GetControlsFromTransform_DEBUG()
-		{
-			if (panel != null)
-				return panel.GetControlsFromTransform_DEBUG();
-			Debug.LogException(new Exception("Why is this null?"));
-			return null;
-		}
-#endif
-
-		public void ChangeWindowStyle(WindowStyle windowStyle)
-		{
-			var styleData = GetStyleData(windowStyle);
-			if (styleData == null)
-				return;
-			var newStyleData = styleData;
-			rootTabControl.UpdateBackingData(newStyleData);
-#if UNITY_EDITOR
-			rootTabControl.UpdateBackingData(newStyleData); // tabs do not properly update unless this is called again
-			RecordPrefabInstances(); // probably necessary?
-#endif
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="modiferKeys"></param>
-		/// <returns>True if input consumed.</returns>
-		/// <exception cref="Exception"></exception>
-		public bool Input(ModifierKey modiferKeys)
-		{
-			if ((modiferKeys & ModifierKey.Esc) == ModifierKey.Esc
-				&& (/*_designObject.isModal || */windowStyle == WindowStyle.ContextMenu))
-			{
-				SetDialogResultDefaultNegative();
-				return true;
-			}
-
-			return false;
-		}
-
-		public void SetDialogResultDefaultNegative()
-		{
-			DialogButton buttons = panel.GetPanelButtons();
-
-			switch (buttons)
-			{
-				case (DialogButton)(-1):
-					Close();
-					return;
-
-				case DialogButton.OK:
-					SetDialogResultOK();
-					return;
-
-				case DialogButton.OKCancel:
-					SetDialogResultCancel();
-					return;
-
-				case DialogButton.YesNo:
-					SetDialogResultNo();
-					return;
-
-				case DialogButton.YesNoCancel:
-					SetDialogResultCancel();
-					return;
-
-				default:
-					throw new Exception("Unimplemented DialogButton option: " + buttons);
-			}
-		}
-
-
-		void Update()
-		{
-			if (isDirty)
-				RecalculateDimensions();
-		}
-
-
-		public void Refresh()
-		{
-			GetDrawnDimensions();
-		}
-
-		public void RecalculateDimensions()
-		{
-			GetDrawnDimensions();
-		}
-
-		public Vector2 GetDrawnDimensions()
-		{
-			isDirty = false;
-			return rootTabControl.GetDrawnDimensions();
-		}
-
-		public void SetTitle(string titleText)
-		{
-			titlebar.text = titleText;
-		}
-
-		public void SetTitle(string titleText, float textSize)
-		{
-			titlebar.text = titleText;
-			titlebar.fontSize = textSize;
-		}
-
-
-		/// <summary>
-		/// Can add multiple methods to a single UnityAction as below:<br/>
-		/// <c>
-		/// UnityAction action = null;<br/>
-		/// action += () => FunctionWithParam("name");<br/>
-		/// action += () => FunctionNoParam();<br/>
-		/// action += delegate {// some code here};</c>
-		/// </summary>
-		/// <param name="clickActions"></param>
-		public void SetContextMenuActions(List<UIMenuAction> clickActions)
-		{
-			windowStyle = WindowStyle.ContextMenu;
-			panel.SetContextMenuActions(clickActions);
-			RecalculateDimensions();
-			isDirty = true;
-		}
-
-		public void SetDialogResultOK()
-		{
-			this.result = DialogResult.OK;
-			Close();
-		}
-
-		public void SetDialogResultCancel()
-		{
-			this.result = DialogResult.Cancel;
-			Close();
-		}
-
-		public void SetDialogResultYes()
-		{
-			this.result = DialogResult.Yes;
-			Close();
-		}
-
-		public void SetDialogResultNo()
-		{
-			this.result = DialogResult.No;
-			Close();
-		}
+		public abstract TabPanel SelectTab(int tabIndex);
+		public abstract bool Input(ModifierKey modifierKeys);
 
 
 		public void Show()
@@ -456,9 +177,13 @@ namespace AtomosZ.UI
 			gameObject.SetActive(true);
 		}
 
-		public void Show(Vector2 pos)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="uiScreenCoords">Using <c>uiInput.GetMainCameraUICoordinatesFromMousePos();</c></param>
+		public void Show(Vector2 uiScreenCoords)
 		{
-			GetComponent<RectTransform>().anchoredPosition = pos;
+			rect.localPosition = uiScreenCoords;
 			gameObject.SetActive(true);
 			//if (designObject.isModal)
 			//{
@@ -466,7 +191,6 @@ namespace AtomosZ.UI
 			//	Debug.LogWarning("modal blocker?");
 			//}
 		}
-
 
 		public void Hide()
 		{
@@ -485,6 +209,7 @@ namespace AtomosZ.UI
 			gameObject.SetActive(false);
 		}
 
+
 		/// <summary>
 		/// Minimize to a titlebar only,
 		/// then move to bottom of screen?
@@ -499,6 +224,27 @@ namespace AtomosZ.UI
 		//}
 
 
+		internal void SetDragging(bool isDragging)
+		{
+			this.isDragging = isDragging;
+			if (isDragging)
+				cursors.SetCursor(UICursors.UICursorMode.Drag);
+			else
+				cursors.SetCursor(UICursors.UICursorMode.Default);
+		}
+
+
+		public void SetCursor(UICursorMode cursorMode)
+		{
+			cursors.SetCursor(cursorMode);
+		}
+
+
+
+		public UITable AddTable()
+		{
+			return panel.AddTable();
+		}
 
 		public UIExpandingLabel AddText()
 		{
@@ -565,32 +311,456 @@ namespace AtomosZ.UI
 				case UIControlType.HorizontalPanel:
 					return panel.AddHorizontalPanel(horizontalPanelScriptObj);
 
+				case UIControlType.Table:
+					return panel.AddTable();
+
+				case UIControlType.TabControl:
+					return panel.AddTabControl(tabControlData);
+
 				default:
-					Debug.LogException(new Exception($"{currentType} not yet implemented"));
+					Debug.LogException(new Exception($"{ctrlType} not yet implemented"));
 					return null;
 			}
 		}
 
-		public TabPanel AddTab(string tabText, UIPanelScriptableObject overridePanelData = null)
+
+		public void SetDialogResultOK()
 		{
-			var tabPanel = rootTabControl.AddTab(tabText, overridePanelData);
-			return tabPanel;
+			this.result = DialogResult.OK;
+			Close();
+		}
+
+		public void SetDialogResultCancel()
+		{
+			this.result = DialogResult.Cancel;
+			Close();
+		}
+
+		public void SetDialogResultYes()
+		{
+			this.result = DialogResult.Yes;
+			Close();
+		}
+
+		public void SetDialogResultNo()
+		{
+			this.result = DialogResult.No;
+			Close();
 		}
 
 
-		public TabPanel SelectTab(int tabIndex)
+	}
+
+	[ExecuteInEditMode]
+	public class MagicWindow : MagicWindowBase, IUIBehavior
+	{
+		public override UIControlType dataType { get { return UIControlType.Window; } }
+
+		public UITabItem titlebar;
+		public override UIPanel panel
 		{
-			return rootTabControl.SelectTab(tabIndex);
+			[DebuggerStepThrough]
+			[HideInCallstack]
+			get;
+			[DebuggerStepThrough]
+			[HideInCallstack]
+			protected set;
 		}
+
+		[SerializeField] public bool _showCloseButton;
+		public bool showCloseButton
+		{
+			get { return _showCloseButton; }
+			set { Debug.LogWarning("Close button has not yet been implemented"); }
+		}
+
+
+		public bool interactable
+		{
+			[DebuggerStepThrough]
+			[HideInCallstack]
+			get { return _interactable; }
+			[DebuggerStepThrough]
+			[HideInCallstack]
+			set { _interactable = value; }
+		}
+
+
+
+		[SerializeField] private MagicWindowScriptableObject magicWindowData;
+		public Sprite titlebarSprite
+		{
+			get
+			{
+				if (magicWindowData == null)
+				{
+					return null;
+				}
+
+				return magicWindowData.titleBarSprite;
+			}
+		}
+
+
+		[Conditional("UNITY_EDITOR")]
+		public new void RecordPrefabInstances()
+		{
+			UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(gameObject);
+			panel.RecordPrefabInstances();
+		}
+
+		[Conditional("UNITY_EDITOR")]
+		public void CreateTitlebar()
+		{
+			foreach (UITabItem child in GetComponentsInChildren<UITabItem>())
+			{
+				if (child.referenceName == "titlebar")
+				{
+					titlebar = child;
+					break;
+				}
+			}
+
+			if (titlebar == null)
+			{
+				titlebar = (UITabItem)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.TabItem, transform);
+				titlebar.referenceName = "titlebar";
+			}
+
+			titlebar.panel = panel;
+			this.SetDirty();
+		}
+
+
+		[Conditional("UNITY_EDITOR")]
+		public void CreateMainPanel()
+		{
+			foreach (UIPanel child in GetComponentsInChildren<UIPanel>())
+			{
+				if (child.referenceName == "mainPanel")
+				{
+					panel = child;
+					break;
+				}
+			}
+
+			if (panel == null)
+			{
+				panel = (UIPanel)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.Panel, transform);
+				panel.referenceName = "mainPanel";
+				panel.rect.anchorMin = new Vector2(0, 1);
+				panel.rect.anchorMax = new Vector2(0, 1);
+				panel.rect.pivot = new Vector2(0, 1);
+				panel.rect.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+				panel.rect.localScale = Vector3.one;
+			}
+
+			if (magicWindowData != null)
+				panel.UpdateBackingData(magicWindowData.panelScriptableObj);
+			panel.tabItem = titlebar;
+			this.SetDirty();
+		}
+
+
+		public void ClearControls()
+		{
+			panel.ClearControls();
+		}
+
+
+
+		void Start()
+		{
+			cursors = GetComponentInParent<UICursors>();
+			UIPrefabProvider uiProvider = GetComponentInParent<UIPrefabProvider>();
+			if (uiProvider == null)
+				uiProvider = UIPrefabProvider.instance;
+
+			if (panelScriptObj == null)
+				panelScriptObj = uiProvider.panelScriptObj;
+			if (horizontalPanelScriptObj == null)
+				horizontalPanelScriptObj = uiProvider.horizontalPanelScriptObj;
+			if (textScriptObj == null)
+				textScriptObj = uiProvider.textScriptObj;
+			if (dropdownScriptObj == null)
+				dropdownScriptObj = uiProvider.dropdownScriptObj;
+			if (checkBoxScriptObj == null)
+				checkBoxScriptObj = uiProvider.checkBoxScriptObj;
+			if (inputFieldScriptObj == null)
+				inputFieldScriptObj = uiProvider.inputFieldScriptObj;
+			if (sliderScriptObj == null)
+				sliderScriptObj = uiProvider.sliderScriptObj;
+			if (buttonScriptObj == null)
+				buttonScriptObj = uiProvider.buttonScriptObj;
+			if (buttonPanelScriptObj == null)
+				buttonPanelScriptObj = uiProvider.buttonPanelScriptObj;
+			if (imageViewScriptObj == null)
+				imageViewScriptObj = uiProvider.imageViewScriptObj;
+			//if (imageViewPanelScriptObj == null)
+			//	imageViewPanelScriptObj = uiProvider.imageViewPanelScriptObj;
+
+			if (tabControlData == null)
+				tabControlData = uiProvider.tabControlScriptObj;
+
+			if (magicWindowData == null)
+				magicWindowData = uiProvider.magicWindowScriptObj;
+			UpdateBackingData(magicWindowData);
+
+#if UNITY_EDITOR
+			if (!Application.isPlaying)
+				// this resets the window to how it should look. Putting [ExecuteInEditMode] back on to all controls might have the same effect?
+				SetDirty_Editor(); 
+#endif
+		}
+
+
+		public UIMonoBehaviour GetControl(string searchControlReferenceName)
+		{
+			if (referenceName == searchControlReferenceName)
+				return this;
+#if UNITY_EDITOR
+			if (titlebar == null)
+				CreateTitlebar();
+			if (panel == null)
+				CreateMainPanel();
+#endif
+			if (titlebar.referenceName == searchControlReferenceName)
+				return titlebar;
+			return panel.GetControl(searchControlReferenceName);
+		}
+
+
+		public List<UIMonoBehaviour> GetControls()
+		{
+			return panel.GetControls();
+		}
+
+
+#if DEBUG
+		public List<UIMonoBehaviour> GetControlsFromTransform_DEBUG()
+		{
+			if (panel != null)
+				return panel.GetControlsFromTransform_DEBUG();
+			Debug.LogException(new Exception("Why is this null?"));
+			return null;
+		}
+#endif
+
+
+
+		public void SetTitle(string titleText)
+		{
+			titlebar.label.text = titleText;
+		}
+
+		public void SetTitle(string titleText, float textSize)
+		{
+			titlebar.label.text = titleText;
+			titlebar.label.fontSize = textSize;
+		}
+
+
+		/// <summary>
+		/// Input should get passed to currently open panel.
+		/// </summary>
+		/// <param name="modifierKeys"></param>
+		/// <returns>True if input consumed.</returns>
+		/// <exception cref="Exception"></exception>
+		public override bool Input(ModifierKey modifierKeys)
+		{
+			//if (panel.Input(modifierKeys))
+			//	return true;
+			if ((modifierKeys & ModifierKey.Esc) == ModifierKey.Esc
+				&& isModal)
+			{
+				SetDialogResultDefaultNegative();
+				return true;
+			}
+
+			return false;
+		}
+
+		private void SetDialogResultDefaultNegative()
+		{
+			DialogButton buttons = panel.GetPanelButtons();
+
+			switch (buttons)
+			{
+				case (DialogButton)(-1):
+					Close();
+					return;
+
+				case DialogButton.OK:
+					SetDialogResultOK();    // only one response option, so...
+					return;
+
+				case DialogButton.OKCancel:
+					SetDialogResultCancel();
+					return;
+
+				case DialogButton.YesNo:
+					SetDialogResultNo();
+					return;
+
+				case DialogButton.YesNoCancel:
+					SetDialogResultCancel();
+					return;
+
+				default:
+					throw new Exception("Unimplemented DialogButton option: " + buttons);
+			}
+		}
+
+
 
 		public ScriptableObject GetBackingData()
 		{
-			throw new System.NotImplementedException();
+			return magicWindowData;
 		}
 
 		public void UpdateBackingData(ScriptableObject backingData)
 		{
-			throw new System.NotImplementedException();
+			magicWindowData = (MagicWindowScriptableObject)backingData;
+			if (magicWindowData != null)
+				RecalculateDimensions();
+		}
+
+
+		void Update()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+		}
+
+
+		public override void RecalculateDimensions()
+		{
+#if UNITY_EDITOR
+			if (Helpers.IsPrefabStage_EDITOR())
+				isDirty = true;
+			if (panel == null)
+			{
+				CreateMainPanel();
+			}
+
+			if (titlebar == null)
+			{
+				CreateTitlebar();
+				panel.tabItem = titlebar;
+			}
+#endif
+			//panel.UpdateBackingData(magicWindowData.panelScriptableObj);
+
+
+			if (titlebarSprite != null)
+				titlebar.sprite = titlebarSprite;
+			titlebar.image.color = magicWindowData.titleBarColor;
+
+			var titleLabel = titlebar.label;
+			if (titleLabel.text.StartsWith("TabItem_"))
+			{
+				titleLabel.text = "Title";
+				titleLabel.referenceName = "titlebar";
+			}
+
+			titleLabel.color = magicWindowData.titleBarFontColor;
+			titleLabel.alignmentOptions = magicWindowData.titleTextAlignment;
+			titleLabel.fontSize = magicWindowData.titleBarFontSize;
+
+			titlebar.RecalculateDimensions();
+			var minTitleDimensions = titlebar.GetDrawnSize();
+
+			var minPanelWidth = minTitleDimensions.x + magicWindowData.panelWidthAdjust;
+			minPanelWidth = Mathf.Max(minPanelWidth, minDimensions.x);
+
+			float panelVerticalOffset = 0;
+			//float orgLayoutPaddingTop = panel.layoutPadding.top;
+			//panel.layoutPadding = null; // this resets it to the panel backing data or 0
+			if (magicWindowData.offsetPanelByTitleHeight)
+			{
+				panelVerticalOffset -= titlebar.rect.sizeDelta.y;
+			}
+			else
+			{
+				var backingData = ((UIPanelScriptableObject)panel.GetBackingData());
+				if (backingData != null)
+					panel.layoutPadding.top = backingData.layoutPadding.top;
+				else
+					panel.layoutPadding.top = 0;
+				panel.layoutPadding.top += Mathf.CeilToInt(titlebar.rect.sizeDelta.y);
+			}
+
+			Vector2 panelDimens;
+			if (shrinkToContents)
+			{
+				panel.RecalculateAllChildren();
+				panelDimens = panel.GetPreferredSize();
+
+				if (panelDimens.x < minPanelWidth)
+				{
+					panel.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, minPanelWidth);
+					panel.RecalculateDimensions();
+					panelDimens = panel.GetPreferredSize();
+					minPanelWidth = minTitleDimensions.x + magicWindowData.panelWidthAdjust;
+				}
+				else
+				{
+					panel.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, panelDimens.x);
+					panelDimens = panel.GetPreferredSize();
+				}
+			}
+			else
+			{
+				var recalc = panel.GetPreferredSize();
+				panelDimens.x = Mathf.Max(recalc.x, rect.sizeDelta.x);
+				//panelDimens.y = Mathf.Max(recalc.y, rect.sizeDelta.y);
+				panelDimens.y = recalc.y;   // ?TODO(Tristan): should we have a vert and horz shrink?
+				panel.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, panelDimens.x);
+			}
+
+			minTitleDimensions.x = Mathf.Max(minTitleDimensions.x, panelDimens.x - magicWindowData.panelWidthAdjust, minDimensions.x);
+			titlebar.SetWidth(minTitleDimensions.x);
+
+
+			var newUIControlHeight = panelDimens.y + magicWindowData.panelVerticalOffset;
+			newUIControlHeight = Mathf.Max(newUIControlHeight, minDimensions.y);
+			panel.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newUIControlHeight);
+
+			var tmp = titleLabel.GetComponentInChildren<TextMeshProUGUI>();
+			tmp.margin = magicWindowData.titleTextMargin;
+
+			var panelnewPos = new Vector2(0, panelVerticalOffset + magicWindowData.panelVerticalOffset);
+			panel.rect.anchoredPosition = panelnewPos;
+
+
+			// not really necessary? But it makes what is shown equal to what is "inside" the rect
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, panel.rect.sizeDelta.x);
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newUIControlHeight - (panelVerticalOffset + magicWindowData.panelVerticalOffset));
+
+			panel.GetDrawnSize();
+			isDirty = false;
+		}
+
+		public Vector2 GetDrawnSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return rect.sizeDelta;
+		}
+
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return rect.sizeDelta;
+		}
+
+
+
+
+		public override TabPanel SelectTab(int tabIndex)
+		{
+			return new TabPanel(titlebar, panel);
 		}
 	}
 }

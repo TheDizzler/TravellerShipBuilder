@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 778371616326191649}
   - component: {fileID: 2644291506069405767}
   - component: {fileID: 46845985781952030}
+  - component: {fileID: 5520579619855590377}
+  - component: {fileID: 1740357333058825987}
   - component: {fileID: 7324103980625293524}
   m_Layer: 5
   m_Name: UIExpandingLabel
@@ -36,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 169.25, y: 40.06}
+  m_SizeDelta: {x: 225, y: 40.06}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2644291506069405767
 MonoBehaviour:
@@ -52,11 +54,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: label
   _interactable: 1
+  _minDimensions: {x: 64, y: 16}
+  _maxDimensions: {x: 1025, y: 256}
   _fillParentHorizontal: 0
   _fillParentVertical: 0
   labelData: {fileID: 11400000, guid: 602ee890f7215c84e86858806d8cd97f, type: 2}
   textLabel: {fileID: 46845985781952030}
-  image: {fileID: 0}
   _text: Label Text!
   _color: {r: 1, g: 1, b: 1, a: 1}
   _disabledColor: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
@@ -64,8 +67,6 @@ MonoBehaviour:
   _fontStyles: 0
   _alignmentOptions: 257
   _margin: {x: 0, y: 0, z: 0, w: 0}
-  _minDimensions: {x: 64, y: 10}
-  _maxDimensions: {x: 1025, y: 256}
 --- !u!114 &46845985781952030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,14 +125,15 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 2
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -157,6 +159,41 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5520579619855590377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3705265916941669611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: 64
+  m_MinHeight: 16
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &1740357333058825987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3705265916941669611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 0
+  prefabID: ExpandingLabel
 --- !u!222 &7324103980625293524
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -34,7 +34,13 @@ namespace AtomosZ.EditorZ
 			if (list == null)
 			{
 				keys = property.FindPropertyRelative(nameof(keys));
-				values = property.FindPropertyRelative(nameof(values));
+				values = property.FindPropertyRelative("values");
+				if (values == null)
+				{
+					Log.Error("The Values type is not serializable");
+					//return;
+				}
+
 				list = new ReorderableList(property.serializedObject, keys, true, true, true, true);
 
 				list.drawHeaderCallback = DrawHeader;

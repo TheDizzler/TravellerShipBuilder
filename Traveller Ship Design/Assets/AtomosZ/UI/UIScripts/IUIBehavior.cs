@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 namespace AtomosZ.UI
 {
@@ -36,7 +36,8 @@ namespace AtomosZ.UI
 		public bool fillParentVertical { get; set; }
 
 		public UIMonoBehaviour uIMonoBehaviour { get; }
-		public Vector2 GetDrawnDimensions();
+		public Vector2 GetDrawnSize();
+		public Vector2 GetPreferredSize();
 		public ScriptableObject GetBackingData();
 		public void UpdateBackingData(ScriptableObject backingData);
 		public void RecalculateDimensions();

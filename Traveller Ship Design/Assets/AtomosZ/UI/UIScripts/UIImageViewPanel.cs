@@ -5,7 +5,7 @@
 //using UnityEngine;
 //using UnityEngine.Events;
 //using UnityEngine.UI;
-//using static AtomosZ.UI.MagicWindow;
+//using static AtomosZ.UI.MagicWindowBase;
 
 
 //namespace AtomosZ.UI

@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static AtomosZ.UI.MagicWindowBase;
 using static AtomosZ.UI.UIDataRow;
 using static AtomosZ.UI.UIPrefabProvider;
 
@@ -11,34 +12,12 @@ namespace AtomosZ.UI
 	/// <summary>
 	/// A placeholder control to fill grid cells.
 	/// </summary>
-	public class UIDataCell : UIPooledMonoBehaviour<UIDataCell>, IUIBehavior
+	public class UIDataCell : UIMonoBehaviour, IUIBehavior
 	{
-		public MagicWindow.UIControlType dataType { get { return MagicWindow.UIControlType.DataCell; } }
+		public UIControlType dataType { get { return UIControlType.DataCell; } }
 		public bool interactable { get; set; }
 
 		public UIMonoBehaviour control;
-
-		[SerializeField] private Vector2 _minDimensions;
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				// set size here so control can set size to it
-				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value.x);
-				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value.y);
-				if (control != null)
-				{
-					control.iUIBehavior.minDimensions = new Vector2(value.x, value.y);
-					control.fillParentHorizontal = true;
-				}
-
-				this.SetDirty();
-			}
-		}
-
-		public Vector2 maxDimensions { get; set; }
 
 
 		[System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -64,28 +43,47 @@ namespace AtomosZ.UI
 				RecalculateDimensions();
 		}
 
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
 			var height = _minDimensions.y;
+
+			// set size so control can set size to it
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _minDimensions.x);
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _minDimensions.y);
 			if (control != null)
 			{
-				var ctrlSize = control.iUIBehavior.GetDrawnDimensions();
+				control.iUIBehavior.minDimensions = _minDimensions;
+				control.fillParentHorizontal = true;
+			}
+
+			if (control != null)
+			{
+				var ctrlSize = control.iUIBehavior.GetDrawnSize();
 				height = Mathf.Max(height, ctrlSize.y);
 			}
 
 			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 
+			preferredSize.x = _minDimensions.x;
+			preferredSize.y = height;
 			isDirty = false;
 		}
 
 
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
-
 			return rect.sizeDelta;
+		}
+
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
 		}
 
 		public ScriptableObject GetBackingData()
@@ -135,16 +133,17 @@ namespace AtomosZ.UI
 		}
 
 
-		public override void ReturnToPool()
+		public void ReturnToPool()
 		{
 			if (control != null)
 			{
-				((ObjectForge.IPooledObject)control).ReturnToPool();
+				if (control.TryGetComponent(out PooledObject pooledControl))
+					pooledControl.ReturnToPool();
 				control = null;
 			}
 
 			GetComponent<Image>().enabled = false;
-			base.ReturnToPool();
+			GetComponent<PooledObject>().ReturnToPool();
 		}
 
 

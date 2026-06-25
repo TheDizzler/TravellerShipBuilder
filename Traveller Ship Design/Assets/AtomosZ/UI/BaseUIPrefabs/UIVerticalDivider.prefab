@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 238902480987888734}
   - component: {fileID: 6677089725284709947}
+  - component: {fileID: 8548814979387817305}
   - component: {fileID: 6383308085830695746}
   - component: {fileID: 7117987664588380212}
   - component: {fileID: 660635135704026944}
@@ -53,6 +54,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIMenuDivider
   _referenceName: verticalDivider
   _interactable: 0
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
+  _layoutElement: {fileID: 7117987664588380212}
+--- !u!114 &8548814979387817305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6962647436249082408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 0
+  prefabID: VerticalDivider
 --- !u!114 &6383308085830695746
 MonoBehaviour:
   m_ObjectHideFlags: 0

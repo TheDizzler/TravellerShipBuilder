@@ -4,12 +4,11 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using static AtomosZ.ObjectForge;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 namespace AtomosZ.UI
 {
-	[ExecuteInEditMode]
-	public class UIButton : UIPooledMonoBehaviour<UIButton>, IUIBehavior
+	public class UIButton : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Button; } }
 
@@ -30,18 +29,6 @@ namespace AtomosZ.UI
 			set { _interactable = textLabel.interactable = GetComponent<Button>().interactable = value; }
 		}
 
-		[SerializeField] private Vector2 _minDimensions;
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions; }
-			set
-			{
-				_minDimensions = value;
-				this.SetDirty();
-			}
-		}
-
-		public Vector2 maxDimensions { get; set; }
 
 
 		[SerializeField] private bool _hideText = false;
@@ -194,85 +181,113 @@ namespace AtomosZ.UI
 			buttonData = (UIButtonScriptableObject)backingData;
 			if (buttonData != null)
 			{
+#if UNITY_EDITOR
+				isDirty = true;
+#endif
 				hideText = buttonData.noText;
 				if (!hideText)
 					textLabel.UpdateBackingData(buttonData.labelData);
 				sprite = buttonData.sprite;
 				spriteIsBackground = buttonData.spriteIsBackground;
+#if UNITY_EDITOR
+				isDirty = false;
+#endif
 			}
 
 			this.SetDirty();
 		}
 
-
-		void Update()
+		private Vector2 preferredSize;
+		public override void RecalculateDimensions()
 		{
-			if (isDirty)
-				RecalculateDimensions();
-		}
-
-		public void RecalculateDimensions()
-		{
-			var layout = GetComponent<LayoutElement>();
-			var vertLayout = transform.parent.GetComponent<VerticalLayoutGroup>();
-			//if (vertLayout != null)
-			{   // the below layout stuff only works when in a Vertical Layout Group
-
-				if (fillParentHorizontal)
-					layout.flexibleWidth = 1;
-				else
-					layout.flexibleWidth = 0;
-
-				float preferredWidth = minButtonSize.x;
-				float preferredHeight = minButtonSize.y;
-				if (!hideText)
-				{
-					var labelHorzMargins = textLabel.margin.x + textLabel.margin.z;
-					var labelVertMargins = textLabel.margin.y + textLabel.margin.w;
-
-					layout.minWidth = this.textLabel.minDimensions.x + labelHorzMargins;
-					var labelDim = this.textLabel.GetDrawnDimensions();
-					preferredWidth = Mathf.Max(preferredWidth, labelDim.x + labelHorzMargins);
-					preferredHeight = Mathf.Max(preferredHeight, labelDim.y + labelVertMargins);
-				}
-
-				if (!spriteIsBackground)
-				{
-					if (vertLayout != null)
-					{
-						var height = image.GetDesiredHeight(preferredWidth);
-						preferredHeight = Mathf.Max(preferredHeight, height);
-					}
-					else
-					{
-						var width = image.GetDesiredWidth(preferredHeight);
-						preferredWidth = Mathf.Max(preferredWidth, width);
-					}
-				}
-
-				layout.preferredWidth = preferredWidth;
-				layout.preferredHeight = preferredHeight;
+#if UNITY_EDITOR
+			if (!Helpers.IsSceneValid(this))
+			{   // probably dragging the button into the scene.
+				isDirty = false;
+				return;
 			}
+#endif
+			var layout = GetComponent<VerticalLayoutGroup>();
+			preferredSize = textLabel.GetPreferredSize();
+			preferredSize.x += layout.padding.horizontal;
+			preferredSize.y += layout.padding.vertical;
 
-			if (vertLayout != null)
+			//var currentButtonWidth = rect.sizeDelta.x;
+			//if (prefLabelSize.x + layout.padding.horizontal > currentButtonWidth)
 			{
-				GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, layout.preferredHeight);
-			}
-			else
-			{
-				GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, layout.preferredWidth);
+				//currentButtonWidth = prefLabelSize.x + layout.padding.horizontal;
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, preferredSize.x);
+				rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredSize.y);
 			}
 
 			isDirty = false;
+
+			////var parentVertLayout = transform.parent.GetComponent<VerticalLayoutGroup>();
+			//////if (parentVertLayout != null)
+			////{   // the below layout stuff only works when in a Vertical Layout Group
+
+			////	if (fillParentHorizontal)
+			////		layoutElement.flexibleWidth = 1;
+			////	else
+			////		layoutElement.flexibleWidth = -1;
+
+			////	float preferredWidth = minButtonSize.x;
+			////	float preferredHeight = minButtonSize.y;
+			////	if (!hideText)
+			////	{
+			////		var labelHorzMargins = textLabel.margin.x + textLabel.margin.z;
+			////		var labelVertMargins = textLabel.margin.y + textLabel.margin.w;
+
+			////		layoutElement.minWidth = this.textLabel.minDimensions.x + labelHorzMargins;
+			////		var labelDim = this.textLabel.GetDrawnDimensions();
+			////		preferredWidth = Mathf.Max(preferredWidth, labelDim.x + labelHorzMargins);
+			////		preferredHeight = Mathf.Max(preferredHeight, labelDim.y + labelVertMargins);
+			////	}
+
+			////	if (!spriteIsBackground)
+			////	{
+			////		if (parentVertLayout != null)
+			////		{
+			////			var height = image.GetDesiredHeight(preferredWidth);
+			////			preferredHeight = Mathf.Max(preferredHeight, height);
+			////		}
+			////		else
+			////		{
+			////			var width = image.GetDesiredWidth(preferredHeight);
+			////			preferredWidth = Mathf.Max(preferredWidth, width);
+			////		}
+			////	}
+
+			////	layoutElement.preferredWidth = preferredWidth;
+			////	layoutElement.preferredHeight = preferredHeight;
+			////}
+
+			////if (parentVertLayout != null)
+			////{
+			////	rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, layoutElement.preferredHeight);
+			////}
+			////else
+			////{
+			////	rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, layoutElement.preferredWidth);
+			////}
+
+			//isDirty = false;
+			//textLabel.RecalculateDimensions();
 		}
 
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
-			var layout = GetComponent<LayoutElement>();
-			return new Vector2(layout.preferredWidth, layout.preferredHeight);
+			return rect.sizeDelta;
+		}
+
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
 		}
 	}
 }

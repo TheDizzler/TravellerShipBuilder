@@ -2,12 +2,12 @@ using System;
 
 using UnityEngine;
 using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 namespace AtomosZ.UI
 {
 	[ExecuteAlways]
-	public class UIImageView : UIPooledMonoBehaviour<UIImageView>, IUIBehavior
+	public class UIImageView : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.Image; } }
 		[SerializeField] private Image image;
@@ -56,29 +56,6 @@ namespace AtomosZ.UI
 		}
 
 
-		[SerializeField] private Vector2 _minDimensions;
-		/// <summary>
-		/// If either x or y is <= 0, sets image to native size.
-		/// </summary>
-		public Vector2 minDimensions
-		{
-			get { return _minDimensions = image.rectTransform.sizeDelta; }
-			set
-			{
-				if (value.x <= 0 || value.y <= 0)
-				{
-					image.SetNativeSize();
-				}
-				else
-				{
-					image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value.x);
-					image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value.y);
-				}
-				this.SetDirty();
-			}
-		}
-
-		public Vector2 maxDimensions { get; set; }
 
 		/// <summary>
 		/// If either x or y is <= 0, sets image to native size.
@@ -145,12 +122,22 @@ namespace AtomosZ.UI
 				RecalculateDimensions();
 		}
 
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
 			float height = 0;
 			float width = 0;
 			if (showImage)
 			{
+				if (minDimensions.x <= 0 || minDimensions.y <= 0)
+				{
+					image.SetNativeSize();
+				}
+				else
+				{
+					image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, minDimensions.x);
+					image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minDimensions.y);
+				}
+
 				width = image.rectTransform.sizeDelta.x;
 				height = image.rectTransform.sizeDelta.y;
 			}
@@ -160,23 +147,34 @@ namespace AtomosZ.UI
 				captionLabel.RecalculateDimensions();
 
 				var layout = GetComponent<VerticalLayoutGroup>();
-				var textSize = captionLabel.GetDrawnDimensions();
+				var textSize = captionLabel.GetDrawnSize();
 				height += textSize.y;
 				height += layout.spacing;
 				width = MathF.Max(textSize.x, width);
 			}
 
-			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
-			GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+
+			preferredSize.x = width;
+			preferredSize.y = height;
 
 			isDirty = false;
 		}
 
-		public Vector2 GetDrawnDimensions()
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
-			return GetComponent<RectTransform>().sizeDelta;
+			return rect.sizeDelta;
+		}
+
+		[SerializeField] private Vector2 preferredSize;
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
 		}
 	}
 }

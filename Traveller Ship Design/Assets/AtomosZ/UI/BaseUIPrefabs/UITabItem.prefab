@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1358649718981080080}
+  - component: {fileID: 7832136707846798549}
+  - component: {fileID: 6452366025361328529}
   - component: {fileID: 7298350520420406968}
   - component: {fileID: 3889476528208271320}
   m_Layer: 5
@@ -32,11 +34,59 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1546121651072735404}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 672.82, y: 66.41}
+  m_SizeDelta: {x: 0, y: 66.41}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &7832136707846798549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2385840677744814425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabel
+  _referenceName: UITabItem_TabText
+  _interactable: 1
+  _minDimensions: {x: 683.3438, y: 10}
+  _maxDimensions: {x: 683.3438, y: 256}
+  _fillParentHorizontal: 1
+  _fillParentVertical: 0
+  labelData: {fileID: 11400000, guid: 9de4f32db1b568e42b38b4e65d5682d2, type: 2}
+  textLabel: {fileID: 7298350520420406968}
+  _text: This got prefabed without permission!
+  _color: {r: 1, g: 0, b: 0, a: 1}
+  _disabledColor: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
+  _fontAsset: {fileID: 0}
+  _fontStyles: 0
+  _alignmentOptions: 513
+  _margin: {x: 12, y: 8, z: 46, w: 16}
+  preferredSize: {x: 681.82, y: 66.41}
+--- !u!114 &6452366025361328529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2385840677744814425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &7298350520420406968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57,7 +107,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: This got prefabed without permission
+  m_text: This got prefabed without permission!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
   m_sharedMaterial: {fileID: -5212590573181050906, guid: ae798132732fb4f48a4b091ae91f6a2d, type: 2}
@@ -95,6 +145,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -146,8 +197,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1546121651072735404}
   - component: {fileID: 5300464402255685926}
-  - component: {fileID: 2781322499687730756}
-  - component: {fileID: 6865870055718975944}
+  - component: {fileID: 2901481051456915573}
+  - component: {fileID: 790034574055200831}
+  - component: {fileID: 1902962469123166488}
   - component: {fileID: 5345713545006296892}
   - component: {fileID: 2426340941609388716}
   - component: {fileID: 3126946103031920126}
@@ -176,7 +228,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 672.82, y: 66.41}
+  m_SizeDelta: {x: 681.82, y: 1423.47}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5300464402255685926
 MonoBehaviour:
@@ -192,54 +244,75 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   _referenceName: TabItem
   _interactable: 1
-  _fillParentHorizontal: 0
-  _fillParentVertical: 0
-  panel: {fileID: 0}
-  panelRect: {fileID: 0}
---- !u!114 &2781322499687730756
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7330561272148096184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abe9b77780cd6634091d0e8fe0464eec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _referenceName: 
-  _interactable: 1
-  _fillParentHorizontal: 0
-  _fillParentVertical: 0
---- !u!114 &6865870055718975944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7330561272148096184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 262d87570dbee58478ba8261bf05ad3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIExpandingLabel
-  _referenceName: 
-  _interactable: 1
-  _fillParentHorizontal: 0
-  _fillParentVertical: 0
-  labelData: {fileID: 0}
-  textLabel: {fileID: 7298350520420406968}
-  image: {fileID: 2426340941609388716}
-  _text: This got prefabed without permission
-  _color: {r: 0, g: 0, b: 0, a: 0}
-  _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontAsset: {fileID: 0}
-  _fontStyles: 0
-  _alignmentOptions: 513
-  _margin: {x: 12, y: 8, z: 46, w: 16}
-  _minDimensions: {x: 64, y: 10}
+  _minDimensions: {x: 64, y: 16}
   _maxDimensions: {x: 1025, y: 256}
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
+  _label: {fileID: 7832136707846798549}
+  panel: {fileID: 0}
+  tabIndex: 0
+  preferredSize: {x: 681.82, y: 1423.47}
+--- !u!114 &2901481051456915573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7330561272148096184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &790034574055200831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7330561272148096184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 1
+  m_ChildScaleHeight: 1
+  m_ReverseArrangement: 0
+--- !u!114 &1902962469123166488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7330561272148096184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c60f5248b9c24f740bb47a8b920507bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.PooledObject
+  isLive: 0
+  doNotReturnChildrenToTheirOwnPools: 1
+  prefabID: TabItem
 --- !u!114 &5345713545006296892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,8 +330,8 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 2781322499687730756}
-          m_TargetAssemblyTypeName: DragPanel, Assembly-CSharp
+        - m_Target: {fileID: 5300464402255685926}
+          m_TargetAssemblyTypeName: AtomosZ.UI.UITabItem, Assembly-CSharp
           m_MethodName: BeginDrag
           m_Mode: 1
           m_Arguments:
@@ -273,8 +346,8 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 2781322499687730756}
-          m_TargetAssemblyTypeName: DragPanel, Assembly-CSharp
+        - m_Target: {fileID: 5300464402255685926}
+          m_TargetAssemblyTypeName: AtomosZ.UI.UITabItem, Assembly-CSharp
           m_MethodName: EndDrag
           m_Mode: 1
           m_Arguments:
@@ -289,8 +362,8 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 2781322499687730756}
-          m_TargetAssemblyTypeName: DragPanel, Assembly-CSharp
+        - m_Target: {fileID: 5300464402255685926}
+          m_TargetAssemblyTypeName: AtomosZ.UI.UITabItem, Assembly-CSharp
           m_MethodName: MouseDrag
           m_Mode: 1
           m_Arguments:
@@ -305,25 +378,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 2781322499687730756}
-          m_TargetAssemblyTypeName: AtomosZ.UI.DragPanel, Assembly-CSharp
+        - m_Target: {fileID: 5300464402255685926}
+          m_TargetAssemblyTypeName: AtomosZ.UI.UITabItem, Assembly-CSharp
           m_MethodName: PointerUp
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 7330561272148096184}
-          m_TargetAssemblyTypeName: AtomosZ.UI.DragPanel, Assembly-CSharp
-          m_MethodName: 
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 

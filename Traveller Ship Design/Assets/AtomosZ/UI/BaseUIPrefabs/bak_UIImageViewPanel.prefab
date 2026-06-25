@@ -53,20 +53,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: 
   _interactable: 1
+  _minDimensions: {x: 64, y: 16}
+  _maxDimensions: {x: 1025, y: 256}
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   labelData: {fileID: 0}
   textLabel: {fileID: 6038024248657366731}
-  image: {fileID: 0}
-  _designObject: {fileID: 0}
   _text: Image #0 sadhasdjhgdjhagdjha
   _color: {r: 0, g: 0, b: 0, a: 0}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 0
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 0
   _margin: {x: 0, y: 0, z: 0, w: 0}
-  _minLabelDimensions: {x: 64, y: 10}
-  _maxLabelDimensions: {x: 1025, y: 256}
 --- !u!114 &180760075118986181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,6 +141,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -220,7 +220,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 543.99994}
+  m_AnchoredPosition: {x: 0, y: 544.0002}
   m_SizeDelta: {x: 0, y: 1088}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2211760538126770280
@@ -573,20 +573,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: 
   _interactable: 1
+  _minDimensions: {x: 64, y: 16}
+  _maxDimensions: {x: 1025, y: 256}
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   labelData: {fileID: 0}
   textLabel: {fileID: 1343594084215447911}
-  image: {fileID: 0}
-  _designObject: {fileID: 0}
   _text: Caption #0000a
   _color: {r: 0, g: 0, b: 0, a: 0}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 0
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 0
   _margin: {x: 0, y: 0, z: 0, w: 0}
-  _minLabelDimensions: {x: 64, y: 10}
-  _maxLabelDimensions: {x: 1025, y: 256}
 --- !u!114 &3172206426742944236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -662,6 +661,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -756,20 +756,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: 
   _interactable: 1
+  _minDimensions: {x: 64, y: 16}
+  _maxDimensions: {x: 1025, y: 256}
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   labelData: {fileID: 0}
   textLabel: {fileID: 4573388958218661042}
-  image: {fileID: 0}
-  _designObject: {fileID: 0}
   _text: Caption #000
   _color: {r: 0, g: 0, b: 0, a: 0}
   _disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  _fontSize: 0
   _fontAsset: {fileID: 0}
   _fontStyles: 0
   _alignmentOptions: 0
   _margin: {x: 0, y: 0, z: 0, w: 0}
-  _minLabelDimensions: {x: 64, y: 10}
-  _maxLabelDimensions: {x: 1025, y: 256}
 --- !u!114 &1626360960631180924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -845,6 +844,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -942,12 +942,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: UIImageView(Clone)
   _interactable: 1
+  _minDimensions: {x: 0, y: 0}
+  _maxDimensions: {x: 1025, y: 256}
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   image: {fileID: 142771585612377338}
   captionLabel: {fileID: 0}
   imageData: {fileID: 0}
   _sprite: {fileID: 0}
   _text: Caption #00
-  _minDimensions: {x: 0, y: 0}
   _showImage: 1
   _showCaption: 1
 --- !u!114 &7936082480325545618
@@ -1157,8 +1160,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6880259490554087915}
   m_HandleRect: {fileID: 5363678316652387828}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 0.5
+  m_Value: -0.00000044878792
+  m_Size: 0.49999866
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1227,12 +1230,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: UIImageView(Clone)
   _interactable: 1
+  _minDimensions: {x: 0, y: 0}
+  _maxDimensions: {x: 1025, y: 256}
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   image: {fileID: 3283174571325053968}
   captionLabel: {fileID: 0}
   imageData: {fileID: 0}
   _sprite: {fileID: 0}
   _text: Caption #00
-  _minDimensions: {x: 0, y: 0}
   _showImage: 1
   _showCaption: 1
 --- !u!114 &6906400025542304441
@@ -1497,12 +1503,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _referenceName: UIImageView(Clone)
   _interactable: 1
+  _minDimensions: {x: 0, y: 0}
+  _maxDimensions: {x: 1025, y: 256}
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
   image: {fileID: 2665769465899096189}
   captionLabel: {fileID: 0}
   imageData: {fileID: 0}
   _sprite: {fileID: 0}
   _text: Caption #00
-  _minDimensions: {x: 0, y: 0}
   _showImage: 1
   _showCaption: 1
 --- !u!114 &475503455182011997
@@ -1746,7 +1755,6 @@ GameObject:
   m_Component:
   - component: {fileID: 95859194600999016}
   - component: {fileID: 1762839829469660947}
-  - component: {fileID: 2237528456814338375}
   - component: {fileID: 791404970715684769}
   - component: {fileID: 2833398454258125043}
   m_Layer: 5
@@ -1790,23 +1798,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AtomosZ.UI.UIMonoBehaviour
   _referenceName: not yet implemented
   _interactable: 1
---- !u!114 &2237528456814338375
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8395473234087103367}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4625876b8474f64d9a379c27144547a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isMoveable: 0
-  isModal: 0
-  hasCustomDimensions: 1
-  hasUpdatableBackingData: 1
-  tooltip: []
+  _minDimensions: {x: 64, y: 16}
+  _maxDimensions: {x: 1025, y: 256}
+  _fillParentHorizontal: 0
+  _fillParentVertical: 0
 --- !u!114 &791404970715684769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1943,11 +1938,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2488315987466801428, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 256
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 2488315987466801428, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 256
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 2488315987466801428, guid: 07e7e64e39f859b47af310eb758552bc, type: 3}
       propertyPath: m_AnchoredPosition.x

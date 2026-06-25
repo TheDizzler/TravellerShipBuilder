@@ -1,31 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using TMPro;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 using Debug = UnityEngine.Debug;
 
 namespace AtomosZ.UI
 {
+	/// <summary>
+	/// Convenience class to hold a paired UITabItem and UIPanel.
+	/// </summary>
 	[Serializable]
 	public class TabPanel
 	{
-		public UIExpandingLabel tabLabel;
+		public UITabItem tabItem;
 		public UIPanel panel;
 
-		public TabPanel(UIExpandingLabel label, UIPanel panel)
+		public TabPanel(UITabItem tabItem, UIPanel panel)
 		{
-			tabLabel = label;
+			this.tabItem = tabItem;
 			this.panel = panel;
 		}
 	}
 
 
-	[ExecuteInEditMode]
-	public class UITabControl : UIPooledMonoBehaviour<UITabControl>, IUIBehavior
+	public class UITabControl : UIMonoBehaviour, IUIBehavior
 	{
 		public UIControlType dataType { get { return UIControlType.TabControl; } }
 
@@ -44,9 +45,8 @@ namespace AtomosZ.UI
 			if (tabTransform == panelsTransform)
 				tabTransform = transform.GetChild(tabIndex + 1);
 
-			var tabLabel = tabTransform.GetComponent<UIExpandingLabel>();
-
-			TabPanel tabPanel = GetTabPanel(tabLabel);
+			var tabItem = tabTransform.GetComponent<UITabItem>();
+			TabPanel tabPanel = GetTabPanel(tabItem.label);
 			return tabPanel;
 		}
 
@@ -54,7 +54,7 @@ namespace AtomosZ.UI
 		{
 			foreach (var tabPanel in tabPanels)
 			{
-				if (tabPanel.tabLabel == tabLabel)
+				if (tabPanel.tabItem.label == tabLabel)
 					return tabPanel;
 			}
 
@@ -76,7 +76,7 @@ namespace AtomosZ.UI
 
 			foreach (var tabPanel in tabPanels)
 			{
-				var tabLabel = tabPanel.tabLabel.GetControl(controlRefName);
+				var tabLabel = tabPanel.tabItem.GetControl(controlRefName);
 				if (tabLabel != null)
 					return tabLabel;
 				var panel = tabPanel.panel.GetControl(controlRefName);
@@ -97,7 +97,12 @@ namespace AtomosZ.UI
 					return null;
 				}
 
-				return tabControlData.titleBarSprites[0];
+				if (tabControlData.tabSprites.Length == 0)
+				{   // should this be an error?
+					return null;
+				}
+
+				return tabControlData.tabSprites[0];
 			}
 		}
 
@@ -110,7 +115,29 @@ namespace AtomosZ.UI
 					return null;
 				}
 
-				return tabControlData.titleBarSprites[1];
+				if (tabControlData.tabSprites.Length == 0)
+				{   // should this be an error?
+					return null;
+				}
+				return tabControlData.tabSprites[1];
+			}
+		}
+
+		public Sprite lastTabSprite
+		{
+			get
+			{
+				if (tabControlData == null)
+				{
+					return null;
+				}
+
+				if (tabControlData.tabSprites.Length == 1)
+					return tabControlData.tabSprites[0];
+				if (tabControlData.tabSprites.Length <= 2)
+					return tabControlData.tabSprites[1];
+
+				return tabControlData.tabSprites[2];
 			}
 		}
 
@@ -123,19 +150,103 @@ namespace AtomosZ.UI
 					return null;
 				}
 
-				return tabControlData.titleBarSprites[0];
+				return tabControlData.tabSprites[0];
 			}
 		}
 
-		[SerializeField] private Vector2 _minDimensions;
-		public Vector2 minDimensions
+		[SerializeField] Color _selectedTabColor;
+		public Color selectedTabColor
 		{
-			get { return _minDimensions; }
-			set { _minDimensions = value; }
+			get
+			{
+				return _selectedTabColor;
+			}
+
+			set
+			{
+				if (value == Color.clear)
+				{
+					if (tabControlData != null)
+						value = tabControlData.selectedTabColor;
+				}
+
+				_selectedTabColor = value;
+			}
 		}
 
-		public Vector2 maxDimensions { get; set; }
+		[SerializeField] Color _deselectedTabColor;
+		public Color deselectedTabColor
+		{
+			get { return _deselectedTabColor; }
+			set
+			{
+				if (value == Color.clear)
+				{
+					if (tabControlData != null)
+						value = tabControlData.deselectedTabColor;
+				}
 
+				_deselectedTabColor = value;
+			}
+		}
+
+		[SerializeField] float _tabHorizontaloffset;
+		public float tabHorizontaloffset
+		{
+			get { return _tabHorizontaloffset; }
+			set
+			{
+				if (value == float.MinValue)
+				{
+					if (tabControlData != null)
+						value = tabControlData.tabHorizontaloffset;
+				}
+
+				_tabHorizontaloffset = value;
+			}
+		}
+
+		[SerializeField] private float _panelWidthAdjust;
+		public float panelWidthAdjust
+		{
+			get { return _panelWidthAdjust; }
+			set
+			{
+				if (value == float.MinValue)
+					if (tabControlData != null)
+						value = tabControlData.panelWidthAdjust;
+				_panelWidthAdjust = value;
+			}
+		}
+		[SerializeField] private float _panelVerticalOffset;
+		public float panelVerticalOffset
+		{
+			get { return _panelVerticalOffset; }
+			set
+			{
+				if (value == float.MinValue)
+					if (tabControlData != null)
+						value = tabControlData.panelVerticalOffset;
+				_panelVerticalOffset = value;
+			}
+		}
+
+		[SerializeField] private Vector4 _titleTextMargin;
+		public Vector4 titleTextMargin
+		{
+			get { return _titleTextMargin; }
+			set
+			{
+				if (value == Vector4.negativeInfinity)
+					value = tabControlData.titleTextMargin;
+				_titleTextMargin = value;
+			}
+		}
+
+		[Tooltip("Because the owning UIPanel wants to control the width of it's children, this rect.sizeDelta always reports a 0 width, "
+			+ "so we're saving the ACTUAL sizeDelta here so we can pass it to the parent.")]
+		[SerializeField]
+		private Vector2 preferredSize;
 		public void ClearControls()
 		{
 			for (int i = tabPanels.Count - 1; i > 1; ++i)
@@ -148,60 +259,139 @@ namespace AtomosZ.UI
 			this.SetDirty();
 		}
 
+
+		[Conditional("UNITY_EDITOR")]
+		public void UpdateBackingData_EDITOR()
+		{
+			referenceName = _referenceName;
+			interactable = _interactable;
+
+			//disabledColor = _disabledColor;
+			//fontSize = _fontSize;
+			//fontAsset = _fontAsset;
+			//fontStyles = _fontStyles;
+			//alignmentOptions = _alignmentOptions;
+			//margin = _margin;
+			//fillParentHorizontal = _fillParentHorizontal;
+			//fillParentVertical = _fillParentVertical;
+			//minDimensions = _minDimensions;
+			//maxDimensions = _maxDimensions;
+			if (Helpers.IsPrefabStage_EDITOR() && transform.parent.name == "Canvas (Environment)")
+				RecalculateDimensions();
+			else
+				this.SetDirty();
+		}
+
 		[Conditional("UNITY_EDITOR")]
 		public new void RecordPrefabInstances()
 		{
 			PrefabUtility.RecordPrefabInstancePropertyModifications(this);
 			foreach (var tabPanel in tabPanels)
 			{
-				tabPanel.tabLabel.RecordPrefabInstances();
+				tabPanel.tabItem.RecordPrefabInstances();
 				tabPanel.panel.RecordPrefabInstances();
 			}
 		}
 
 		[Conditional("UNITY_EDITOR")]
-		public void ReconstructTabsFromTransform()
+		public void ReconstructTabsFromTransform_EDITOR()
 		{
 			tabPanels.Clear();
 			if (panelsTransform == null)
 			{
 				var newPanels = new GameObject("Panels", typeof(RectTransform));
-				newPanels.transform.SetParent(GetComponent<RectTransform>());
-				var rect = newPanels.GetComponent<RectTransform>();
-				panelsTransform = rect;
+				newPanels.transform.SetParent(rect, true);
+				panelsTransform = newPanels.GetComponent<RectTransform>();
+				panelsTransform.anchorMin = new Vector2(0, 1);
+				panelsTransform.anchorMax = new Vector2(0, 1);
+				panelsTransform.pivot = new Vector2(0, 1);
+				panelsTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+				panelsTransform.localScale = Vector3.one;
 			}
 
 
-			var panels = panelsTransform.GetComponentsInChildren<UIPanel>(true);
-			foreach (UIPanel child in panels)
+
+			var panels = panelsTransform.GetComponentsInChildren<UIPanel>(true).ToList();
+			var tabs = transform.GetComponentsInChildren<UITabItem>(true).ToList();
+			var tabPanelCount = Mathf.Max(panels.Count, tabs.Count);
+			var newTabPanels = new TabPanel[tabPanelCount];
+			for (int i = 0; i < tabs.Count; ++i)
 			{
-				if (child.tabLabel != null)
-					tabPanels.Add(new TabPanel(child.tabLabel, child));
+				if (tabs[i].panel == null)
+				{
+					Log.Error("I hate Unity seralization");
+					continue;
+				}
+				if (tabs[i].tabIndex != tabs[i].panel.tabIndex)
+				{
+					Log.Error("I hate Unity seralization");
+					continue;
+				}
+
+				if (newTabPanels[tabs[i].tabIndex] != null)
+				{
+					Log.Error("I hate Unity seralization");
+					continue;
+				}
+
+				newTabPanels[tabs[i].tabIndex] = new TabPanel(tabs[i], tabs[i].panel);
+				panels.Remove(tabs[i].panel);
 			}
+
+			tabPanels = newTabPanels.ToList();
+
+
+			//foreach (UIPanel panel in panels)
+			//{
+			//	//if (panel.tabItem != null)
+			//	//tabPanels.Add(new TabPanel(panel.tabItem, panel));
+			//	//else
+			//	//{
+			//	if (tabs.Count > 0)
+			//	{
+			//		tabPanels.Add(new TabPanel(tabs[0], panel));
+			//		tabs.RemoveAt(0);
+			//	}
+			//	else
+			//		AddTab(null, null, panel);
+			//	//}
+			//}
 
 			if (tabPanels.Count == 0)
+			{
+				if (!gameObject.scene.IsValid())
+				{
+					Log.Error("No tabs found and cannot instantiate objects while open in explorer.");
+					return;
+				}
+
 				AddTab();
+			}
 		}
 
-		public TabPanel AddTab(string tabText = null, UIPanelScriptableObject overridePanelData = null)
+		public TabPanel AddTab(string tabText = null, UIPanelScriptableObject overridePanelData = null, UIPanel panel = null)
 		{
-			var tabItem = UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.TabItem, transform);
-			var tabLabel = tabItem.GetComponent<UIExpandingLabel>();
-			var tabRect = tabItem.GetComponent<RectTransform>();
-			var panel = (UIPanel)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.Panel, panelsTransform);
-			panel.parentPanel = this;
-			panel.tabLabel = tabLabel;
+			var tabItem = (UITabItem)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.TabItem, transform);
+			if (panel == null)
+				panel = (UIPanel)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.Panel, panelsTransform);
 
+			panel.rect.anchorMin = new Vector2(0, 1);
+			panel.rect.anchorMax = new Vector2(1, 1);
+			panel.rect.offsetMin = new Vector2(0, 0);
+			panel.rect.offsetMax = new Vector2(0, 0);
+
+			panel.tabItem = tabItem;
+			tabItem.panel = panel;
 
 			var defaultData = (UIPanelScriptableObject)panel.GetBackingData();
 
 			UIPanelScriptableObject panelEx = null;
 			if (overridePanelData != null)
 				panelEx = overridePanelData;
-			else if (tabControlData.panelScriptableObj == null)
-				panelEx = defaultData;
-			else
+			else if (tabControlData != null && tabControlData.panelScriptableObj != null)
 				panelEx = tabControlData.panelScriptableObj;
+			else
+				panelEx = defaultData;
 
 			var refNum = 0;
 			var panelRefName = "panel_" + refNum.ToString("00");
@@ -234,7 +424,7 @@ namespace AtomosZ.UI
 				checkAgain = false;
 				foreach (var tabPanel in tabPanels)
 				{
-					while (tabPanel.tabLabel.referenceName == tabRefName)
+					while (tabPanel.tabItem.referenceName == tabRefName)
 					{
 						tabRefName = "tab_" + (++refNum).ToString("00");
 						checkAgain = true;
@@ -245,10 +435,32 @@ namespace AtomosZ.UI
 				}
 			}
 
-			tabLabel.referenceName = tabRefName;
+			tabItem.referenceName = tabRefName;
 			tabItem.name = tabRefName;
 
-			var newTabPanel = new TabPanel(tabLabel, panel);
+			if (tabControlData != null)
+			{
+				selectedTabColor = tabControlData.selectedTabColor;
+				deselectedTabColor = tabControlData.deselectedTabColor;
+				tabHorizontaloffset = tabControlData.tabHorizontaloffset;
+				panelWidthAdjust = tabControlData.panelWidthAdjust;
+				panelVerticalOffset = tabControlData.panelVerticalOffset;
+				titleTextMargin = tabControlData.titleTextMargin;
+
+				tabItem.label.alignmentOptions = tabControlData.titleTextAlignment;
+				tabItem.label.color = tabControlData.titleBarFontColor;
+				tabItem.label.margin = tabControlData.titleTextMargin;
+				tabItem.label.fontSize = tabControlData.titleBarFontSize;
+
+				var labelMinSize = tabControlData.titleBarMinSize;
+				labelMinSize.x -= tabControlData.titleTextMargin.x + tabControlData.titleTextMargin.z;
+				labelMinSize.y -= tabControlData.titleTextMargin.y + tabControlData.titleTextMargin.w;
+				tabItem.label.minDimensions = labelMinSize;
+			}
+
+			tabItem.tabIndex = tabPanels.Count;
+			panel.tabIndex = tabPanels.Count;
+			var newTabPanel = new TabPanel(tabItem, panel);
 			tabPanels.Add(newTabPanel);
 
 			if (selectedTabIndex == -1)
@@ -259,10 +471,16 @@ namespace AtomosZ.UI
 				tabText = "TabItem_" + (tabPanels.Count - 1).ToString("00");
 			}
 
-			tabLabel.text = tabText;
+			tabItem.label.text = tabText;
 
-			GetDrawnDimensions();
 
+			this.SetDirty();
+			RecalculateDimensions();
+
+#if UNITY_EDITOR
+			RecordPrefabInstances();
+
+#endif
 			return newTabPanel;
 		}
 
@@ -273,19 +491,13 @@ namespace AtomosZ.UI
 		/// <param name="tabIndex"></param>
 		public void RemoveTab(int tabIndex)
 		{
-			int i = 0;
-			//UIExpandingLabel removeTab = null;
-			//UIPanel removePanel = null;
-
 			TabPanel removeTabPanel = GetTabPanelAtIndex(tabIndex);
-
+			int i = 0;
 			foreach (var tabPanel in tabPanels)
 			{
 				if (i++ != tabIndex)
 					continue;
 
-				//removeTab = tabPanel.Key;
-				//removePanel = tabPanel.Value;
 				removeTabPanel = tabPanel;
 				break;
 			}
@@ -301,13 +513,13 @@ namespace AtomosZ.UI
 #if DEBUG
 			if (!Application.isPlaying)
 			{
-				DestroyImmediate(removeTabPanel.tabLabel.gameObject);
+				DestroyImmediate(removeTabPanel.tabItem.gameObject);
 				DestroyImmediate(removeTabPanel.panel.gameObject);
 				return;
 			}
 #endif
-			Destroy(removeTabPanel.tabLabel.gameObject);
-			Destroy(removeTabPanel.panel.gameObject);
+			removeTabPanel.tabItem.pooledObject.ReturnToPool();
+			removeTabPanel.panel.pooledObject.ReturnToPool();
 		}
 
 
@@ -334,9 +546,9 @@ namespace AtomosZ.UI
 		{
 			foreach (var tabPanel in tabPanels)
 			{
-				if (tabPanel.tabLabel.referenceName == tabName)
+				if (tabPanel.tabItem.referenceName == tabName)
 				{
-					tabPanel.tabLabel.interactable = enable;
+					tabPanel.tabItem.interactable = enable;
 					return true;
 				}
 			}
@@ -344,12 +556,14 @@ namespace AtomosZ.UI
 			return false;
 		}
 
-		public WindowStyle GetWindowStyle()
+		public bool EnableTab(int tabIndex, bool enable)
 		{
-			if (tabControlData == null)
-				UnityEngine.Debug.LogException(new Exception("tabControlData may not be null"));
-			return tabControlData.windowStyle;
+			if (tabIndex >= tabPanels.Count)
+				return false;
+			tabPanels[tabIndex].tabItem.interactable = false;
+			return true;
 		}
+
 
 
 		public ScriptableObject GetBackingData()
@@ -357,31 +571,52 @@ namespace AtomosZ.UI
 			return tabControlData;
 		}
 
+		public void UpdateBackingData(UITabControlScriptableObject dataEx)
+		{
+			tabControlData = dataEx;
+			if (tabControlData != null)
+			{
+#if UNITY_EDITOR
+				isDirty = true;
+#endif
+				selectedTabColor = tabControlData.selectedTabColor;
+				deselectedTabColor = tabControlData.deselectedTabColor;
+				tabHorizontaloffset = tabControlData.tabHorizontaloffset;
+				panelWidthAdjust = tabControlData.panelWidthAdjust;
+				panelVerticalOffset = tabControlData.panelVerticalOffset;
+				titleTextMargin = tabControlData.titleTextMargin;
+				foreach (var tabPanel in tabPanels)
+				{
+					tabPanel.tabItem.label.alignmentOptions = tabControlData.titleTextAlignment;
+					tabPanel.tabItem.label.color = tabControlData.titleBarFontColor;
+					tabPanel.tabItem.label.margin = tabControlData.titleTextMargin;
+					tabPanel.tabItem.label.fontSize = tabControlData.titleBarFontSize;
+				}
+
+#if UNITY_EDITOR
+				isDirty = false;
+#endif
+			}
+
+			this.SetDirty();
+		}
 		/// <summary>
-		/// "Please let's deprecate this."
+		/// 
 		/// </summary>
 		/// <param name="dataEx"></param>
 		public void UpdateBackingData(ScriptableObject dataEx)
 		{
-			tabControlData = ((UITabControlScriptableObject)dataEx);
-			this.SetDirty();
+			UpdateBackingData((UITabControlScriptableObject)dataEx);
 		}
 
 
-		void Update()
-		{
-			if (isDirty)
-				RecalculateDimensions();
-		}
 
-		/// <summary>
-		/// "Please get rid of this, or atleast change to a better name. And keep it private."
-		/// </summary>
-		public void RecalculateDimensions()
+		public override void RecalculateDimensions()
 		{
 			if (tabPanels.Count == 0)
 			{
-				Debug.LogException(new Exception("A TabControl must never have 0 tabs"));
+				Debug.LogError("A TabControl must never have 0 tabs");
+				ReconstructTabsFromTransform_EDITOR();
 			}
 
 			if (selectedTabIndex < 0)
@@ -389,178 +624,66 @@ namespace AtomosZ.UI
 				selectedTabIndex = 0;
 			}
 
-			if (tabControlData == null)
-				return;
 
-			//Debug.LogError("TabControl is updating again");
-			switch (tabControlData.windowStyle)
-			{
-				case WindowStyle.Tabbed:
-				{
-					ToggleMultitab_DEBUG(true);
-
-					SetUpTabs();
-				}
-				break;
-
-				case WindowStyle.TitleBar:
-				{
-					ToggleMultitab_DEBUG(false);
-
-					SetupTitleBar();
-				}
-				break;
-
-				case WindowStyle.ContextMenu:
-				{
-					ToggleMultitab_DEBUG(false);
-					Debug.LogError("ContextMenu not yet implemented");
-				}
-				break;
-			}
-
-			isDirty = false;
-		}
-
-		private void SetupTitleBar()
-		{
-			var rect = GetComponent<RectTransform>();
-			var tabPanel = tabPanels[0];
-
-			var tabLabel = tabPanel.tabLabel;
-			if (titlebarSprite != null)
-				tabLabel.GetComponent<Image>().sprite = titlebarSprite;
-			tabLabel.GetComponent<Image>().color = tabControlData.selectedTabColor;
-
-			if (tabLabel.text.StartsWith("TabItem_"))
-			{
-				tabLabel.text = "Title";
-				tabLabel.referenceName = "titlebar";
-			}
-
-			tabLabel.color = tabControlData.titleBarFontColor;
-			tabLabel.alignmentOptions = tabControlData.tabTextAlignment;
-			tabLabel.fontSize = tabControlData.titleBarFontSize;
-
-			tabLabel.RecalculateDimensions();
-			//var tabRect = tab.GetComponent<RectTransform>();
-
-#if UNITY_EDITOR
-			if (tabPanel.panel == null)
-			{
-				tabPanel.panel = (UIPanel)UIPrefabProvider.GetMagicUIControl(UIPrefabProvider.UIPrefabType.Panel, panelsTransform);
-			}
-#endif
-
-			var panel = tabPanel.panel;
-			panel.gameObject.SetActive(true);
-			var panelDimens = panel.GetDrawnDimensions();
-			var tabDimens = tabLabel.GetDrawnDimensions();
-			var newUIControlHeight = tabDimens.y + panelDimens.y;
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newUIControlHeight);
-
-
-
-
-			var tmp = tabLabel.GetComponentInChildren<TextMeshProUGUI>();
-			tmp.margin = tabControlData.titleTextMargin;
-			var bottom = tmp.margin.w;
-			var tabHeight = tabLabel.GetComponent<RectTransform>().sizeDelta.y;
-			var panelOffset = bottom - tabHeight;
-			var newPanelPos = panelsTransform.localPosition;
-			newPanelPos.y = panelOffset + tabControlData.titleBarVerticalOffset;
-			panelsTransform.localPosition = newPanelPos;
-
-
-			if (panelDimens.x < tabDimens.x)
-				panelDimens.x = tabDimens.x;
-
-			tabLabel.SetWidth(panelDimens.x);
-
-
-			panelsTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, panelDimens.x); // this forces all panels to the same width
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, panelDimens.x);           // this sets the width of the TabUIControl for proper sizeing in parent layout
-		}
-
-
-
-		private void SetUpTabs()
-		{
-			ReconstructTabsFromTransform();
-
-			if (tabPanels[0].tabLabel.text.StartsWith("Title"))
-			{
-				tabPanels[0].tabLabel.text = "TabItem_00";
-				tabPanels[0].tabLabel.referenceName = "tabItem_00";
-			}
-
-			var rect = GetComponent<RectTransform>();
 			float largestTabHeight = 0;
-
 			int i = 0;
 			// Set the tabs up and find the tallest one
 			foreach (var tabPanel in tabPanels)
 			{
 				if (i == selectedTabIndex)
 				{
-					tabPanel.tabLabel.transform.SetSiblingIndex(tabPanels.Count);
-					tabPanel.tabLabel.GetComponent<Image>().color = tabControlData.selectedTabColor;
+					tabPanel.tabItem.transform.SetSiblingIndex(tabPanels.Count); // bring to the front
+					tabPanel.tabItem.image.color = selectedTabColor;
 				}
 				else
 				{
-					tabPanel.tabLabel.transform.SetSiblingIndex(i);
-					tabPanel.tabLabel.GetComponent<Image>().color = tabControlData.deselectedTabColor;
+					tabPanel.tabItem.transform.SetSiblingIndex(i);
+					tabPanel.tabItem.image.color = deselectedTabColor;
 				}
 
 				Sprite sprite = null;
-				if (i == 0)
+				if (i == 0 || tabSprite == null)
 					sprite = firstTabSprite;
+				else if (i == tabPanels.Count - 1)
+					sprite = lastTabSprite;
 				else
 					sprite = tabSprite;
 				if (sprite != null)
-					tabPanel.tabLabel.GetComponent<Image>().sprite = sprite;
+					tabPanel.tabItem.sprite = sprite;
 
+				tabPanel.tabItem.RecalculateDimensions();
 
-				tabPanel.tabLabel.alignmentOptions = tabControlData.tabTextAlignment;
-				tabPanel.tabLabel.color = tabControlData.titleBarFontColor;
-				tabPanel.tabLabel.margin = tabControlData.titleTextMargin;
-				tabPanel.tabLabel.fontSize = tabControlData.titleBarFontSize;
-
-				var labelMinSize = tabControlData.titleBarMinSize;
-				labelMinSize.x -= tabControlData.titleTextMargin.x + tabControlData.titleTextMargin.z;
-				labelMinSize.y -= tabControlData.titleTextMargin.y + tabControlData.titleTextMargin.w;
-				tabPanel.tabLabel.minDimensions = labelMinSize;
-
-				largestTabHeight = Mathf.Max(largestTabHeight, tabPanel.tabLabel.GetDrawnDimensions().y);
+				var panelDimensions = tabPanel.tabItem.label.GetDrawnSize();
+				largestTabHeight = Mathf.Max(largestTabHeight, panelDimensions.y);
 
 				++i;
 			}
 
 			panelsTransform.SetSiblingIndex(tabPanels.Count - 1);
 
+
 			float newPanelWidth = 0;
 			float nextXPos = 0;
 			i = 0;
 			foreach (var tabPanel in tabPanels)
 			{
-				var tab = tabPanel.tabLabel;
-
+				var tab = tabPanel.tabItem;
 				var panel = tabPanel.panel;
-				var tabRect = tab.GetComponent<RectTransform>();
-				tabRect.localPosition = new Vector3(nextXPos, 0, 0);
-				nextXPos += tabRect.sizeDelta.x + tabControlData.tabHorizontaloffset;
+				var tabRect = tab.rect;
+				tabRect.anchoredPosition = new Vector3(nextXPos, 0, 0);
+				nextXPos += tabRect.sizeDelta.x + tabHorizontaloffset;
 
-				tab.SetHeight(largestTabHeight);
+				tab.label.SetHeight(largestTabHeight);
 				if (i == selectedTabIndex)
 				{
 					panel.gameObject.SetActive(true);
-					var panelMinDimens = panel.GetDrawnDimensions();
-
+					var panelMinDimens = panel.GetPreferredSize();
 					newPanelWidth = panelMinDimens.x;
 
 					// set the height of the window to the currently opened tab
 					var newUIControlHeight = largestTabHeight + panelMinDimens.y;
 					rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newUIControlHeight);
+					preferredSize.y = newUIControlHeight;
 				}
 				else
 				{
@@ -571,64 +694,53 @@ namespace AtomosZ.UI
 			}
 
 			// set the position of the panel to align with the tabs
-			var margin = tabControlData.titleTextMargin;
-			var bottom = margin.w;
-			var height = largestTabHeight;
-			var panelOffset = bottom - height;
-			var newPanelPos = panelsTransform.localPosition;
-			newPanelPos.y = panelOffset + tabControlData.titleBarVerticalOffset;
-			panelsTransform.localPosition = newPanelPos;
+			SetPanelPosition(largestTabHeight);
 
-			nextXPos += tabControlData.panelWidthAdjust;
-			newPanelWidth = Mathf.Max(newPanelWidth, nextXPos);
-			panelsTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newPanelWidth); // this forces all panels to the same width
-			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newPanelWidth);           // this sets the width of the TabUIControl for proper sizing in parent layout
+			nextXPos += panelWidthAdjust;
+			newPanelWidth = Mathf.Max(newPanelWidth, nextXPos - tabHorizontaloffset);
+			panelsTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newPanelWidth);    // this forces all panels to the same width
+			rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newPanelWidth);               // this sets the width of the TabUIControl for proper sizing in parent layout
+
+			preferredSize.x = newPanelWidth;
+			isDirty = false;
 		}
 
 
-		[Conditional("DEBUG")]
-		private void ToggleMultitab_DEBUG(bool enableMultitab)
+
+
+		/// <summary>
+		/// set the position of the panel to align with the tabs
+		/// </summary>
+		/// <param name="tabHeight"></param>
+		private void SetPanelPosition(float tabHeight)
 		{
-			// TODO(Tristan): these SHOULD get deleted on Start(), or ideally, at compile time.
-			// but we need this for a flexible editor
-			if (!enableMultitab)
-				SelectTab(0);
-
-			for (int i = 1; i < tabPanels.Count; ++i)
-			{
-				if (tabPanels[i].tabLabel == null || tabPanels[i].tabLabel.gameObject == null)
-				{
-					Debug.LogError("This should not be happening!!");
-					ReconstructTabsFromTransform();
-					return;
-				}
-
-				tabPanels[i].tabLabel.gameObject.SetActive(enableMultitab);
-				tabPanels[i].panel.gameObject.SetActive(enableMultitab);
-			}
+			var margin = titleTextMargin;
+			var verticalOffset = margin.w - tabHeight;
+			var panelnewPos = panelsTransform.localPosition;
+			panelnewPos.x = 0;
+			panelnewPos.y = verticalOffset + panelVerticalOffset;
+			panelsTransform.anchoredPosition = panelnewPos;
 		}
 
-		public Vector2 GetDrawnDimensions()
+
+		public Vector2 GetDrawnSize()
 		{
 			if (isDirty)
 				RecalculateDimensions();
-			return GetComponent<RectTransform>().sizeDelta;
-			//UIPanel panel = SelectedPanel();
-			//GameObject tab = SelectedTab();
-			//var tabDimen = tab.GetComponent<UIExpandingLabel>().GetMinDimensions();
-			//var rect = panel.GetComponent<RectTransform>();
-			////var panelPadding = panel.GetComponent<VerticalLayoutGroup>().padding;
-
-			//Vector2 size = new Vector2(rect.rect.width, rect.rect.height);
-			//size.y += tabDimen.y/* + panelPadding.vertical*/;
-			//size.x = Mathf.Max(size.x /*+ panelPadding.horizontal*/, tabDimen.x);
-			//return size;
+			return rect.sizeDelta;
 		}
 
-		public UIExpandingLabel SelectedTab()
+		public Vector2 GetPreferredSize()
+		{
+			if (isDirty)
+				RecalculateDimensions();
+			return preferredSize;
+		}
+
+		public (UITabItem tab, UIPanel panel) SelectedTab()
 		{
 			TabPanel tabPanel = GetTabPanelAtIndex(selectedTabIndex);
-			return tabPanel.tabLabel;
+			return (tabPanel.tabItem, tabPanel.panel);
 		}
 
 		public UIPanel SelectedPanel()
