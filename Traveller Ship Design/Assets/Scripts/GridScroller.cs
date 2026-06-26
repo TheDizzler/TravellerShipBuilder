@@ -21,9 +21,9 @@ public class GridScroller : MonoBehaviour
 			Mathf.Round(camTransform.position.y / snapValue) * snapValue);
 
 		var width = Mathf.CeilToInt(-camTransform.position.z * 3.6f);
-		if (width % 2 != 0)
-			++width;
+		//if (width % 2 != 0)
+		//	++width;
 
-		sprite.size = new Vector2(width, width);
+		sprite.size = new Vector2(width + 1, width);
 	}
 }

@@ -17,7 +17,7 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			get
 			{
 				if (_instance == null)
-					_instance = Helpers.GetSingleTon<FleetManager>();
+					_instance = Helpers.GetSingleton<FleetManager>();
 				return _instance;
 			}
 		}

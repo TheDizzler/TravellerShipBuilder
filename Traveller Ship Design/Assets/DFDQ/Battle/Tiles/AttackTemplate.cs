@@ -36,17 +36,17 @@ namespace AtomosZ.DFDQ.Tiles
 				&& attackType == atkType
 				&& size == sze)
 			{
-				foreach (var high in highlights)
+				foreach (var highlight in highlights)
 				{
 #if DEBUG
-					if (high == null)
+					if (highlight == null)
 					{
 						Clear();
 						return Recalculate(attackFrom, atkType, sze);
 					}
 #endif
-					if (high.transform.parent != ObjectForge.instance.sleepingPooledObjects)
-						high.gameObject.SetActive(true);
+					if (highlight.transform.parent != ObjectForge.instance.sleepingPooledObjectsParentTransform) // need to get rid of this
+						highlight.gameObject.SetActive(true);
 				}
 
 				return false;

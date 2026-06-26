@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using AtomosZ.UI;
 using TMPro;
 using UnityEngine;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 
 namespace AtomosZ.MG2eTraveller.Vehicle
@@ -11,7 +11,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 	public class VehicleFactory : MonoBehaviour
 	{
 		[SerializeField] private UIInput uiInput;
-		[SerializeField] private MagicWindow designWindow;
+		[SerializeField] private MagicTabbedWindow designWindow;
 		[SerializeField] private MagicWindow dataSheetWindow;
 		[SerializeField] private MagicWindow techTableWindow;
 
@@ -109,7 +109,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 				var tabPanel = designWindow.AddTab("Options");
 				optionsPanel = tabPanel.panel;
 				optionsPanel.referenceName = "options_panel";
-				var tab = tabPanel.tabLabel;
+				var tab = tabPanel.tabItem;
 				tab.referenceName = "options_tab";
 			}
 
@@ -207,7 +207,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 				label.text = techRow.range + "";
 			}
 
-			techTableWindow.GetDrawnDimensions();
+			techTableWindow.GetDrawnSize();
 
 			/// Update DataSheet
 			var skillLabel = (UIExpandingLabel)dataSheetWindow.GetControl("skill_label");
@@ -276,7 +276,7 @@ namespace AtomosZ.MG2eTraveller.Vehicle
 				panel.UpdateBackingData(horizontalPanelData);
 			}
 
-			dataSheetWindow.Refresh();
+			dataSheetWindow.RecalculateDimensions();
 		}
 	}
 }

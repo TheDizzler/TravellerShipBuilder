@@ -53,6 +53,7 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			}
 		}
 
+		[Serializable]
 		public class ImperialDate
 		{
 			internal float second;
@@ -87,6 +88,9 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			}
 		}
 
+		/// <summary>
+		/// This gets nuked on a rebuild.
+		/// </summary>
 		public ImperialDate currentDate;
 
 
@@ -602,6 +606,17 @@ namespace AtomosZ.MG2eTraveller.Starmap
 			//{
 			//	fleetPanel.AddText_("•" + fleet.name);
 			//}
+
+			systemHistoryWindow.ClearControls();
+			var historyTable = systemHistoryWindow.AddTable();
+			historyTable.Init(0, 0);
+			historyTable.AddColumn("Ship Transponder ID", true);
+			historyTable.AddColumn("Entered System Date", true);
+			historyTable.AddColumn("Exit System Date", true);
+
+
+
+			//system.fleetHistoryLog
 		}
 
 

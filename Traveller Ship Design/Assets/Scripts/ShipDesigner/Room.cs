@@ -11,7 +11,7 @@ using UnityEngine;
 using static AtomosZ.Keyboard;
 using static AtomosZ.MG2eTraveller.Ship.DesignManager;
 using static AtomosZ.MG2eTraveller.Ship.RoomSerializer;
-using static AtomosZ.UI.MagicWindow;
+using static AtomosZ.UI.MagicWindowBase;
 
 namespace AtomosZ.MG2eTraveller.Ship
 {
@@ -258,7 +258,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 			window.Show(Vector2.zero);
 		}
 
-		private void SaveRenamePanelClosed(MagicWindow panel)
+		private void SaveRenamePanelClosed(MagicWindowBase panel)
 		{
 			if (panel.result == DialogResult.OK)
 			{
@@ -300,7 +300,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 			window.Show(Vector2.zero);
 		}
 
-		private void RenameDialogClosed(MagicWindow panel)
+		private void RenameDialogClosed(MagicWindowBase panel)
 		{
 			if (panel.result == DialogResult.OK)
 			{

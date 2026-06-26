@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f8e5776b190af3940a75d95f2c70eda2
+guid: 1929f2224a55c0e4e9cc6cbfeb3fb619
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1152321973957749958
-    second: panel_header_tab_blade multitab not first 3_0
+      213: 4237881221694771827
+    second: panel_header_tab_square multitab last_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +52,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 12, y: 12, z: 51, w: 10}
+  spriteBorder: {x: 12, y: 12, z: 12, w: 10}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -97,19 +97,6 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -126,12 +113,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: panel_header_tab_blade multitab not first 3_0
+      name: panel_header_tab_square multitab last_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 97
+        width: 64
         height: 76
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -141,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a331f5b15412200f0800000000000000
-      internalID: -1152321973957749958
+      spriteID: 3725a63948affca30800000000000000
+      internalID: 4237881221694771827
       vertices: []
       indices: 
       edges: []
@@ -161,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      panel_header_tab_blade multitab not first 3_0: -1152321973957749958
+      panel_header_tab_square multitab last_0: 4237881221694771827
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

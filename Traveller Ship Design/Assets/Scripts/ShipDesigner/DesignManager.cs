@@ -85,21 +85,54 @@ namespace AtomosZ.MG2eTraveller.Ship
 		public ToolTip toolTip;
 		[SerializeField] private Canvas uiCanvas;
 		[SerializeField] private UIInput uiInput;
-		[SerializeField] private GameObject objectPicker;
-		[SerializeField] private MagicWindow roomGeomorphTab;
-		[SerializeField] private GameObject cursorPrefab;
-		[SerializeField] private DesignerCustomCursor cursor;
-		[SerializeField] private GameObject linePointIndicator;
+		[SerializeField] private MagicWindow _objectPicker;
+		private MagicWindow objectPicker
+		{
+			get
+			{
+#if UNITY_EDITOR
+				if (_objectPicker == null)
+				{
+					var children = uiCanvas.GetComponentsInChildren<MagicWindow>();
+					foreach (var child in children)
+					{
+						if (child.referenceName == "ObjectPicker")
+						{
+							_objectPicker = child;
+							break;
+						}
+					}
+#endif
+				}
 
-		[SerializeField] private LayerMask designObjectLayerMask;
-		[SerializeField] private LayerMask controlPointLayerMask;
-		[SerializeField] private LayerMask wallSegmentColliderLayerMask;
+				return _objectPicker;
+			}
+		}
 
-		[SerializeField] private int minZoom = -2;
+		[SerializeField]
+		private MagicWindow roomGeomorphTab;
+		[SerializeField]
+		private GameObject cursorPrefab;
+		[SerializeField]
+		private DesignerCustomCursor cursor;
+		[SerializeField]
+		private GameObject linePointIndicator;
+
+		[SerializeField]
+		private LayerMask designObjectLayerMask;
+		[SerializeField]
+		private LayerMask controlPointLayerMask;
+		[SerializeField]
+		private LayerMask wallSegmentColliderLayerMask;
+
+		[SerializeField]
+		private int minZoom = -2;
 		[SerializeField] private int maxZoom = -30;
 		[Tooltip("Scrolling feels weird when the grid doesn't look like it's moving, so don't use a value of 1.")]
 		[Range(0.2f, 3.0f)]
 		[SerializeField] private float zoomMultiplier = 1.1f;
+		[Tooltip("The area that can be scrolled around in.")]
+		[SerializeField] private Vector2 mapMaxSize = new Vector2(25, 45);
 
 		[SerializeField] private List<string> noContextTips;
 		[SerializeField]
@@ -423,7 +456,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 
 				//if (isHoveringUI)
 				//{
-				//	topDialog.designObject.UpdateHover(Input.mousePosition);
+				//	topDialog.designObject.UpdateHover(Mouse.mousePosition);
 				//}
 			}
 			else if (isHoveringUI)
@@ -476,25 +509,18 @@ namespace AtomosZ.MG2eTraveller.Ship
 			{
 				if ((modifierKeys & ModifierKey.Ctrl) == ModifierKey.Ctrl)
 				{
-					var newY = mainCamera.transform.position.y + Input.mouseScrollDelta.y * zoomMultiplier;
-					mainCamera.transform.position = new Vector3(
-						mainCamera.transform.position.x, newY, mainCamera.transform.position.z);
+					var newY = mainCamera.transform.position.y + Mouse.scrollDelta.y * zoomMultiplier;
+					SetCameraPos(new Vector3(mainCamera.transform.position.x, newY, mainCamera.transform.position.z));
 				}
 				else if ((modifierKeys & ModifierKey.Shift) == ModifierKey.Shift)
 				{
-					var newX = mainCamera.transform.position.x + Input.mouseScrollDelta.y * zoomMultiplier;
-					mainCamera.transform.position = new Vector3(
-						newX, mainCamera.transform.position.y, mainCamera.transform.position.z);
+					var newX = mainCamera.transform.position.x + Mouse.scrollDelta.y * zoomMultiplier;
+					SetCameraPos(new Vector3(newX, mainCamera.transform.position.y, mainCamera.transform.position.z));
 				}
 				else
 				{
-					var newZ = mainCamera.transform.position.z + Input.mouseScrollDelta.y;
-					if (newZ >= minZoom)
-						newZ = minZoom;
-					else if (newZ < maxZoom)
-						newZ = maxZoom;
-					mainCamera.transform.position = new Vector3(
-						mainCamera.transform.position.x, mainCamera.transform.position.y, newZ);
+					var newZ = mainCamera.transform.position.z + Mouse.scrollDelta.y;
+					SetCameraPos(new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, newZ));
 				}
 			}
 
@@ -560,7 +586,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 			{
 				case EditMode.None:
 				{
-					if (Input.GetMouseButtonDown(0))
+					if (Mouse.GetMouseButtonDown(0))
 					{
 						if (hoverObject == null)
 						{   // scroll map
@@ -572,11 +598,14 @@ namespace AtomosZ.MG2eTraveller.Ship
 							SetEditMode(editMode);
 						}
 					}
-					else if (Input.GetMouseButtonDown(1))
+					else if (Mouse.GetMouseButtonDown(1))
 					{
 						if (hoverObject != null)
 						{
-							var contextMenu = hoverObject.GetContextMenu(uiInput.GetUICoordinatesFromMousePos());
+							var mouseScreenPos = Helpers.camera.WorldToScreenPoint(mouseWorldPos); // this is the opposite of GetMouseWorldPos()
+							var mouseViewportPos = Helpers.camera.WorldToViewportPoint(mouseWorldPos);
+							var mouseLocalPos = uiInput.GetUICoordinatesFromMousePos();
+							var contextMenu = hoverObject.GetContextMenu(mouseScreenPos);
 						}
 						else
 						{
@@ -593,7 +622,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 
 				case EditMode.Scrolling:
 				{
-					if (Input.GetMouseButtonUp(0))
+					if (Mouse.GetMouseButtonUp(0))
 					{
 						EndScroll();
 					}
@@ -602,7 +631,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 						var diff = mouseWorldPos - scrollStartPos;
 						var newX = mainCamera.transform.position.x - diff.x;
 						var newY = mainCamera.transform.position.y - diff.y;
-						mainCamera.transform.position = new Vector3(newX, newY, mainCamera.transform.position.z);
+						SetCameraPos(new Vector3(newX, newY, mainCamera.transform.position.z));
 						mouseWorldPos = Helpers.GetMouseWorldPos();
 						scrollStartPos = mouseWorldPos;
 					}
@@ -612,7 +641,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 				case EditMode.CreateObject:
 				case EditMode.MoveObject:
 				{
-					if (Input.GetMouseButtonUp(0))
+					if (Mouse.GetMouseButtonUp(0))
 					{
 						selectedObject.EndDrag(mouseWorldPos);
 						if (editMode == EditMode.MoveObject)
@@ -638,7 +667,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 							SetEditMode(newEditMode);
 						}
 					}
-					else if (Input.GetMouseButtonDown(1) || modifierKeys == ModifierKey.Esc)
+					else if (Mouse.GetMouseButton(1) || modifierKeys == ModifierKey.Esc)
 					{
 						if (editMode == EditMode.CreateObject)
 						{
@@ -665,18 +694,21 @@ namespace AtomosZ.MG2eTraveller.Ship
 			}
 		}
 
-		//public static Vector2 GetUICoordinatesFromMousePos()
-		//{
-		//	return instance._GetUICoordinatesFromMousePos();
-		//}
+		private void SetCameraPos(Vector3 newPosTry)
+		{
+			float halfX = mapMaxSize.x / 2.0f;
+			float halfY = mapMaxSize.y / 2.0f;
+			float newX = Mathf.Min(newPosTry.x, mapMaxSize.x);
+			newX = Mathf.Max(newPosTry.x, -mapMaxSize.x);
+			float newY = Mathf.Min(newPosTry.y, mapMaxSize.y);
+			newY = Mathf.Max(newPosTry.y, -mapMaxSize.y);
+			float newZ = Mathf.Min(newPosTry.z, minZoom);
+			newZ = Mathf.Max(newZ, maxZoom);
+			Vector3 newPos = new Vector3(newX, newY, newZ);
+			mainCamera.transform.position = newPos;
+		}
 
-		//private Vector2 _GetUICoordinatesFromMousePos()
-		//{
-		//	Vector2 mousePos = Input.mousePosition;
-		//	RectTransformUtility.ScreenPointToLocalPointInRectangle(
-		//		uiCanvas.GetComponent<RectTransform>(), mousePos, uiCamera, out Vector2 uiPos);
-		//	return uiPos;
-		//}
+
 
 		//private void DeselectUIObject()
 		//{
@@ -708,29 +740,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 			return new List<string> { noContextTips[nextTip] };
 		}
 
-		//public enum ModifierKey
-		//{
-		//	None = 0x0,
-		//	Ctrl = 0x1,
-		//	Alt = 0x2,
-		//	Esc = 0x4,
-		//	Shift = 0x8,
-		//}
 
-		//private ModifierKey GetModifierKeyInput()
-		//{
-		//	ModifierKey input = ModifierKey.None;
-
-		//	if (Input.GetKeyDown(KeyCode.Escape))
-		//		return ModifierKey.Esc;
-		//	if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
-		//		input |= ModifierKey.Ctrl;
-		//	if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
-		//		input |= ModifierKey.Alt;
-		//	if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-		//		input |= ModifierKey.Shift;
-		//	return input;
-		//}
 
 		private void SetEditMode(EditMode newEditMode)
 		{

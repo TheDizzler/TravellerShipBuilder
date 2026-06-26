@@ -90,7 +90,7 @@ namespace AtomosZ.MG2eTraveller.Ship
 		}
 
 
-		public MagicWindow GetContextMenu(Vector2 openContextPosition)
+		public MagicContextMenu GetContextMenu(Vector2 uiScreenCoordinates)
 		{
 			if (!isHoverable)
 				return null;
@@ -102,10 +102,9 @@ namespace AtomosZ.MG2eTraveller.Ship
 			designBehavior.GetContextMenuItems(actionDict);
 			if (actionDict.Count > 0)
 			{
-				var contextMenu = DesignManager.GetMagicWindow();
-				contextMenu.SetTitle("");
+				var contextMenu = DesignManager.GetContextMenu();
 				contextMenu.SetContextMenuActions(actionDict);
-				contextMenu.Show(openContextPosition);
+				contextMenu.Show(uiScreenCoordinates);
 				return contextMenu;
 			}
 
